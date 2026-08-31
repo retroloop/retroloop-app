@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    /**
+     * `scripts/check-mock-parity.ts` runs the browser's typed mock, so this
+     * program compiles `apps/web/test/trpc-mock.ts` as part of itself — and that
+     * file reads `window` behind a `typeof` guard and imports through the web
+     * package's `@/*` alias. Neither reaches `e2e/`, which is Node and Playwright
+     * and resolves nothing through `@/`.
+     */
+    "lib": ["ESNext", "DOM"],
+    "paths": { "@/*": ["./apps/web/src/*"] }
+  },
+  "include": ["scripts", "e2e"]
+}

@@ -1,0 +1,9 @@
+# Bun configuration for the Retro workspace.
+
+[install]
+# Workspace siblings (@retro/*) always resolve to the local package, never the registry.
+linkWorkspacePackages = true
+
+[install.lockfile]
+# Text lockfile so `bun.lock` stays reviewable in diffs.
+save = true

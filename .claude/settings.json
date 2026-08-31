@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(retro down)",
+      "Bash(retro down *)",
+      "Bash(retro up)",
+      "Bash(retro up *)",
+      "Bash(retroloop down)",
+      "Bash(retroloop down *)",
+      "Bash(retroloop up)",
+      "Bash(retroloop up *)",
+      "Bash(bun apps/cli/src/bin.ts down)",
+      "Bash(bun apps/cli/src/bin.ts down *)",
+      "Bash(bun apps/cli/src/bin.ts up)",
+      "Bash(bun apps/cli/src/bin.ts up *)",
+      "Bash(git worktree remove *)"
+    ],
+    "ask": [
+      "Bash(git worktree remove -f*)",
+      "Bash(git worktree remove * -f*)",
+      "Bash(git worktree remove *--force*)",
+      "Bash(git worktree remove *retro-review*)"
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": [
+      "**",
+      "!.claude",
+      "!.vscode",
+      "!.idea",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/.features-gen",
+      "!**/playwright-report",
+      "!**/test-results",
+      "!**/routeTree.gen.ts",
+      "!**/bun.lock"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "assist": {
+    "actions": { "source": { "organizeImports": "on" } }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "style": {
+        "useImportType": "error",
+        "useNodejsImportProtocol": "error"
+      },
+      "suspicious": {
+        "noConsole": { "level": "error", "options": { "allow": ["error", "warn"] } }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/web/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@trpc/server": "R-MOCK-LOCK: apps/web must never import tRPC server code. Type-only imports come from @retro/api (AppRouter).",
+                  "@trpc/server/unstable-core-do-not-import": "R-MOCK-LOCK: apps/web must never import tRPC server code.",
+                  "msw": "R-MOCK-LOCK: no HTTP-level mocking in apps/web. Use the single typed mock at apps/web/test/trpc-mock.ts.",
+                  "msw/node": "R-MOCK-LOCK: no HTTP-level mocking in apps/web.",
+                  "msw/browser": "R-MOCK-LOCK: no HTTP-level mocking in apps/web.",
+                  "nock": "R-MOCK-LOCK: no HTTP-level mocking in apps/web.",
+                  "node:http": "R-MOCK-LOCK: apps/web is a browser SPA; no HTTP server or interceptor here.",
+                  "node:https": "R-MOCK-LOCK: apps/web is a browser SPA; no HTTP server or interceptor here."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["scripts/**", "**/*.config.ts", "apps/web/features/**", "e2e/**"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    }
+  ]
+}

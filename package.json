@@ -1,0 +1,31 @@
+{
+  "name": "retroloop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "retroloop": "bun apps/cli/src/bin.ts",
+    "test": "bun test scripts && bun run --filter '@retro/*' test",
+    "test:scripts": "bun test scripts",
+    "typecheck": "bun run --filter '@retro/*' typecheck",
+    "lint": "biome ci .",
+    "format": "biome check --write .",
+    "check:deps": "bun run scripts/check-deps.ts",
+    "check:mock-lock": "bun run scripts/check-mock-lock.ts",
+    "make:migration": "bun run scripts/make-migration.ts",
+    "e2e": "bddgen --config e2e/playwright.config.ts && playwright test --config e2e/playwright.config.ts --pass-with-no-tests",
+    "gate": "bash scripts/gate.sh"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.10",
+    "@playwright/test": "^1.62.1",
+    "@retro/cli": "workspace:*",
+    "@types/bun": "^1.4.0",
+    "playwright-bdd": "^9.2.0",
+    "typescript": "^7.0.2"
+  }
+}

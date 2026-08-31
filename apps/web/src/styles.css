@@ -1,0 +1,338 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@custom-variant dark (&:is(.dark *));
+
+/**
+ * The one width where a third column becomes possible, and the only breakpoint
+ * the page's geometry turns on: below it the reading column is the page, at it
+ * the page widens, the column takes its cap, and the two rails mount beside it.
+ *
+ * 92rem is 1472px, which is what the three columns and their gutters actually
+ * need — 24 + 288 + 32 + 704 + 32 + 368 + 24 — with the reading column still at
+ * the 704px floor its measure band allows. It is a name rather than Tailwind's
+ * `xl` because it is a fact about this layout and not a screen size, and because
+ * `lib/side-panel.ts` has to ask `matchMedia` the same question in JS: a rail is
+ * mounted or not mounted, never CSS-hidden, so the number lives in two languages
+ * and both of them say where the other one is.
+ *
+ * **It moved from 84rem in session 10, and it moved because the rails did**
+ * (`r-wider-page-for-panels`, the owner: *"the max width should be even wider and
+ * all of it should go to the left index panel and the right comments panel"*).
+ * The breakpoint is not a taste value: it is the rails plus the gutters plus the
+ * floor, so widening the rails by 128px moves it by the same 128px. The three
+ * columns first fit 128px later than they used to, and this is the number that
+ * says so.
+ */
+@theme {
+  --breakpoint-wide: 92rem;
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  /* Retro surfaces: a second card level and a hairline rule. */
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-hairline: var(--hairline);
+
+  /* Chart series. Three jobs, three token families — see the block above the
+     light values in `:root` for why there are three and not one. */
+  --color-series-open: var(--series-open);
+  --color-series-resolved: var(--series-resolved);
+  --color-series-archived: var(--series-archived);
+  --color-sev-1: var(--sev-1);
+  --color-sev-2: var(--sev-2);
+  --color-sev-3: var(--sev-3);
+  --color-sev-4: var(--sev-4);
+  --color-sev-5: var(--sev-5);
+  --color-lvl-1: var(--lvl-1);
+  --color-lvl-2: var(--lvl-2);
+  --color-lvl-3: var(--lvl-3);
+  --color-lvl-4: var(--lvl-4);
+  --color-lvl-5: var(--lvl-5);
+
+  /* Retro status tones. Each has a readable ink and a soft fill. */
+  --color-tone-blue: var(--tone-blue);
+  --color-tone-blue-soft: var(--tone-blue-soft);
+  --color-tone-amber: var(--tone-amber);
+  --color-tone-amber-soft: var(--tone-amber-soft);
+  --color-tone-green: var(--tone-green);
+  --color-tone-green-soft: var(--tone-green-soft);
+  --color-tone-red: var(--tone-red);
+  --color-tone-red-soft: var(--tone-red-soft);
+  --color-tone-neutral: var(--tone-neutral);
+  --color-tone-neutral-soft: var(--tone-neutral-soft);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * LIGHT — designed, not inverted. Near-white page, white cards that sit above
+ * it, borders a step darker than the card. Status hues keep their identity but
+ * drop in lightness so every one of them clears WCAG AA on the card.
+ */
+:root {
+  --background: oklch(0.976 0.0025 265);
+  --foreground: oklch(0.205 0.012 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.012 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.012 265);
+  --primary: oklch(0.505 0.185 258);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.958 0.004 265);
+  --secondary-foreground: oklch(0.28 0.012 265);
+  --muted: oklch(0.958 0.004 265);
+  --muted-foreground: oklch(0.494 0.014 265);
+  --accent: oklch(0.952 0.006 265);
+  --accent-foreground: oklch(0.26 0.012 265);
+  --destructive: oklch(0.512 0.192 26);
+  --border: oklch(0.902 0.005 265);
+  --input: oklch(0.888 0.006 265);
+  --ring: oklch(0.505 0.185 258);
+  --chart-1: oklch(0.505 0.185 258);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.205 0.012 265);
+  --sidebar-primary: oklch(0.505 0.185 258);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.952 0.006 265);
+  --sidebar-accent-foreground: oklch(0.26 0.012 265);
+  --sidebar-border: oklch(0.902 0.005 265);
+  --sidebar-ring: oklch(0.505 0.185 258);
+
+  --surface: oklch(0.988 0.002 265);
+  --surface-raised: oklch(1 0 0);
+  --hairline: oklch(0.925 0.004 265);
+
+  --tone-blue: oklch(0.495 0.175 258);
+  --tone-blue-soft: oklch(0.955 0.026 258);
+  --tone-amber: oklch(0.492 0.115 68);
+  --tone-amber-soft: oklch(0.958 0.048 84);
+  --tone-green: oklch(0.468 0.118 152);
+  --tone-green-soft: oklch(0.952 0.042 152);
+  --tone-red: oklch(0.505 0.185 26);
+  --tone-red-soft: oklch(0.958 0.028 26);
+  --tone-neutral: oklch(0.468 0.012 265);
+  --tone-neutral-soft: oklch(0.948 0.004 265);
+
+  /*
+   * CHART SERIES — three colour jobs, and a chart uses exactly one of them.
+   *
+   * Every value below was **computed and validated**, not chosen by eye
+   * (`scripts/validate_palette.js` of the `dataviz` discipline: OKLab ΔE ×100
+   * under Machado-Oliveira-Fernandes protanopia/deuteranopia at severity 1.0,
+   * plus the lightness/chroma/contrast checks). The evidence for this palette
+   * is in the lane report; what follows is why there are three families.
+   *
+   * 1. `--series-*` — **status.** Lifecycle is a reserved scale with fixed
+   *    meaning, and these are the app's own `--tone-*` values so a stacked
+   *    segment is the same colour as the chip the reader already knows from
+   *    `LIFECYCLE_TAG`. Identity never rides on the hue alone: every chart with
+   *    two or more series ships a legend and the word.
+   *
+   *    **`--series-open` is the one that moved, and only in dark.** At the
+   *    chip's own lightness (0.742) the dark grey and the dark blue are ΔE 13.7
+   *    apart to a full-colour reader — under the 15 floor, and `open|resolved`
+   *    is the pair that touches in every stack on the page. Dropping it to
+   *    0.60 takes the pair to 18.0 normal / 17.1 CVD and costs nothing else:
+   *    the chip keeps `--tone-neutral`, because a chip has no neighbour to be
+   *    confused with. Light passes unchanged at 16.5.
+   *
+   * 2. `--sev-*` — **ordinal, one hue (26°, the app's red), five monotone
+   *    steps.** Severity is a position on a scale and not an identity: swap
+   *    SEV2 and SEV4 and the reading changes, which is what makes it a ramp
+   *    rather than five hues. Dark is **re-stepped, not flipped** — the anchor
+   *    moves to the bright end so SEV1 stays the loudest rung in both themes.
+   *
+   * 3. `--lvl-*` — **ordinal, one hue (258°, the app's primary).** Solution
+   *    level is the second five-rung scale on this data and it needed a hue of
+   *    its own, or a bar of records-by-level and a bar of records-by-severity
+   *    would read as two measurements of the same thing. It runs the other way
+   *    round — L1 lightest, L5 darkest — because a higher level is *more*
+   *    change, and more is darker.
+   *
+   * Nothing here uses shadcn's `--chart-1…5`: those are the registry's default
+   * blue-plus-four-greys, which cannot carry a five-rung scale.
+   */
+  --series-open: oklch(0.468 0.012 265);
+  --series-resolved: oklch(0.495 0.175 258);
+  --series-archived: oklch(0.492 0.115 68);
+
+  --sev-1: oklch(0.42 0.185 26);
+  --sev-2: oklch(0.52 0.17 26);
+  --sev-3: oklch(0.615 0.148 26);
+  --sev-4: oklch(0.7 0.115 26);
+  --sev-5: oklch(0.77 0.082 26);
+
+  --lvl-1: oklch(0.77 0.075 258);
+  --lvl-2: oklch(0.7 0.105 258);
+  --lvl-3: oklch(0.615 0.14 258);
+  --lvl-4: oklch(0.52 0.17 258);
+  --lvl-5: oklch(0.42 0.17 258);
+}
+
+/*
+ * DARK — the anchor. Near-black page, cards a touch lighter, hairline borders
+ * at low contrast, one blue accent. Status hues rise in lightness so they read
+ * against the dark card rather than being the light values flipped.
+ */
+.dark {
+  --background: oklch(0.158 0.006 265);
+  --foreground: oklch(0.962 0.003 265);
+  --card: oklch(0.204 0.007 265);
+  --card-foreground: oklch(0.962 0.003 265);
+  --popover: oklch(0.228 0.008 265);
+  --popover-foreground: oklch(0.962 0.003 265);
+  --primary: oklch(0.646 0.168 256);
+  --primary-foreground: oklch(0.145 0.01 265);
+  --secondary: oklch(0.268 0.009 265);
+  --secondary-foreground: oklch(0.962 0.003 265);
+  --muted: oklch(0.262 0.009 265);
+  --muted-foreground: oklch(0.712 0.014 265);
+  --accent: oklch(0.272 0.01 265);
+  --accent-foreground: oklch(0.962 0.003 265);
+  --destructive: oklch(0.694 0.168 24);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.646 0.168 256);
+  --chart-1: oklch(0.646 0.168 256);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.204 0.007 265);
+  --sidebar-foreground: oklch(0.962 0.003 265);
+  --sidebar-primary: oklch(0.646 0.168 256);
+  --sidebar-primary-foreground: oklch(0.145 0.01 265);
+  --sidebar-accent: oklch(0.272 0.01 265);
+  --sidebar-accent-foreground: oklch(0.962 0.003 265);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.646 0.168 256);
+
+  --surface: oklch(0.186 0.006 265);
+  --surface-raised: oklch(0.238 0.008 265);
+  --hairline: oklch(1 0 0 / 8%);
+
+  --tone-blue: oklch(0.722 0.145 252);
+  --tone-blue-soft: oklch(0.352 0.072 254);
+  --tone-amber: oklch(0.802 0.135 78);
+  --tone-amber-soft: oklch(0.352 0.062 72);
+  --tone-green: oklch(0.762 0.152 155);
+  --tone-green-soft: oklch(0.332 0.062 156);
+  --tone-red: oklch(0.712 0.152 24);
+  --tone-red-soft: oklch(0.348 0.078 24);
+  --tone-neutral: oklch(0.742 0.01 265);
+  --tone-neutral-soft: oklch(0.302 0.008 265);
+
+  /* Dark chart series — the block in `:root` says why each family exists and
+     why `--series-open` is the one value that is not simply its chip's tone. */
+  --series-open: oklch(0.6 0.014 265);
+  --series-resolved: oklch(0.722 0.145 252);
+  --series-archived: oklch(0.802 0.135 78);
+
+  --sev-1: oklch(0.76 0.17 26);
+  --sev-2: oklch(0.68 0.158 26);
+  --sev-3: oklch(0.6 0.14 26);
+  --sev-4: oklch(0.51 0.115 26);
+  --sev-5: oklch(0.42 0.085 26);
+
+  --lvl-1: oklch(0.42 0.085 258);
+  --lvl-2: oklch(0.51 0.115 258);
+  --lvl-3: oklch(0.6 0.14 258);
+  --lvl-4: oklch(0.68 0.155 258);
+  --lvl-5: oklch(0.76 0.16 258);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Every interactive target keeps a visible ring when tabbed to. */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+@layer components {
+  /* The review page's idiom: uppercase, letter-spaced, muted section labels. */
+  .section-label {
+    @apply text-[0.6875rem] font-medium tracking-[0.12em] text-muted-foreground uppercase;
+  }
+  /* The review page's idiom: a muted monospace metadata row. */
+  .meta-mono {
+    @apply font-mono text-[0.6875rem] leading-relaxed text-muted-foreground;
+  }
+  /* The root-cause gutter — INCIDENT · WHY 1 … WHY n · ROOT — as one label
+     system rather than four styling choices (retro 4 `r-whys-labels`). The
+     section-label idiom, plus the three properties the owner asked for by name:
+     one shared width, so a label is never sized by the text beside it; `nowrap`,
+     so "WHY 1" cannot fold onto the second line he was shown; and an explicit
+     line height, because "one line" is only checkable against a number.
+
+     `w-20` is sized off INCIDENT, the longest of them — a magic number the suite
+     holds honest: the labels are asserted to fit the width they share, so a
+     wider word or a bigger font fails rather than spills. */
+  .gutter-label {
+    @apply text-[0.6875rem] font-medium tracking-[0.12em] text-muted-foreground uppercase;
+    @apply w-20 shrink-0 whitespace-nowrap leading-4 pt-1;
+  }
+}

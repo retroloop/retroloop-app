@@ -1,0 +1,33 @@
+# agent worktrees
+.claude/worktrees/
+
+node_modules/
+dist/
+# apps/web's second build: the same SPA with the typed tRPC mock linked in, which
+# is what the web Gherkin suite drives (R-MOCK-LOCK).
+dist-mocked/
+.DS_Store
+
+# build / tooling caches
+*.tsbuildinfo
+.vite/
+.tanstack/
+
+# playwright-bdd generated specs + playwright artifacts
+.features-gen/
+playwright-report/
+test-results/
+blob-report/
+
+# machine-local Claude Code state
+.claude/settings.local.json
+
+# lane reports are session artifacts, never merged (session 6)
+LANE_REPORT.md
+
+# bake-off preview stages and screenshot scratch (session 11)
+preview-stage/
+screenshots/
+
+# machine-local repo instructions (points into the private meta repo)
+CLAUDE.local.md

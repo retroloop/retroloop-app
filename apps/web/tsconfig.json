@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    /**
+     * `bun` is here for the packages this one *reads*, not for this one. The
+     * type-only `web -> api` edge makes tsc compile `apps/api` and `@retro/core`
+     * sources as part of this program, and those speak Bun (`bun:sqlite`, the
+     * `Bun` global). Without their ambient types the edge cannot typecheck at
+     * all. No runtime consequence: nothing here is bundled from those packages —
+     * `check-deps.ts` proves the edge vanishes under type erasure.
+     */
+    "types": ["vite/client", "node", "bun"],
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": [
+    "src",
+    "features",
+    "test",
+    "preview-port.ts",
+    "vite.config.ts",
+    "playwright.config.ts"
+  ]
+}
