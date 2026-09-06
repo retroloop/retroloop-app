@@ -435,9 +435,9 @@ retroloop up --json
 
 `started` says whether **this call** started the server: `false` means it was
 already running, which is just as good. Either way the `url` is live, and it is
-the one to hand the human. (`up` may also return a `lanUrl` when the server is
-bound to the network rather than to loopback — same page, reachable from his
-other devices.)
+the one to hand the human. (If `up` returns a `lanUrl`, the human bound the
+server to the network himself with `--bind`; hand him `url` and leave `lanUrl`
+alone unless he asks.)
 
 **Read the session back — including the human's side of it.** This is the one
 moment you are allowed to see the human's notes and their annotations on yours:

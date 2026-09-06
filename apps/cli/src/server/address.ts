@@ -1,4 +1,5 @@
 import { networkInterfaces } from 'node:os'
+import { UsageError } from '#errors'
 
 /**
  * The address a server takes when nobody asks for another one.
@@ -7,7 +8,8 @@ import { networkInterfaces } from 'node:os'
  * promised "auto LAN"; a tool that quietly puts a review server on the network
  * because you did not name an address is not being helpful, it is deciding
  * something for you. `--bind` is how you ask, and `--help` is the authoritative
- * statement of what happens when you do not (KC-0021).
+ * statement of what happens when you do not (KC-0021). A `--bind` binds the one
+ * start it was typed for: nothing carries it over into the next one.
  */
 export const DEFAULT_BIND = '127.0.0.1'
 
@@ -42,9 +44,24 @@ export function isLoopbackBind(bind: string): boolean {
 }
 
 /** `0.0.0.0` and `::` mean "every interface" — which one that turns out to be is the question. */
-function isWildcardBind(bind: string): boolean {
+export function isWildcardBind(bind: string): boolean {
   const host = bind.trim().replace(/^\[/, '').replace(/\]$/, '')
   return host === '0.0.0.0' || host === '::'
+}
+
+/**
+ * Refuses a wildcard address before anything is started, written or locked.
+ *
+ * Every interface is not an address, it is "whoever can reach this machine", and
+ * a review server holds a human's words in their own spelling. Naming one
+ * interface is the same reach with the decision made out loud, so that is the
+ * only way to leave loopback — and the message says which flag to type instead.
+ */
+export function refuseWildcardBind(bind: string): void {
+  if (!isWildcardBind(bind)) return
+  throw new UsageError(
+    `--bind ${bind} is refused: it would expose the review server on every network interface. Bind one interface address instead, e.g. --bind 192.168.1.9.`,
+  )
 }
 
 function hostForUrl(address: string): string {
@@ -95,4 +112,16 @@ export function lanUrlMember(lanUrl: string | undefined): { readonly lanUrl?: st
 /** ` · LAN http://…` for the human line, or nothing at all. */
 export function lanUrlSuffix(lanUrl: string | undefined): string {
   return lanUrl === undefined ? '' : ` · LAN ${lanUrl}`
+}
+
+/**
+ * ` · bound to <addr>` for the human line — on every start, without exception.
+ *
+ * The terminal is where a bind beyond loopback becomes visible to the person who
+ * typed it, so the address is never left implicit, not even when it is the
+ * default. A line that only mentions the address sometimes teaches the reader to
+ * stop looking for it.
+ */
+export function boundToSuffix(bind: string): string {
+  return ` · bound to ${bind}`
 }

@@ -3,7 +3,14 @@ import { createApp } from '@retro/core'
 import type { Argv } from 'yargs'
 import { createOutput } from '#output'
 import type { CliRuntime, GlobalOptions } from '#runtime'
-import { DEFAULT_BIND, lanUrlFor, lanUrlMember, lanUrlSuffix } from '#server/address'
+import {
+  boundToSuffix,
+  DEFAULT_BIND,
+  lanUrlFor,
+  lanUrlMember,
+  lanUrlSuffix,
+  refuseWildcardBind,
+} from '#server/address'
 import { acquireLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
 import { resolveStage } from '#stage'
@@ -38,9 +45,14 @@ export function registerServeCommand(
         .option('port', { type: 'number', describe: 'Port to listen on [default: 24100]' })
         .option('bind', {
           type: 'string',
-          describe: `Address to bind — 0.0.0.0 for the LAN [default: ${DEFAULT_BIND}]`,
+          describe: `Address to bind. A specific interface IP (e.g. 192.168.1.9) exposes the server on that network; 0.0.0.0 and :: are refused. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
+      // Ahead of the lock, the stage and the store, for the same reason the lock
+      // comes first: a refusal must land before anything has been touched.
+      const bind = args.bind ?? DEFAULT_BIND
+      refuseWildcardBind(bind)
+
       const stage = resolveStage({
         data: args.data,
         port: args.port,
@@ -53,8 +65,6 @@ export function registerServeCommand(
         out: runtime.out,
         err: runtime.err,
       })
-
-      const bind = args.bind ?? DEFAULT_BIND
 
       acquireLock(stage.lockFile, {
         pid: process.pid,
@@ -89,10 +99,12 @@ export function registerServeCommand(
             url: server.url,
             port: server.port,
             pid: process.pid,
+            bind,
             dataDir: stage.dataDir,
             ...lanUrlMember(lanUrl),
           },
-          () => `retroloop serving ${server.url} (pid ${process.pid})${lanUrlSuffix(lanUrl)}`,
+          () =>
+            `retroloop serving ${server.url} (pid ${process.pid})${boundToSuffix(bind)}${lanUrlSuffix(lanUrl)}`,
         )
         await waitForShutdown()
       } finally {

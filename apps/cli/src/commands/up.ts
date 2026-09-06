@@ -2,8 +2,14 @@ import type { Argv } from 'yargs'
 import { ServerError } from '#errors'
 import { createOutput } from '#output'
 import type { CliRuntime, GlobalOptions } from '#runtime'
-import { DEFAULT_BIND, lanUrlFor, lanUrlMember, lanUrlSuffix } from '#server/address'
-import { readLastBind, rememberBind } from '#server/last-address'
+import {
+  boundToSuffix,
+  DEFAULT_BIND,
+  lanUrlFor,
+  lanUrlMember,
+  lanUrlSuffix,
+  refuseWildcardBind,
+} from '#server/address'
 import { type LockInfo, readLock } from '#server/lock'
 import { resolveStage } from '#stage'
 
@@ -31,14 +37,12 @@ async function waitForServer(lockFile: string, timeoutMs: number): Promise<LockI
  *
  * No OS service yet: this starts a detached `serve`. `service install` is Tier 3.
  *
- * `--bind` reaches the spawned `serve` (F1). It used to be declared, accepted and
- * dropped, so `up --bind 0.0.0.0` exited 0 having bound loopback — the worst of
- * the three possible outcomes, because it looked like it worked.
- *
- * And a bare `up` re-uses the address this stage last ran on, because a restart
- * is `retro down && retro up` and the bind used to live only in a flag and in a
- * lock the `down` deletes. The stage remembers so that nobody has to remember
- * for it (retro-6 `r-restart-drops-bind`).
+ * The address is a per-start choice and nothing else: a bare `up` binds loopback,
+ * `--bind <ip>` binds that one interface for that one start, and no stage, file
+ * or lock carries an address into the next start. A wildcard (`0.0.0.0`, `::`) is
+ * refused outright — the reach it grants is a decision to be typed each time it
+ * is wanted, not one to be inherited. The address that was bound is printed on
+ * every start, so the terminal always says where the server can be reached from.
  */
 export function registerUpCommand(
   cli: Argv<GlobalOptions>,
@@ -52,9 +56,14 @@ export function registerUpCommand(
         .option('port', { type: 'number', describe: 'Port to listen on [default: 24100]' })
         .option('bind', {
           type: 'string',
-          describe: `Address to bind — 0.0.0.0 for the LAN [default: the address this stage last ran on, else ${DEFAULT_BIND}]`,
+          describe: `Address to bind. A specific interface IP (e.g. 192.168.1.9) exposes the server on that network; 0.0.0.0 and :: are refused. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
+      // Before the stage, the lock and the output: a refused address must leave
+      // the machine exactly as it found it.
+      const bind = args.bind ?? DEFAULT_BIND
+      refuseWildcardBind(bind)
+
       const stage = resolveStage({
         data: args.data,
         port: args.port,
@@ -68,27 +77,31 @@ export function registerUpCommand(
         err: runtime.err,
       })
       const already = readLock(stage.lockFile)
-      // Precedence: the flag always wins; then the server that is already
-      // running, whose address is a fact rather than a request; then the address
-      // the last server on this stage took; then loopback. Nothing here ever
-      // widens a stage on its own — only a `--bind` you once typed can, and this
-      // is the stage remembering that you typed it (`DEFAULT_BIND`'s header).
-      const bind = args.bind ?? already?.bind ?? readLastBind(stage.lastBindFile) ?? DEFAULT_BIND
 
       if (already !== undefined) {
         const url = `http://localhost:${already.port}`
         // The address that matters here is the one the running server took, not
         // the one this invocation asked for: `up` started nothing, so `--bind`
-        // has not been applied and must not be reported as though it had.
+        // has not been applied and must not be reported as though it had. That
+        // includes reporting a wildcard an older server bound — a fact about
+        // what is serving, which is exactly what makes it worth printing.
         const lanUrl = lanUrlFor(already.bind, already.port, runtime.hostAddresses)
-        if (already.bind !== bind) {
+        if (args.bind !== undefined && already.bind !== args.bind) {
           output.note(
-            `Note: the running server is bound to ${already.bind}; --bind ${bind} needs a restart (retroloop down, then retroloop up --bind ${bind}).`,
+            `Note: the running server is bound to ${already.bind}; --bind ${args.bind} needs a restart (retroloop down, then retroloop up --bind ${args.bind}).`,
           )
         }
         output.result(
-          { url, port: already.port, pid: already.pid, started: false, ...lanUrlMember(lanUrl) },
-          () => `Already running — ${url} (pid ${already.pid})${lanUrlSuffix(lanUrl)}`,
+          {
+            url,
+            port: already.port,
+            pid: already.pid,
+            bind: already.bind,
+            started: false,
+            ...lanUrlMember(lanUrl),
+          },
+          () =>
+            `Already running — ${url} (pid ${already.pid})${boundToSuffix(already.bind)}${lanUrlSuffix(lanUrl)}`,
         )
         return
       }
@@ -100,16 +113,21 @@ export function registerUpCommand(
         throw new ServerError(`the server did not come up on ${stage.url}`)
       }
 
-      // Read back off the lock the server itself wrote, and only now that there
-      // is a server to write it: an address that failed to bind must not become
-      // the one every later `retro up` inherits.
-      rememberBind(stage.lastBindFile, lock.bind)
-
+      // The address comes off the lock the server itself wrote, not off the flag:
+      // what gets reported is what a listening socket actually took.
       const url = `http://localhost:${lock.port}`
       const lanUrl = lanUrlFor(lock.bind, lock.port, runtime.hostAddresses)
       output.result(
-        { url, port: lock.port, pid: lock.pid, started: true, ...lanUrlMember(lanUrl) },
-        () => `Started — ${url} (pid ${lock.pid})${lanUrlSuffix(lanUrl)}`,
+        {
+          url,
+          port: lock.port,
+          pid: lock.pid,
+          bind: lock.bind,
+          started: true,
+          ...lanUrlMember(lanUrl),
+        },
+        () =>
+          `Started — ${url} (pid ${lock.pid})${boundToSuffix(lock.bind)}${lanUrlSuffix(lanUrl)}`,
       )
     },
   )

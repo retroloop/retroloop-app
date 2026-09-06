@@ -1,9 +1,14 @@
 import { afterAll, describe, expect, test } from 'bun:test'
-import { existsSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EXIT, ServerError } from '#errors'
-import { DEFAULT_BIND, isLoopbackBind, lanUrlFor, type ServeAddress } from '#server/address'
-import { readLastBind, rememberBind } from '#server/last-address'
+import {
+  DEFAULT_BIND,
+  isLoopbackBind,
+  isWildcardBind,
+  lanUrlFor,
+  type ServeAddress,
+} from '#server/address'
 import { acquireLock, type LockInfo, readLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
 import { type Cli, createCli, removeTempStages, TEST_HOST_ADDRESSES } from './support/harness'
@@ -149,6 +154,17 @@ describe('the LAN URL', () => {
   })
 })
 
+describe('a wildcard address', () => {
+  test('is every spelling of “every interface”, and nothing else', () => {
+    for (const bind of ['0.0.0.0', '::', '[::]', ' 0.0.0.0 ']) {
+      expect(isWildcardBind(bind), bind).toBe(true)
+    }
+    for (const bind of ['127.0.0.1', '192.168.1.9', 'localhost', '::1']) {
+      expect(isWildcardBind(bind), bind).toBe(false)
+    }
+  })
+})
+
 describe('up', () => {
   test('does nothing when the server is already running', async () => {
     let spawned = 0
@@ -166,6 +182,7 @@ describe('up', () => {
       url: 'http://localhost:24242',
       port: 24242,
       pid: process.pid,
+      bind: DEFAULT_BIND,
       started: false,
     })
     expect(spawned).toBe(0)
@@ -191,6 +208,7 @@ describe('up', () => {
       url: 'http://localhost:24999',
       port: 24999,
       pid: process.pid,
+      bind: DEFAULT_BIND,
       started: true,
     })
   })
@@ -211,11 +229,11 @@ describe('up', () => {
 
     await cli.run(['up', '--json'])
     releaseLock(join(cli.dataDir, 'server.lock'))
-    await cli.run(['up', '--bind', '0.0.0.0', '--port', '24777', '--json'])
+    await cli.run(['up', '--bind', '192.168.1.9', '--port', '24777', '--json'])
 
     expect(asked).toEqual([
       { port: 24100, bind: '127.0.0.1' },
-      { port: 24777, bind: '0.0.0.0' },
+      { port: 24777, bind: '192.168.1.9' },
     ])
   })
 
@@ -233,12 +251,12 @@ describe('up', () => {
 
     const loopback = await cli.run(['up', '--json'])
     releaseLock(join(cli.dataDir, 'server.lock'))
-    const lan = await cli.run(['up', '--bind', '0.0.0.0', '--json'])
+    const lan = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
     expect(loopback.json()).not.toHaveProperty('lanUrl')
     expect(lan.json()).toMatchObject({
       url: 'http://localhost:24100',
-      lanUrl: 'http://192.168.1.42:24100',
+      lanUrl: 'http://192.168.1.9:24100',
       started: true,
     })
   })
@@ -250,7 +268,7 @@ describe('up', () => {
     const cli = createCli()
     writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
 
-    const result = await cli.run(['up', '--bind', '0.0.0.0', '--json'])
+    const result = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
     expect(result.code).toBe(EXIT.ok)
     expect(result.json()).not.toHaveProperty('lanUrl')
@@ -260,9 +278,9 @@ describe('up', () => {
     const cli = createCli()
     writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
 
-    const result = await cli.run(['up', '--bind', '0.0.0.0'])
+    const result = await cli.run(['up', '--bind', '192.168.1.9'])
 
-    expect(result.stdout.join('\n')).toContain('bound to 127.0.0.1')
+    expect(result.stdout.join('\n')).toContain('the running server is bound to 127.0.0.1')
     expect(result.stdout.join('\n')).toContain('retroloop down')
   })
 
@@ -277,12 +295,13 @@ describe('up', () => {
 })
 
 /**
- * retro-6 `r-restart-drops-bind`. A restart is `retro down && retro up`, and the
- * bind lived in a flag and a lock file the `down` deletes — so every post-merge
- * restart rebound to loopback and re-stranded the iPad on the other side of the
- * network. Four times in one session, each one noticed only from the iPad.
+ * The address a server takes is a per-start choice: loopback unless the caller
+ * names an interface, never carried over from a previous start, and never a
+ * wildcard. Putting the review server on every interface exposes a human's
+ * verbatim words to everyone on the network, so it is refused outright and one
+ * named address is how the network is asked for.
  */
-describe('the remembered bind', () => {
+describe('the bind address', () => {
   /**
    * A stage that can be restarted the way `up` and `down` see one: the spawned
    * `serve` takes the lock and records in it the address it actually took, and
@@ -308,28 +327,34 @@ describe('the remembered bind', () => {
     return { cli, asked }
   }
 
-  test('re-uses the bind of the last server on this stage when no --bind is given', async () => {
+  test('a file left on the stage by an older version cannot widen the bind', async () => {
     const { cli, asked } = restartableStage()
+    const stale = join(cli.dataDir, 'last-bind.json')
+    const contents = JSON.stringify({ bind: '0.0.0.0' })
+    writeFileSync(stale, contents)
 
-    await cli.run(['up', '--bind', '0.0.0.0', '--json'])
-    await cli.run(['down', '--json'])
-    await cli.run(['up', '--json'])
+    const result = await cli.run(['up', '--json'])
 
-    expect(asked.map((address) => address.bind)).toEqual(['0.0.0.0', '0.0.0.0'])
+    expect(result.code).toBe(EXIT.ok)
+    expect(asked.map((address) => address.bind)).toEqual([DEFAULT_BIND])
+    // Not read, and not written either: the file is inert, not maintained.
+    expect(readFileSync(stale, 'utf8')).toBe(contents)
   })
 
-  test('an explicit --bind outranks the memory, and is what gets remembered next', async () => {
+  test('no --bind means loopback, every time', async () => {
     const { cli, asked } = restartableStage()
 
-    // Neither address is the loopback default, so the third start proves the
-    // memory was re-read rather than that the default happened to agree with it.
-    await cli.run(['up', '--bind', '0.0.0.0', '--json'])
+    await cli.run(['up', '--json'])
     await cli.run(['down', '--json'])
     await cli.run(['up', '--bind', '192.168.1.9', '--json'])
     await cli.run(['down', '--json'])
     await cli.run(['up', '--json'])
 
-    expect(asked.map((address) => address.bind)).toEqual(['0.0.0.0', '192.168.1.9', '192.168.1.9'])
+    expect(asked.map((address) => address.bind)).toEqual([
+      DEFAULT_BIND,
+      '192.168.1.9',
+      DEFAULT_BIND,
+    ])
   })
 
   test('a stage that has never run a server starts on loopback', async () => {
@@ -342,55 +367,85 @@ describe('the remembered bind', () => {
     expect(result.json()).not.toHaveProperty('lanUrl')
   })
 
-  test('down leaves the memory behind — it is all a restart has to go on', async () => {
+  test('up writes nothing down about the address it was given', async () => {
     const { cli } = restartableStage()
-    const lastBindFile = join(cli.dataDir, 'last-bind.json')
 
-    await cli.run(['up', '--bind', '0.0.0.0', '--json'])
-    await cli.run(['down', '--json'])
+    await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
-    expect(existsSync(join(cli.dataDir, 'server.lock'))).toBe(false)
-    expect(readLastBind(lastBindFile)).toBe('0.0.0.0')
+    expect(existsSync(join(cli.dataDir, 'last-bind.json'))).toBe(false)
   })
 
-  test('remembers nothing from a server that never came up', async () => {
-    // The address is read back off the lock a live server wrote, so a `--bind`
-    // that cannot be bound cannot poison every later `up` with itself.
-    const cli = createCli({ spawnServe: async () => undefined })
+  test('up refuses a wildcard address and starts nothing', async () => {
+    for (const wildcard of ['0.0.0.0', '::', '[::]']) {
+      const { cli, asked } = restartableStage()
 
-    const result = await cli.run(['up', '--bind', '0.0.0.0', '--json'])
+      const result = await cli.run(['up', '--bind', wildcard, '--json'])
 
-    expect(result.code).toBe(EXIT.server)
-    expect(readLastBind(join(cli.dataDir, 'last-bind.json'))).toBeUndefined()
-  })
-
-  test('a memory that cannot be read is no memory at all, and up still comes up', async () => {
-    const { cli, asked } = restartableStage()
-    writeFileSync(join(cli.dataDir, 'last-bind.json'), 'this is not json')
-
-    const result = await cli.run(['up', '--json'])
-
-    expect(result.code).toBe(EXIT.ok)
-    expect(asked.map((address) => address.bind)).toEqual([DEFAULT_BIND])
-  })
-
-  test('reads back what it wrote, and nothing else', () => {
-    const cli = createCli()
-    const lastBindFile = join(cli.dataDir, 'last-bind.json')
-    expect(readLastBind(lastBindFile)).toBeUndefined()
-
-    rememberBind(lastBindFile, '192.168.1.9')
-    expect(readLastBind(lastBindFile)).toBe('192.168.1.9')
-
-    for (const contents of ['this is not json', '{}', '{"bind":""}', '{"bind":42}']) {
-      writeFileSync(lastBindFile, contents)
-      expect(readLastBind(lastBindFile), contents).toBeUndefined()
+      expect(result.code, wildcard).toBe(EXIT.usage)
+      expect(result.error().code).toBe('USAGE')
+      expect(result.error().message).toBe(
+        `--bind ${wildcard} is refused: it would expose the review server on every network interface. Bind one interface address instead, e.g. --bind 192.168.1.9.`,
+      )
+      expect(asked, wildcard).toEqual([])
+      expect(existsSync(join(cli.dataDir, 'server.lock')), wildcard).toBe(false)
     }
+  })
+
+  test('up refuses a wildcard address even when a server is already running', async () => {
+    const cli = createCli()
+    writeLock(cli, { port: 24242 })
+
+    const result = await cli.run(['up', '--bind', '0.0.0.0'])
+
+    expect(result.code).toBe(EXIT.usage)
+    // Refused before it looked at the stage: no "already running" line either.
+    expect(result.stdout).toEqual([])
+  })
+
+  test('serve refuses a wildcard address before it takes the stage lock', async () => {
+    const cli = createCli()
+
+    const result = await cli.run(['serve', '--bind', '0.0.0.0', '--json'])
+
+    expect(result.code).toBe(EXIT.usage)
+    expect(result.error().message).toContain('--bind 0.0.0.0 is refused')
+    expect(readLock(join(cli.dataDir, 'server.lock'))).toBeUndefined()
+  })
+
+  test('up prints the address it bound, in JSON and to a human', async () => {
+    const { cli } = restartableStage()
+
+    const loopback = await cli.run(['up', '--json'])
+    await cli.run(['down', '--json'])
+    const line = await cli.run(['up'])
+    await cli.run(['down', '--json'])
+    const lan = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
+
+    expect(loopback.jsonAs<{ bind: string }>().bind).toBe(DEFAULT_BIND)
+    expect(line.stdout.join('\n')).toContain('bound to 127.0.0.1')
+    expect(lan.json()).toMatchObject({
+      bind: '192.168.1.9',
+      lanUrl: 'http://192.168.1.9:24100',
+    })
+  })
+
+  test('reports the address a running server holds, wildcard and all', async () => {
+    // Reporting a fact is not binding: a lock written by an older server can say
+    // `0.0.0.0`, and the terminal has to show what is actually being served.
+    const cli = createCli()
+    writeLock(cli, { port: 24242, bind: '0.0.0.0' })
+
+    const line = await cli.run(['up'])
+    const json = await cli.run(['up', '--json'])
+
+    expect(line.code).toBe(EXIT.ok)
+    expect(line.stdout.join('\n')).toContain('bound to 0.0.0.0')
+    expect(json.jsonAs<{ bind: string }>().bind).toBe('0.0.0.0')
   })
 
   test('does not tell a bare up that the running server disagrees with it', async () => {
     // `up` was handed no address, so there is no disagreement to report — the
-    // note used to name the loopback default the caller never asked for.
+    // note would otherwise name the loopback default the caller never asked for.
     const cli = createCli()
     writeLock(cli, { port: 24242, bind: '0.0.0.0' })
 

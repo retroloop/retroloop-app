@@ -7,8 +7,6 @@ export const DEFAULT_DATA_DIR = join('.ai-team', 'retro')
 /** architecture.md §Network — never 5000/7000, which macOS AirPlay takes. */
 export const DEFAULT_PORT = 24100
 export const LOCK_FILENAME = 'server.lock'
-/** What the stage remembers of its last server, for `up` to fall back on. */
-export const LAST_BIND_FILENAME = 'last-bind.json'
 
 export type Environment = Readonly<Record<string, string | undefined>>
 
@@ -16,8 +14,6 @@ export type Stage = {
   /** The data directory that *is* the stage (KC-0013). */
   readonly dataDir: string
   readonly lockFile: string
-  /** Where the address the last server here took outlives that server. */
-  readonly lastBindFile: string
   readonly port: number
   /** Base URL of this stage's server. */
   readonly url: string
@@ -57,7 +53,6 @@ export function resolveStage(options: StageOptions = {}): Stage {
   const env = options.env ?? {}
   const dataDir = resolveDataDir(options)
   const lockFile = join(dataDir, LOCK_FILENAME)
-  const lastBindFile = join(dataDir, LAST_BIND_FILENAME)
 
   const fromEnv = Number.parseInt(env.RETRO_PORT ?? '', 10)
   const running = readLock(lockFile)
@@ -71,7 +66,6 @@ export function resolveStage(options: StageOptions = {}): Stage {
   return {
     dataDir,
     lockFile,
-    lastBindFile,
     port,
     url,
     urlForSession: (sessionId) => `${url}/sessions/${sessionId}`,

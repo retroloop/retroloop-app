@@ -94,7 +94,9 @@ OS, start it, verify the URL over IP and hostname, print the URL. Safe to re-run
 
 Options:
   --port <n>            Server port                          [default: 24100]
-  --bind <addr>         Bind address — 0.0.0.0 for the LAN   [default: 127.0.0.1]
+  --bind <addr>         Address to bind. A specific interface IP (e.g. 192.168.1.9)
+                        exposes the server on that network; 0.0.0.0 and :: are
+                        refused.                             [default: 127.0.0.1]
   --no-service          Initialize only; do not install or start the service
   --json
 ```
@@ -117,8 +119,8 @@ retroloop up
 Idempotent "make it run": if the boot service is installed, ensure it is started;
 otherwise start a detached serve for this stage. If already running, do nothing.
 Always prints the URL. Exit 7 only if the server cannot be brought up.
-Without --bind, re-uses the address this stage last ran on, so a restart keeps
-the LAN binding it had; an explicit --bind always wins.
+Binds 127.0.0.1 unless --bind names an interface address, which applies to that
+start alone: no address is carried over from a previous one.
 
 Options:
   --port <n>  --bind <addr>  --json
@@ -143,7 +145,9 @@ starts the event tailer, serves UI + API, stops cleanly on SIGTERM.
 
 Options:
   --port <n>            [default: 24100]
-  --bind <addr>         Bind address — 0.0.0.0 for the LAN   [default: 127.0.0.1]
+  --bind <addr>         Address to bind. A specific interface IP (e.g. 192.168.1.9)
+                        exposes the server on that network; 0.0.0.0 and :: are
+                        refused.                             [default: 127.0.0.1]
   --data <dir>
 ```
 
