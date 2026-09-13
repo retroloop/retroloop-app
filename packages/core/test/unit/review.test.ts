@@ -129,6 +129,113 @@ describe('review', () => {
   })
 
   /**
+   * `review.listFinished` — every round the human has put down, across the whole
+   * stage, for an AI that was not watching when he pressed the button.
+   *
+   * `review wait` answers about one retrospective and only about finishes that
+   * land while it blocks; an agent that started after the press, or that is
+   * catching up on a stage it has never read, has no way to ask "what is waiting
+   * for me?". This is that read, and it is addressed to nothing: the caller names
+   * no retrospective and no session.
+   *
+   * **Finished means the latest revision was finished.** A round the AI has
+   * already answered with a new draft is not waiting for anyone, so a
+   * retrospective whose revision 1 was finished and whose revision 2 is open
+   * does not appear — the same rule `review wait` applies to a single event, on
+   * the whole stage at once.
+   */
+  describe('listFinished', () => {
+    const rows = async () =>
+      (await harness.app.review.listFinished.execute({ actor: 'ai' })).reviews
+
+    test('lists nothing while no round has been put down', async () => {
+      expect(await rows()).toEqual([])
+
+      await harness.revision(session.id, [{}])
+
+      expect(await rows()).toEqual([])
+    })
+
+    /**
+     * The whole read in one walk: two sessions, three retrospectives, and the
+     * three readings that matter — which rows appear, in what order, and with
+     * which ordinal.
+     *
+     * The ordinal is the position **within the session** and the order is retro
+     * id ascending, so the two deliberately disagree here: the second listed row
+     * is the third retrospective the stage ever had and the second of *its*
+     * session. A `retroNumber` that were really the id would pass a flatter
+     * scenario and fail a reader reading "Retro #2" off a dashboard.
+     */
+    test('lists every finished round oldest first, numbered within its session', async () => {
+      const first = await harness.revision(session.id, [{}, {}])
+      await harness.decide(first.retroId, 'r-record-1', 'approved')
+      await harness.decide(first.retroId, 'r-record-2', 'declined')
+      harness.clock.advance(60_000)
+      await harness.closeReview(first.retroId)
+      const firstFinishedAt = harness.clock.iso()
+
+      // Another session's retrospective, still with the human — and started
+      // between the two below, so its id sits between theirs.
+      const other = await harness.session('uuid-other')
+      const reviewing = await harness.revision(other.id, [{}])
+
+      harness.clock.advance(60_000)
+      const second = await harness.revision(session.id, [{}])
+      await harness.decide(second.retroId, 'r-record-1', 'approved')
+      harness.clock.advance(60_000)
+      await harness.app.review.finish.execute({
+        actor: 'human',
+        retro: { retroId: second.retroId },
+      })
+      const secondFinishedAt = harness.clock.iso()
+
+      expect(await rows()).toEqual([
+        {
+          retroId: first.retroId,
+          retroNumber: 1,
+          sessionId: session.id,
+          claudeSession: session.claudeSession,
+          finishedAt: firstFinishedAt,
+          // The stored terminal state, which only `review close` writes.
+          closed: true,
+          revisionN: 1,
+          counts: { pending: 0, approved: 1, declined: 1, revise: 0, hold: 0, total: 2 },
+        },
+        {
+          retroId: second.retroId,
+          retroNumber: 2,
+          sessionId: session.id,
+          claudeSession: session.claudeSession,
+          finishedAt: secondFinishedAt,
+          // He has finished it and the AI has not closed it — the window
+          // `review status` calls `submitted`, and the reason this row exists.
+          closed: false,
+          revisionN: 1,
+          counts: { pending: 0, approved: 1, declined: 0, revise: 0, hold: 0, total: 1 },
+        },
+      ])
+      expect((await rows()).map((row) => row.retroId)).not.toContain(reviewing.retroId)
+    })
+
+    /**
+     * The round the AI has already answered (#113 `r-revision-sneaks-past-review`
+     * put the finish before the next draft, so this pair is the normal rhythm).
+     * Its `ReviewFinished` is still in the outbox forever; what changed is that
+     * it is no longer about the revision under review.
+     */
+    test('drops a retrospective the AI has answered with a new revision', async () => {
+      const { retroId } = await harness.revision(session.id, [{}])
+      await harness.finishRound(retroId)
+      expect((await rows()).map((row) => row.retroId)).toEqual([retroId])
+
+      await harness.revision(session.id, [{}])
+
+      expect(await rows()).toEqual([])
+    })
+  })
+
+  /**
    * The human's one button (retro 4 `r-one-finish-button`). It ends *his* side
    * of the round and nothing else: the retrospective stays `reviewing` until
    * the AI closes it, which is the describe below this one.

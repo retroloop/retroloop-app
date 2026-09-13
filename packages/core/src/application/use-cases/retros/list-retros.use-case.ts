@@ -1,5 +1,5 @@
 import type { Store } from '#application/ports/store.port'
-import { decisionsByRid } from '#application/views/record.view'
+import { decisionsByRetro } from '#application/views/record.view'
 import {
   finishedRoundsByRetro,
   type RetroDisplayState,
@@ -52,19 +52,6 @@ export type ListRetrosInput = {
 
 export type ListRetrosOutput = {
   readonly retros: readonly RetroListRow[]
-}
-
-/** The latest decision of each record, grouped by the retrospective it belongs to. */
-function decisionsByRetro(
-  decisions: readonly Decision[],
-): ReadonlyMap<number, ReadonlyMap<string, Decision>> {
-  const rows = new Map<number, Decision[]>()
-  for (const decision of decisions) {
-    const known = rows.get(decision.retroId)
-    if (known === undefined) rows.set(decision.retroId, [decision])
-    else known.push(decision)
-  }
-  return new Map([...rows].map(([retroId, forRetro]) => [retroId, decisionsByRid(forRetro)]))
 }
 
 /**

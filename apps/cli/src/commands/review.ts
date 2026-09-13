@@ -1,7 +1,7 @@
 import { REVIEW_WAIT_EVENT_NAMES, type RetroRef } from '@retro/core'
 import type { Argv } from 'yargs'
 import { retroRef } from '#args'
-import { TimeoutError } from '#errors'
+import { TimeoutError, UsageError } from '#errors'
 import { type CliContext, type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 import { localOriginFor } from '#server/address'
 import { subscribeToRetroEvents } from '#server/event-stream'
@@ -109,6 +109,88 @@ async function pollStore(
   }
 }
 
+/** What `wait --any` answers with: the round, and whose it was. */
+type AnyFinish = {
+  readonly retroId: number
+  /** Its place within its session — the "Retro #n" a reader sees on the page. */
+  readonly retro: number
+  readonly sessionId: number
+  readonly finishedAt: string
+}
+
+/**
+ * The wait, addressed to the whole stage rather than to one retrospective.
+ *
+ * **It starts from the outbox head and nothing earlier counts.** The
+ * per-retrospective wait starts from the revision it is waiting on, because the
+ * press it wants may have landed in the moment between `revision create` and
+ * `review wait` — a race with one right answer. This form has no revision to
+ * start from, and "the whole history" is not an answer to "tell me when
+ * something finishes": every stage with a finished round would return instantly,
+ * with whichever one happened first. So the window opens when the command does,
+ * and the question about the past is a different command — `review list
+ * --finished`, which is also why `--timeout 0` is refused here rather than
+ * quietly answering "nothing".
+ *
+ * **A finish only counts for the revision under review.** `ReviewFinished`
+ * outlives the round it was about: the AI answers it with a new draft and the
+ * retrospective goes back to the human, while the event stays in the outbox
+ * forever. `review.listFinished` is the read that settles it — a retrospective
+ * has a row there exactly when its *latest* revision was finished — so an event
+ * whose revision is no longer the latest is stepped over and the cursor moves
+ * past it, rather than being re-read until the deadline.
+ */
+async function waitForAnyFinish(
+  context: CliContext,
+  options: {
+    readonly pollIntervalMs: number
+    readonly timeoutSeconds?: number
+  },
+): Promise<AnyFinish> {
+  // The head as the command starts, whatever its name: `latestId` comes back
+  // from every page precisely so a consumer filtering by name still advances
+  // past the events it did not ask for.
+  const { latestId } = await context.app.events.list.execute({ actor: 'ai', limit: 1 })
+  let cursor = latestId
+  const deadline =
+    options.timeoutSeconds === undefined ? undefined : Date.now() + options.timeoutSeconds * 1000
+
+  for (;;) {
+    const { events } = await context.app.events.list.execute({
+      actor: 'ai',
+      afterId: cursor,
+      names: ['ReviewFinished'],
+    })
+
+    if (events.length > 0) {
+      // One read for the whole batch, and read *after* the events, so a row can
+      // only be fresher than the event it is asked about.
+      const { reviews } = await context.app.review.listFinished.execute({ actor: 'ai' })
+      for (const event of events) {
+        cursor = event.id
+        const row = reviews.find(
+          (candidate) =>
+            candidate.retroId === event.retroId && candidate.revisionN === event.revisionN,
+        )
+        if (row === undefined) continue
+        return {
+          retroId: row.retroId,
+          retro: row.retroNumber,
+          sessionId: row.sessionId,
+          finishedAt: row.finishedAt,
+        }
+      }
+    }
+
+    if (deadline !== undefined && Date.now() >= deadline) {
+      throw new TimeoutError(
+        `timed out after ${options.timeoutSeconds}s waiting for any review to finish (--any)`,
+      )
+    }
+    await sleep(options.pollIntervalMs)
+  }
+}
+
 /**
  * The finish, off the server's live stream — or `undefined`, meaning "ask the
  * store instead".
@@ -204,7 +286,7 @@ async function waitForOutcome(
 }
 
 /**
- * `review status`, `review wait` and `review close`.
+ * `review status`, `review wait`, `review close` and `review list`.
  *
  * `wait` tails the events table from its own process (realtime.md §CLI waiting) —
  * no server involved, so it works when the server is down, which is the whole
@@ -239,6 +321,17 @@ async function waitForOutcome(
  * `finished` and makes the export possible. It decides nothing: it refuses
  * unless he has finished *this* revision, every record is decided, and none of
  * them asked to be rewritten (`close-review.use-case.ts`).
+ *
+ * **`--any` and `list --finished` are the same two questions asked by an agent
+ * that owns no retrospective.** Both existing forms need an address, which a
+ * caller only has when it filed the revision itself; a watcher that did not had
+ * to poll `review status` per retrospective, and one arriving after the press
+ * had nowhere to look at all. `wait --any` is the forward question — tell me
+ * when the next round is put down, anywhere — and `list --finished` is the
+ * backward one, every round already put down and whether the AI closed it. They
+ * are deliberately not one command with a flag for time's direction: a wait that
+ * answered about the past would return instantly on any stage with history, and
+ * that is exactly the `--timeout 0` this form refuses.
  */
 export function registerReviewCommand(
   cli: Argv<GlobalOptions>,
@@ -250,11 +343,22 @@ export function registerReviewCommand(
     (yargs) =>
       yargs
         .positional('action', {
-          choices: ['status', 'wait', 'close'] as const,
+          choices: ['status', 'wait', 'close', 'list'] as const,
           describe: 'What to do',
         })
         .option('retro', { type: 'number', describe: 'Retrospective id' })
         .option('session', { type: 'string', describe: 'Session id or UUID (its active retro)' })
+        .option('any', {
+          type: 'boolean',
+          default: false,
+          describe:
+            'wait: return on the next finish anywhere on the stage; needs no --retro/--session',
+        })
+        .option('finished', {
+          type: 'boolean',
+          default: false,
+          describe: 'list: every retrospective whose latest revision the human has finished',
+        })
         .option('timeout', {
           type: 'number',
           describe: 'wait: give up after this many seconds and exit 7',
@@ -264,9 +368,119 @@ export function registerReviewCommand(
           default: false,
           describe:
             "wait: subscribe to the running server's live events; falls back to polling the store",
-        }),
+        })
+        .epilogue(
+          [
+            'FINISHED means the human pressed Finish on the LATEST revision — which',
+            'he cannot do while a record is undecided. A round he finished and the AI',
+            'answered with a new revision is not finished any more.',
+            '',
+            'wait --any blocks until any retrospective on this stage is finished. It',
+            'takes no --retro/--session, and only a finish landing AFTER the command',
+            'started counts: the window opens at the outbox head. So --timeout 0 is',
+            'refused (exit 2) instead of always answering "nothing" — for finishes',
+            'that already happened, run review list --finished.',
+            '',
+            '--follow subscribes when the server offers a stream for the whole stage;',
+            'today every stream is per retrospective, so --any polls the store at the',
+            'poll interval and reports via: "store".',
+            '',
+            'JSON:',
+            '  wait --any  {"retroId":N,"retro":n,"sessionId":N,"finishedAt":"<iso>"}',
+            '              plus "via" with --follow',
+            '  list        [{"retroId","retro","sessionId","claudeSession",',
+            '                "finishedAt","closed","counts"}] — oldest first',
+            '',
+            'Exit: 0 answered · 2 bad flags · 3 no such retrospective · 4 the close',
+            'was refused · 7 the wait timed out ({"error":{"code":"TIMEOUT"}}).',
+          ].join('\n'),
+        ),
     async (args) =>
       withContext(runtime, args, async (context) => {
+        const anywhere = args.any === true
+        const follow = args.follow === true
+
+        // Both flags belong to exactly one action, and a flag on the wrong one
+        // is a caller who thinks they asked for something else — answering the
+        // action they typed and dropping the flag would be the CLI guessing.
+        if (anywhere && args.action !== 'wait') {
+          throw new UsageError(
+            `--any is a form of \`review wait\`, not of \`review ${args.action}\``,
+          )
+        }
+        if (args.finished === true && args.action !== 'list') {
+          throw new UsageError(
+            `--finished is a form of \`review list\`, not of \`review ${args.action}\``,
+          )
+        }
+
+        if (args.action === 'list') {
+          if (args.finished !== true) {
+            throw new UsageError(
+              '`review list` needs --finished; that is the only list it offers today',
+            )
+          }
+
+          const { reviews } = await context.app.review.listFinished.execute({ actor: 'ai' })
+          context.output.result(
+            reviews.map((review) => ({
+              retroId: review.retroId,
+              retro: review.retroNumber,
+              sessionId: review.sessionId,
+              claudeSession: review.claudeSession,
+              finishedAt: review.finishedAt,
+              closed: review.closed,
+              counts: review.counts,
+            })),
+            () =>
+              reviews
+                .map(
+                  (review) =>
+                    `Retro ${review.retroId} (#${review.retroNumber} of session ${review.sessionId}) ` +
+                    `finished ${review.finishedAt}${review.closed ? ', closed' : ''} — ` +
+                    // The same three the `status` line prints, and for the same
+                    // reason: `pending` is zero on every row here by definition,
+                    // and `hold` is zero on every store written since
+                    // `r-hold-semantics`.
+                    `${review.counts.approved} approved, ${review.counts.declined} declined, ` +
+                    `${review.counts.revise} to revise`,
+                )
+                .join('\n') || 'No finished retrospectives.',
+          )
+          return
+        }
+
+        if (anywhere) {
+          if (args.retro !== undefined || args.session !== undefined) {
+            throw new UsageError(
+              '--any waits for whatever finishes next; name a retrospective or say --any, not both',
+            )
+          }
+          // `--timeout 0` asks "has anything finished yet?", and this form's
+          // window starts now — it would answer "no" to a question about the
+          // past, every time, correctly and uselessly.
+          if (args.timeout === 0) {
+            throw new UsageError(
+              '--any cannot answer --timeout 0: its window opens when the command starts. ' +
+                'Use `review list --finished` for the finishes that already happened',
+            )
+          }
+
+          const finish = await waitForAnyFinish(context, {
+            pollIntervalMs: runtime.pollIntervalMs,
+            timeoutSeconds: args.timeout,
+          })
+
+          context.output.result(
+            { ...finish, ...(follow ? { via: 'store' } : {}) },
+            () =>
+              `Retro ${finish.retroId} (#${finish.retro} of session ${finish.sessionId}) ` +
+              `finished at ${finish.finishedAt}` +
+              (follow ? ' (polled the store)' : ''),
+          )
+          return
+        }
+
         const retro = retroRef(args)
 
         if (args.action === 'status') {
@@ -310,7 +524,6 @@ export function registerReviewCommand(
           return
         }
 
-        const follow = args.follow === true
         const { outcome, via } = await waitForOutcome(context, retro, {
           pollIntervalMs: runtime.pollIntervalMs,
           timeoutSeconds: args.timeout,

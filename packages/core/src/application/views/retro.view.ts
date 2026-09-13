@@ -45,28 +45,45 @@ export function retroDisplayState(
 }
 
 /**
- * Which rounds have been finished, per retrospective — the cross-retro shape of
- * `finishedAtByRevision`, for the one read model that answers about every
- * retrospective at once (`list-retros.use-case.ts`).
- *
- * A set of revision numbers rather than a timestamp map: the dashboard asks
- * *whether* the round was put down, never *when*. The review page asks when,
- * and that is `revision.view.ts` — which reads one retrospective and keeps its
- * answer keyed the way a revision list needs it.
+ * When each round was finished, per retrospective — the cross-retro shape of
+ * `finishedAtByRevision`, for the read models that answer about every
+ * retrospective at once (`list-retros.use-case.ts`,
+ * `list-finished-reviews.use-case.ts`).
  *
  * Built in one pass over one query's rows, so a store with a hundred
  * retrospectives still costs the caller a single events read.
+ *
+ * The **earliest** press wins, for the reason `finishedAtByRevision` gives: a
+ * repeat press appends no second event (`finish-review.use-case.ts` absorbs it),
+ * and "when did he finish it" has one honest answer — the first time he said so.
  */
-export function finishedRoundsByRetro(
+export function finishedAtByRetro(
   events: readonly DomainEvent[],
-): ReadonlyMap<number, ReadonlySet<number>> {
-  const rounds = new Map<number, Set<number>>()
+): ReadonlyMap<number, ReadonlyMap<number, string>> {
+  const rounds = new Map<number, Map<number, string>>()
   for (const event of events) {
     if (event.name !== 'ReviewFinished') continue
     if (event.retroId === undefined || event.revisionN === undefined) continue
     const known = rounds.get(event.retroId)
-    if (known === undefined) rounds.set(event.retroId, new Set([event.revisionN]))
-    else known.add(event.revisionN)
+    if (known === undefined) rounds.set(event.retroId, new Map([[event.revisionN, event.at]]))
+    else if (!known.has(event.revisionN)) known.set(event.revisionN, event.at)
   }
   return rounds
+}
+
+/**
+ * Which rounds have been finished, per retrospective — the same fold, for the
+ * caller that asks *whether* rather than *when*.
+ *
+ * The dashboard row only needs the question `retroDisplayState` asks of it, and
+ * a set says exactly that much. It is derived from the map above rather than
+ * folded again, so the two cannot come to disagree about which rows count as a
+ * finish.
+ */
+export function finishedRoundsByRetro(
+  events: readonly DomainEvent[],
+): ReadonlyMap<number, ReadonlySet<number>> {
+  return new Map(
+    [...finishedAtByRetro(events)].map(([retroId, rounds]) => [retroId, new Set(rounds.keys())]),
+  )
 }

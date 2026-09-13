@@ -65,7 +65,7 @@ Retrospective (AI-facing; use --json)
   session <action>       create | get | list | messages
   note <action>          add | list
   revision <action>      create | get | list
-  review <action>        status | wait
+  review <action>        status | wait | close | list
   record <action>        list | get | history | resolve | reopen | archive | unarchive
                          | relate | unrelate
   comment <action>       add | list
@@ -298,14 +298,25 @@ Actions:
   status                Counts by state for the active revision; where the round stands
   wait                  Block until the human finishes his side of the round
   close                 Close the review to export — the AI's act, after the wait
+  list                  Read the stage's rounds; --finished is the only list today
 
 Options:
   --retro <id>          [or --session <id|uuid>]
+  --any                 wait: the next finish on ANY retrospective of this stage
+                        (no --retro/--session; refuses --timeout 0)
+  --finished            list: every retrospective whose LATEST revision is finished
   --timeout <seconds>   wait: exit 7 on timeout                      [default: none]
+  --follow              wait: subscribe to the server's live events; falls back to
+                        polling the store, and says which in `via`
   --json                status prints { retroId, state, finished, revision, counts }
                         wait prints the terminating event:
                         { kind: "ReviewFinished", retroId, revision, at }
+                        wait --any prints the round and whose it was:
+                        { retroId, retro, sessionId, finishedAt }
                         close prints { retroId, state, revision, finishedAt }
+                        list --finished prints an array, oldest first:
+                        [{ retroId, retro, sessionId, claudeSession, finishedAt,
+                           closed, counts }]
 ```
 
 **`status.state` is the displayed reading, and `status.finished` is not.** The
@@ -339,6 +350,35 @@ means `review close`.
 exit 4 unless the human finished *that* revision, every record is decided, and no
 record carries `revise`. It is what makes a retrospective `finished`, and so what
 makes `retroloop export` possible.
+
+**`--any` and `list --finished` are for the agent that owns no retrospective.**
+Both other forms need an address, which a caller only has when it filed the
+revision itself — so a watcher that did not was reduced to polling `review
+status` per retrospective, and one that started after the press had nowhere to
+look at all. `wait --any` is the forward question: block until the human finishes
+a round on **any** retrospective of this stage. `list --finished` is the backward
+one: every round already put down, `closed` saying whether the AI has closed it.
+
+**Finished means the latest revision.** Everywhere in this block: the human
+pressed Finish on the retrospective's newest revision, which he cannot do while a
+record is undecided. A round he finished and the AI answered with a new revision
+is not finished any more — `wait --any` steps over that event and `list
+--finished` does not list the retrospective, because it is back with him.
+
+**Only a finish after the command started counts**, and that is why the two are
+separate commands rather than one flag. `wait --retro` starts from the revision
+it is waiting on, to close the race between `revision create` and `review wait`;
+`--any` has no revision to start from, and starting from "the beginning" would
+return instantly on any stage with history. Its window opens at the outbox head,
+so `--timeout 0` is exit 2 rather than an answer of "nothing" — the question
+about the past is `list --finished`. `--follow` is accepted and reports
+`via: "store"`: the server streams per retrospective (`events.onRetro`) and there
+is no stream for the whole stage, so this form polls, and says so rather than
+degrading quietly.
+
+`retro` in both shapes is the "Retro #n" of the identity line — the
+retrospective's position within its session, not its id. `counts` in a `list`
+row is the object `review status` prints.
 
 ```
 retroloop record <action> [rid] [to]

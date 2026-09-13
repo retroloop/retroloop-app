@@ -10,6 +10,7 @@ import { describeFinishMessageRepositoryContract } from './finish-message.contra
 import { describeGetRecordByIdContract } from './get-record-by-id.contract'
 import { describeHoldRepositoryContract } from './hold.contract'
 import { describeListAllRecordsContract } from './list-all-records.contract'
+import { describeListFinishedReviewsContract } from './list-finished-reviews.contract'
 import { describeListRetrosContract } from './list-retros.contract'
 import { describeNoteRepositoryContract } from './note.contract'
 import { describeRecordIdRepositoryContract } from './record-id.contract'
@@ -59,6 +60,7 @@ describeRequestRepositoryContract('sqlite', makeStore)
 describeEventRepositoryContract('sqlite', makeStore)
 describeCursorRepositoryContract('sqlite', makeStore)
 describeListRetrosContract('sqlite', makeStore)
+describeListFinishedReviewsContract('sqlite', makeStore)
 describeListAllRecordsContract('sqlite', makeStore)
 describeGetRecordByIdContract('sqlite', makeStore)
 

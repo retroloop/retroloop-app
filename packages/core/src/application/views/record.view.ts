@@ -175,3 +175,25 @@ export function requireGlobalId(
 export function decisionsByRid(decisions: readonly Decision[]): ReadonlyMap<string, Decision> {
   return new Map(decisions.map((decision) => [decision.rid, decision]))
 }
+
+/**
+ * The same, for the read models that answer about **every** retrospective at
+ * once: one `decisions.listLatestForEachRetro()` read, split by retrospective
+ * and then keyed by `rid`.
+ *
+ * Grouped here rather than inside either caller because both fold the same query
+ * the same way — the dashboard's row and the stage's finished rounds — and a
+ * second copy of a grouping is a second place for "latest" to come to mean
+ * something slightly different.
+ */
+export function decisionsByRetro(
+  decisions: readonly Decision[],
+): ReadonlyMap<number, ReadonlyMap<string, Decision>> {
+  const rows = new Map<number, Decision[]>()
+  for (const decision of decisions) {
+    const known = rows.get(decision.retroId)
+    if (known === undefined) rows.set(decision.retroId, [decision])
+    else known.push(decision)
+  }
+  return new Map([...rows].map(([retroId, forRetro]) => [retroId, decisionsByRid(forRetro)]))
+}

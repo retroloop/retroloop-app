@@ -1,6 +1,7 @@
 import { afterAll, afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { type App, createApp } from '@retro/core'
 import { EXIT } from '#errors'
 import { DEFAULT_BIND } from '#server/address'
 import { type RunningServer, startServer } from '#server/serve'
@@ -500,5 +501,200 @@ describe('review wait --follow', () => {
     ])
 
     expect(result.stdout.join('\n')).toContain('live stream')
+  })
+})
+
+/**
+ * `review wait --any` — the same wait, addressed to the whole stage.
+ *
+ * The existing forms need a retrospective to wait on, which an agent only has
+ * when it filed the revision itself. A watcher that did not — a monitor, a
+ * session picking up somebody else's stage — had no way to ask "tell me when
+ * *anything* is finished", and polling `review status` per retrospective is the
+ * shape that question was taking instead.
+ *
+ * **Only a finish after the command started counts.** The per-retrospective form
+ * starts from the revision it is waiting on, because the finish it wants may
+ * already have happened; this one cannot borrow that reasoning — there is no
+ * revision to start from, and a stage's whole history would answer instantly and
+ * uselessly. So the cursor is the outbox head at startup, and the catch-up
+ * question is a different command: `review list --finished`.
+ *
+ * The human's half is taken **through the App**, because the CLI acts as `ai` and
+ * has no command for a decision or a finish.
+ */
+describe('review wait --any', () => {
+  let cli: Cli
+  let human: App
+  let sessionId: number
+  let retroId: number
+
+  beforeEach(async () => {
+    cli = createCli()
+    human = createApp(cli.store, { clock: cli.clock })
+    const session = await cli.run([
+      'session',
+      'create',
+      '--claude-session',
+      'uuid-any',
+      '--project',
+      'retro',
+      '--cwd',
+      '/tmp',
+      '--json',
+    ])
+    sessionId = session.jsonAs<{ sessionId: number }>().sessionId
+    const file = cli.file('revision.json', aRevisionDraft())
+    const created = await cli.run([
+      'revision',
+      'create',
+      '--session',
+      String(sessionId),
+      '--file',
+      file,
+      '--json',
+    ])
+    retroId = created.jsonAs<{ retroId: number }>().retroId
+  })
+
+  /** The human decides what is pending and presses Finish. */
+  async function finishRound(): Promise<void> {
+    const { records } = await human.records.list.execute({ actor: 'human', retro: { retroId } })
+    for (const view of records) {
+      if (view.decision.state !== 'pending') continue
+      await human.decisions.record.execute({
+        actor: 'human',
+        retro: { retroId },
+        rid: view.record.rid,
+        decision: { state: 'approved' },
+      })
+    }
+    await human.review.finish.execute({ actor: 'human', retro: { retroId } })
+  }
+
+  test('unblocks on a finish that lands while it is waiting, whoever it belongs to', async () => {
+    const waiting = cli.run(['review', 'wait', '--any', '--json'])
+    setTimeout(() => void finishRound(), 20)
+
+    const result = await waiting
+
+    expect(result.code).toBe(EXIT.ok)
+    expect(result.json()).toEqual({
+      retroId,
+      retro: 1,
+      sessionId,
+      finishedAt: '2026-08-23T09:00:00.000Z',
+    })
+  })
+
+  /**
+   * The contract's own edge: a finish that already happened is not news, and
+   * answering with it would make a wait started after a press indistinguishable
+   * from one that saw it. The catch-up read is the other command.
+   */
+  test('does not answer with a finish that happened before it started', async () => {
+    await finishRound()
+
+    const result = await cli.run(['review', 'wait', '--any', '--timeout', '1', '--json'])
+
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().code).toBe('TIMEOUT')
+  })
+
+  /**
+   * A `ReviewFinished` for a round the AI has already answered says nothing
+   * about where the review stands now — the retrospective went back to the
+   * human the moment revision 2 was filed. The cursor still has to move past it,
+   * or the wait would re-read the same event until its deadline.
+   */
+  test('skips a finish that belongs to a superseded revision', async () => {
+    await finishRound()
+    const second = cli.file('second.json', aRevisionDraft())
+    await cli.run([
+      'revision',
+      'create',
+      '--session',
+      String(sessionId),
+      '--file',
+      second,
+      '--json',
+    ])
+
+    const waiting = cli.run(['review', 'wait', '--any', '--timeout', '1', '--json'])
+    setTimeout(() => {
+      void cli.store.events.append({
+        name: 'ReviewFinished',
+        at: '2026-08-23T11:00:00.000Z',
+        sessionId: undefined,
+        retroId,
+        revisionN: 1,
+        rid: undefined,
+        data: {},
+      })
+    }, 20)
+
+    const result = await waiting
+
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().code).toBe('TIMEOUT')
+  })
+
+  test('answers in exactly four keys', async () => {
+    const waiting = cli.run(['review', 'wait', '--any', '--json'])
+    setTimeout(() => void finishRound(), 20)
+
+    expect(Object.keys((await waiting).json()).sort()).toEqual([
+      'finishedAt',
+      'retro',
+      'retroId',
+      'sessionId',
+    ])
+  })
+
+  /**
+   * `--follow` is accepted and says what it did. The server offers one stream
+   * per retrospective and there is no stream for the whole stage, so this form
+   * polls — and reports `store`, because a wait that quietly degraded is the bug
+   * retro 10 `r-monitor-not-realtime` was filed about.
+   */
+  test('polls the store under --follow, and says so', async () => {
+    const waiting = cli.run(['review', 'wait', '--any', '--follow', '--json'])
+    setTimeout(() => void finishRound(), 20)
+
+    const result = await waiting
+
+    expect(result.code).toBe(EXIT.ok)
+    expect(result.jsonAs<{ via: string }>().via).toBe('store')
+  })
+
+  test('names the retrospective, its ordinal and its session for a reader', async () => {
+    const waiting = cli.run(['review', 'wait', '--any'])
+    setTimeout(() => void finishRound(), 20)
+
+    expect((await waiting).stdout).toEqual([
+      `Retro ${retroId} (#1 of session ${sessionId}) finished at 2026-08-23T09:00:00.000Z`,
+    ])
+  })
+
+  /**
+   * Every way of asking for two things at once. `--any` means "whatever
+   * finishes next", so an address beside it is a caller who thinks they asked
+   * for something narrower — and `--timeout 0` is "has anything finished yet?",
+   * which this form cannot answer at all: its window starts now and is empty by
+   * construction. Refusing beats answering "no" to a question about the past.
+   */
+  test.each([
+    [['review', 'wait', '--any', '--retro', '1']],
+    [['review', 'wait', '--any', '--session', '1']],
+    [['review', 'wait', '--any', '--timeout', '0']],
+    [['review', 'status', '--any', '--retro', '1']],
+    [['review', 'close', '--any', '--retro', '1']],
+    [['review', 'list', '--any', '--finished']],
+  ])('is exit 2 for %p', async (argv) => {
+    const result = await cli.run([...argv, '--json'])
+
+    expect(result.code).toBe(EXIT.usage)
+    expect(result.error().code).toBe('USAGE')
+    expect(result.stdout).toBeEmpty()
   })
 })

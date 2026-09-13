@@ -30,6 +30,7 @@ import { ListRetrosUseCase } from '#application/use-cases/retros/list-retros.use
 import { CloseReviewUseCase } from '#application/use-cases/review/close-review.use-case'
 import { FinishReviewUseCase } from '#application/use-cases/review/finish-review.use-case'
 import { GetReviewStatusUseCase } from '#application/use-cases/review/get-review-status.use-case'
+import { ListFinishedReviewsUseCase } from '#application/use-cases/review/list-finished-reviews.use-case'
 import { CreateRevisionUseCase } from '#application/use-cases/revisions/create-revision.use-case'
 import { GetRevisionUseCase } from '#application/use-cases/revisions/get-revision.use-case'
 import { GetRevisionFeedbackUseCase } from '#application/use-cases/revisions/get-revision-feedback.use-case'
@@ -193,6 +194,14 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
     },
     review: {
       status: new GetReviewStatusUseCase(store),
+      /**
+       * Every round the human has already put down, across the whole stage —
+       * for the agent that was not watching when he pressed the button.
+       * `status` answers about one retrospective and `wait` only about a finish
+       * that lands while it blocks; this is the catch-up read, addressed to
+       * nothing.
+       */
+      listFinished: new ListFinishedReviewsUseCase(store),
       finish: new FinishReviewUseCase(store, clock),
       /**
        * The AI's half of the loop, and the only act on this list it may take:

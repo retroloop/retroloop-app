@@ -9,6 +9,7 @@ import { describeFinishMessageRepositoryContract } from './finish-message.contra
 import { describeGetRecordByIdContract } from './get-record-by-id.contract'
 import { describeHoldRepositoryContract } from './hold.contract'
 import { describeListAllRecordsContract } from './list-all-records.contract'
+import { describeListFinishedReviewsContract } from './list-finished-reviews.contract'
 import { describeListRetrosContract } from './list-retros.contract'
 import { describeNoteRepositoryContract } from './note.contract'
 import { describeRecordIdRepositoryContract } from './record-id.contract'
@@ -30,11 +31,12 @@ import { describeThreadResolutionRepositoryContract } from './thread-resolution.
  * is the only way "the memory adapter behaves like the real thing" can be a fact
  * rather than a hope.
  *
- * The last three suites are read models rather than repositories: `retros.list`
- * folds four reads into a dashboard row, `records.listAll` folds six into a flat
- * one, and `records.byId` folds six more into a record page and its timeline.
- * The fold is where the two adapters would be most likely to disagree without
- * anyone noticing.
+ * The last four suites are read models rather than repositories: `retros.list`
+ * folds four reads into a dashboard row, `review.listFinished` folds five into
+ * the stage's finished rounds, `records.listAll` folds six into a flat row, and
+ * `records.byId` folds six more into a record page and its timeline. The fold is
+ * where the two adapters would be most likely to disagree without anyone
+ * noticing.
  */
 const makeStore: StoreFactory = async () => createMemoryStore()
 
@@ -58,5 +60,6 @@ describeRequestRepositoryContract('memory', makeStore)
 describeEventRepositoryContract('memory', makeStore)
 describeCursorRepositoryContract('memory', makeStore)
 describeListRetrosContract('memory', makeStore)
+describeListFinishedReviewsContract('memory', makeStore)
 describeListAllRecordsContract('memory', makeStore)
 describeGetRecordByIdContract('memory', makeStore)

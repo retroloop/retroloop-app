@@ -228,6 +228,12 @@ export {
   type ReviewCounts,
 } from '#application/use-cases/review/get-review-status.use-case'
 export {
+  type FinishedReviewRow,
+  type ListFinishedReviewsInput,
+  type ListFinishedReviewsOutput,
+  ListFinishedReviewsUseCase,
+} from '#application/use-cases/review/list-finished-reviews.use-case'
+export {
   type CreateRevisionInput,
   type CreateRevisionOutput,
   CreateRevisionUseCase,

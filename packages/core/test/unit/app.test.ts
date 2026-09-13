@@ -75,6 +75,10 @@ describe('createApp', () => {
       'retros.list',
       'review.close',
       'review.finish',
+      // The stage's finished rounds, for the agent that was not watching when
+      // the human pressed the button — `status` answers about one retrospective
+      // and the CLI's wait only about a finish that lands while it blocks.
+      'review.listFinished',
       'review.status',
       'revisions.create',
       'revisions.feedback',

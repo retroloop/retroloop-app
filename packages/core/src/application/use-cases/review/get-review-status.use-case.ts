@@ -1,10 +1,9 @@
 import type { Store } from '#application/ports/store.port'
 import { decisionsByRid } from '#application/views/record.view'
 import { type RetroDisplayState, retroDisplayState } from '#application/views/retro.view'
+import { countReviewRecords, type ReviewCounts } from '#application/views/review.view'
 import { NotFoundError } from '#domain/errors/not-found.error'
 import type { Actor } from '#domain/models/actor.model'
-import type { DecisionState } from '#domain/models/decision.model'
-import { effectiveDecision } from '#domain/services/record-state.service'
 import {
   describeRetroRef,
   type RetroRef,
@@ -12,25 +11,12 @@ import {
 } from '#domain/services/reference.service'
 
 /**
- * How far the review has got.
- *
- * The verdict buckets are `Record<DecisionState, number>` rather than a
- * list, so they cannot fall out of step with the states a decision can be in —
- * `revise` among them since retro 4 `r-verdict-revise`, which is how the AI
- * reading this after a finish sees that a record was sent back for a rewrite —
- * `hold` among them, which is the **frozen legacy verdict** bucket: nothing can
- * write one any more (`r-hold-semantics`), and every store that never held one
- * reads zero there forever. It stays because a stored value is never rewritten
- * and the sum has to keep adding up: pending + approved + declined + hold =
- * total.
- *
- * There was a `held` count beside them for one session, over the lifecycle flag
- * `r-hold-semantics` introduced. Retro 4 `r-remove-hold` removed the feature and
- * this count with it, and the verdict buckets are the whole answer again.
+ * The counts this command answers in, and the fold that produces them, live in
+ * `review.view.ts` — `review.listFinished` reports the same object for every
+ * finished round on the stage, and the two must not drift. Re-exported here
+ * because this is the path adapters have always imported it by.
  */
-export type ReviewCounts = Record<DecisionState, number> & {
-  readonly total: number
-}
+export type { ReviewCounts }
 
 export type GetReviewStatusInput = {
   readonly actor: Actor
@@ -85,12 +71,6 @@ export class GetReviewStatusUseCase {
       names: ['ReviewFinished'],
     })
 
-    const counts = { pending: 0, approved: 0, declined: 0, revise: 0, hold: 0, total: 0 }
-    for (const record of revision?.records ?? []) {
-      counts[effectiveDecision(record, revision?.n ?? 0, latest.get(record.rid)).state] += 1
-      counts.total += 1
-    }
-
     return {
       retroId: retrospective.id,
       state: retroDisplayState(
@@ -99,7 +79,7 @@ export class GetReviewStatusUseCase {
       ),
       finished: retrospective.state === 'finished',
       revisionN: revision?.n,
-      counts,
+      counts: countReviewRecords(revision, latest),
     }
   }
 }
