@@ -28,6 +28,7 @@ import { migration as createSettings } from '#infrastructure/sqlite/migrations/2
 import { migration as createRecordLabels } from '#infrastructure/sqlite/migrations/20260901090300_create_record_labels'
 import { migration as createRecordAttributeValues } from '#infrastructure/sqlite/migrations/20260901090400_create_record_attribute_values'
 import { migration as createRecordRelations } from '#infrastructure/sqlite/migrations/20260901090500_create_record_relations'
+import { migration as createRecordClaims } from '#infrastructure/sqlite/migrations/20260913090000_create_record_claims'
 
 /**
  * The static registry (migrations.md).
@@ -76,4 +77,5 @@ export const MIGRATIONS: readonly Migration[] = [
   // `.to_id` are both foreign keys into `record_ids`, which is minted well above
   // this line.
   createRecordRelations,
+  createRecordClaims,
 ]

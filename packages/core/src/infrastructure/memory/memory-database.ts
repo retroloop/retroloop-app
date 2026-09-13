@@ -9,6 +9,7 @@ import type { Hold } from '#domain/models/hold.model'
 import type { LabelDefinition } from '#domain/models/label.model'
 import type { Note } from '#domain/models/note.model'
 import type { RecordAttributeValueEntry } from '#domain/models/record-attribute-value.model'
+import type { RecordClaimEntry } from '#domain/models/record-claim.model'
 import type { RecordId } from '#domain/models/record-id.model'
 import type { RecordLabelEntry } from '#domain/models/record-label.model'
 import type { RecordLifecycleEntry } from '#domain/models/record-lifecycle.model'
@@ -49,6 +50,13 @@ export type MemoryTables = {
    * (`record-relation.model.ts`).
    */
   recordRelations: RecordRelationEntry[]
+  /**
+   * Who is holding which record right now — the in-progress marker, beside the
+   * lifecycle axis rather than on it (`record-claim.model.ts`). Append-only like
+   * the entries above it: giving a record back is a row, so the history of who
+   * had it when survives.
+   */
+  recordClaims: RecordClaimEntry[]
   /** The global settings, versioned — one key today, and it is a guarantee. */
   settings: SettingEntry[]
   notes: Note[]
@@ -78,6 +86,7 @@ function emptyTables(): MemoryTables {
     recordLabels: [],
     recordAttributeValues: [],
     recordRelations: [],
+    recordClaims: [],
     settings: [],
     notes: [],
     annotations: [],

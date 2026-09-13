@@ -1,4 +1,10 @@
-import type { RecordLifecycleStatus } from '@retro/core'
+import {
+  type DecisionState,
+  LANE_STATES,
+  type LaneRecordRow,
+  type LaneState,
+  type RecordLifecycleStatus,
+} from '@retro/core'
 import type { Argv } from 'yargs'
 import { retroRef } from '#args'
 import { UsageError } from '#errors'
@@ -26,19 +32,41 @@ const DONE_OF_ACTION: Record<LifecycleAction, string> = {
  * A `#globalId` off the command line.
  *
  * Refused rather than coerced, and the message names the shape it wanted: the
- * commonest mistake here is reaching for a rid, because every other act on this
- * command takes one — so the refusal has to say which of the two names a
- * relation uses, and why.
+ * commonest mistake here is reaching for a rid, because the four acts that write
+ * a record's own lifecycle take one — so the refusal has to say which of the two
+ * names this act uses, and why.
  */
-function globalId(value: string | undefined, which: string): number {
+function globalId(value: string | undefined, action: string, which?: string): number {
   const parsed = Number(value)
   if (value === undefined || !Number.isInteger(parsed) || parsed <= 0) {
+    const whose = which === undefined ? 'the' : `the ${which}`
     throw new UsageError(
-      `record relate needs the ${which} record's #globalId — the number \`record list\` puts first, ` +
-        'not a rid: a relation names two records, and (retro, rid) is the address of one',
+      `record ${action} needs ${whose} record's #globalId — the number \`record list\` puts first, ` +
+        'not a rid: a record has one number for the whole ledger, and (retro, rid) is its address inside one',
     )
   }
   return parsed
+}
+
+/** The three lane words a verdict cannot be, and the plain listing has no way to answer for. */
+const LANE_ONLY_STATES: readonly LaneState[] = ['in-progress', 'resolved', 'archived']
+
+/** The acts addressed by a global number rather than by a rid. */
+type LaneAction = 'queue' | 'get' | 'relations' | 'claim' | 'unclaim'
+
+/** Everything a lane act may be handed, so a guard can refuse what it may not. */
+type RecordArgs = {
+  readonly rid?: string
+  readonly to?: string
+  readonly how?: string
+  readonly retro?: number
+  readonly session?: string
+  readonly revision?: number
+  readonly state?: string
+  readonly text?: string
+  readonly all?: boolean
+  readonly ref?: readonly string[]
+  readonly note?: string
 }
 
 /**
@@ -131,12 +159,17 @@ export function registerRecordCommand(
 ): Argv<GlobalOptions> {
   return cli.command(
     'record <action> [rid] [to]',
-    'Inspect a revision’s records, mark one resolved after fixing it, or relate two',
+    'Read the queue, look a record up, mark one resolved after fixing it, or relate two',
     (yargs) =>
       yargs
         .positional('action', {
           choices: [
             'list',
+            'queue',
+            'get',
+            'relations',
+            'claim',
+            'unclaim',
             'resolve',
             'reopen',
             'archive',
@@ -149,7 +182,7 @@ export function registerRecordCommand(
         .positional('rid', {
           type: 'string',
           describe:
-            'resolve/reopen/archive/unarchive: which record, e.g. r-stale-lock · relate/unrelate: the #globalId the relation is authored FROM',
+            'resolve/reopen/archive/unarchive: which record, e.g. r-stale-lock · get/relations/claim/unclaim: its #globalId · relate/unrelate: the #globalId the relation is authored FROM',
         })
         .positional('to', {
           type: 'string',
@@ -163,9 +196,20 @@ export function registerRecordCommand(
         .option('retro', { type: 'number', describe: 'Retrospective id' })
         .option('session', { type: 'string', describe: 'Session id or UUID (its active retro)' })
         .option('revision', { type: 'number', describe: 'list: revision number [default: latest]' })
+        .option('all', {
+          type: 'boolean',
+          describe:
+            'list: every record of every retrospective instead of one revision’s — refuses --retro/--session/--revision, and is what --text and the lane states need',
+        })
+        .option('text', {
+          type: 'string',
+          describe:
+            'list --all: case-insensitive substring over the title, the slug, the problem and the root cause',
+        })
         .option('state', {
-          choices: ['pending', 'approved', 'declined', 'revise', 'hold'] as const,
-          describe: 'list: only records in this state (`hold` is a pre-split verdict)',
+          choices: [...LANE_STATES],
+          describe:
+            'list: only records in this state (`hold` is a pre-split verdict; in-progress/resolved/archived need --all)',
         })
         .option('ref', {
           type: 'string',
@@ -176,7 +220,8 @@ export function registerRecordCommand(
         .option('note', {
           type: 'string',
           describe: 'resolve/reopen/archive: one line on why, offered and never demanded',
-        }),
+        })
+        .epilogue(LANE_HELP),
     async (args) =>
       withContext(runtime, args, async (context) => {
         /**
@@ -194,15 +239,46 @@ export function registerRecordCommand(
           return
         }
 
+        if (action === 'queue' || action === 'get' || action === 'relations') {
+          await readLane(context, args, action)
+          return
+        }
+
+        if (action === 'claim' || action === 'unclaim') {
+          await claimRecord(context, args, action)
+          return
+        }
+
+        if (action === 'list' && args.all === true) {
+          await listEverything(context, args)
+          return
+        }
+
         const retro = retroRef(args)
 
         if (action === 'list') {
+          // The three lane words are a different question, and the plain listing
+          // has no way to answer them: they are folded from the lifecycle and the
+          // claim, which a revision listing carries per record but does not
+          // filter on. Refused with the flag that does answer, rather than
+          // silently matching nothing.
+          if (LANE_ONLY_STATES.includes(args.state as LaneState)) {
+            throw new UsageError(
+              `record list --state ${args.state} needs --all: it is a lane state rather than a verdict, ` +
+                'and the lane reads across every retrospective',
+            )
+          }
+          if (args.text !== undefined) {
+            throw new UsageError(
+              'record list --text needs --all: a search over one revision’s records is a listing you can read',
+            )
+          }
           // Refused rather than ignored: `record list r-stale-lock` is somebody
           // expecting a filter, and answering with the whole revision would look
           // like the filter matched everything.
           if (args.rid !== undefined) {
             throw new UsageError(
-              'record list takes no record id; it lists the whole revision. Use `record get`-style reads via `revision get`.',
+              'record list takes no record id; it lists the whole revision. `record get <#globalId>` reads one.',
             )
           }
 
@@ -210,7 +286,10 @@ export function registerRecordCommand(
             actor: 'ai',
             retro,
             revision: args.revision,
-            state: args.state,
+            // Narrowed rather than cast: the option now offers the lane's whole
+            // vocabulary, and the three words this listing cannot answer for were
+            // refused above.
+            state: args.state as DecisionState | undefined,
           })
 
           context.output.result(
@@ -337,6 +416,13 @@ export function registerRecordCommand(
             `record ${action} takes no --revision or --state: a record's lifecycle belongs to the record, not to a draft of it`,
           )
         }
+        // The two the lane listing reads with. Refused here on the standing
+        // above: an act on one record has nothing to narrow.
+        if (args.all === true || args.text !== undefined) {
+          throw new UsageError(
+            `record ${action} takes no --all or --text: they narrow a listing, and this acts on one record`,
+          )
+        }
 
         const result = await context.app.records.setLifecycle.execute({
           actor: 'ai',
@@ -429,8 +515,8 @@ async function relateRecords(
     )
   }
 
-  const fromId = globalId(args.rid, 'first')
-  const toId = globalId(args.to, 'second')
+  const fromId = globalId(args.rid, action, 'first')
+  const toId = globalId(args.to, action, 'second')
 
   const result = await context.app.records.relate.execute({
     actor: 'ai',
@@ -462,4 +548,474 @@ async function relateRecords(
         ? `Related #${result.fromId} → #${result.toId} (v${result.version}) — ${args.how}`
         : `Un-related #${result.fromId} → #${result.toId} (v${result.version})`,
   )
+}
+
+/**
+ * **`--help` is the contract** (cli.md's AUTHORITY note), so the lane's rules
+ * are stated here rather than only in a design document: what each act takes,
+ * what it answers with, and what it exits.
+ */
+const LANE_HELP = `The lane — the work, and the marker on it
+
+  record queue                 Every APPROVED, UNRESOLVED, not-archived record of
+                               every retrospective the human has FINISHED, oldest
+                               first. Takes no --retro/--session/--revision.
+  record get <#globalId>       One record in the same shape, plus "retrospective".
+  record relations <#globalId> Every relation in force on it, both directions,
+                               each with the far record's state and references.
+  record list --all            Every record of every retrospective, any state.
+                               --state takes the lane words too; --text searches
+                               the title, slug, problem and root cause.
+  record claim <#globalId>     Say you are working on it. Exit 4 if somebody
+                               already is, or if the record is not open.
+  record unclaim <#globalId>   Give it back. Exit 4 if nobody is holding it.
+                               A resolve clears the claim on its own.
+
+  get/relations/claim/unclaim take the #globalId — the number \`record list\` puts
+  first — not a rid, and refuse --retro/--session/--revision/--state/--ref/--note/--how.
+
+  --json shapes
+    queue, list --all  a bare array of rows; get, one row plus "retrospective"
+    row                { recordId, retroId, retro, sessionId, title, slug, problem,
+                         rootCause { whatHappened, whys, root }, ownerWords,
+                         selectedSolution { index, level, title, body, footprint },
+                         involvement, relations [{ recordId, kind, direction }],
+                         claim null | { claimedAt, actor }, resolved,
+                         lifecycle { state, resolvedAt, ref, refs, claimedAt } }
+    retrospective      { retroId, retro, sessionId, claudeSession, cwd, finishedAt, closed }
+    relations          [{ recordId, retroId, retro, slug, title, kind, direction,
+                          state, resolvedAt, ref, refs }]
+    claim/unclaim      { recordId, retroId, slug, version, claim }
+
+  Exit codes: 0 ok · 2 usage · 3 no such record · 4 conflict (already claimed,
+  not claimed, or not open) · 5 forbidden actor · 7 server.`
+
+/**
+ * `record queue`, `record get` and `record relations` — **the reading half of
+ * the lane**, all three off one read model (`list-lane-records.use-case.ts`).
+ *
+ * They are together because they are the same row asked three ways, and because
+ * the guards below are identical for all three: each is addressed by a global
+ * number and none of them lives inside a retrospective.
+ */
+async function readLane(
+  context: CliContext,
+  args: RecordArgs,
+  action: 'queue' | 'get' | 'relations',
+): Promise<void> {
+  refuseLaneOptions(action, args)
+
+  if (action === 'queue') {
+    if (args.rid !== undefined) {
+      throw new UsageError(
+        'record queue takes no record id: it is the whole queue, and `record get <#globalId>` reads one record',
+      )
+    }
+
+    const { records } = await context.app.records.lane.execute({ actor: 'ai', scope: 'queue' })
+    printRows(context, records)
+    return
+  }
+
+  // The second positional belongs to the relation pair alone, on `record list`'s
+  // standing: a second argument is somebody expecting it to mean something.
+  if (args.to !== undefined) {
+    throw new UsageError(
+      `record ${action} takes one record id; a second one is only for relate/unrelate, which name two records`,
+    )
+  }
+
+  const id = globalId(args.rid, action)
+  const row = await oneRecord(context, id)
+
+  if (action === 'get') {
+    context.output.result(
+      {
+        ...laneRowJson(row),
+        /**
+         * Where the record came from, which a queue row does not carry and a
+         * reader of one record always wants: this is the block that says whether
+         * the round is closed and when the human put it down, so an agent can
+         * tell "he finished this an hour ago" from "he finished it in April".
+         */
+        retrospective: {
+          retroId: row.retroId,
+          retro: row.retroNumber,
+          sessionId: row.sessionId,
+          claudeSession: row.claudeSession,
+          cwd: row.cwd,
+          finishedAt: row.review.finishedAt ?? null,
+          closed: row.review.closed,
+        },
+      },
+      () =>
+        [
+          laneRowLine(row),
+          `    Solution ${row.selectedSolution.index} — ${row.selectedSolution.title}`,
+          ...row.ownerWords.map((words) => `    “${words}”`),
+        ].join('\n'),
+    )
+    return
+  }
+
+  await printRelations(context, row)
+}
+
+/**
+ * `record relations <#globalId>` — one record's history, as the lane needs it.
+ *
+ * Each line names the **other** record: its number and pair to go and read it
+ * with, its title so a person knows what is at the end of the line, and where it
+ * now stands — because the question this answers is *"has this been dealt with
+ * before, and what came of it?"*
+ *
+ * **A far record a later draft withdrew is still listed**, with its rid for a
+ * title and `null` where its state would be. The row was written about a record
+ * that existed, and dropping the line would be this command inferring something
+ * from an absence (`relation.view.ts` §RecordRelationDetail).
+ */
+async function printRelations(context: CliContext, row: LaneRecordRow): Promise<void> {
+  /**
+   * The far ends, resolved against the whole lane — one more build of a listing
+   * this store answers in one pass, and only when the record has relations at
+   * all. The alternative is a read per far end, which is what `records.byId`
+   * does for a page holding one record; here the rows are already the shape the
+   * answer needs.
+   */
+  const everything =
+    row.relations.length === 0
+      ? []
+      : (await context.app.records.lane.execute({ actor: 'ai', scope: 'all' })).records
+  const byId = new Map(everything.map((candidate) => [candidate.recordId, candidate]))
+  const retroNumbers = new Map(
+    everything.map((candidate) => [candidate.retroId, candidate.retroNumber]),
+  )
+
+  const relations = row.relations.map((relation) => {
+    const far = byId.get(relation.globalId)
+    const resolved = far?.lifecycle.status === 'resolved'
+    return {
+      recordId: relation.globalId,
+      retroId: relation.retroId,
+      retro: far?.retroNumber ?? requireRetroNumber(retroNumbers, relation.retroId),
+      slug: relation.rid,
+      // The far record's title, or its rid — the record's own name, authored by
+      // the AI and the one thing a withdrawn record still has.
+      title: far?.title ?? relation.rid,
+      kind: relation.how,
+      direction: relation.direction,
+      state: far?.laneState ?? null,
+      resolvedAt: resolved ? (far?.lifecycle.at ?? null) : null,
+      ref: far?.lifecycle.refs[0] ?? null,
+      refs: [...(far?.lifecycle.refs ?? [])],
+    }
+  })
+
+  context.output.result(
+    relations,
+    () =>
+      relations
+        .map(
+          (relation) =>
+            `#${relation.recordId} [${relation.state === null ? 'withdrawn' : farState(relation.state, relation.ref)}] ` +
+            `${relation.title} — ${relation.kind} (${relation.direction})`,
+        )
+        .join('\n') || 'No relations.',
+  )
+}
+
+/** `resolved abc123` where there is a reference to cite, and the bare word otherwise. */
+function farState(state: string, ref: string | null): string {
+  return state === 'resolved' && ref !== null ? `resolved ${ref}` : state
+}
+
+/**
+ * The "Retro #n" of a retrospective nothing on the lane came from.
+ *
+ * Unreachable: a relation names a **minted** record, a minted record belongs to a
+ * retrospective, and every retrospective's latest revision carries at least one
+ * record — so the retrospective is on the lane and so is its number. It is
+ * checked rather than defaulted for `requireGlobalId`'s reason: saying which
+ * retrospective has no number beats printing `#NaN` beside a real record.
+ */
+function requireRetroNumber(numbers: ReadonlyMap<number, number>, retroId: number): number {
+  const number = numbers.get(retroId)
+  if (number === undefined) {
+    throw new Error(`retrospective ${retroId} is at the far end of a relation but has no records`)
+  }
+  return number
+}
+
+/**
+ * `record claim` / `record unclaim` — **the AI saying it is working on
+ * something, and saying it has stopped** (`record-claim.model.ts`).
+ *
+ * It is the one write here that is not about the record's outcome: a claim is
+ * true for an afternoon, it says nothing about whether the work was any good,
+ * and the lifecycle axis beside it never moves. What it buys is the thing a
+ * queue cannot have without it — two agents reading the same queue a minute
+ * apart do not both pick up the same record, because the second one is refused
+ * with exit 4.
+ *
+ * **A resolve clears it**, in the same unit of work
+ * (`set-record-lifecycle.use-case.ts`), so the ordinary path is claim, fix,
+ * `record resolve` — and `unclaim` is for the case that is honest and awkward:
+ * the work was started and put down.
+ *
+ * Addressed by the global number like `relate`, because the queue hands out
+ * numbers and nothing else.
+ */
+async function claimRecord(
+  context: CliContext,
+  args: RecordArgs,
+  action: 'claim' | 'unclaim',
+): Promise<void> {
+  refuseLaneOptions(action, args)
+
+  if (args.to !== undefined) {
+    throw new UsageError(
+      `record ${action} takes one record id; a second one is only for relate/unrelate, which name two records`,
+    )
+  }
+
+  const result = await context.app.records.claim.execute({
+    actor: 'ai',
+    id: globalId(args.rid, action),
+    claimed: action === 'claim',
+  })
+
+  context.output.result(
+    {
+      recordId: result.recordId,
+      retroId: result.retroId,
+      slug: result.rid,
+      version: result.version,
+      // Where the record stands now, not the row just written — the shape
+      // `record resolve` answers in, so one read serves both.
+      claim:
+        result.claim === undefined
+          ? null
+          : { claimedAt: result.claim.claimedAt, actor: result.claim.actor },
+    },
+    () =>
+      `${action === 'claim' ? 'Claimed' : 'Released'} #${result.recordId} ${result.rid} ` +
+      `in retro ${result.retroId} (v${result.version})`,
+  )
+}
+
+/**
+ * `record list --all` — **every record of every retrospective**, the history deep
+ * dive (item 6).
+ *
+ * A different command wearing the same word, and deliberately so: the plain
+ * `record list` answers about one revision of one retrospective and is what the
+ * review loop reads; this answers about the whole store and is what somebody
+ * searching for *"have we seen this before"* reads. They share a word because
+ * they share a question — "what records are there" — and they share nothing
+ * else, which is why `--all` refuses every argument that names one retrospective
+ * rather than quietly ignoring it.
+ */
+async function listEverything(context: CliContext, args: RecordArgs): Promise<void> {
+  if (args.retro !== undefined || args.session !== undefined) {
+    throw new UsageError(
+      'record list --all takes no --retro or --session: it reads every retrospective, ' +
+        'which is the whole of what --all means',
+    )
+  }
+  if (args.revision !== undefined) {
+    throw new UsageError(
+      'record list --all takes no --revision: it reads each retrospective’s latest revision, ' +
+        'which is the one every write acts on',
+    )
+  }
+  if (args.rid !== undefined || args.to !== undefined) {
+    throw new UsageError(
+      'record list --all takes no record id; `record get <#globalId>` reads one record',
+    )
+  }
+  if (args.ref !== undefined || args.note !== undefined || args.how !== undefined) {
+    throw new UsageError(
+      'record list --all takes no --ref, --note or --how: those are words a write carries, and this reads',
+    )
+  }
+
+  const { records } = await context.app.records.lane.execute({
+    actor: 'ai',
+    scope: 'all',
+    state: args.state as LaneState | undefined,
+    text: args.text,
+  })
+  printRows(context, records)
+}
+
+/** One record by its global number, or a `NotFoundError` the exit map turns into 3. */
+async function oneRecord(context: CliContext, id: number): Promise<LaneRecordRow> {
+  const { records } = await context.app.records.lane.execute({
+    actor: 'ai',
+    scope: 'all',
+    recordId: id,
+  })
+  const row = records[0]
+  if (row === undefined) {
+    // Unreachable: the use case answers `NotFoundError` rather than an empty
+    // list when the number names no record of a latest revision.
+    throw new Error(`record #${id} resolved to no row`)
+  }
+  return row
+}
+
+/**
+ * Everything a lane act refuses, in one place.
+ *
+ * Every one of these is somebody reaching for an argument from a neighbouring
+ * act — `--retro` from `record list`, `--ref` from `record resolve`, `--how`
+ * from `record relate` — and an ignored argument answers as if it had meant
+ * something. The messages say what the act is addressed by instead, because the
+ * refusal is the only place the difference gets taught.
+ */
+function refuseLaneOptions(action: LaneAction, args: RecordArgs): void {
+  if (args.retro !== undefined || args.session !== undefined) {
+    throw new UsageError(
+      action === 'queue'
+        ? 'record queue takes no --retro or --session: the queue is every finished retrospective’s ' +
+            'approved work, which is what makes it a queue rather than a listing'
+        : `record ${action} takes no --retro or --session: a #globalId names a record on its own, ` +
+            'and the lane deliberately crosses retrospectives',
+    )
+  }
+  if (args.revision !== undefined || args.state !== undefined) {
+    throw new UsageError(
+      `record ${action} takes no --revision or --state: the lane reads each retrospective’s latest ` +
+        'revision, and narrowing belongs to `record list --all`',
+    )
+  }
+  if (args.ref !== undefined || args.note !== undefined || args.how !== undefined) {
+    throw new UsageError(
+      `record ${action} takes no --ref, --note or --how: those are words a write carries, and ` +
+        'a claim carries only who took the record and when',
+    )
+  }
+  if (args.all === true || args.text !== undefined) {
+    throw new UsageError(
+      `record ${action} takes no --all or --text: they belong to \`record list\`, which is the ` +
+        'act that narrows a listing',
+    )
+  }
+}
+
+/** The rows of `record queue` and `record list --all` — a bare array, empty when nothing qualifies. */
+function printRows(context: CliContext, rows: readonly LaneRecordRow[]): void {
+  context.output.result(
+    rows.map(laneRowJson),
+    () => rows.map(laneRowLine).join('\n') || 'No records.',
+  )
+}
+
+/**
+ * **One row shape for `record queue`, `record list --all` and `record get`.**
+ *
+ * Three commands and one projection, because they are the same record asked for
+ * three ways: a queue is a filter, `get` is a filter of one, and `--all` is no
+ * filter at all. Two shapes that drifted would mean an agent parsing the queue
+ * and an agent parsing `get` disagreeing about the record they are both holding.
+ *
+ * `undefined` becomes `null` here rather than vanishing, on the standing
+ * `views.ts` sets: a key that comes and goes is a shape a script has to guess at.
+ */
+function laneRowJson(row: LaneRecordRow) {
+  return {
+    /** The number every lane act takes, and the only single-column handle a record has. */
+    recordId: row.recordId,
+    retroId: row.retroId,
+    /** Its retrospective's place in its session — the "Retro #n" of the identity line. */
+    retro: row.retroNumber,
+    sessionId: row.sessionId,
+    title: row.title,
+    /** The record's own name — the rid, prefix untouched, which every write is addressed by. */
+    slug: row.rid,
+    problem: row.problem,
+    rootCause: {
+      whatHappened: row.rootCause.whatHappened,
+      whys: [...row.rootCause.whys],
+      root: row.rootCause.root,
+    },
+    /**
+     * What the human said about this record: the note he wrote with the verdict
+     * first, then his comments, oldest first. It is the field that lets an agent
+     * act on a queue row without opening the review page.
+     */
+    ownerWords: [...row.ownerWords],
+    /** The fix in effect, with the files it touches as a list rather than a paragraph. */
+    selectedSolution: {
+      index: row.selectedSolution.index,
+      level: row.selectedSolution.level,
+      title: row.selectedSolution.title,
+      body: row.selectedSolution.body,
+      footprint: [...row.selectedSolution.footprint],
+    },
+    /** How much of the human the fix needs — the one field that decides whether to start. */
+    involvement: row.decision.involvement,
+    /**
+     * What this record was said to have to do with others, both directions.
+     * `kind` is the words whoever related them used — free text, no vocabulary
+     * (`record-relation.model.ts`); `record relations <#globalId>` is the same
+     * list with the far record's title and standing on it.
+     */
+    relations: row.relations.map((relation) => ({
+      recordId: relation.globalId,
+      kind: relation.how,
+      direction: relation.direction,
+    })),
+    /** Who is holding it right now, or `null` — the in-progress marker. */
+    claim:
+      row.claim === undefined ? null : { claimedAt: row.claim.claimedAt, actor: row.claim.actor },
+    /** The one question a caller asks most often, answered without reading `lifecycle`. */
+    resolved: row.lifecycle.status === 'resolved',
+    /**
+     * Where it stands, in the lane's one vocabulary — the verdict, the lifecycle
+     * and the claim folded into a word (`record-lane.service.ts`), with the
+     * evidence beside it. `ref` is the first reference and `refs` is all of them:
+     * a reader who wants one line takes `ref`, and one who wants the whole claim
+     * takes `refs`.
+     */
+    lifecycle: {
+      state: row.laneState,
+      resolvedAt: row.lifecycle.status === 'resolved' ? (row.lifecycle.at ?? null) : null,
+      ref: row.lifecycle.refs[0] ?? null,
+      refs: [...row.lifecycle.refs],
+      claimedAt: row.claim?.claimedAt ?? null,
+    },
+  }
+}
+
+/**
+ * The line a person reads: the number to act on, the verdict, what has happened
+ * to it since, and enough of the identity line to find the retrospective.
+ *
+ * The marker goes **after** the verdict rather than replacing it, on `record
+ * list`'s standing: a row that read `[in progress]` alone would have thrown away
+ * the fact that the human approved it, which is why it is work at all.
+ */
+function laneRowLine(row: LaneRecordRow): string {
+  const marker = markerOf(row)
+  return (
+    `#${row.recordId} [${row.decision.state}] ${marker}${row.rid} — ${row.title}` +
+    ` · L${row.selectedSolution.level} · ${row.decision.involvement}` +
+    ` · retro ${row.retroId} (#${row.retroNumber} of session ${row.sessionId})`
+  )
+}
+
+/** Only rows something has happened to say anything — a column that reads "open" everywhere earns nothing. */
+function markerOf(row: LaneRecordRow): string {
+  if (row.claim !== undefined) return '[in progress] '
+  if (row.lifecycle.status === 'resolved') {
+    const ref = row.lifecycle.refs[0]
+    return ref === undefined ? '[resolved] ' : `[resolved ${ref}] `
+  }
+  // Only where somebody archived it: a declined record is archived from birth
+  // and its verdict already says so (`record-lane.service.ts`).
+  if (row.lifecycle.status === 'archived' && row.lifecycle.actor !== undefined) {
+    return '[archived] '
+  }
+  return ''
 }

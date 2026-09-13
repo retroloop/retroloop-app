@@ -23,6 +23,7 @@ import type {
 } from '#domain/models/record-lifecycle.model'
 import type { RecordRelationEntry } from '#domain/models/record-relation.model'
 import type { Revision } from '#domain/models/revision.model'
+import { type EffectiveClaim, effectiveClaim } from '#domain/services/record-claim.service'
 import { recordKey } from '#domain/services/record-key.service'
 import {
   type EffectiveLifecycle,
@@ -98,6 +99,15 @@ export type GetRecordByIdOutput = {
   readonly record: RecordView
   /** Where it stands on the axis that outlives the review, entry in force resolved. */
   readonly lifecycle: EffectiveLifecycle
+  /**
+   * And who is holding it right now, if anybody — the in-progress marker
+   * (`record-claim.model.ts`), beside the lifecycle rather than on it.
+   *
+   * The page that shows a record's whole standing is the page a person opens to
+   * ask whether they should touch it, so the answer to *"is somebody already on
+   * this?"* belongs here and not one navigation away. `undefined` is nobody.
+   */
+  readonly claim: EffectiveClaim | undefined
   /**
    * The labels the record wears — the same shape and the same join the review
    * card reads (`get-record.use-case.ts`), so a label reads identically on both
@@ -229,6 +239,10 @@ export class GetRecordByIdUseCase {
       session: { id: session.id, cwd: session.cwd, startedAt: session.startedAt },
       record: view,
       lifecycle: effectiveLifecycle(entries.at(-1), view.decision.state),
+      // One more read, keyed on the pair this use case already resolved — and
+      // folded through the same function both listings fold with, so the page
+      // and the lists cannot disagree about who has the record.
+      claim: effectiveClaim(await this.store.recordClaims.findLatest(retrospective.id, minted.rid)),
       labels: resolveRecordLabels(
         labelEntries,
         definitionsById(await this.store.labelDefinitions.listAll()),

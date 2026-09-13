@@ -66,8 +66,8 @@ Retrospective (AI-facing; use --json)
   note <action>          add | list
   revision <action>      create | get | list
   review <action>        status | wait
-  record <action>        list | get | history | resolve | reopen | archive | unarchive
-                         | relate | unrelate
+  record <action>        list | queue | get | relations | history | claim | unclaim
+                         | resolve | reopen | archive | unarchive | relate | unrelate
   comment <action>       add | list
   label <action>         list | create | rename | retire | unretire
   attribute <action>     list | create | rename | retire | unretire
@@ -345,8 +345,14 @@ retroloop record <action> [rid] [to]
 
 Actions:
   list                  Records of a revision with their current state
-  get                   One record with decision, defaults and threads
+  queue                 Every approved, unresolved record of every finished
+                        retrospective, oldest first — the work
+  get <#globalId>       One record in the queue's shape, plus its retrospective
+  relations <#globalId> Every relation in force on it, both directions, each with
+                        the far record's state and references
   history               One record across all revisions (what changed, decisions per revision)
+  claim <#globalId>     Say you are working on it; exit 4 if somebody already is
+  unclaim <#globalId>   Give it back; exit 4 if nobody is holding it
   resolve <rid>         Mark a record fixed, citing what shows it (the AI's act)
   reopen <rid>          Take that back — the fix did not hold
   archive <rid>         Human-only; offered here and refused with exit 5, on purpose
@@ -355,20 +361,70 @@ Actions:
   unrelate <from> <to>  Take that back; the row keeps the words it takes off
 
 Options:
-  --retro <id>          [or --session] — refused on relate/unrelate, see below
-  --revision <n>        [default: latest]; refused on every write
-  --record <rid>        get | history: stable record slug              [required]
+  --retro <id>          [or --session] — refused on the lane acts and on
+                        relate/unrelate, see below
+  --revision <n>        [default: latest]; refused on every write and on --all
+  --record <rid>        history: stable record slug                    [required]
+  --all                 list: every record of every retrospective instead of one
+                        revision's; refuses --retro/--session/--revision
+  --text <substring>    list --all: case-insensitive match on the title, the slug,
+                        the problem and the root cause
   --state <s>           list: pending | approved | declined | revise | hold
+                        | in-progress | resolved | archived
                         (`revise` is the third verdict, retro 4
                         `r-verdict-revise` — the records the next revision must
                         address; `hold` is a pre-`r-hold-semantics` verdict,
                         read-only history, and the `held` / `holdNote` fields
-                        that rode beside it went with retro 4 `r-remove-hold`)
+                        that rode beside it went with retro 4 `r-remove-hold`.
+                        The last three are lane states and need `--all`)
   --ref <r>             resolve: repeatable; at least one is required
   --note <text>         resolve/reopen/archive: offered, never demanded
   --how <words>         relate: how the two relate            [required on relate]
   --json
 ```
+
+**The lane is `queue`, `get`, `relations` and `list --all`, and they answer with
+one row shape.** The queue is every **approved**, **unresolved**, not-archived
+record of every retrospective whose latest round the human **finished** — the
+three clauses that make it work rather than a listing. A record somebody has
+claimed stays on it, marker showing, because whoever reads the queue needs to see
+what is in progress. `--json` gives a bare array for `queue` and `list --all`,
+one row plus `retrospective` for `get`:
+
+```
+{ recordId, retroId, retro, sessionId, title, slug, problem,
+  rootCause { whatHappened, whys, root },
+  ownerWords [ … ],
+  selectedSolution { index, level, title, body, footprint [ … ] },
+  involvement,
+  relations [ { recordId, kind, direction } ],
+  claim null | { claimedAt, actor },
+  resolved,
+  lifecycle { state, resolvedAt, ref, refs, claimedAt } }
+```
+
+`ownerWords` is the human's reviewer note first and then his comments on the
+record, oldest first — his instructions in one field, so an agent can act on a
+queue row without opening the review page. `lifecycle.state` is the **lane
+state**: the verdict, the lifecycle and the claim folded into one word
+(`lifecycle.md`). `record relations <#globalId>` prints
+`[{ recordId, retroId, retro, slug, title, kind, direction, state, resolvedAt, ref, refs }]`,
+where those last four are the **far** record's — and a far record a later draft
+withdrew is still listed, with its rid for a title and `null` for its state,
+because the row was written about a record that existed.
+
+**`claim` and `unclaim` are the in-progress marker** (`data-model.md` §Record
+claims). `claim` is exit 4 if somebody is already holding the record or if it is
+not open; `unclaim` is exit 4 if nobody is holding it; **`record resolve` clears
+the claim on its own**, in the same unit of work, so the ordinary path is claim →
+fix → resolve and `unclaim` is for work that was started and put down. Both print
+`{ recordId, retroId, slug, version, claim }`.
+
+**`get`, `relations`, `claim` and `unclaim` take the `#globalId`**, like
+`relate`, and refuse `--retro`/`--session`/`--revision`/`--state`/`--ref`/
+`--note`/`--how` — the queue hands out numbers, and a number needs no
+retrospective to be read in. **`record list` without `--all` is unchanged**: same
+shape, same order, same answer.
 
 **`relate` and `unrelate` are addressed by `#globalId`, and that is the whole
 shape of them** (the owner, session 11: *"both actors can relate records, each

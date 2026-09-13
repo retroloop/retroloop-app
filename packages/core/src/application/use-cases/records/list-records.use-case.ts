@@ -12,6 +12,7 @@ import { recordIdsById } from '#application/views/relation.view'
 import { NotFoundError } from '#domain/errors/not-found.error'
 import type { Actor } from '#domain/models/actor.model'
 import type { DecisionState } from '#domain/models/decision.model'
+import { claimsByRecord } from '#domain/services/record-claim.service'
 import { lifecycleByRecord, lifecycleKey } from '#domain/services/record-lifecycle.service'
 import {
   describeRetroRef,
@@ -103,6 +104,14 @@ export class ListRecordsUseCase {
      * global ids and belongs to no retrospective, which is the point of it.
      */
     const relations = await this.store.recordRelations.listLatestForEachPair()
+    /**
+     * And the marker beside the lifecycle, read the same way and keyed the same
+     * way: who is holding each record right now (`record-claim.model.ts`). One
+     * query for the listing, on the standing the lifecycle read above set — and
+     * the same read `records.listAll` makes, so the two projections cannot
+     * disagree about who has what.
+     */
+    const claims = claimsByRecord(await this.store.recordClaims.listLatestForEachRecord())
     const records = revision.records
       .map((record) => {
         const view = withLifecycle(
@@ -115,6 +124,7 @@ export class ListRecordsUseCase {
           // Keyed on the pair, never the rid alone: a rid is minted per
           // retrospective, so `r-flaky-test` in two of them is two records.
           lifecycle.get(lifecycleKey(retrospective.id, record.rid)),
+          claims.get(lifecycleKey(retrospective.id, record.rid)),
         )
         return withRelations(
           view,

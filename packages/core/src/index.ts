@@ -166,6 +166,11 @@ export {
   type NoteView,
 } from '#application/use-cases/notes/list-notes.use-case'
 export {
+  type ClaimRecordInput,
+  type ClaimRecordOutput,
+  ClaimRecordUseCase,
+} from '#application/use-cases/records/claim-record.use-case'
+export {
   type GetRecordInput,
   type GetRecordOutput,
   GetRecordUseCase,
@@ -189,10 +194,17 @@ export {
   type RecordListAllRow,
 } from '#application/use-cases/records/list-all-records.use-case'
 export {
+  type LaneRecordRow,
+  type ListLaneRecordsInput,
+  type ListLaneRecordsOutput,
+  ListLaneRecordsUseCase,
+} from '#application/use-cases/records/list-lane-records.use-case'
+export {
   type ListRecordsInput,
   type ListRecordsOutput,
   ListRecordsUseCase,
 } from '#application/use-cases/records/list-records.use-case'
+export { type MintedRecord, requireMinted } from '#application/use-cases/records/minted-record'
 export {
   type RelateRecordsInput,
   type RelateRecordsOutput,
@@ -311,6 +323,7 @@ export {
   type ExportThreadComponent,
   type RetroExport,
 } from '#application/views/export.view'
+export { type LaneSolutionView, laneFootprint, laneSolution } from '#application/views/lane.view'
 export {
   buildRecordView,
   decisionsByRid,
@@ -417,6 +430,7 @@ export type {
   NewRecordAttributeValueEntry,
   RecordAttributeValueEntry,
 } from '#domain/models/record-attribute-value.model'
+export type { NewRecordClaimEntry, RecordClaimEntry } from '#domain/models/record-claim.model'
 export type { NewRecordId, RecordId } from '#domain/models/record-id.model'
 export type { NewRecordLabelEntry, RecordLabelEntry } from '#domain/models/record-label.model'
 export {
@@ -474,6 +488,7 @@ export type { HoldRepository } from '#domain/repositories/hold.repository'
 export type { LabelDefinitionRepository } from '#domain/repositories/label-definition.repository'
 export type { NoteListFilter, NoteRepository } from '#domain/repositories/note.repository'
 export type { RecordAttributeValueRepository } from '#domain/repositories/record-attribute-value.repository'
+export type { RecordClaimRepository } from '#domain/repositories/record-claim.repository'
 export type { RecordIdRepository } from '#domain/repositories/record-id.repository'
 export type { RecordLabelRepository } from '#domain/repositories/record-label.repository'
 export type { RecordLifecycleRepository } from '#domain/repositories/record-lifecycle.repository'
@@ -517,12 +532,18 @@ export {
   type SetAttributeValue,
   setAttributeValues,
 } from '#domain/services/record-attribute.service'
+export {
+  claimsByRecord,
+  type EffectiveClaim,
+  effectiveClaim,
+} from '#domain/services/record-claim.service'
 export { recordKey } from '#domain/services/record-key.service'
 export {
   appliedLabelIds,
   labelEntriesByRecord,
   latestLabelEntry,
 } from '#domain/services/record-label.service'
+export { LANE_STATES, type LaneState, laneState } from '#domain/services/record-lane.service'
 export {
   bornLifecycleState,
   type EffectiveLifecycle,

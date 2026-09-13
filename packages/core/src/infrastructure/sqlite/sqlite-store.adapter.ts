@@ -15,6 +15,7 @@ import { SqliteHoldRepository } from '#infrastructure/sqlite/repositories/hold.s
 import { SqliteLabelDefinitionRepository } from '#infrastructure/sqlite/repositories/label-definition.sqlite.adapter'
 import { SqliteNoteRepository } from '#infrastructure/sqlite/repositories/note.sqlite.adapter'
 import { SqliteRecordAttributeValueRepository } from '#infrastructure/sqlite/repositories/record-attribute-value.sqlite.adapter'
+import { SqliteRecordClaimRepository } from '#infrastructure/sqlite/repositories/record-claim.sqlite.adapter'
 import { SqliteRecordIdRepository } from '#infrastructure/sqlite/repositories/record-id.sqlite.adapter'
 import { SqliteRecordLabelRepository } from '#infrastructure/sqlite/repositories/record-label.sqlite.adapter'
 import { SqliteRecordLifecycleRepository } from '#infrastructure/sqlite/repositories/record-lifecycle.sqlite.adapter'
@@ -106,6 +107,7 @@ export function openSqliteStore(options: SqliteStoreOptions): SqliteStore {
     recordLabels: new SqliteRecordLabelRepository(db),
     recordAttributeValues: new SqliteRecordAttributeValueRepository(db),
     recordRelations: new SqliteRecordRelationRepository(db),
+    recordClaims: new SqliteRecordClaimRepository(db),
     settings: new SqliteSettingRepository(db),
     notes: new SqliteNoteRepository(db),
     annotations: new SqliteAnnotationRepository(db),

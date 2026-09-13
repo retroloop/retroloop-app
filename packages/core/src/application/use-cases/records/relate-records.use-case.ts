@@ -1,13 +1,13 @@
 import { type Clock, timestamp } from '#application/ports/clock.port'
 import type { Repositories, Store } from '#application/ports/store.port'
 import { parseRecordRelationInput } from '#application/schemas/record-relation-input.schema'
+import { requireMinted } from '#application/use-cases/records/minted-record'
 import {
   type RecordRelationView,
   recordIdsById,
   resolveRecordRelations,
 } from '#application/views/relation.view'
 import { ConflictError } from '#domain/errors/conflict.error'
-import { NotFoundError } from '#domain/errors/not-found.error'
 import { ValidationError } from '#domain/errors/validation.error'
 import { newDomainEvent } from '#domain/events/domain-event.model'
 import type { Actor } from '#domain/models/actor.model'
@@ -209,38 +209,6 @@ export class RelateRecordsUseCase {
       }
     })
   }
-}
-
-/** A record's global id, the pair it stands for, and the session its retrospective belongs to. */
-type MintedRecord = RecordId & { readonly sessionId: number }
-
-/**
- * The record one global id names — refused if the number was never minted, and
- * refused again if a later draft withdrew the record it names.
- *
- * Both misses are `NotFoundError`, and they are the same miss to a caller: a
- * number that does not name a record of the retrospective as it now stands. The
- * second is the rule `ApplyLabelUseCase` and `SetRecordLifecycleUseCase` apply to
- * the one record they touch, applied here to each of two.
- */
-async function requireMinted(repositories: Repositories, id: number): Promise<MintedRecord> {
-  const minted = NotFoundError.require(await repositories.recordIds.findById(id), 'record', id)
-  const retrospective = NotFoundError.require(
-    await repositories.retrospectives.findById(minted.retroId),
-    'retrospective',
-    minted.retroId,
-  )
-  const revision = NotFoundError.require(
-    await repositories.revisions.findLatestByRetro(minted.retroId),
-    'revision',
-    'latest',
-  )
-  NotFoundError.require(
-    revision.records.find((candidate) => candidate.rid === minted.rid),
-    'record',
-    id,
-  )
-  return { ...minted, sessionId: retrospective.sessionId }
 }
 
 /**

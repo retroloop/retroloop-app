@@ -105,6 +105,25 @@ export const EVENT_NAMES = [
    */
   'RecordRelated',
   'RecordUnrelated',
+  /**
+   * A record picked up, and given back — the in-progress marker
+   * (`record-claim.model.ts`). A name per act on the standing every pair here
+   * sets, and two reasons of its own:
+   *
+   * - **it is the one pair here that goes stale.** A consumer watching the lane
+   *   wants "somebody took #12" as it happens, and a payload it has to unpack to
+   *   learn which way the marker moved is a payload it unpacks on every row.
+   * - **`RecordUnclaimed` is also written by a resolve**, in the same unit of
+   *   work as `RecordResolved` and immediately after it
+   *   (`set-record-lifecycle.use-case.ts`): the work is finished, so the marker
+   *   comes down. That is the one place in this set where one act appends two
+   *   names, and reading the pair in order is what makes it legible.
+   *
+   * Either actor may append one, like the four `Record*` lifecycle names above.
+   * No `revisionN`: a claim outlives every redraft of the record it is on.
+   */
+  'RecordClaimed',
+  'RecordUnclaimed',
   'RequestOpened',
   'RequestResponded',
   'RequestClosed',

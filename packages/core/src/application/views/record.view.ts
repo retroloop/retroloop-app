@@ -1,9 +1,11 @@
 import { type RecordRelationView, resolveRecordRelations } from '#application/views/relation.view'
 import type { Decision } from '#domain/models/decision.model'
 import type { RetroRecord } from '#domain/models/record.model'
+import type { RecordClaimEntry } from '#domain/models/record-claim.model'
 import type { RecordId } from '#domain/models/record-id.model'
 import type { RecordLifecycleEntry } from '#domain/models/record-lifecycle.model'
 import type { RecordRelationEntry } from '#domain/models/record-relation.model'
+import { type EffectiveClaim, effectiveClaim } from '#domain/services/record-claim.service'
 import {
   type EffectiveLifecycle,
   effectiveLifecycle,
@@ -58,6 +60,19 @@ export type RecordView = {
  */
 export type RecordViewWithLifecycle = RecordView & {
   readonly lifecycle: EffectiveLifecycle
+  /**
+   * And who is holding the record right now, if anybody — the in-progress
+   * marker, which rides with the lifecycle rather than on it
+   * (`record-claim.model.ts`).
+   *
+   * It is here rather than in a `RecordViewWithClaim` of its own because every
+   * reader that pays for the lifecycle read wants this in the same breath: a
+   * listing showing `open` beside no answer to "is somebody on it?" is the gap
+   * #103 was filed about, one table further out. `undefined` is a record nobody
+   * is holding, which is the same answer for one nobody ever held and one
+   * somebody gave back (`record-claim.service.ts`).
+   */
+  readonly claim: EffectiveClaim | undefined
 }
 
 /**
@@ -116,8 +131,16 @@ export function buildRecordView(
 export function withLifecycle(
   view: RecordView,
   entry: RecordLifecycleEntry | undefined,
+  claim: RecordClaimEntry | undefined,
 ): RecordViewWithLifecycle {
-  return { ...view, lifecycle: effectiveLifecycle(entry, view.decision.state) }
+  return {
+    ...view,
+    lifecycle: effectiveLifecycle(entry, view.decision.state),
+    // Folded here rather than taken as an `EffectiveClaim` from the caller, so
+    // both listings read a claim through the one function every reader folds
+    // with — the reason the lifecycle beside it is derived here too.
+    claim: effectiveClaim(claim),
+  }
 }
 
 /**

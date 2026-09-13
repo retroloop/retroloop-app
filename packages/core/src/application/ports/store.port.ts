@@ -9,6 +9,7 @@ import type { HoldRepository } from '#domain/repositories/hold.repository'
 import type { LabelDefinitionRepository } from '#domain/repositories/label-definition.repository'
 import type { NoteRepository } from '#domain/repositories/note.repository'
 import type { RecordAttributeValueRepository } from '#domain/repositories/record-attribute-value.repository'
+import type { RecordClaimRepository } from '#domain/repositories/record-claim.repository'
 import type { RecordIdRepository } from '#domain/repositories/record-id.repository'
 import type { RecordLabelRepository } from '#domain/repositories/record-label.repository'
 import type { RecordLifecycleRepository } from '#domain/repositories/record-lifecycle.repository'
@@ -79,6 +80,14 @@ export type Repositories = {
    * (`record-relation.model.ts`).
    */
   readonly recordRelations: RecordRelationRepository
+  /**
+   * Who is holding which record right now — the in-progress marker the solving
+   * lane picks work up with. The **third** append-only table both actors write,
+   * and the one that is not a fact about the record's outcome: it is true for an
+   * afternoon and then it is not, which is exactly why it is a table beside the
+   * lifecycle rather than a fourth position on it (`record-claim.model.ts`).
+   */
+  readonly recordClaims: RecordClaimRepository
   /**
    * The global settings, versioned — one key today, and it is the owner's
    * guarantee that the AI cannot write the config while he has it switched off

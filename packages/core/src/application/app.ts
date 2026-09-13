@@ -19,10 +19,12 @@ import { AddAiNoteUseCase } from '#application/use-cases/notes/add-ai-note.use-c
 import { AddHumanNoteUseCase } from '#application/use-cases/notes/add-human-note.use-case'
 import { AnnotateNoteUseCase } from '#application/use-cases/notes/annotate-note.use-case'
 import { ListNotesUseCase } from '#application/use-cases/notes/list-notes.use-case'
+import { ClaimRecordUseCase } from '#application/use-cases/records/claim-record.use-case'
 import { GetRecordUseCase } from '#application/use-cases/records/get-record.use-case'
 import { GetRecordByIdUseCase } from '#application/use-cases/records/get-record-by-id.use-case'
 import { GetRecordHistoryUseCase } from '#application/use-cases/records/get-record-history.use-case'
 import { ListAllRecordsUseCase } from '#application/use-cases/records/list-all-records.use-case'
+import { ListLaneRecordsUseCase } from '#application/use-cases/records/list-lane-records.use-case'
 import { ListRecordsUseCase } from '#application/use-cases/records/list-records.use-case'
 import { RelateRecordsUseCase } from '#application/use-cases/records/relate-records.use-case'
 import { SetRecordLifecycleUseCase } from '#application/use-cases/records/set-record-lifecycle.use-case'
@@ -117,6 +119,25 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
        * rather than an edge of it.
        */
       relate: new RelateRecordsUseCase(store, clock),
+      /**
+       * A record picked up, or given back — the in-progress marker the solving
+       * lane works out of (`record-claim.model.ts`). **The third mutating use
+       * case open to both actors on every act**, and the only one of the three
+       * with no procedure over it: the claim is written by whoever does the
+       * work, and the review UI reads it as a badge off the read models rather
+       * than writing one.
+       */
+      claim: new ClaimRecordUseCase(store, clock),
+      /**
+       * The queue, the cross-retrospective listing and the record-with-its-fix
+       * read — one read model behind all of them (`list-lane-records.use-case.ts`).
+       *
+       * It is the lane's whole read surface, and it is one use case rather than
+       * four because the four are the same row asked for with different filters:
+       * two that drifted would mean `record get` and `record queue` disagreeing
+       * about the record an agent is holding open in two terminals.
+       */
+      lane: new ListLaneRecordsUseCase(store),
     },
     decisions: {
       record: new RecordDecisionUseCase(store, clock),

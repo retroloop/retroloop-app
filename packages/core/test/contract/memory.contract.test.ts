@@ -11,6 +11,7 @@ import { describeHoldRepositoryContract } from './hold.contract'
 import { describeListAllRecordsContract } from './list-all-records.contract'
 import { describeListRetrosContract } from './list-retros.contract'
 import { describeNoteRepositoryContract } from './note.contract'
+import { describeRecordClaimRepositoryContract } from './record-claim.contract'
 import { describeRecordIdRepositoryContract } from './record-id.contract'
 import { describeRecordLifecycleRepositoryContract } from './record-lifecycle.contract'
 import { describeRecordMarkupRepositoryContract } from './record-markup.contract'
@@ -47,6 +48,7 @@ describeDecisionRepositoryContract('memory', makeStore)
 describeFinishMessageRepositoryContract('memory', makeStore)
 describeHoldRepositoryContract('memory', makeStore)
 describeRecordLifecycleRepositoryContract('memory', makeStore)
+describeRecordClaimRepositoryContract('memory', makeStore)
 describeDefinitionRepositoryContract('memory', makeStore)
 describeRecordMarkupRepositoryContract('memory', makeStore)
 describeRecordRelationRepositoryContract('memory', makeStore)

@@ -17,6 +17,11 @@ import {
   type SolutionLevel,
 } from '#domain/models/record.model'
 import type { RecordId } from '#domain/models/record-id.model'
+import {
+  claimsByRecord,
+  type EffectiveClaim,
+  effectiveClaim,
+} from '#domain/services/record-claim.service'
 import { labelEntriesByRecord } from '#domain/services/record-label.service'
 import type { EffectiveLifecycle } from '#domain/services/record-lifecycle.service'
 import {
@@ -123,6 +128,20 @@ export type RecordListAllRow = {
    * carried both would be a row producing a field nothing on this page renders.
    */
   readonly labels: readonly RecordLabelView[]
+  /**
+   * **Who is holding this record right now**, if anybody — the in-progress
+   * marker (`record-claim.model.ts`).
+   *
+   * It is on the row for the reason `lifecycle` is: this page is where somebody
+   * looks to see what is going on across every retrospective at once, and "an
+   * agent is on this one" is the single most perishable thing a row can say. A
+   * reader that had to open each record to find out would be making 88 round
+   * trips on the owner's store to render one badge.
+   *
+   * `undefined` is a record nobody is holding — the same answer for one nobody
+   * ever held and one somebody gave back (`record-claim.service.ts`).
+   */
+  readonly claim: EffectiveClaim | undefined
 }
 
 export type ListAllRecordsInput = {
@@ -227,6 +246,9 @@ export class ListAllRecordsUseCase {
     // store, and the vocabulary to resolve them against. Both are one query
     // whatever the number of rows, which is the shape every read on this page
     // has.
+    // The marker beside the lifecycle, keyed the same way and read in the same
+    // shape: one query for the whole page, whatever the number of rows.
+    const claims = claimsByRecord(await this.store.recordClaims.listLatestForEachRecord())
     const labels = labelEntriesByRecord(await this.store.recordLabels.listLatestForEachRecord())
     const labelDefinitions = definitionsById(await this.store.labelDefinitions.listAll())
 
@@ -291,6 +313,9 @@ export class ListAllRecordsUseCase {
           // retrospectives' records at once. `NO_LABELS` rather than `?? []`
           // inline: a shared empty array keeps identity across rows, which is
           // what stops a memo in the browser seeing a new value on every render.
+          // Keyed on the pair like the lifecycle above, and folded through the
+          // one function every reader of a claim folds with.
+          claim: effectiveClaim(claims.get(lifecycleKey(retrospective.id, record.rid))),
           labels: resolveRecordLabels(
             labels.get(lifecycleKey(retrospective.id, record.rid)) ?? NO_LABELS,
             labelDefinitions,

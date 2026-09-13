@@ -286,6 +286,11 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
           // `pull-request`, so a row echoing the enum's `undecided` default
           // instead would mean the projection had stopped reading the decision.
           involvement: 'pull-request',
+          // Nobody is holding this record, which is the same `undefined` a record
+          // somebody claimed and gave back reads as (`record-claim.service.ts`).
+          // The populated half is asserted in `record-claims.test.ts`, which
+          // reads one claim through all three projections at once.
+          claim: undefined,
           // Resolved against the vocabulary rather than sent as an id, because
           // the filter is the only reader that would hold the vocabulary and
           // every other reader of this row just renders the word.
