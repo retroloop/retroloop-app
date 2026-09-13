@@ -37,7 +37,8 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
 
 ## Stages
 
-- **A stage = a data directory** (default `~/.ai-team/retro`; select with `--data` or `RETROLOOP_HOME`, alias `RETRO_HOME`). Each stage owns `retro.db`, `config.json` (port, bind), `backups/`, logs, and **`server.lock`**.
+- **One root folder** (default `~/.retroloop`; select with `--home <root>` or `RETROLOOP_HOME`). Everything Retroloop owns hangs off it: the stage at `data/`, pre-migration snapshots at `backups/db/`, exports at `retros/`.
+- **A stage = a data directory** (`<root>/data`). Each stage owns `retro.db`, `config.json` (port, bind), logs, and **`server.lock`**.
 - **One server per stage:** `serve` takes an OS-level lock on `server.lock` (PID + port inside). A second `serve` on the same stage exits code 7. Different stage → different port → separate instance. Tests use throwaway stages on random ports.
 
 ## Server lifecycle

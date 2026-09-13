@@ -11,7 +11,8 @@
 - **Annotation** — the human's one-shot remark on a single AI note. No threads; invisible to the AI until drafting.
 - **Request** — *removed, retro 4 `r-remove-requests`.* It was a top-level human ask on a review ("add X to the next revision"), answered by the AI and closed by the human. A **review-level comment thread** is the one ask channel now — one ask per comment. The `requests` table and its rows stay as history; nothing reads or writes one.
 - **Event** — a domain event row appended in the same transaction as its write; the outbox every viewer (SSE, `review wait`) is fed from.
-- **Stage** — a data directory (default `~/.ai-team/retro`) owning DB, config, port, backups, logs, and the server lock. One server per stage.
+- **Root folder** — the one directory Retroloop owns (default `~/.retroloop`, selected with `--home` or `RETROLOOP_HOME`): `data/` the stage, `backups/db/` the pre-migration snapshots, `retros/` the exports.
+- **Stage** — the data directory under the root (`<root>/data`) owning DB, config, port, logs, and the server lock. One server per stage.
 - **Actor** — `ai` or `human`. The CLI always acts as `ai`; human-authored data is mechanically unwritable by the AI.
 - **Review round** — one numbered owner-review cycle in a frozen worktree `~/Developer/retro-review-N` on branch `review/N`, harvested via `git diff`.
 - **Checkpoint** — the state that permits closing a session: suites green, work merged or parked with a journal note, backlog updated, journal written, bundle backup taken.

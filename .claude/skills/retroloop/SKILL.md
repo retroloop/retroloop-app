@@ -483,7 +483,7 @@ nobody researched.
 
 **The deep dive includes a mandatory class check against the prior exports.**
 The complete history of every past friction sits machine-readable in
-`~/.ai-team/retro/exports/retro-*.json`, and it is an instruction surface the
+`~/.retroloop/retros/*/retro.json`, and it is an instruction surface the
 loop itself produced — so before drafting, search it for the CLASS, not just
 the instance (titles, slugs and problem text are all searchable). A record of
 a recurring class must carry three things: **its priors by name**, **why each
@@ -869,8 +869,8 @@ the record how it was checked: the command you ran, the `file:line` you read.
 Check it while you draft, not from memory, and if you cannot, write the claim as
 unverified so the human reads it as one. Review reads a record for direction, not
 for code truth, so an unchecked premise is not caught downstream: an approved
-record once directed removing a documented `--data` flag as stale when `--data`
-was live in the CLI's own source, and applying it would have written in the very
+record once directed removing a documented global flag as stale when that flag
+was live in the CLI’s own source, and applying it would have written in the very
 false claim the record existed to remove.
 
 ### One whole record, as a file

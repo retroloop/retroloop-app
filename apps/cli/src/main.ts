@@ -68,7 +68,7 @@ export async function run(
       default: false,
       describe: 'Machine-readable output on stdout; errors as JSON on stderr',
     })
-    .option('data', { type: 'string', describe: 'Data directory [default: ~/.ai-team/retro]' })
+    .option('home', { type: 'string', describe: 'Retroloop root folder [default: ~/.retroloop]' })
     .option('quiet', { type: 'boolean', default: false, describe: 'Suppress non-essential output' })
     .version(CORE_VERSION)
     .help()

@@ -7,7 +7,7 @@
 1. **Install the plugin:** `/plugin marketplace add retroloop/plugins` → `/plugin install retroloop` → reload plugins.
 2. **First run:** the SessionStart hook (`.sh`, may call the CLI) detects the binary is missing and prints one line: "run `/retroloop:setup`". Hooks never install anything themselves — installing requires the human's consent.
 3. **`/retroloop:setup`** (with consent) runs the install script for the OS: download the release asset for platform/arch **within the plugin's compat range**, verify checksum, place at `~/.ai-team/bin/retroloop` — then `retroloop setup`.
-4. **`retroloop setup`:** initialize the stage (`~/.ai-team/retro`), apply migrations, install the boot service, start it, verify the URL over IP and hostname, print it.
+4. **`retroloop setup`:** initialize the root folder (`~/.retroloop`) and the stage under it (`~/.retroloop/data`), apply migrations, install the boot service, start it, verify the URL over IP and hostname, print it.
 5. From then on: `/retroloop:review` at any checkpoint; `retroloop up` is the idempotent "make sure it's running".
 
 ## Per-OS notes
@@ -25,7 +25,8 @@
 
 ## Stages
 
-- **A stage = a data directory** (default `~/.ai-team/retro`): `retro.db`, `config.json`, `backups/`, logs, `server.lock`. Select another with `--data <dir>` or `RETROLOOP_HOME` (alias `RETRO_HOME`; e.g. a test stage on its own port). One server per stage, enforced by the lock.
+- **One root folder** (default `~/.retroloop`): `data/` the stage, `backups/db/` the pre-migration snapshots, `retros/` the exports. Select another with `--home <root>` or `RETROLOOP_HOME` (e.g. a test root on its own port).
+- **A stage = a data directory** (`<root>/data`): `retro.db`, `config.json`, logs, `server.lock`. One server per stage, enforced by the lock.
 
 ## Diagnosis
 

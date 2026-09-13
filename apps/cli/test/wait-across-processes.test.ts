@@ -1,5 +1,5 @@
 import { afterAll, expect, test } from 'bun:test'
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createApp, openSqliteStore } from '@retro/core'
@@ -36,13 +36,25 @@ afterAll(() => {
   for (const dir of stages.splice(0)) rmSync(dir, { recursive: true, force: true })
 }, CLEANUP_MS)
 
+/**
+ * A throwaway root laid out the way the product lays one out: `--home` names the
+ * root and the stage is `<root>/data`, so what these processes exercise is the
+ * real resolution and not a directory handed straight to the store.
+ */
+function newHome(prefix: string): { home: string; dataDir: string } {
+  const home = mkdtempSync(join(tmpdir(), prefix))
+  stages.push(home)
+  const dataDir = join(home, 'data')
+  mkdirSync(dataDir, { recursive: true })
+  return { home, dataDir }
+}
+
 const BIN = join(import.meta.dir, '../src/bin.ts')
 const FINISHER = join(import.meta.dir, 'support/finish-review.ts')
 
 /** A real stage with a review ready to be finished. */
-async function seedStage(): Promise<{ dataDir: string; retroId: number }> {
-  const dataDir = mkdtempSync(join(tmpdir(), 'retro-xproc-'))
-  stages.push(dataDir)
+async function seedStage(): Promise<{ home: string; dataDir: string; retroId: number }> {
+  const { home, dataDir } = newHome('retro-xproc-')
 
   const store = openSqliteStore({ dataDir })
   const app = createApp(store)
@@ -69,7 +81,7 @@ async function seedStage(): Promise<{ dataDir: string; retroId: number }> {
   }
   await store.close()
 
-  return { dataDir, retroId }
+  return { home, dataDir, retroId }
 }
 
 /**
@@ -89,7 +101,7 @@ async function seedStage(): Promise<{ dataDir: string; retroId: number }> {
 test(
   'review wait returns when another process finishes the review',
   async () => {
-    const { dataDir, retroId } = await seedStage()
+    const { home, dataDir, retroId } = await seedStage()
 
     const waiter = Bun.spawn(
       [
@@ -100,8 +112,8 @@ test(
         'wait',
         '--retro',
         String(retroId),
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--timeout',
         String(WAIT_SECONDS),
         '--json',
@@ -174,11 +186,11 @@ async function waitForLock(dataDir: string): Promise<void> {
 test(
   'review wait --follow hears the finish over the server’s live stream',
   async () => {
-    const { dataDir, retroId } = await seedStage()
+    const { home, dataDir, retroId } = await seedStage()
     const port = await freePort()
 
     const server = Bun.spawn(
-      ['bun', 'run', BIN, 'serve', '--data', dataDir, '--port', String(port), '--json'],
+      ['bun', 'run', BIN, 'serve', '--home', home, '--port', String(port), '--json'],
       { stdout: 'pipe', stderr: 'pipe' },
     )
 
@@ -195,8 +207,8 @@ test(
           '--follow',
           '--retro',
           String(retroId),
-          '--data',
-          dataDir,
+          '--home',
+          home,
           '--timeout',
           String(WAIT_SECONDS),
           '--json',
@@ -256,8 +268,8 @@ test(
         '--follow',
         '--retro',
         String(retroId),
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--timeout',
         '10',
         '--json',
@@ -282,8 +294,7 @@ test(
 test(
   'a spawned process writes the timestamp RETRO_TEST_CLOCK pins',
   async () => {
-    const dataDir = mkdtempSync(join(tmpdir(), 'retro-clock-'))
-    stages.push(dataDir)
+    const { home, dataDir } = newHome('retro-clock-')
     const frozen = '2019-07-04T12:30:00.000Z'
 
     const create = Bun.spawn(
@@ -299,8 +310,8 @@ test(
         'retro',
         '--cwd',
         '/tmp',
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--json',
       ],
       { stdout: 'pipe', stderr: 'pipe', env: { ...process.env, RETRO_TEST_CLOCK: frozen } },
@@ -323,8 +334,7 @@ test(
 test(
   'a second CLI process sees what the first one committed',
   async () => {
-    const dataDir = mkdtempSync(join(tmpdir(), 'retro-xproc-'))
-    stages.push(dataDir)
+    const { home, dataDir } = newHome('retro-xproc-')
 
     const draft = join(dataDir, 'revision.json')
     writeFileSync(draft, aRevisionDraft())
@@ -342,8 +352,8 @@ test(
         'retro',
         '--cwd',
         '/tmp',
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--json',
       ],
       { stdout: 'pipe', stderr: 'pipe' },
@@ -361,8 +371,8 @@ test(
         'uuid-two-processes',
         '--file',
         draft,
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--json',
       ],
       { stdout: 'pipe', stderr: 'pipe' },
@@ -378,8 +388,8 @@ test(
         'list',
         '--session',
         'uuid-two-processes',
-        '--data',
-        dataDir,
+        '--home',
+        home,
         '--json',
       ],
       { stdout: 'pipe', stderr: 'pipe' },

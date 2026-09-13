@@ -19,7 +19,7 @@ The binary `retroloop` serves two audiences: **the AI** (via the plugin skill â€
 - **Actor:** the CLI always acts as `ai`. **No human-decision commands exist** â€” approve/decline/revise/finish/human comments/notes/annotations are UI-only. `review close` is not one: it decides nothing and refuses unless the human has already finished the round.
 - **Idempotency:** `session create` is idempotent by session UUID; `revision create` takes `--expect-revision <n>` for an optimistic check.
 - **Migrations are invisible:** applied automatically at startup by whichever process runs first, under the write lock. Status shows in `doctor`; `make:migration` is a dev script in the repo, not a binary command.
-- **Globals:** `--json`, `--data <dir>` (default `~/.ai-team/retro`), `--quiet`; env `RETROLOOP_HOME` (alias `RETRO_HOME`), `RETRO_PORT`, `RETRO_TEST_CLOCK` (tests only).
+- **Globals:** `--json`, `--home <root>` (default `~/.retroloop`), `--quiet`; env `RETROLOOP_HOME`, `RETRO_PORT`, `RETRO_TEST_CLOCK` (tests only). `--home` and `RETROLOOP_HOME` name the **root folder**, not the stage: the stage is `<root>/data`, pre-migration snapshots go to `<root>/backups/db`, exports to `<root>/retros`. A relative value resolves from the caller's cwd. The older `RETRO_HOME` named the data directory and is not read anywhere.
 
 ### Exit codes
 
@@ -76,7 +76,7 @@ Retrospective (AI-facing; use --json)
 
 Global options
   --json                 Machine-readable output on stdout; errors as JSON on stderr
-  --data <dir>           Data directory            [default: ~/.ai-team/retro]
+  --home <root>          Retroloop root folder        [default: ~/.retroloop]
   --quiet                Suppress non-essential output
   --version | --help
 ```
@@ -89,8 +89,9 @@ shipped commands are authoritative only in each command's `--help`.
 ```
 retroloop setup
 
-Initialize ~/.ai-team/retro, apply migrations, install the boot service for this
-OS, start it, verify the URL over IP and hostname, print the URL. Safe to re-run.
+Initialize ~/.retroloop and the stage under it, apply migrations, install the
+boot service for this OS, start it, verify the URL over IP and hostname, print
+the URL. Safe to re-run.
 
 Options:
   --port <n>            Server port                          [default: 24100]
@@ -148,7 +149,7 @@ Options:
   --bind <addr>         Address to bind. A specific interface IP (e.g. 192.168.1.9)
                         exposes the server on that network; 0.0.0.0 and :: are
                         refused.                             [default: 127.0.0.1]
-  --data <dir>
+  --home <root>
 ```
 
 ```

@@ -101,7 +101,7 @@ export function someSolutions(overrides: readonly Partial<Solution>[] = []): Sol
  * more (the write path takes solutions only), so the only way one exists is as a
  * JSON blob an earlier binary wrote. This is that blob, and its fields are
  * copied verbatim from record 11 of the owner's retro-1 export
- * (`~/.ai-team/retro/exports/retro-1.json`, `r-falsifiability-paid`) so the
+ * (`~/.retroloop/retros/_legacy-exports/retro-1.json`, `r-falsifiability-paid`) so the
  * upgrade is tested against a document that actually exists rather than against
  * a shape a test invented.
  *

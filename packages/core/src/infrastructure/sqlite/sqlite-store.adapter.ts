@@ -29,6 +29,7 @@ import { systemClock } from '#infrastructure/system/system-clock.adapter'
 
 /** The stage's database file (architecture.md §Stages). */
 export const DATABASE_FILENAME = 'retro.db'
+/** Fallback only: in the product the CLI places snapshots in `<root>/backups/db/`. */
 export const BACKUPS_DIRNAME = 'backups'
 
 /** Long enough to outwait a normal write, short enough to surface a stuck one. */
@@ -46,8 +47,14 @@ export type SqliteStore = Store & {
 }
 
 export type SqliteStoreOptions = {
-  /** The stage directory: it holds `retro.db` and `backups/` (KC-0013). */
+  /** The stage directory: it holds `retro.db` (KC-0013). */
   readonly dataDir: string
+  /**
+   * Where pre-migration snapshots go. The caller places them, because the
+   * layout above the stage is the caller's (the CLI puts them in the root's
+   * `backups/db/`); omitted, they sit beside the database.
+   */
+  readonly backupsDir?: string
   readonly clock?: Clock
   readonly busyTimeoutMs?: number
   /** Default `true`. `false` hands an unmigrated database to a test that drives the migrator itself. */
@@ -80,7 +87,7 @@ export function openSqliteStore(options: SqliteStoreOptions): SqliteStore {
 
   if (options.migrate !== false) {
     migrate(db, {
-      backupsDir: join(dataDir, BACKUPS_DIRNAME),
+      backupsDir: options.backupsDir ?? join(dataDir, BACKUPS_DIRNAME),
       clock: options.clock ?? systemClock,
     })
   }

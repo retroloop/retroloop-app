@@ -1,3 +1,4 @@
+import { join } from 'node:path'
 import {
   type App,
   type Clock,
@@ -26,13 +27,13 @@ export type CliContext = {
  */
 export type GlobalOptions = {
   json: boolean
-  data: string | undefined
+  home: string | undefined
   quiet: boolean
 }
 
 export type GlobalArgs = {
   readonly json?: boolean
-  readonly data?: string
+  readonly home?: string
   readonly quiet?: boolean
 }
 
@@ -89,7 +90,7 @@ export async function withContext<T>(
   args: GlobalArgs,
   work: (context: CliContext) => Promise<T>,
 ): Promise<T> {
-  const stage = resolveStage({ data: args.data, env: runtime.env, cwd: runtime.cwd })
+  const stage = resolveStage({ home: args.home, env: runtime.env, cwd: runtime.cwd })
   const store = runtime.openStore(stage)
   const output = createOutput({
     json: args.json === true,
@@ -122,7 +123,15 @@ export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRu
     serverReadyTimeoutMs: overrides.serverReadyTimeoutMs ?? 10_000,
     serverStopTimeoutMs: overrides.serverStopTimeoutMs ?? 5_000,
     stdin: overrides.stdin ?? (() => Bun.stdin.text()),
-    openStore: overrides.openStore ?? ((stage) => openSqliteStore({ dataDir: stage.dataDir })),
+    openStore:
+      overrides.openStore ??
+      ((stage) =>
+        openSqliteStore({
+          dataDir: stage.dataDir,
+          // The snapshots belong to the root, not to the stage: `backups/db/` is
+          // a sibling of `data/`, so a stage directory holds only live state.
+          backupsDir: join(stage.home, 'backups', 'db'),
+        })),
     spawnServe:
       overrides.spawnServe ??
       (async (stage, address) => {
@@ -134,8 +143,8 @@ export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRu
             'run',
             `${import.meta.dir}/bin.ts`,
             'serve',
-            '--data',
-            stage.dataDir,
+            '--home',
+            stage.home,
             '--port',
             String(address.port),
             '--bind',

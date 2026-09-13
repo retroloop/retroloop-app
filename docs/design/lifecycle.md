@@ -14,7 +14,7 @@ so a pointer can be safely ignored on a first read.
 - `KC-####` — a captured-knowledge decision record (private project records).
 - `D#` — a decision the owner made in the owner-decision brief (private project records).
 - `r-<slug>` — a record from one of the product's own retrospectives, exported
-  under `~/.ai-team/retro/exports/`. "retro 3", "retro 4" name which one.
+  under `~/.retroloop/retros/`. "retro 3", "retro 4" name which one.
 
 Bare file names (`close-review.use-case.ts`) and identifiers (`refuseWhenFinished`)
 are unique in the tree and are meant to be searched for rather than pathed. `L1`

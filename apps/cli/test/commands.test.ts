@@ -2647,7 +2647,7 @@ describe('the CLI', () => {
           String(retroId),
           '--review',
           '--text',
-          'the export landed at ~/.ai-team/retro/exports/retro-4.json',
+          'the export landed at ~/.retroloop/retros/4/retro.json',
           '--json',
         ])
 

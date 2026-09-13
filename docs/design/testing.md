@@ -67,7 +67,7 @@ Precedent: the dca247 "typecheck is the lie-check" decision record; this rule st
 
 ## Determinism
 
-- **Fake `Clock` and `IdGen` ports** everywhere below e2e; `RETRO_TEST_CLOCK` env for spawned processes; seeded fixtures; serial Playwright projects for real-time scenarios and for the starvation class (`apps/web` §the `starved` project, and the stall-edge passage below for when a scenario belongs in it); temp stage (`--data`) + random port per run; `data-testid`-only selection in web tests.
+- **Fake `Clock` and `IdGen` ports** everywhere below e2e; `RETRO_TEST_CLOCK` env for spawned processes; seeded fixtures; serial Playwright projects for real-time scenarios and for the starvation class (`apps/web` §the `starved` project, and the stall-edge passage below for when a scenario belongs in it); temp root (`--home`) + random port per run; `data-testid`-only selection in web tests.
 
 ## Operational rules
 

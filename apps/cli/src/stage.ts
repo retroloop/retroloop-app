@@ -2,8 +2,10 @@ import { homedir } from 'node:os'
 import { isAbsolute, join, resolve } from 'node:path'
 import { readLock } from '#server/lock'
 
-/** cli.md §Globals: `--data <dir>` [default: ~/.ai-team/retro], env `RETROLOOP_HOME` (alias `RETRO_HOME`). */
-export const DEFAULT_DATA_DIR = join('.ai-team', 'retro')
+/** cli.md §Globals: `--home <root>` [default: ~/.retroloop], env `RETROLOOP_HOME`. */
+export const DEFAULT_HOME = '.retroloop'
+/** The stage lives under the root: everything else Retroloop owns is its sibling. */
+export const DATA_DIRNAME = 'data'
 /** architecture.md §Network — never 5000/7000, which macOS AirPlay takes. */
 export const DEFAULT_PORT = 24100
 export const LOCK_FILENAME = 'server.lock'
@@ -11,7 +13,9 @@ export const LOCK_FILENAME = 'server.lock'
 export type Environment = Readonly<Record<string, string | undefined>>
 
 export type Stage = {
-  /** The data directory that *is* the stage (KC-0013). */
+  /** The root folder everything Retroloop owns hangs off (`~/.retroloop`). */
+  readonly home: string
+  /** The data directory that *is* the stage (KC-0013), always `<home>/data`. */
   readonly dataDir: string
   readonly lockFile: string
   readonly port: number
@@ -22,18 +26,33 @@ export type Stage = {
 }
 
 export type StageOptions = {
-  readonly data?: string
+  /** The root folder, not the data directory: `--home <root>`. */
+  readonly home?: string
   readonly port?: number
   readonly env?: Environment
-  /** Where a relative `--data` is resolved from. */
+  /** Where a relative `--home` is resolved from. */
   readonly cwd?: string
 }
 
-export function resolveDataDir(options: StageOptions = {}): string {
+/**
+ * The one root folder (RL-49).
+ *
+ * `--home` and `RETROLOOP_HOME` name the **root**, and the stage, the backups and
+ * the exports are all found relative to it — so a second Retroloop (a test, a
+ * second machine profile) is one directory, not four coordinated paths. The
+ * older `RETRO_HOME` named the data directory; it is not read anywhere, because
+ * silently reinterpreting an existing value as a root would move the stage a
+ * level down without anyone asking for it.
+ */
+export function resolveHome(options: StageOptions = {}): string {
   const env = options.env ?? {}
-  const chosen = options.data ?? env.RETROLOOP_HOME ?? env.RETRO_HOME
-  if (chosen === undefined) return join(homedir(), DEFAULT_DATA_DIR)
+  const chosen = options.home ?? env.RETROLOOP_HOME
+  if (chosen === undefined) return join(homedir(), DEFAULT_HOME)
   return isAbsolute(chosen) ? chosen : resolve(options.cwd ?? process.cwd(), chosen)
+}
+
+export function resolveDataDir(options: StageOptions = {}): string {
+  return join(resolveHome(options), DATA_DIRNAME)
 }
 
 /**
@@ -51,7 +70,8 @@ export function resolveDataDir(options: StageOptions = {}): string {
  */
 export function resolveStage(options: StageOptions = {}): Stage {
   const env = options.env ?? {}
-  const dataDir = resolveDataDir(options)
+  const home = resolveHome(options)
+  const dataDir = join(home, DATA_DIRNAME)
   const lockFile = join(dataDir, LOCK_FILENAME)
 
   const fromEnv = Number.parseInt(env.RETRO_PORT ?? '', 10)
@@ -64,6 +84,7 @@ export function resolveStage(options: StageOptions = {}): Stage {
 
   const url = `http://localhost:${port}`
   return {
+    home,
     dataDir,
     lockFile,
     port,

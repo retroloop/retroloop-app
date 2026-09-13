@@ -46,7 +46,7 @@ export function registerDownCommand(
     'Stop the server for this stage',
     (yargs) => yargs,
     async (args) => {
-      const stage = resolveStage({ data: args.data, env: runtime.env, cwd: runtime.cwd })
+      const stage = resolveStage({ home: args.home, env: runtime.env, cwd: runtime.cwd })
       const output = createOutput({
         json: args.json === true,
         quiet: args.quiet === true,

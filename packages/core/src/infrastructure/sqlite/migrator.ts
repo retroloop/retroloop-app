@@ -10,7 +10,10 @@ import { systemClock } from '#infrastructure/system/system-clock.adapter'
 export type MigrateOptions = {
   /** Defaults to the static registry; tests point it at a fixture set. */
   readonly registry?: readonly Migration[]
-  /** Stage `backups/` directory. Omitted (tests) means no snapshot is taken. */
+  /**
+   * Where the pre-batch snapshot goes — `<root>/backups/db/` in the product,
+   * placed by the caller. Omitted (tests) means no snapshot is taken.
+   */
   readonly backupsDir?: string
   readonly clock?: Clock
 }
@@ -88,7 +91,7 @@ export function pendingMigrations(
  *
  * A database that has never had a migration applied is skipped: there is no
  * earlier state to restore, and snapshotting an empty file on every fresh install
- * would fill `backups/` with nothing.
+ * would fill `<root>/backups/db/` with nothing.
  */
 function backupBeforeBatch(db: Database, backupsDir: string, batch: number, clock: Clock): string {
   mkdirSync(backupsDir, { recursive: true })

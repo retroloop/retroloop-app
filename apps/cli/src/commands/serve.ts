@@ -54,7 +54,7 @@ export function registerServeCommand(
       refuseWildcardBind(bind)
 
       const stage = resolveStage({
-        data: args.data,
+        home: args.home,
         port: args.port,
         env: runtime.env,
         cwd: runtime.cwd,

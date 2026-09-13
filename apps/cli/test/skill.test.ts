@@ -52,7 +52,7 @@ type Invocation = {
 }
 
 /** Flags that are global rather than any one command's. */
-const GLOBAL_FLAGS = new Set(['--json', '--data', '--quiet', '--help', '--version'])
+const GLOBAL_FLAGS = new Set(['--json', '--home', '--quiet', '--help', '--version'])
 
 function parseInvocations(markdown: string): Invocation[] {
   const fences = [...markdown.matchAll(/```([\s\S]*?)```/g)].map((match) => match[1] ?? '')

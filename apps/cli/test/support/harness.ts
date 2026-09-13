@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { type Clock, createMemoryStore, type Store } from '@retro/core'
@@ -68,13 +68,16 @@ function frozenClock(iso = '2026-08-23T09:00:00.000Z'): Clock {
  * isolation from the thing that makes them a CLI. `close()` is a no-op on memory,
  * so the per-command close that production relies on costs nothing here.
  *
- * `RETRO_HOME` points at a throwaway directory: `resolveStage` reads the stage's
+ * `RETROLOOP_HOME` points at a throwaway root: `resolveStage` reads the stage's
  * lock file to learn the running port, and a test must never read — or write —
- * the developer's real `~/.ai-team/retro`.
+ * the developer's real `~/.retroloop`.
  */
 export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
-  const dataDir = mkdtempSync(join(tmpdir(), 'retro-cli-'))
-  stages.push(dataDir)
+  const home = mkdtempSync(join(tmpdir(), 'retro-cli-'))
+  stages.push(home)
+
+  const dataDir = join(home, 'data')
+  mkdirSync(dataDir, { recursive: true })
 
   const store = overrides.openStore === undefined ? createMemoryStore() : undefined
   const clock = overrides.clock ?? frozenClock()
@@ -93,8 +96,8 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
       const stderr: string[] = []
 
       const code = await run(argv, {
-        env: { RETRO_HOME: dataDir },
-        cwd: dataDir,
+        env: { RETROLOOP_HOME: home },
+        cwd: home,
         clock,
         out: (line) => stdout.push(line),
         err: (line) => stderr.push(line),

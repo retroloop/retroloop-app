@@ -19,9 +19,12 @@ export {
 export { acquireLock, isProcessAlive, type LockInfo, readLock, releaseLock } from '#server/lock'
 export { type RunningServer, type ServerHandler, startServer } from '#server/serve'
 export {
+  DATA_DIRNAME,
+  DEFAULT_HOME,
   DEFAULT_PORT,
   LOCK_FILENAME,
   resolveDataDir,
+  resolveHome,
   resolveStage,
   type Stage,
 } from '#stage'

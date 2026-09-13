@@ -177,17 +177,20 @@ arm() {
 }
 
 # ── certify ───────────────────────────────────────────────────────────────────
+# The root the CLI is pointed at with `--home`, and the stage under it — the
+# same `<root>/data` layout the product uses, so certify proves the real one.
+CERTIFY_HOME=''
 CERTIFY_STAGE=''
 CERTIFY_KEEP=0
 LEGS_FAILED=0
 
 cleanup_stage() {
-  [[ -n "$CERTIFY_STAGE" ]] || return 0
+  [[ -n "$CERTIFY_HOME" ]] || return 0
   if [[ $CERTIFY_KEEP -eq 1 ]]; then
-    say "the stage is kept at $CERTIFY_STAGE"
+    say "the stage is kept at $CERTIFY_HOME"
     return 0
   fi
-  rm -rf "$CERTIFY_STAGE"
+  rm -rf "$CERTIFY_HOME"
 }
 
 leg() { printf '\nwatch-review: ── leg %s\n' "$1" >&2; }
@@ -197,7 +200,7 @@ fail() {
   LEGS_FAILED=$((LEGS_FAILED + 1))
 }
 
-stage_cli() { "${CLI[@]}" "$@" --data "$CERTIFY_STAGE" --json; }
+stage_cli() { "${CLI[@]}" "$@" --home "$CERTIFY_HOME" --json; }
 
 # The draft is the smallest thing `revision create` accepts that still has a
 # record in it, because the finish gate will not open over an empty round.
@@ -242,7 +245,7 @@ WATCHER_PID=''
 arm_background() {
   local retro="$1" timeout="$2" out="$3"
   "${CLI[@]}" review wait --follow --retro "$retro" --timeout "$timeout" \
-    --data "$CERTIFY_STAGE" --json >"$out" 2>&1 &
+    --home "$CERTIFY_HOME" --json >"$out" 2>&1 &
   # Through a global rather than stdout: `pid=$(arm_background …)` would start
   # the job inside a command substitution's subshell, and the parent shell can
   # never `wait` on a process that is not its own child.
@@ -272,7 +275,9 @@ certify() {
   which has no CLI surface because finishing is the human's (KC-0010). Run this
   from the repo, or set WATCH_REVIEW_STAGE_TOOL."
 
-  CERTIFY_STAGE="$(mktemp -d "${TMPDIR:-/tmp}/retro-watch-certify-XXXXXX")"
+  CERTIFY_HOME="$(mktemp -d "${TMPDIR:-/tmp}/retro-watch-certify-XXXXXX")"
+  CERTIFY_STAGE="$CERTIFY_HOME/data"
+  mkdir -p "$CERTIFY_STAGE"
   trap cleanup_stage EXIT
   trap 'cleanup_stage; exit 130' INT
   trap 'cleanup_stage; exit 143' TERM

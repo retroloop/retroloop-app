@@ -1,5 +1,5 @@
 import { type ChildProcess, spawn } from 'node:child_process'
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -46,6 +46,8 @@ export type WorldState = {
 }
 
 export type RetroWorld = {
+  /** The root folder `--home` names; the stage is `<home>/data`. */
+  readonly home: string
   readonly dataDir: string
   readonly state: WorldState
   /** Runs the real binary against this stage and waits for it. */
@@ -104,7 +106,9 @@ function freePort(): Promise<number> {
 }
 
 export function createWorld(): RetroWorld {
-  const dataDir = mkdtempSync(join(tmpdir(), 'retro-e2e-'))
+  const home = mkdtempSync(join(tmpdir(), 'retro-e2e-'))
+  const dataDir = join(home, 'data')
+  mkdirSync(dataDir, { recursive: true })
   const state: WorldState = { rids: [] }
   const environment = { ...process.env, RETRO_TEST_CLOCK: TEST_CLOCK }
 
@@ -115,15 +119,16 @@ export function createWorld(): RetroWorld {
     spawn('bun', ['run', script, ...args], { env: environment, stdio: 'pipe' })
 
   return {
+    home,
     dataDir,
     state,
 
     async cli(...args) {
-      return collect(runBun(CLI_BIN, [...args, '--data', dataDir]))
+      return collect(runBun(CLI_BIN, [...args, '--home', home]))
     },
 
     background(...args) {
-      return { finished: collect(runBun(CLI_BIN, [...args, '--data', dataDir])) }
+      return { finished: collect(runBun(CLI_BIN, [...args, '--home', home])) }
     },
 
     async tool(...args) {
@@ -138,7 +143,7 @@ export function createWorld(): RetroWorld {
       let exited: number | undefined
       let serverStderr = ''
 
-      server = runBun(CLI_BIN, ['serve', '--data', dataDir, '--port', String(port), '--json'])
+      server = runBun(CLI_BIN, ['serve', '--home', home, '--port', String(port), '--json'])
       server.stderr?.on('data', (chunk: Buffer) => {
         serverStderr += chunk.toString()
       })
@@ -178,7 +183,7 @@ export function createWorld(): RetroWorld {
     },
 
     backups() {
-      const directory = join(dataDir, 'backups')
+      const directory = join(home, 'backups', 'db')
       return existsSync(directory) ? readdirSync(directory) : []
     },
 
@@ -191,7 +196,7 @@ export function createWorld(): RetroWorld {
         await Promise.race([stopped, delay(5000)])
         server = undefined
       }
-      rmSync(dataDir, { recursive: true, force: true })
+      rmSync(home, { recursive: true, force: true })
     },
   }
 }
