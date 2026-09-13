@@ -24,6 +24,7 @@
     "@biomejs/biome": "^2.5.10",
     "@playwright/test": "^1.62.1",
     "@retro/cli": "workspace:*",
+    "@retro/core": "workspace:*",
     "@types/bun": "^1.4.0",
     "playwright-bdd": "^9.2.0",
     "typescript": "^7.0.2"

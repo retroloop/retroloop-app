@@ -10,6 +10,7 @@ import {
   recordRelationsResultSchema,
 } from '#trpc/views.schema'
 import {
+  toWireClaim,
   toWireLifecycle,
   toWireRecordAttribute,
   toWireRecordDetail,
@@ -68,6 +69,11 @@ export const recordsRouter = router({
           // pass it on (#103). Same shape `records.listAll` sends, through the
           // same converter, so a record reads the same on both lists.
           lifecycle: toWireLifecycle(view.lifecycle),
+          // Who has picked it up, if anybody — the card's "in progress" badge
+          // (RL-50). There is no procedure to write one: the claim is the
+          // solving side's and it is taken through the CLI, in the AI's own
+          // process, so this wire carries the reading and nothing else.
+          claim: toWireClaim(view.claim),
         })),
       }
     }),
@@ -125,6 +131,10 @@ export const recordsRouter = router({
           startedAt: answer.session.startedAt,
         },
         lifecycle: toWireLifecycle(answer.lifecycle),
+        // Beside the lifecycle and not inside it: a claim is not a fourth
+        // position on that axis — a claimed record is still open — and the
+        // review card reads the same key off `list` above.
+        claim: toWireClaim(answer.claim),
         // The one key this page adds that the review card does not read: a
         // value is data about a record and is something you go and look at
         // (`views.schema.ts` §recordPageSchema).

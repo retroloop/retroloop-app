@@ -1,6 +1,7 @@
 import {
   type AttributeDefinition,
   type DomainEvent,
+  type EffectiveClaim,
   type EffectiveDecision,
   type EffectiveLifecycle,
   type LabelDefinition,
@@ -21,6 +22,7 @@ import type {
   decisionSchema,
   labelDefinitionSchema,
   recordAttributeSchema,
+  recordClaimSchema,
   recordDetailSchema,
   recordLabelSchema,
   recordLifecycleSchema,
@@ -164,6 +166,26 @@ export function toWireRecordRelation(
   relation: RecordRelationDetail,
 ): z.infer<typeof recordRelationSchema> {
   return { ...toWireRecordRelationRef(relation), title: relation.title }
+}
+
+/**
+ * Who is holding a record, or `null` — this file's one job, on the key the
+ * review UI draws the in-progress badge from.
+ *
+ * `undefined` means nobody, and it means it for two different histories: a record
+ * nobody ever claimed, and one somebody claimed and gave back
+ * (`record-claim.service.ts`). Both become the same `null` here, because that is
+ * the question a badge asks — a wire that made the browser tell those two apart
+ * would have every reader of this key writing the same `if`.
+ *
+ * The `version` on the row is dropped rather than renamed: nothing renders it,
+ * and every field on this wire is a field the typed mock has to produce.
+ */
+export function toWireClaim(
+  claim: EffectiveClaim | undefined,
+): z.infer<typeof recordClaimSchema> | null {
+  if (claim === undefined) return null
+  return { claimedAt: claim.claimedAt, actor: claim.actor }
 }
 
 export function toWireLifecycle(

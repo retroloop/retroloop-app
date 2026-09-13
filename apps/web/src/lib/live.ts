@@ -76,6 +76,13 @@ export type QueryFamily = 'records' | 'threads' | 'retros'
  * would not change that; only a second scope on the event could, and no page has
  * asked for one.
  *
+ * **`RecordClaimed` and `RecordUnclaimed` fall to that branch too, and there the
+ * default is the mechanism rather than a fallback** (RL-50). The in-progress
+ * badge is drawn from `records.list`, so `records` is exactly the family an
+ * agent picking a record up made stale: the card re-reads and the badge appears
+ * — or comes down when the record is given back or resolved — with no reload and
+ * no second query family involved. Nothing else on the page reads a claim.
+ *
  * Everything else lands on `records` alone, which is where `RequestOpened`,
  * `RequestResponded` and `RequestClosed` end up (retro 4 `r-remove-requests`):
  * the panel they refreshed is gone and no procedure reads a request, so there is

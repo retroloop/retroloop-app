@@ -584,6 +584,31 @@ const PLAN: readonly Step[] = [
     why: 'and taken off again — the undo, which has to follow the read it was added for',
     input: () => ({ fromId: 1, toId: 2, related: false }),
   },
+  /**
+   * **The record an agent is holding** — the only step in this run whose answer
+   * carries a populated `claim`, and the reason it is a second `records.byId`
+   * rather than an assertion on the first.
+   *
+   * `claim` is null until somebody takes the record, and **no procedure can take
+   * one**: the claim is written through the CLI in the AI's own process and this
+   * wire carries only the reading (`views.schema.ts` §recordClaimSchema). So the
+   * *mutate before you read* rule cannot be satisfied by ordering here — the
+   * fixture world opens holding the claim instead (`trpc-mock.ts`
+   * §OPENING_CLAIMS), and this step is what hands the populated half to the
+   * strict schema. Without it every `claim` in this run is null and a field
+   * canned inside the object would sail through at the one depth this check
+   * exists for.
+   *
+   * `#7` is that record — `r-ipad-scroll` of the third retrospective, approved
+   * and open in a finished round, which is what a queue record looks like. It is
+   * also the only `records.byId` call in this plan that reads a retrospective
+   * other than the one under review.
+   */
+  {
+    path: 'records.byId',
+    why: 'the record page of a record somebody is holding — the populated half of the claim, which no procedure in this run can create',
+    input: () => ({ id: 7 }),
+  },
   {
     path: 'events.onRetro',
     why: 'the stream, replaying everything the steps above published',

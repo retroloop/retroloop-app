@@ -142,6 +142,30 @@ export const recordLifecycleSchema = z.strictObject({
 })
 
 /**
+ * **Who is holding a record right now, and since when** — the in-progress
+ * marker, on the wire (`record-claim.service.ts`).
+ *
+ * Two fields and no third. `version` is on the table and is not here: a reader
+ * of this key asks one question — is anybody on this, and who — and a number
+ * that only says how many times the record has changed hands is a field the
+ * typed mock would have to produce for nothing.
+ *
+ * `actor` is asked because either party may hold a record. The AI is who the
+ * marker exists for, but the human does the work too, and a badge that could
+ * only mean "an agent has this" would go up beside a record he is editing
+ * himself (`claim-record.use-case.ts`).
+ *
+ * **Nullable wherever it rides, never absent**, which is this file's one
+ * systematic conversion: a record nobody is holding and one somebody gave back
+ * read identically, and they read as `null`.
+ */
+export const recordClaimSchema = z.strictObject({
+  /** When the claim in force was taken — the `at` of the row that took it. */
+  claimedAt: z.string(),
+  actor: actorSchema,
+})
+
+/**
  * One entry of a vocabulary, as the settings page manages it.
  *
  * The owner's *"each label or attribute is going to be a global thing"* — so
@@ -368,6 +392,22 @@ export const recordSummarySchema = z.strictObject({
    * strict object cannot reference a shape TypeScript has not seen yet.
    */
   lifecycle: recordLifecycleSchema,
+  /**
+   * **Whether somebody has picked this record up** — the "in progress" badge the
+   * review card wears, and null while nobody is holding it (RL-50).
+   *
+   * It is on the *review's* list and on the record's own page, and deliberately
+   * not on `recordListAllRowSchema`: the flat cross-retro page is a place to
+   * find a record and filter for one, and a marker that changes under the reader
+   * while an agent works the queue earns nothing there. Every element earns its
+   * place (CLAUDE.md).
+   *
+   * The badge is driven by this field and by nothing else. Nothing on the page
+   * infers "somebody is on this" from a lifecycle position, a verdict or the
+   * passage of time — a claim is a row somebody wrote, and the absence of one is
+   * an answer rather than a gap.
+   */
+  claim: recordClaimSchema.nullable(),
 })
 
 export const recordListSchema = z.strictObject({
@@ -692,6 +732,18 @@ export const recordPageSchema = recordDetailSchema.extend({
   retroNumber: z.int().positive(),
   session: sessionIdentitySchema,
   lifecycle: recordLifecycleSchema,
+  /**
+   * **Who is holding it**, beside the lifecycle rather than inside it — the same
+   * key the review card reads, so one component draws the badge on both
+   * surfaces (`recordSummarySchema` above).
+   *
+   * It is here rather than only on the review's list because this page is the
+   * one place a reader goes to ask where a record stands: the two axes are in
+   * its header, and "somebody is working on this right now" is the third thing
+   * that answers that question. It is not a fourth position on either axis — a
+   * claimed record is still open and still approved (`docs/design/lifecycle.md`).
+   */
+  claim: recordClaimSchema.nullable(),
   /**
    * The values the record carries, with the name and type of each — **this page
    * and no other**.

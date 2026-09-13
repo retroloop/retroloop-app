@@ -4,6 +4,7 @@ import { MessageSquarePlusIcon } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import { ActorTag } from '@/components/actor-tag'
 import { RecordLabelTags } from '@/components/records/record-labels'
+import { ClaimTag } from '@/components/records/record-lifecycle'
 import { DecisionControls } from '@/components/review/decision-controls'
 import { DecisionStateTag } from '@/components/review/decision-state'
 import { Prose } from '@/components/review/prose'
@@ -94,6 +95,25 @@ export function RecordCard({
               `involvement`, which is inside the decision rather than beside
               it. */}
           <DecisionStateTag state={summary.state} />
+          {/**
+           * **Somebody has picked this record up** (RL-50) — the in-progress
+           * marker, driven by the wire field and by nothing else.
+           *
+           * It rides on `summary` rather than on `detail`, so it is on screen
+           * with the heading instead of arriving a query later: the claim moves
+           * while the reviewer is reading — an agent takes a record off the
+           * queue, and the card re-reads `records.list` off the event
+           * (`lib/live.ts`) — and a badge that appeared a beat after the card
+           * would flicker on every one of those.
+           *
+           * Absent, not greyed, on a record nobody is holding: that is most of
+           * them, and a placeholder for a mark a record does not have is a row
+           * of whitespace on every card. Nothing here reads a verdict, a
+           * lifecycle position or the passage of time as evidence that someone
+           * is working — a claim is a row somebody wrote (CLAUDE.md: nothing is
+           * ever inferred from silence).
+           */}
+          {summary.claim === null ? null : <ClaimTag />}
           {detail.data === undefined ? null : (
             // With the sections rather than with the heading: `requester` rides
             // on the narrative, so it arrives when the narrative does.

@@ -371,6 +371,9 @@ describe('the tRPC surface', () => {
             contentChangedSince: null,
             // On the summary since #103, the same shape `records.listAll` sends.
             lifecycle: { status: 'open', refs: [], note: null, actor: null, at: null },
+            // Nobody is holding it, which is what `undefined` on the read model
+            // means and what the wire says with null (views.schema.ts header).
+            claim: null,
           },
           {
             rid: 'r-record-2',
@@ -386,6 +389,7 @@ describe('the tRPC surface', () => {
             contentChangedSince: null,
             // On the summary since #103, the same shape `records.listAll` sends.
             lifecycle: { status: 'open', refs: [], note: null, actor: null, at: null },
+            claim: null,
           },
         ],
       })
@@ -621,6 +625,9 @@ describe('the tRPC surface', () => {
         // Untouched, so `undefined` on the read model becomes null on the wire —
         // never an absent key (views.schema.ts header).
         lifecycle: { status: 'open', refs: [], note: null, actor: null, at: null },
+        // And nobody is holding it. The populated half is the claim block that
+        // follows this describe, which reads the same record both ways.
+        claim: null,
         // A record nobody has marked up. The populated half is asserted in the
         // labels-and-attributes block below, on this same procedure.
         attributes: [],
@@ -832,6 +839,63 @@ describe('the tRPC surface', () => {
       expect(page.record.agreedDirection).toBe(legacy.record.agreedDirection)
       expect(page.record.footprint).toBe(legacy.record.footprint)
       expect(page.record.solutions).toBeNull()
+    })
+  })
+
+  /**
+   * **Who is holding a record, on the two reads the review UI puts a badge on.**
+   *
+   * There is no procedure here to claim with, and that is the design rather than
+   * a gap: the claim is the solving side's and it is written through the CLI, in
+   * the AI's own process, like every other AI write (KC-0004). What the wire owes
+   * is the *reading* — so the acts below go through the App and the assertions go
+   * through the router, which is the only arrangement that proves the two agree.
+   *
+   * The resolve is the second half and not a second test: the core clears a
+   * standing claim when the record is resolved (`set-record-lifecycle.use-case.ts`),
+   * and a badge that went up and never came down is the failure this feature would
+   * actually have. One test therefore watches both edges on one record.
+   */
+  describe('the in-progress claim', () => {
+    const claimOnList = async (rid: string) =>
+      (await api.caller.records.list({ retroId })).records.find((record) => record.rid === rid)
+        ?.claim
+
+    test('rides on records.list and records.byId, and is cleared by the resolve', async () => {
+      expect(await claimOnList('r-record-1')).toBeNull()
+      expect((await api.caller.records.byId({ id: 1 })).claim).toBeNull()
+
+      await api.app.records.claim.execute({ actor: 'ai', id: 1, claimed: true })
+
+      const held = { claimedAt: api.clock.iso(), actor: 'ai' } as const
+      expect(await claimOnList('r-record-1')).toEqual(held)
+      expect((await api.caller.records.byId({ id: 1 })).claim).toEqual(held)
+      // The record beside it is untouched: a claim is on one record, and a
+      // listing that spread it would put the badge on the whole column.
+      expect(await claimOnList('r-record-2')).toBeNull()
+
+      await api.caller.records.setLifecycle({
+        retroId,
+        rid: 'r-record-1',
+        status: 'resolved',
+        refs: ['a1b2c3d'],
+      })
+
+      expect(await claimOnList('r-record-1')).toBeNull()
+      expect((await api.caller.records.byId({ id: 1 })).claim).toBeNull()
+    })
+
+    /**
+     * A released claim reads exactly like one nobody ever took
+     * (`record-claim.service.ts`), so the wire says `null` for both — the one
+     * shape every reader of this key folds, rather than a bit to interpret.
+     */
+    test('is null again once the holder gives the record back', async () => {
+      await api.app.records.claim.execute({ actor: 'ai', id: 1, claimed: true })
+      await api.app.records.claim.execute({ actor: 'ai', id: 1, claimed: false })
+
+      expect(await claimOnList('r-record-1')).toBeNull()
+      expect((await api.caller.records.byId({ id: 1 })).claim).toBeNull()
     })
   })
 

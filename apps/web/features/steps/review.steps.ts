@@ -1086,6 +1086,27 @@ When('the AI replies {string} in the review thread', async ({ page }, text: stri
   }, text)
 })
 
+/**
+ * **The AI takes a record off the queue** (RL-50) — the in-progress marker being
+ * put up, in the AI's own process.
+ *
+ * It names the retrospective, like the resolve step in `records.steps.ts` and for
+ * that step's reason: an agent works a queue that spans retrospectives, and a rid
+ * on its own does not name a record (A5). Nothing about this goes through the
+ * page, because nothing can — there is no procedure to claim with, by design.
+ */
+When(
+  'the AI claims record {string} of retro {int}',
+  async ({ page }, rid: string, retro: number) => {
+    await page.evaluate(
+      ({ retroId, record }) => {
+        ;(window as unknown as MockWindow).retroMock.aiClaim(retroId, record)
+      },
+      { retroId: retro, record: rid },
+    )
+  },
+)
+
 /* ── what the reviewer sees ───────────────────────────────────────────────── */
 
 Then('the records appear in the order {string}', async ({ page }, order: string) => {
@@ -1374,6 +1395,31 @@ Then(
 /** Whose complaint this is (`requester`), in the header where the record starts. */
 Then('record {string} is requested by {string}', async ({ page }, rid: string, party: string) => {
   await expect(card(page, rid).getByTestId('record-requester')).toHaveText(party)
+})
+
+/**
+ * The in-progress marker, read off the card's own header (RL-50).
+ *
+ * `toHaveText` on the tag rather than `toContainText` on the card: a record whose
+ * narrative happened to contain the words would satisfy the looser check while
+ * the badge was missing, which is the assertion that cannot fail
+ * (`r-assertion-value-distinctiveness`).
+ */
+Then('record {string} is marked {string}', async ({ page }, rid: string, mark: string) => {
+  await expect(card(page, rid).getByTestId('record-claim')).toHaveText(mark)
+})
+
+/**
+ * The absence of it, said twice on purpose: the tag is gone, **and** the words
+ * are gone from the header.
+ *
+ * The second half is what makes this the negative of the step above rather than
+ * a check that one testid vanished — a badge that came back under another name,
+ * or a mark left rendered without its hook, would satisfy the count alone.
+ */
+Then('record {string} is not marked {string}', async ({ page }, rid: string, mark: string) => {
+  await expect(card(page, rid).getByTestId('record-claim')).toHaveCount(0)
+  await expect(card(page, rid).getByTestId('record-header')).not.toContainText(mark)
 })
 
 /* ── how prose renders (r-prose-renders-raw) ──────────────────────────────── */

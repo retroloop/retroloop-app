@@ -802,6 +802,23 @@ Feature: Reviewing a revision
     Then record "r-silent-tailer" is "approved"
     And record "r-silent-tailer" wears no status but its verdict and who asked for it
 
+  # RL-50: an agent takes a record off the queue in its own process, and the
+  # review page says so while the reviewer is reading it — the claim lands on the
+  # event stream and the card re-reads records.list, with no reload anywhere.
+  #
+  # The second half is the one that would actually have failed in the field: a
+  # badge that went up and never came down would have the reviewer believing
+  # somebody is still on a record that has been fixed. Resolving gives the record
+  # back in the same unit of work (core's set-record-lifecycle), so the mark goes
+  # with it — and the scenario reads both edges on one record, because a page that
+  # only ever put the badge up would pass a test that only looked once.
+  Scenario: A record the AI has picked up says so, and stops saying so once it is resolved
+    Given the AI claims record "r-stale-lock" of retro 1
+    Then record "r-stale-lock" is marked "in progress"
+    When the AI resolves record "r-stale-lock" of retro 1, citing "abc123"
+    Then record "r-stale-lock" is not marked "in progress"
+    And the browser reported no console errors
+
   # The one deliberate exception to read-only-after-finish went with the feature:
   # a finished review now takes nothing at all. The card that was the exception
   # is the card asserted shut.

@@ -1,6 +1,6 @@
 import type { AppRouterOutputs } from '@retro/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArchiveIcon, CircleCheckIcon, CircleDotIcon } from 'lucide-react'
+import { ArchiveIcon, CircleCheckIcon, CircleDashedIcon, CircleDotIcon } from 'lucide-react'
 import { useState } from 'react'
 import { ActorTag } from '@/components/actor-tag'
 import { Button } from '@/components/ui/button'
@@ -89,6 +89,56 @@ export const LIFECYCLE_STATES = Object.keys(LIFECYCLE_TAG) as readonly Lifecycle
 
 export function LifecycleTag({ status }: { status: LifecycleState }) {
   return <Tag look={LIFECYCLE_TAG[status]} testId="record-lifecycle" />
+}
+
+/**
+ * **Somebody has picked this record up** — the in-progress marker, in the same
+ * tag idiom every status here wears (RL-50).
+ *
+ * **It is not a position on either axis**, which is why it is a look of its own
+ * rather than a fourth entry in `LIFECYCLE_TAG` above. A claimed record is still
+ * open and still carries whatever verdict it was given; what the claim adds is
+ * that someone is doing the work *now*. So it renders beside those tags and
+ * only when the wire says a claim stands — never inferred from a verdict, from a
+ * lifecycle position, or from how long a record has been sitting there.
+ *
+ * **The hue is chosen the way §LIFECYCLE_TAG chooses one — by what it collides
+ * with — and it lands on amber.** The palette is five tones and every one of
+ * them already belongs to something, so the question is never "which is free"
+ * but "which one is this badge least likely to be read as":
+ *
+ * - **green is out.** `approved` is green and an approved record is by far the
+ *   most common thing this badge appears beside — the queue an agent claims out
+ *   of holds nothing else. Two green pills saying two different things is the
+ *   confusion retro 4 `r-remove-hold` was filed over.
+ * - **blue is out, twice over.** `resolved` is blue, and "in progress" next to
+ *   "resolved" in one hue is the single pair a reader most needs to tell apart;
+ *   `ai` is blue too, and the requester tag is right beside this one.
+ * - **neutral is the worst of the five here**, which is not obvious: `open` is
+ *   neutral, and *every* claimable record is open — so on the record page, where
+ *   both tags render, neutral would collide on every single card it appeared on.
+ * - **red is `declined`'s**, and a red IN PROGRESS reads as something having
+ *   gone wrong rather than as work under way.
+ *
+ * That leaves amber, whose owners are `pending` and `archived`. Neither is
+ * common beside a claim — the queue offers approved records, and a claim is
+ * refused on an archived one — and the two states amber can reach it from are
+ * both odd acts somebody took deliberately: claiming a record the review has
+ * not decided, or archiving one an agent is working on. The tag carries the
+ * state in the **word and the icon** and never in the colour alone (`tag.tsx`),
+ * so what the hue owes is to be told apart from its neighbours, which here it is.
+ *
+ * The icon is a dashed circle: an outline that is not closed yet, which is the
+ * one thing a glyph can say that the filled circles beside it do not.
+ */
+export const CLAIM_TAG: TagLook = {
+  fill: 'bg-tone-amber-soft text-tone-amber',
+  label: 'in progress',
+  icon: CircleDashedIcon,
+}
+
+export function ClaimTag() {
+  return <Tag look={CLAIM_TAG} testId="record-claim" />
 }
 
 /**

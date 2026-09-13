@@ -56,6 +56,22 @@ test('the end of a round refetches the retrospective, either way it went', () =>
 })
 
 /**
+ * **The in-progress marker, going up and coming down** (RL-50).
+ *
+ * Both land on the everything-else branch, and here that default is the whole
+ * mechanism rather than a fallback: the badge is drawn from `records.list`, so
+ * `records` is exactly the family that stopped being true — the card re-reads
+ * and the badge appears or disappears without a reload. Asserted rather than
+ * assumed, because an entry added above them that swallowed these two names
+ * would leave the badge frozen on whatever it said when the page loaded, with
+ * nothing else on the page wrong to give it away.
+ */
+test('a record picked up or given back makes the records stale, and only them', () => {
+  expect(staleAfter('RecordClaimed')).toEqual(['records'])
+  expect(staleAfter('RecordUnclaimed')).toEqual(['records'])
+})
+
+/**
  * The names that survive only so a store written before their feature was
  * removed still parses (retro 4 `r-remove-requests`). They must map to something
  * harmless rather than to a crash or a special case.

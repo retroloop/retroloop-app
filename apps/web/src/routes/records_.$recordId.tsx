@@ -6,6 +6,7 @@ import { NotFoundPage } from '@/components/chrome/placeholder-page'
 import { RecordAttributes } from '@/components/records/record-attributes'
 import { RecordLabelControl, RecordLabelTags } from '@/components/records/record-labels'
 import {
+  ClaimTag,
   LifecycleControl,
   LifecycleTag,
   ResolvedEvidence,
@@ -138,6 +139,19 @@ function RecordPage({ id }: { id: number }) {
                 stands since. */}
             <DecisionStateTag state={page.decision.state} />
             <LifecycleTag status={page.lifecycle.status} />
+            {/**
+             * And whether anybody is on it right now (RL-50) — a third thing
+             * that is true about the record, beside the two axes rather than on
+             * either of them: a claimed record is still open and still carries
+             * the verdict the review gave it.
+             *
+             * This page is where a reader comes to ask where a record stands, so
+             * it is the one surface outside the review that says so. The flat
+             * records page deliberately does not: it is a place to find a record,
+             * and a marker that changed under the reader while an agent worked
+             * the queue would earn nothing there.
+             */}
+            {page.claim === null ? null : <ClaimTag />}
             <ActorTag party={page.record.requester} testId="record-requester" />
           </div>
 

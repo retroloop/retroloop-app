@@ -179,6 +179,15 @@ type StoredRetroState = Exclude<RetroState, 'submitted'>
 /** One row of the flat cross-retro records page, and its lifecycle half. */
 type RecordListAllRow = OutputOf<'records.listAll'>[number]
 type Lifecycle = RecordListAllRow['lifecycle']
+/**
+ * Who is holding a record, as the wire types it — `null` when nobody is, which
+ * is what a record nobody ever claimed and one somebody gave back both read as.
+ *
+ * Off `records.list`'s row rather than off `records.byId`, because the review
+ * card is the surface this key exists for; the record page extends the same
+ * shape, so the one derivation below answers both.
+ */
+type Claim = RecordSummary['claim']
 /** The record page's timeline, as the wire types it — three kinds, discriminated on `kind`. */
 type RecordTimeline = OutputOf<'records.byId'>['timeline'][number][]
 
@@ -270,6 +279,35 @@ type LifecycleRow = {
    * as a state does not need a moment and a line on a list ordered by time
    * does, so the row grew the column the table has always had.
    */
+  readonly at: string
+}
+
+/**
+ * One act of somebody picking a record up, or giving it back — the in-progress
+ * marker the solving lane works out of (RL-50).
+ *
+ * Rows rather than a flag, because that is what `record_claims` is: releasing
+ * appends a version and the highest one stands, so a record somebody took and
+ * gave back keeps the history of both. The fold above them (`claimOf`) is the
+ * one that makes "is anybody on this" a single question.
+ *
+ * `actor` is a real column here as it is on the lifecycle table, and for the same
+ * reason: **either party may hold a record**. The AI is who the marker exists
+ * for, but the human does the work too, and a row that could only mean "an agent
+ * has this" would be the table inferring something nobody wrote.
+ *
+ * Keyed by `(retroId, rid)` exactly as the server keys it — the fixture mints
+ * `r-stale-lock` twice (`crossRetro`), so a fold keyed by rid alone would show
+ * one record's claim on another record's card.
+ */
+type ClaimRow = {
+  readonly retroId: number
+  readonly rid: string
+  /** 1-based and dense per `(retroId, rid)` — what a write numbers itself after. */
+  readonly version: number
+  /** `true` took the record, `false` gave it back. Both are rows. */
+  readonly claimed: boolean
+  readonly actor: NonNullable<Lifecycle['actor']>
   readonly at: string
 }
 
@@ -1129,6 +1167,39 @@ const CLOSED_LIFECYCLE: readonly LifecycleRow[] = [
   },
 ]
 
+/**
+ * **The record the AI has already picked up** — the only claim the world opens
+ * with, and it opens with one for the reason it opens with a lifecycle entry:
+ * `claim` is `null` until something holds the record, so a fixture where nobody
+ * held anything would let every answer's *populated* half go unrendered and
+ * unchecked, with every assertion exercising the empty one.
+ *
+ * It is `r-ipad-scroll` of the third retrospective, and each half of that is
+ * chosen rather than convenient. The **retrospective is finished**, because the
+ * queue an agent claims out of is made of finished rounds; the **record is
+ * approved and still open**, because those are the two things that put it on
+ * that queue at all (`list-lane-records.use-case.ts`). So this row is what a real
+ * store looks like while an agent is working — not an arrangement that could
+ * only exist in a test.
+ *
+ * The actor is `ai` for the same reason `OPENING_RELATIONS`' is: the browser's
+ * context actor is `human` unconditionally, so an AI-authored row is something
+ * no page could ever produce, and a scenario that wants to read one needs the
+ * world to hold it.
+ */
+const THIRD_RETRO_CLAIMED = '2026-08-24T07:10:00.000Z'
+
+const OPENING_CLAIMS: readonly ClaimRow[] = [
+  {
+    retroId: THIRD_RETRO_ID,
+    rid: 'r-ipad-scroll',
+    version: 1,
+    claimed: true,
+    actor: 'ai',
+    at: THIRD_RETRO_CLAIMED,
+  },
+]
+
 /* ── the vocabularies, and what the world opens wearing ───────────────────── */
 
 /**
@@ -1316,6 +1387,15 @@ type World = {
   finishMessages: FinishMessageRow[]
   /** What has been done about each record since the review closed. */
   lifecycle: LifecycleRow[]
+  /**
+   * Who has picked each record up, and who has given one back — the
+   * in-progress marker's rows (RL-50).
+   *
+   * A table of its own beside `lifecycle` rather than a column on it, exactly as
+   * the store keeps it: a claim is not a position on the lifecycle axis, it is a
+   * second thing that is true about a record which is still open.
+   */
+  claims: ClaimRow[]
   /**
    * The two vocabularies — **global**, which is why they hang off the world
    * rather than off a retrospective, and why the page that manages them is
@@ -1706,6 +1786,10 @@ function initialWorld(): World {
     resolutions: [],
     finishMessages: [],
     lifecycle: wide ? [...CLOSED_LIFECYCLE] : [],
+    // Behind `crossRetro` with the rows above it, because the record it is on
+    // belongs to a retrospective only the wider world holds — a claim on a
+    // record nothing has filed would be a row about nobody.
+    claims: wide ? [...OPENING_CLAIMS] : [],
     // The vocabularies are not behind `crossRetro`: they are global, so they are
     // the same list whichever retrospectives the world holds. `bareVocabulary`
     // is the one arrangement that empties them, and it empties what records wear
@@ -2057,6 +2141,9 @@ function summarise(retro: Retrospective, record: RecordSeed, shownRevision: numb
     // The same lifecycle `records.listAll` answers with, from the same helper
     // and the same rows — a record does not stand in two places at once.
     lifecycle: lifecycleOf(retro, record),
+    // And who is holding it, from the same rows the record's own page reads —
+    // so the badge on the card and the badge on that page cannot disagree.
+    claim: claimOf(retro, record),
   }
 }
 
@@ -2248,6 +2335,65 @@ function lifecycleFor(retroId: number, rid: string): LifecycleRow[] {
   return world.lifecycle.filter((row) => row.retroId === retroId && row.rid === rid)
 }
 
+/** Every claim row ever written about one retrospective's record, oldest first. */
+function claimsFor(retroId: number, rid: string): ClaimRow[] {
+  return world.claims.filter((row) => row.retroId === retroId && row.rid === rid)
+}
+
+/**
+ * **Who is holding a record right now** — `effectiveClaim` from core, restated
+ * over the wire shapes: the latest row wins, and it is a claim only when that
+ * row *took* the record rather than gave it back.
+ *
+ * Derived, never canned (`r-mock-world-semantics`). A released record reads
+ * exactly like one nobody ever touched, which is what makes the badge a single
+ * boolean question at the one place that draws it — and what makes a scenario
+ * that watches a claim go up and come down evidence about the page rather than
+ * about a literal somebody typed here.
+ */
+function claimOf(retro: Retrospective, record: RecordSeed): Claim {
+  const latest = claimsFor(retro.retroId, record.rid).at(-1)
+  if (latest === undefined || !latest.claimed) return null
+  return { claimedAt: latest.at, actor: latest.actor }
+}
+
+/**
+ * One act of somebody taking a record or giving it back, from whichever actor
+ * took it — and the event that says so.
+ *
+ * The no-op is refused here because the server refuses it: claiming what is
+ * already claimed is the one refusal this feature exists for — two agents, one
+ * queue, a minute apart — and a mock that answered "done" to the second would
+ * let a scenario prove a behaviour the product does not have
+ * (`claim-record.use-case.ts`).
+ */
+function appendClaim(
+  retro: Retrospective,
+  record: RecordSeed,
+  claimed: boolean,
+  actor: ClaimRow['actor'],
+): void {
+  const previous = claimsFor(retro.retroId, record.rid).at(-1)
+  const held = claimOf(retro, record) !== null
+  if (held === claimed) {
+    throw new Error(
+      held
+        ? `record ${record.rid} is already claimed`
+        : `record ${record.rid} is not claimed, so there is nothing to release`,
+    )
+  }
+
+  world.claims.push({
+    retroId: retro.retroId,
+    rid: record.rid,
+    version: (previous?.version ?? 0) + 1,
+    claimed,
+    actor,
+    at: stamp(),
+  })
+  publish(retro.retroId, claimed ? 'RecordClaimed' : 'RecordUnclaimed', { rid: record.rid })
+}
+
 /**
  * One act of the lifecycle, from whichever actor took it. The router passes the
  * context's actor and the context is always `human`; the AI's half arrives
@@ -2283,6 +2429,21 @@ function appendLifecycle(
     at: stamp(),
   })
   publish(retro.retroId, EVENT_OF_ACT[status], { rid: record.rid })
+
+  /**
+   * **A resolve gives the record back**, in the same unit of work and after
+   * `RecordResolved` — the core's own rule (`set-record-lifecycle.use-case.ts`),
+   * mirrored here rather than in the two callers.
+   *
+   * It is here because both of them are the same act: the human resolving from
+   * the page and the AI resolving in its own process (`aiResolve`) each finish
+   * the work, and a marker that survived the fix would say somebody is still on
+   * a record that is done. The row is written by whoever resolved, which is what
+   * the actor argument already names.
+   */
+  if (status === 'resolved' && claimOf(retro, record) !== null) {
+    appendClaim(retro, record, false, actor)
+  }
   return lifecycleOf(retro, record)
 }
 
@@ -2739,6 +2900,9 @@ export const mockRouter = {
       retroNumber: retro.retroNumber,
       session: retro.session,
       lifecycle: lifecycleOf(retro, record),
+      // Beside the lifecycle, from the same derivation the review card's own
+      // row reads — a claim is not a fourth position on that axis.
+      claim: claimOf(retro, record),
       // The one key this page adds that the review card does not read: a value
       // is data about a record and is something you go and look at, where a
       // label is a classification worth a tag wherever the record is listed.
@@ -3479,7 +3643,7 @@ export const createTrpcLinks: TrpcLinkFactory = () => [mockLink]
 /* ── what a scenario is allowed to do to the world ────────────────────────── */
 
 /**
- * The AI's two moves, exposed to the browser so a scenario can make them happen.
+ * The AI's own moves, exposed to the browser so a scenario can make them happen.
  *
  * There is deliberately nothing here for the human's side: every human act in
  * these tests goes through the page, through the tRPC client, into the router
@@ -3510,6 +3674,24 @@ export type MockControl = {
    * on its own does not name a record (A5).
    */
   aiResolve: (retroId: number, rid: string, refs: readonly string[], note?: string) => void
+  /**
+   * **The AI picks a record up off the queue** — the in-progress marker going
+   * up, taken in the AI's own process (RL-50).
+   *
+   * It is here rather than on the router because there is no procedure for it
+   * and there is deliberately not going to be one: the claim is the solving
+   * side's, written through the CLI like every other AI write (KC-0004), and
+   * what the review UI does with it is *read* it. A scenario that wants to watch
+   * the badge appear reaches for this, and what it is watching is the page
+   * re-reading `records.list` off the event — which is the whole claim.
+   *
+   * **It takes a retrospective**, like `aiResolve` and for its reason: an agent
+   * works a queue that spans retrospectives, and a rid on its own does not name
+   * a record (A5).
+   */
+  aiClaim: (retroId: number, rid: string) => void
+  /** The same act backwards: the AI puts the record back on the queue. */
+  aiUnclaim: (retroId: number, rid: string) => void
   /**
    * The AI closes the review to export — `reviewing → finished`, terminal
    * (retro 4 `r-one-finish-button`). It is here rather than on the router
@@ -3637,6 +3819,16 @@ const control: MockControl = {
       note ?? null,
       'ai',
     )
+  },
+
+  aiClaim(retroId, rid) {
+    const retro = requireRetro(retroId)
+    appendClaim(retro, narrativeAt(revisionAt(retro, latestRevisionN(retro)), rid), true, 'ai')
+  },
+
+  aiUnclaim(retroId, rid) {
+    const retro = requireRetro(retroId)
+    appendClaim(retro, narrativeAt(revisionAt(retro, latestRevisionN(retro)), rid), false, 'ai')
   },
 
   aiReviewReply(text) {
