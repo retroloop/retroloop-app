@@ -167,6 +167,7 @@ describe('actor invariants', () => {
       'revisions.create',
       'decisions.record',
       'records.setLifecycle',
+      'records.claim',
       'threads.addComment',
       'threads.resolve',
       'review.finish',
@@ -174,7 +175,7 @@ describe('actor invariants', () => {
     ]
     const covered = INVARIANTS.length
     /**
-     * **Two** mutating use cases are open to both actors, and the list below is
+     * **Three** mutating use cases are open to both actors, and the list below is
      * the whole of it — anything else added here without an invariant fails this
      * count:
      *
@@ -184,8 +185,10 @@ describe('actor invariants', () => {
      *   from the browser (the owner's session-8 lifecycle ask). This is the one
      *   append-only table with an `actor` column, precisely because it is the
      *   one whose author cannot be inferred from the table.
+     * - `records.claim` — whoever does the work holds the record, and that is
+     *   the AI most of the time and the human sometimes (`record-claim.model.ts`).
      */
-    const bothActors = ['threads.addComment', 'records.setLifecycle']
+    const bothActors = ['threads.addComment', 'records.setLifecycle', 'records.claim']
     expect(covered).toBe(mutating.length - bothActors.length)
   })
 
@@ -323,6 +326,13 @@ describe('actor invariants', () => {
         // entries: un-relating two records is another version carrying the words
         // of the relation it takes off, never a delete of the row that made it.
         recordRelations: ['add'],
+        /**
+         * Written by both actors and append-only for both, like the two above:
+         * giving a record back is a row saying so, never a delete of the row
+         * that took it — which is what keeps "who had this, and when" readable
+         * (`record-claim.model.ts`).
+         */
+        recordClaims: ['add'],
         // The human's permission switch, versioned — and this is the one table
         // where the history *is* the feature: *"the user can be certain that the
         // AI cannot mess around"* is a claim about the past as much as the

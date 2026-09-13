@@ -13,6 +13,7 @@ import { describeListAllRecordsContract } from './list-all-records.contract'
 import { describeListFinishedReviewsContract } from './list-finished-reviews.contract'
 import { describeListRetrosContract } from './list-retros.contract'
 import { describeNoteRepositoryContract } from './note.contract'
+import { describeRecordClaimRepositoryContract } from './record-claim.contract'
 import { describeRecordIdRepositoryContract } from './record-id.contract'
 import { describeRecordLifecycleRepositoryContract } from './record-lifecycle.contract'
 import { describeRecordMarkupRepositoryContract } from './record-markup.contract'
@@ -49,6 +50,7 @@ describeDecisionRepositoryContract('sqlite', makeStore)
 describeFinishMessageRepositoryContract('sqlite', makeStore)
 describeHoldRepositoryContract('sqlite', makeStore)
 describeRecordLifecycleRepositoryContract('sqlite', makeStore)
+describeRecordClaimRepositoryContract('sqlite', makeStore)
 describeDefinitionRepositoryContract('sqlite', makeStore)
 describeRecordMarkupRepositoryContract('sqlite', makeStore)
 describeRecordRelationRepositoryContract('sqlite', makeStore)

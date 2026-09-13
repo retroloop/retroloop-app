@@ -10,6 +10,7 @@ import type {
   RecordLifecycleState,
   RecordLifecycleStatus,
 } from '#domain/models/record-lifecycle.model'
+import { effectiveClaim } from '#domain/services/record-claim.service'
 import {
   type EffectiveLifecycle,
   effectiveLifecycle,
@@ -203,6 +204,49 @@ export class SetRecordLifecycleUseCase {
           { version: written.version, actor: written.actor },
         ),
       )
+
+      /**
+       * **The resolve takes the in-progress marker down**, and it is the one
+       * place outside `records.claim` that writes that table
+       * (`record-claim.model.ts`).
+       *
+       * The work the claim was about has finished, so leaving the marker
+       * standing would make every resolved record read as still being worked on
+       * — and the next agent scanning the lane would skip work nobody is doing.
+       *
+       * **This is not an inference from silence** (KC-0010), which is the rule it
+       * has to answer to: nothing here reads a commit, a close or the passage of
+       * time. It is the same actor, in the same unit of work, at the same
+       * instant, saying that they finished — and the row it writes says so, with
+       * their name on it.
+       *
+       * **Only the resolve.** A reopen does not hand the record back to whoever
+       * had it (picking it up again is a claim, and somebody has to make it), and
+       * an archive says nothing about who was working on the record — the human
+       * putting a record out of the way is not a statement about the agent that
+       * holds it.
+       */
+      if (entry.status === 'resolved') {
+        const claim = await repositories.recordClaims.findLatest(retrospective.id, record.rid)
+        if (effectiveClaim(claim) !== undefined && claim !== undefined) {
+          const released = await repositories.recordClaims.add({
+            retroId: retrospective.id,
+            rid: record.rid,
+            version: claim.version + 1,
+            claimed: false,
+            actor: input.actor,
+            at,
+          })
+          await repositories.events.append(
+            newDomainEvent(
+              'RecordUnclaimed',
+              at,
+              { sessionId: retrospective.sessionId, retroId: retrospective.id, rid: record.rid },
+              { version: released.version, actor: released.actor },
+            ),
+          )
+        }
+      }
 
       return {
         retroId: retrospective.id,

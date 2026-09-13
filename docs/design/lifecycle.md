@@ -277,6 +277,22 @@ the one change that would put this exception back in question — if it lands, t
 export has to answer for a document that can change behind its reader, and this
 paragraph is the thing to revisit first.
 
+**"In progress" is a marker beside this axis, not a fourth position on it.**
+Somebody working on a record writes a row in `record_claims`
+(`data-model.md` §Record claims) and the status machine above does not move: a
+claimed record is `open`, because it is still owed. The two are different kinds
+of fact — every value on this axis is a settled thing somebody reported, with
+references where a claim is being made, while "an agent has this right now" is
+true for an afternoon and then is not. The word `in-progress` exists only in the
+**lane state**, which is the one word a queue row is called by
+(`record-lane.service.ts`): it folds the verdict, this axis and the marker, and it
+is a reading rather than a stored value, exactly like `submitted` one entity up.
+The precedence there is `resolved` first, then an `archived` somebody actually
+took, then the claim, then the verdict — so a resolve outranks a marker nobody
+took down, and a declined record reads `declined` rather than `archived`. A
+resolve clears the claim in the same unit of work, which keeps the two from
+disagreeing in the first place.
+
 **Archived does not mean hidden.** The records page shows archived rows like any
 other and its lifecycle chips are what narrow the list — *"we still want to
 maintain its discussion"* is the reason the state exists, and a row nobody can

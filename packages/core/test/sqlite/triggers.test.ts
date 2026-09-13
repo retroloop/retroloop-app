@@ -191,6 +191,22 @@ describe('append-only triggers', () => {
       at: '2026-09-01T11:00:00.000Z',
     })
 
+    /**
+     * The in-progress marker, which is the **third** table here both actors
+     * write and the first one whose subject is not settled: a claim is true for
+     * an afternoon and then it is not. It is protected all the same, because the
+     * guarantee is about immutability rather than about how long a row stays
+     * interesting — "who had this, and when" is the question the history answers.
+     */
+    await store.recordClaims.add({
+      retroId,
+      rid: 'r-deploy-blocked',
+      version: 1,
+      claimed: true,
+      actor: 'ai',
+      at: '2026-09-13T10:00:00.000Z',
+    })
+
     await store.revisions.add({
       retroId,
       n: 1,
@@ -260,6 +276,15 @@ describe('append-only triggers', () => {
      * that made it.
      */
     { table: 'record_relations', column: 'applied', value: 0 },
+    /**
+     * **The third, and the one that shows the rule is about immutability and
+     * nothing else.** A claim is the shortest-lived row in this store — somebody
+     * picks a record up and gives it back the same afternoon — and rewriting it
+     * would make "who was working on this on Tuesday" unanswerable, which is the
+     * only question it is ever asked. Releasing a record is a new version
+     * (`record-claim.model.ts`).
+     */
+    { table: 'record_claims', column: 'claimed', value: 0 },
     /**
      * The permission switch, and this is the row the guarantee is made of.
      * OWNER RULING 2 asks that *"the user can be certain that the AI cannot mess

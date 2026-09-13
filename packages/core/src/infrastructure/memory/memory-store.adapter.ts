@@ -13,6 +13,7 @@ import { MemoryLabelDefinitionRepository } from '#infrastructure/memory/label-de
 import { MemoryDatabase } from '#infrastructure/memory/memory-database'
 import { MemoryNoteRepository } from '#infrastructure/memory/note.memory.adapter'
 import { MemoryRecordAttributeValueRepository } from '#infrastructure/memory/record-attribute-value.memory.adapter'
+import { MemoryRecordClaimRepository } from '#infrastructure/memory/record-claim.memory.adapter'
 import { MemoryRecordIdRepository } from '#infrastructure/memory/record-id.memory.adapter'
 import { MemoryRecordLabelRepository } from '#infrastructure/memory/record-label.memory.adapter'
 import { MemoryRecordLifecycleRepository } from '#infrastructure/memory/record-lifecycle.memory.adapter'
@@ -52,6 +53,7 @@ export function createMemoryStore(options: MemoryStoreOptions = {}): Store {
     recordLabels: new MemoryRecordLabelRepository(database),
     recordAttributeValues: new MemoryRecordAttributeValueRepository(database),
     recordRelations: new MemoryRecordRelationRepository(database),
+    recordClaims: new MemoryRecordClaimRepository(database),
     settings: new MemorySettingRepository(database),
     notes: new MemoryNoteRepository(database),
     annotations: new MemoryAnnotationRepository(database),

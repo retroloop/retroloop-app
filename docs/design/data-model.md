@@ -578,6 +578,68 @@ one scope for a row that names two records, because `EventScope` addresses one
 retrospective and a relation is the one thing here that crosses them. No
 `revisionN`, because a relation outlives every redraft of either record.
 
+## Record claims — the in-progress marker, versioned, append-only
+
+`record_claims` is `(retro_id, rid, version, claimed, actor, at)` with
+`UNIQUE (retro_id, rid, version)`, one index on `(retro_id, rid, version)` and the
+append-only triggers. It answers one question: **is somebody working on this
+record right now?**
+
+It exists for the lane. `retroloop record queue` is every approved, unresolved
+record of every finished retrospective, and two agents reading that queue a
+minute apart must not both pick up the same record — so the first one writes a
+claim and the second is refused with a conflict.
+
+| field | notes |
+|---|---|
+| `claimed` | `true` takes the record, `false` gives it back. A bit rather than a status word, on `record_labels`' argument: held and not-held are on and off, and no third position exists for a marker to occupy |
+| `actor` | `ai` or `human`. The **third** table in this schema with one, for `record_lifecycle`'s reason: whoever does the work holds the record, and that is the AI most of the time and the human sometimes |
+| `at` | when the row was written — the `claimedAt` every read model shows |
+
+**Addressed `(retro_id, rid)`**, which is the address every per-record table here
+takes. That is the departure from `record_relations`, and the reason for it is the
+same one: a relation names two records and is keyed on global ids, and a claim
+names one.
+
+**It is a marker beside the lifecycle axis, never a fourth position on it.** The
+cheaper move was a fifth `record_lifecycle.status` word, and it is refused because
+that axis answers *"did we do it"* and every value on it is a settled fact
+somebody reported, with references where a claim is being made. "Being worked on"
+is not settled and reports nothing: it is true for an afternoon and then it is
+not, and a claimed record is still `open` in every sense the lifecycle means. So
+`RecordLifecycleStatus`, `EffectiveLifecycle`, `LIFECYCLE_ACT_FROM`, the CHECK on
+`record_lifecycle.status`, the wire lifecycle shape and the export are all
+untouched by this table.
+
+**Append-only, and releasing is a row.** "Claimed at 10:00, released at 11:40,
+claimed again at 14:00" is what somebody asks for when they want to know why a
+record sat still for a day, and the version sequence is what the next claim
+numbers itself after — releasing by deleting would make the next claim version 1
+again and throw the history away. A **released** claim is still the entry in
+force; `effectiveClaim` reads it as nobody holding the record, which is the same
+answer a record nobody ever touched gives.
+
+**A resolve clears the claim**, in the same unit of work and by the same actor
+(`set-record-lifecycle.use-case.ts`) — the one place outside `records.claim` that
+writes this table. The work the claim was about has finished, so a marker left
+standing would make every resolved record read as still being worked on. It is
+not an inference from silence: nothing reads a commit, a close or the passage of
+time, and the row it writes carries the resolver's name. **Only the resolve** —
+a reopen does not hand the record back to whoever had it, and an archive says
+nothing about who was working on it.
+
+**What it is not.** It is not a lock (nothing enforces it below the use case), not
+a lease (it does not expire — a stale claim is released by somebody, which is why
+`unclaim` exists), not an assignment (nobody is given a record; somebody takes
+one), and not exported: a document taken from a finished retrospective still
+cannot change behind its reader, which is what keeps this write's exemption from
+the finish lock defensible alongside the four that came before it.
+
+Events: `RecordClaimed · RecordUnclaimed`, scoped `(sessionId, retroId, rid)`,
+carrying `{ version, actor }`. No `revisionN`, because a claim outlives every
+redraft of the record it is on. `RecordUnclaimed` is also what a clearing resolve
+appends, immediately after `RecordResolved`.
+
 ## Settings — the AI-config-write toggle (OWNER RULING 2)
 
 His words, dictated at the session-10 scope alignment:
@@ -835,6 +897,7 @@ always older than that.
 | label and attribute definitions | ai (while `ai_config_write` is on) **or** human | **mutable** — configuration, not human data; retired rather than deleted |
 | labels on a record, attribute values | human, UI-only | append-only versions |
 | relations between two records (relate / un-relate) | ai **or** human | append-only versions |
+| the in-progress marker on a record (claim / release) | ai **or** human | append-only versions |
 | the `ai_config_write` setting | human, UI-only | append-only versions |
 | holds (held, note) | nobody, since `r-remove-hold` | existing rows are append-only history; no read path |
 | finish message (the round's final word) | human, UI-only | append-only versions |

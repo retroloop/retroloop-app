@@ -61,8 +61,22 @@ describe('createApp', () => {
       'notes.annotate',
       'notes.list',
       'records.byId',
+      /**
+       * A record picked up, or given back — the in-progress marker
+       * (`record-claim.model.ts`). One entry rather than two, on the standing
+       * `records.relate` set below: taking and releasing are on and off, so the
+       * boolean widened the input rather than the surface.
+       */
+      'records.claim',
       'records.get',
       'records.history',
+      /**
+       * The queue, the cross-retrospective listing and the record-with-its-fix
+       * read — one read model behind all of them, because two that drifted would
+       * mean `record queue` and `record get` disagreeing about the record an
+       * agent is holding open in two terminals.
+       */
+      'records.lane',
       'records.list',
       'records.listAll',
       // Two records said to belong together, in the words of whoever relates
