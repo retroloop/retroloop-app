@@ -1422,6 +1422,70 @@ Then('record {string} is not marked {string}', async ({ page }, rid: string, mar
   await expect(card(page, rid).getByTestId('record-header')).not.toContainText(mark)
 })
 
+/* ── the diagnostic data (RL-52) ──────────────────────────────────────────── */
+
+/** The collapsed block on one record, and the control that is its heading. */
+function diagnostics(page: Page, rid: string): Locator {
+  return card(page, rid).getByTestId('section-diagnostic-data')
+}
+
+/**
+ * Closed, said as the two facts that make it closed rather than as one.
+ *
+ * The evidence is **not in the document** — not merely hidden, which is what a
+ * `toBeHidden` would have accepted and is a different claim about a block whose
+ * whole reason for starting shut is that a screen of pasted output per record is
+ * work nobody asked for. And the control announces the state it is in, so a
+ * reader who cannot see the chevron is told there is something behind it.
+ */
+Then('record {string} keeps its diagnostic data folded away', async ({ page }, rid: string) => {
+  const toggle = diagnostics(page, rid).getByTestId('diagnostic-data-toggle')
+  await expect(toggle).toBeVisible()
+  await expect(toggle).toHaveText('Diagnostic data')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(diagnostics(page, rid).getByTestId('prose-diagnostic-data')).toHaveCount(0)
+})
+
+When('the reviewer opens the diagnostic data of record {string}', async ({ page }, rid: string) => {
+  await diagnostics(page, rid).getByTestId('diagnostic-data-toggle').click()
+  await expect(diagnostics(page, rid).getByTestId('diagnostic-data-toggle')).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  )
+})
+
+/**
+ * Not there at all, on a record filed before the field existed — the section, the
+ * control and the prose, all three counted at zero.
+ *
+ * Three counts rather than one, because each of the three is a different way the
+ * block could half-exist: an empty section with a heading in it, a control that
+ * opens onto nothing, or a rendered block with no text in it. The card renders
+ * none of them.
+ */
+Then('record {string} has no diagnostic data block', async ({ page }, rid: string) => {
+  await expect(card(page, rid).getByTestId('section-diagnostic-data')).toHaveCount(0)
+  await expect(card(page, rid).getByTestId('diagnostic-data-toggle')).toHaveCount(0)
+  await expect(card(page, rid).getByTestId('prose-diagnostic-data')).toHaveCount(0)
+})
+
+/**
+ * Display only: no thread can hang on the evidence, so the block carries none of
+ * the affordance every commentable section carries beside its heading.
+ *
+ * It is asserted **against the card it sits in**: the same page, at the same
+ * moment, has that affordance on its other sections — so this is "not on this
+ * block", which is the claim, rather than "not on this page", which would pass
+ * just as well on a page that had lost the affordance entirely.
+ */
+Then(
+  'record {string} offers no way to comment on its diagnostic data',
+  async ({ page }, rid: string) => {
+    await expect(diagnostics(page, rid).getByTestId('open-thread')).toHaveCount(0)
+    await expect(card(page, rid).getByTestId('open-thread').first()).toBeVisible()
+  },
+)
+
 /* ── how prose renders (r-prose-renders-raw) ──────────────────────────────── */
 
 /**

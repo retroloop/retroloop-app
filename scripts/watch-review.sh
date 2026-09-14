@@ -220,6 +220,7 @@ write_draft() {
         "whys": ["Each fix was scoped to the hop that had just broken"],
         "root": "Delivery was assumed rather than measured."
       },
+      "diagnosticData": "- **The hops:** four, patched one at a time; none of the four has a test that crosses two of them.",
       "workaround": "The human relays the finish in chat.",
       "solutions": [
         {

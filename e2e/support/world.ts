@@ -222,6 +222,12 @@ export function aRevisionDraft(rids: readonly string[]): string {
         whys: ['The process was killed', 'The lock had no owner check'],
         root: 'Locks are advisory with no liveness check.',
       },
+      // The evidence the AI diagnosed from — required of every record since
+      // RL-52, and read back off the page and out of the export file at the end
+      // of the loop.
+      diagnosticData:
+        '- **The lock file:** `deploy.lock`, 0 bytes, mtime 40 minutes before the deploy.\n' +
+        '- **The holder:** the file records no pid, and `ps 8123` returns nothing.',
       workaround: 'Delete the lock file by hand.',
       // Two solutions rather than one, at different levels: the loop this drives
       // proves the new shape end to end, and a single-solution record would make
