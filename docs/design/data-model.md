@@ -176,6 +176,7 @@ export stays valid unmodified.
 | `problem` | markdown | problem + impact, self-contained |
 | `humanWords[]` | `{verbatim, cleaned, context}` | every quotable instance; both halves required |
 | `rootCause` | `{whatHappened, whys[1..5], root}` | five-whys |
+| `diagnosticData` | markdown | the evidence diagnosed from — logs, timings, commands run; required on every record filed from RL-52 on, `undefined` on every record filed before |
 | `workaround` | string | free text or literal `"none"`; never absent |
 | `solutions` | `Solution[1..3]` | one to three ways to solve it — see below |
 | `requester` | `human \| ai` | who raised it |
@@ -204,6 +205,15 @@ taken to have accepted. Ties keep the order given.
 is self-describing and survives the AI re-proposing a different one; an index
 into an AI-authored array is not, so any change to any solution resets the record
 to `pending` and the reviewer picks again against what is in front of them.
+
+**`diagnosticData` is outside the content hash** — the one narrative field that
+is (RL-52). It is supporting evidence the human never answers: no comment anchors
+to it, no verdict is about it, and whatever actually changed the diagnosis shows
+up in the narrative that states it. So a record re-filed with a fuller log keeps
+its verdict, which is also what makes the upgrade free for the records decided
+before the field existed. It is display-only on the review page — one collapsed
+block, no comment affordance — and additive-optional in `retro.export.v1`, where
+a record that carries none simply has no such key.
 
 **Read-only historical shape.** Every record filed before this change carries
 `agreedDirection` (markdown, attributed) and `footprint` (the record's one tree)
