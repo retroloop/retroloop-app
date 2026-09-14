@@ -25,6 +25,14 @@ export function aRecordInput(overrides: Partial<RecordInput> = {}): RecordInput 
       whys: ['The process was killed', 'The lock had no owner check'],
       root: 'Locks are advisory with no liveness check.',
     },
+    /**
+     * Authored markdown, because that is what this field actually carries and
+     * what the review page renders: a fixture of one bare sentence could not
+     * tell a renderer from a `<pre>`.
+     */
+    diagnosticData:
+      '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
+      '- **The holder:** `ps 8123` — no such process.',
     workaround: 'Delete the lock file by hand.',
     /**
      * Two solutions, sorted, the second recommended — the smallest set that is
@@ -128,6 +136,10 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
       ],
       root: 'Example suites verify anticipated behavior; only falsification probes verify the verification itself — and that step existed only as per-spawn instruction.',
     },
+    // No diagnostic data, because no record filed then carried any — the same
+    // reason this blob has no `solutions`. Written out rather than left off, so
+    // the absence is a stated fact about the fixture instead of an oversight.
+    diagnosticData: undefined,
     workaround: 'none',
     agreedDirection:
       '(AI-suggested) Promote plant-and-catch from spawn-spec habit to standing rule: a short paragraph in testing.md §Operational rules (every worker report includes planted defects and what caught them; a check never observed failing is an unverified claim). Your approval makes it law.',

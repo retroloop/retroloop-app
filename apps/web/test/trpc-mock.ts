@@ -550,6 +550,25 @@ const staleLock: RecordSeed = {
     ],
     root: 'The lock records that someone held it, not who — so no one can tell it is stale.',
   },
+  /**
+   * **The evidence, authored the way a real one is** (RL-52) — bold leads, a
+   * bullet list and a fence, because the block renders with the same markdown
+   * subset every other prose field uses and a fixture of plain sentences could
+   * not tell the renderer from a `<pre>`.
+   *
+   * It is on the record the review scenarios open, so the collapsed block, the
+   * click that opens it and what comes out of the renderer are all read off a
+   * record whose other sections are already being read beside it.
+   */
+  diagnosticData:
+    '- **The lock file:** `stage.lock`, 0 bytes, mtime 14:02 — the start that wrote it ' +
+    'was killed at 14:03.\n' +
+    '- **The holder:** the file records no pid, and `ps 8123` returns nothing.\n' +
+    '\n' +
+    '```\n' +
+    '$ retro up\n' +
+    'refusing: the stage is already being served\n' +
+    '```',
   workaround: 'Delete the lock file by hand before starting.',
   /**
    * **The record in the shape the owner asked for**: one to three solutions,
@@ -664,6 +683,14 @@ const bulletResponses: RecordSeed = {
     ],
     root: 'Length was the target; being understood on the first read was not.',
   },
+  /**
+   * **No diagnostic data, and that is the case the card has to answer for**: a
+   * record filed before the field existed carries none, and the block is not
+   * rendered at all rather than rendered empty. It sits on the same two records
+   * that carry the legacy narrative shape, so the fixture keeps one reading of
+   * "filed before all this" instead of two.
+   */
+  diagnosticData: null,
   workaround:
     'none — the reader reassembles it by hand.\n' +
     'Asking for <b>prose</b> in the prompt does not stick.',
@@ -741,6 +768,8 @@ const silentTailer: RecordSeed = {
     ],
     root: 'The tailer treats a recoverable read error as the end of its life.',
   },
+  /** Filed before the field existed, as `bulletResponses` was. */
+  diagnosticData: null,
   // The fence is the one place inside prose where nothing is read: the asterisks
   // and the tag below are characters in a log line, and the indentation is the
   // content rather than structure.
@@ -834,6 +863,9 @@ const doctorBlind: RecordSeed = {
     ],
     root: 'The check and the use are two different questions, and only one of them was asked.',
   },
+  diagnosticData:
+    '- **What the doctor ran:** `stat` on the stage directory — exit 0.\n' +
+    '- **What the server ran:** `open(stage/retro.db)` — `SQLITE_CORRUPT`.',
   workaround: 'Run `retro up` and read its refusal instead — the doctor adds nothing here.',
   agreedDirection: null,
   footprint: null,
@@ -938,6 +970,8 @@ const flakyLanding: RecordSeed = {
     ],
     root: 'A timing question was answered with a timeout.',
   },
+  diagnosticData:
+    '- **The read:** 41 of 50 repeats landed at 0px, 9 mid-scroll between 118px and 402px.',
   workaround: 'Run it again.',
   agreedDirection: null,
   footprint: null,
@@ -968,6 +1002,8 @@ const exportWidening: RecordSeed = {
     whys: ['The document predates the table.'],
     root: 'Nothing decided either way; it simply was not a question yet.',
   },
+  /** No evidence either, for the same reason the shape is the old one. */
+  diagnosticData: null,
   workaround: 'Read the records page.',
   /** The legacy shape, outside retro 1 — both shapes have to render forever. */
   solutions: null,
@@ -1008,6 +1044,7 @@ const staleLockOnHarbor: RecordSeed = {
     ],
     root: 'One defect, filed twice, because two checkouts hit it two days apart.',
   },
+  diagnosticData: '- **The lock file:** the same `stage.lock`, in a second checkout.',
   workaround: 'Delete the lock file by hand.',
   agreedDirection: null,
   footprint: null,
@@ -1042,6 +1079,7 @@ const ipadScroll: RecordSeed = {
     whys: ['The child had no `min-w-0`.', 'Flex items refuse to shrink below min-content.'],
     root: 'The default is the wrong one for a column holding author-aligned drawings.',
   },
+  diagnosticData: '- **The measurement:** the cell laid out at 1231px inside a 678px row.',
   workaround: 'Turn the iPad the other way up.',
   agreedDirection: null,
   footprint: null,
@@ -1923,9 +1961,23 @@ function narrativeAt(revision: Revision, rid: string): RecordSeed {
   return record
 }
 
-/** The content hash, in the only form a browser needs: identical or not. */
+/**
+ * The content hash, in the only form a browser needs: identical or not.
+ *
+ * The three keys taken off are the three the server leaves out of
+ * `recordContent()` — identity, the AI's proposed defaults, and the diagnostic
+ * data (RL-52), which is supporting evidence the human never answers. A mock
+ * that hashed one of them would send a record back to pending on a redraft the
+ * server would have carried the verdict across.
+ */
 function contentOf(record: RecordSeed): string {
-  const { rid: _rid, num: _num, proposed: _proposed, ...content } = record
+  const {
+    rid: _rid,
+    num: _num,
+    proposed: _proposed,
+    diagnosticData: _diagnosticData,
+    ...content
+  } = record
   return JSON.stringify(content)
 }
 

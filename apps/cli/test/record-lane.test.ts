@@ -179,6 +179,7 @@ describe('the record lane', () => {
     slug: string
     problem: string
     rootCause: { whatHappened: string; whys: string[]; root: string }
+    diagnosticData: string | null
     ownerWords: string[]
     selectedSolution: {
       index: number
@@ -228,6 +229,11 @@ describe('the record lane', () => {
             whys: ['The process was killed', 'The lock had no owner check'],
             root: 'Locks are advisory with no liveness check.',
           },
+          // The evidence the AI gathered while it was diagnosing — the field the
+          // schema now demands of every record, travelling with the work.
+          diagnosticData:
+            '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
+            '- **The holder:** `ps 8123` — no such process.',
           // The note he wrote with the verdict first, then what he said on the
           // record's threads — one field, because they are one thing to whoever
           // is about to act on them.
@@ -264,6 +270,9 @@ describe('the record lane', () => {
             whys: ['The process was killed', 'The lock had no owner check'],
             root: 'Locks are advisory with no liveness check.',
           },
+          diagnosticData:
+            '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
+            '- **The holder:** `ps 8123` — no such process.',
           ownerWords: [],
           selectedSolution: {
             index: 2,
@@ -296,6 +305,7 @@ describe('the record lane', () => {
 
       expect(Object.keys(row ?? {}).sort()).toEqual([
         'claim',
+        'diagnosticData',
         'involvement',
         'lifecycle',
         'ownerWords',
@@ -381,6 +391,7 @@ describe('the record lane', () => {
       })
       expect(Object.keys(result.json()).sort()).toEqual([
         'claim',
+        'diagnosticData',
         'involvement',
         'lifecycle',
         'ownerWords',

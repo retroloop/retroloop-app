@@ -1,6 +1,6 @@
 import type { AppRouterOutputs } from '@retro/api'
 import { useQuery } from '@tanstack/react-query'
-import { MessageSquarePlusIcon } from 'lucide-react'
+import { ChevronRightIcon, MessageSquarePlusIcon } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import { ActorTag } from '@/components/actor-tag'
 import { RecordLabelTags } from '@/components/records/record-labels'
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { optionFor, type RecordSection, SECTION_TITLES, SOLUTION_LEVELS } from '@/lib/enum-labels'
 import { useTRPC } from '@/lib/trpc'
+import { cn } from '@/lib/utils'
 
 type RecordSummary = AppRouterOutputs['records']['list']['records'][number]
 type RecordDetail = AppRouterOutputs['records']['get']
@@ -442,6 +443,26 @@ export function RecordNarrative({
         </div>
       </Section>
 
+      {/**
+       * **The evidence, folded away** (RL-52) — and the one thing on this card
+       * that starts closed.
+       *
+       * The rule above it says every section is on screen whenever the card is,
+       * because a control that hides part of a record can hide the part that
+       * mattered (KC-0016). This does not breach it, because what is behind it
+       * is **not part of what is being decided**: it is the log lines and
+       * timings the AI diagnosed from, it is on no comment anchor, no verdict is
+       * about it, and the finish gate does not know it exists. What the reviewer
+       * answers — the problem, the cause, the proposals — is all above, open.
+       * Left expanded it would be a screen of pasted output between the cause
+       * and the workaround on every record of the round.
+       *
+       * Rendered only where there is something to render: a record filed before
+       * the field existed has no block at all, rather than one that opens onto
+       * nothing.
+       */}
+      {record.diagnosticData === null ? null : <DiagnosticData text={record.diagnosticData} />}
+
       <Section section="workaround" comment={commentOn('workaround')}>
         <Prose text={record.workaround} testId="prose-workaround" />
       </Section>
@@ -772,6 +793,60 @@ function Marker({ symbol, name, testId }: { symbol: string; name: string; testId
       <span aria-hidden>{symbol}</span>
       <span className="sr-only">{` (${name})`}</span>
     </span>
+  )
+}
+
+/**
+ * The diagnostic-data block: a heading that is also the control, and the
+ * evidence under it once somebody asks for it.
+ *
+ * **Its title is written here rather than in `SECTION_TITLES`**, and that is the
+ * whole difference between this and a `Section`. That map is the *comment-anchor*
+ * vocabulary — the panel prints the same word over a thread filed under a
+ * section, which is why the two may not drift — and this block anchors nothing:
+ * there is no `diagnostic_data` in `RECORD_SECTIONS`, no thread can hang on it,
+ * and putting a title in that map for a section that cannot be commented on
+ * would be inventing an anchor the domain does not have.
+ *
+ * **Display only, all the way down.** No comment glyph, nothing read by the
+ * finish gate, and no `readOnly` branch — there is no control here that a
+ * finished review would have to take away, because opening a block is not an act
+ * on the record. Which is also why the open state is this component's own and
+ * goes nowhere near the server: what the reviewer has expanded is not a fact
+ * about the retrospective.
+ */
+function DiagnosticData({ text }: { text: string }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <section className="flex flex-col gap-2" data-testid="section-diagnostic-data">
+      {/* An `h3` so the record's outline still names the block for a reader
+          walking the headings, with the button inside it because the heading
+          *is* the control — the alternative is a heading and a separate
+          affordance saying the same word twice. */}
+      <h3 className="leading-none">
+        <button
+          type="button"
+          className="section-label inline-flex items-center gap-1 rounded-sm transition-colors hover:text-foreground"
+          data-testid="diagnostic-data-toggle"
+          aria-expanded={open}
+          onClick={() => setOpen((shown) => !shown)}
+        >
+          {/* The one mark that says a closed thing can be opened. It turns
+              rather than swapping for a second icon, so the two states are one
+              element in two positions. */}
+          <ChevronRightIcon
+            aria-hidden
+            className={cn('size-3.5 transition-transform', open && 'rotate-90')}
+          />
+          Diagnostic data
+        </button>
+      </h3>
+      {/* Mounted only while open: the block is closed on every card of the
+          round, and parsing a screen of pasted markdown per record to keep it
+          hidden is work nobody asked for. */}
+      {open ? <Prose text={text} testId="prose-diagnostic-data" /> : null}
+    </section>
   )
 }
 

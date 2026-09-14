@@ -577,7 +577,8 @@ const LANE_HELP = `The lane — the work, and the marker on it
   --json shapes
     queue, list --all  a bare array of rows; get, one row plus "retrospective"
     row                { recordId, retroId, retro, sessionId, title, slug, problem,
-                         rootCause { whatHappened, whys, root }, ownerWords,
+                         rootCause { whatHappened, whys, root }, diagnosticData,
+                         ownerWords,
                          selectedSolution { index, level, title, body, footprint },
                          involvement, relations [{ recordId, kind, direction }],
                          claim null | { claimedAt, actor }, resolved,
@@ -939,6 +940,13 @@ function laneRowJson(row: LaneRecordRow) {
       whys: [...row.rootCause.whys],
       root: row.rootCause.root,
     },
+    /**
+     * The evidence the AI diagnosed from — logs, timings, what it ran — or
+     * `null` on a record filed before the field existed. Null rather than an
+     * absent key, on this function's standing rule: a key that comes and goes is
+     * a shape a script has to guess at.
+     */
+    diagnosticData: row.diagnosticData ?? null,
     /**
      * What the human said about this record: the note he wrote with the verdict
      * first, then his comments, oldest first. It is the field that lets an agent

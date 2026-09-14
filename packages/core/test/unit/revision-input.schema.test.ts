@@ -116,6 +116,44 @@ describe('revision schema — the mechanical half of D5', () => {
     expect(parseWith({ workaround: 'none' })).toBeDefined()
   })
 
+  /**
+   * The evidence the AI gathered while it was diagnosing the friction — required
+   * on every record of every revision written from here on, and required in the
+   * same mechanical sense everything else in this file is: it has to be there and
+   * it has to say something. What it says is instructed, not validated, exactly
+   * as the bullets' bold leads and the footprint's layout are.
+   *
+   * There is no `"none"` escape hatch, and that is the difference from
+   * `workaround` above. A record with no workaround is a real state of the world
+   * — there was nothing the human could do — whereas a record the AI filed
+   * without having looked at anything is a record it should not have filed.
+   */
+  test('requires diagnostic data, and refuses a record that carries none', () => {
+    expectRejected({ diagnosticData: undefined }, 'records.0.diagnosticData')
+    expectRejected({ diagnosticData: '' }, 'records.0.diagnosticData')
+    expectRejected({ diagnosticData: '   \n  ' }, 'records.0.diagnosticData')
+    expect(
+      parseWith({ diagnosticData: '- **The lock file:** `stage.lock`, 0 bytes.' }),
+    ).toBeDefined()
+  })
+
+  /**
+   * The refusal has to name the field, because the reader of it is an agent in
+   * another process holding a draft it has to fix — `revision file` exits 2 with
+   * these issues and nothing else to go on.
+   */
+  test('names diagnosticData in the refusal, the way every other presence rule does', () => {
+    try {
+      parseWith({ diagnosticData: '   ' })
+      throw new Error('expected an empty diagnosticData to be rejected')
+    } catch (error) {
+      expect(error).toBeInstanceOf(ValidationError)
+      expect((error as ValidationError).issues.map((issue) => issue.message)).toContain(
+        'diagnosticData must not be empty',
+      )
+    }
+  })
+
   test('requires both halves of every quote', () => {
     expectRejected(
       { humanWords: [{ verbatim: 'as spoken', cleaned: '' }] },

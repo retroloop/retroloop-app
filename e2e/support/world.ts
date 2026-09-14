@@ -201,6 +201,22 @@ export function createWorld(): RetroWorld {
   }
 }
 
+/**
+ * The evidence every record of this draft is filed with (RL-52).
+ *
+ * A constant rather than a literal inside the draft, because two steps read it:
+ * the browser one, which opens the block and reads what the renderer made of it,
+ * and the export one, which reads the same characters back out of the file the
+ * CLI wrote. A second copy would let the two agree with each other while both
+ * disagreed with what was filed.
+ *
+ * Authored markdown, because that is what the field carries — the bold lead is
+ * what the page is asserted to have rendered rather than printed.
+ */
+export const DIAGNOSTIC_DATA =
+  '- **The lock file:** `deploy.lock`, 0 bytes, mtime 40 minutes before the deploy.\n' +
+  '- **The holder:** the file records no pid, and `ps 8123` returns nothing.'
+
 /** A revision draft satisfying every mechanical rule of the schema (D5). */
 export function aRevisionDraft(rids: readonly string[]): string {
   return JSON.stringify({
@@ -222,6 +238,10 @@ export function aRevisionDraft(rids: readonly string[]): string {
         whys: ['The process was killed', 'The lock had no owner check'],
         root: 'Locks are advisory with no liveness check.',
       },
+      // The evidence the AI diagnosed from — required of every record since
+      // RL-52, and read back off the page and out of the export file at the end
+      // of the loop.
+      diagnosticData: DIAGNOSTIC_DATA,
       workaround: 'Delete the lock file by hand.',
       // Two solutions rather than one, at different levels: the loop this drives
       // proves the new shape end to end, and a single-solution record would make

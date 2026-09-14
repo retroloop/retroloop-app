@@ -83,6 +83,46 @@ Feature: Reviewing a revision
     And record "r-stale-lock" shows "Write the pid into the lock"
     And record "r-stale-lock" shows "apps/cli/src/server/lock.ts"
 
+  # RL-52. The AI now files the evidence it diagnosed from — log lines, timings,
+  # the commands it ran — on every record. It is the one block on a card that
+  # starts closed, and that is not the "a record is read in full" rule bending:
+  # what is behind it is not part of what the reviewer is deciding. It anchors no
+  # comment, no verdict is about it, and the finish gate does not know it exists.
+  # Left open it would be a screen of pasted output on every record of the round.
+  #
+  # Three claims in one walk, because they are one behaviour seen at three
+  # moments: it is there and closed, a click opens it, and what comes out is
+  # rendered rather than shown as its source — the same subset, through the same
+  # renderer, as every other prose field on the card.
+  Scenario: The diagnostic data is on the card, folded away until it is asked for
+    Then record "r-stale-lock" keeps its diagnostic data folded away
+    When the reviewer opens the diagnostic data of record "r-stale-lock"
+    Then the "diagnostic-data" prose of record "r-stale-lock" has the bold leads:
+      | The lock file: |
+      | The holder:    |
+    And the "diagnostic-data" prose of record "r-stale-lock" fences exactly:
+      """
+      $ retro up
+      refusing: the stage is already being served
+      """
+    And the "diagnostic-data" prose of record "r-stale-lock" is built only from the safe subset
+
+  # The block is display only: it is evidence the AI gathered, not a proposal the
+  # human answers, so there is nowhere on it to start a thread. Every other
+  # section of a record carries that affordance next to its heading, which is what
+  # makes its absence here a claim worth making rather than a thing nobody added.
+  Scenario: There is no way to comment on the diagnostic data
+    When the reviewer opens the diagnostic data of record "r-stale-lock"
+    Then record "r-stale-lock" offers no way to comment on its diagnostic data
+
+  # A record filed before the field existed carries none, and the block is not
+  # there at all — not an empty one, and not one that opens onto nothing. Two of
+  # the three records in this round are in that state, which is also the state
+  # every record of the owner's first retrospectives is in.
+  Scenario: A record filed before the field existed has no diagnostic data block
+    Then record "r-bullet-responses" has no diagnostic data block
+    And record "r-silent-tailer" has no diagnostic data block
+
   # r-whys-labels (retro 4, #10, sev 3). The root-cause chain shipped as four
   # separate styling choices: the what-happened line carried no label at all,
   # "why" was lowercase against an all-caps ROOT, the label folded onto a second

@@ -170,6 +170,9 @@ function seedRecord(n: number, options: Options): RecordInput {
       ],
       root: 'The queue is made of finished rounds, and finishing a round is not a scriptable act.',
     },
+    diagnosticData:
+      '- **The stage:** empty — no session, no retrospective, no revision.\n' +
+      '- **The acts a CLI cannot perform:** the verdict per record, and the finish.',
     workaround: 'Drive the review UI by hand once per stage.',
     solutions: [
       {

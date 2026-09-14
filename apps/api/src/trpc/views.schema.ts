@@ -571,6 +571,16 @@ export const recordDetailSchema = z.strictObject({
       whys: z.array(z.string()),
       root: z.string(),
     }),
+    /**
+     * The evidence the AI diagnosed from, as markdown — **null on a record
+     * filed before the field existed** (RL-52).
+     *
+     * Null and not an absent key, on this file's standing rule: a browser that
+     * had to tell "this record has none" from "the server forgot" would be
+     * branching on absence. The card renders the block only where this says
+     * something, which is the one reading it needs.
+     */
+    diagnosticData: z.string().nullable(),
     workaround: z.string(),
     /**
      * A record carries **exactly one** of the two shapes below, and the wire

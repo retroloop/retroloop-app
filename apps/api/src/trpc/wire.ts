@@ -252,6 +252,7 @@ export function toWireRecordDetail(
         whys: [...record.rootCause.whys],
         root: record.rootCause.root,
       },
+      diagnosticData: record.diagnosticData ?? null,
       workaround: record.workaround,
       agreedDirection: record.agreedDirection ?? null,
       footprint: record.footprint ?? null,

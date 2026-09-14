@@ -575,6 +575,7 @@ any of them again. That is the whole list: nothing else moved.
 | `problem` | string | bold-lead bullets (form 1 below) |
 | `humanWords` | array of `{verbatim, cleaned, context?}` | may be `[]` when the human said nothing quotable |
 | `rootCause` | `{whatHappened: string, whys: string[], root: string}` | `whys` is 1–5 entries; see form 2 below |
+| `diagnosticData` | string | the evidence you diagnosed from — log lines, timings, the commands you ran and what they answered — as markdown; required on every record, and there is no `"none"` |
 | `workaround` | string | free text, or the literal `"none"` — never absent |
 | `solutions` | array of `{bullets, footprint, level, recommended}` | one to three, lowest level first, exactly one recommended; see below |
 | `requester` | `"human"` \| `"ai"` | who raised it |
@@ -593,7 +594,8 @@ any of them again. That is the whole list: nothing else moved.
   that came from somebody in particular; a solution you worked out yourself does
   not need `(AI-suggested)` on every line.
 - **Every string in the document is validated for presence.** `title`,
-  `problem`, `workaround`, both halves of every quote, `whatHappened`, each `why`,
+  `problem`, `diagnosticData`, `workaround`, both halves of every quote,
+  `whatHappened`, each `why`,
   `root`, and each solution's `bullets` and `footprint`: whitespace alone is exit
   2 as surely as an omitted key — `revision: records.0.problem — problem must not
   be empty`. **There is no string in this document that may be empty** —
@@ -905,6 +907,7 @@ markdown field are carried in JSON:
         ],
         "root": "Locks are advisory with no liveness check, so an abandoned lock is indistinguishable from a held one."
       },
+      "diagnosticData": "- **The lock file:** `/var/run/deploy.lock`, 0 bytes, mtime 14:02 — the deploy that wrote it was killed at 14:03.\n- **The holder:** the file records no PID, and `ps 8123` (the killed deploy) returns nothing.\n- **The wait:** `scripts/deploy.sh:41` loops on `-e` with no budget, so it never returns.\n- **How often:** three times this month — 2026-08-02 14:02, 2026-08-14 09:31, 2026-08-27 16:44, each ended by a human deleting the file.",
       "workaround": "- **Delete the lock file by hand** once you have confirmed no deploy is running — costs a human every time it fires.",
       "solutions": [
         {
@@ -1670,7 +1673,7 @@ nothing is left to address.
 A revision you submitted is not lost with the file you wrote it from — the store
 has every record, and `revision get` hands them back in the shape you sent them.
 Drop `--feedback-only` and each record carries a **`content` key that is exactly
-one record of a revision file**: the same twelve keys as the table in step 3,
+one record of a revision file**: the same thirteen keys as the table in step 3,
 nothing to strip, nothing to rename — **as long as the record was filed in the
 current shape.** A record filed before solutions existed comes back in the old
 one and needs work; that case is spelled out at the end of this section, and it
@@ -1680,7 +1683,7 @@ is exit 2 if you skip it.
 retroloop revision get --retro <retroId> --json
 → {"records": [{"rid": "…", "state": "approved", …, "content": {"rid": "…", "num": 1,
     "title": "…", "type": "issue", "problem": "…", "humanWords": […],
-    "rootCause": {…}, "workaround": "…", "solutions": [{"bullets": "…",
+    "rootCause": {…}, "diagnosticData": "…", "workaround": "…", "solutions": [{"bullets": "…",
     "footprint": "…", "level": 2, "recommended": true}],
     "requester": "human", "impacts": "human", "defaults": {…}}}]}
 ```

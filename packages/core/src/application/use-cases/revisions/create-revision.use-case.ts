@@ -55,6 +55,7 @@ function toRecord(input: RecordInput): RetroRecord {
       whys: [...input.rootCause.whys],
       root: input.rootCause.root,
     },
+    diagnosticData: input.diagnosticData,
     workaround: input.workaround,
     solutions: input.solutions.map((solution) => ({
       bullets: solution.bullets,

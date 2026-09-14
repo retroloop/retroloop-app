@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { expect, type Page } from '@playwright/test'
 import { loadExportSchema, validate } from '../../packages/core/test/support/json-schema'
 import { Given, Then, When } from '../fixtures'
-import { aRevisionDraft, type RetroWorld } from '../support/world'
+import { aRevisionDraft, DIAGNOSTIC_DATA, type RetroWorld } from '../support/world'
 
 /**
  * The AI's moves are spawned CLI processes and the human's moves go through the
@@ -238,6 +238,56 @@ Then('the review page shows both solutions of every record', async ({ page, retr
     ])
     await card.getByTestId('solution-tab-1').click()
     await expect(card.getByTestId('solution-1-footprint')).toHaveText('docs/runbook.md')
+  }
+})
+
+/**
+ * The diagnostic data, where every layer of it is the real one (RL-52).
+ *
+ * A spawned CLI wrote it into the revision blob, the server read it back out of
+ * SQLite, and the browser is rendering it — the suites below each prove one of
+ * those three against a fake on the other side, and this is the only place all
+ * three are real at once.
+ *
+ * The walk is closed-then-open rather than "the text is somewhere on the card",
+ * because closed is the behaviour: the evidence is not in the document until the
+ * reviewer asks for it, and a check that only looked for the words would pass on
+ * a card that had stopped folding it away.
+ */
+Then(
+  'the diagnostic data of every record is folded away until the reviewer opens it',
+  async ({ page, retro }) => {
+    for (const rid of retro.state.rids) {
+      const card = page.getByTestId(`record-${rid}`)
+      const toggle = card.getByTestId('diagnostic-data-toggle')
+
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+      await expect(card.getByTestId('prose-diagnostic-data')).toHaveCount(0)
+
+      await toggle.click()
+
+      // Rendered, not printed: the bold lead is the half of this the markdown
+      // subset is responsible for, and the one a `<pre>` would fail.
+      await expect(
+        card.getByTestId('prose-diagnostic-data').getByTestId('prose-strong'),
+      ).toHaveText(['The lock file:', 'The holder:'])
+    }
+  },
+)
+
+Then('the export carries the diagnostic data the AI filed', async ({ retro }) => {
+  const path = retro.state.exportPath
+  if (path === undefined) throw new Error('nothing was exported')
+
+  const document = JSON.parse(readFileSync(path, 'utf8')) as {
+    records: { diagnosticData?: string }[]
+  }
+
+  expect(document.records).not.toHaveLength(0)
+  for (const record of document.records) {
+    // The characters the draft carried, against the constant the draft was built
+    // from — so nothing in between may reformat, trim or re-wrap them.
+    expect(record.diagnosticData).toBe(DIAGNOSTIC_DATA)
   }
 })
 

@@ -8,6 +8,7 @@ import type { EffectiveClaim } from '#domain/services/record-claim.service'
 import { LANE_STATES, type LaneState, laneState } from '#domain/services/record-lane.service'
 import type { EffectiveLifecycle } from '#domain/services/record-lifecycle.service'
 import type { EffectiveDecision } from '#domain/services/record-state.service'
+import { aRecordInput } from '../support/fixtures'
 import { createHarness, type Harness } from '../support/harness'
 
 /**
@@ -488,6 +489,30 @@ describe('the lane', () => {
       const row = (await lane()).find((candidate) => candidate.retroId === legacy.retroId)
       expect(row?.selectedSolution.index).toBe(1)
       expect(row?.selectedSolution.body).toBe(legacy.record.agreedDirection)
+    })
+  })
+
+  /**
+   * **The evidence travels with the work** (RL-52). An agent that picks a record
+   * off the queue is about to go and reproduce the friction, and what the AI
+   * already looked at is the difference between starting from the top and
+   * starting from the logs. It is on the row rather than behind a second read
+   * for the reason every wide field on this row is: the alternative is opening
+   * twenty records to find out which one to take.
+   */
+  describe('the evidence a row carries', () => {
+    test('is the diagnostic data the record was filed with', async () => {
+      const row = (await lane()).find((candidate) => candidate.rid === 'r-stale-lock')
+
+      expect(row?.diagnosticData).toBe(aRecordInput().diagnosticData)
+    })
+
+    test('is undefined on a record filed before the field existed', async () => {
+      const session = await harness.session('uuid-legacy-evidence')
+      const legacy = await harness.legacyRevision(session.id)
+
+      const row = (await lane()).find((candidate) => candidate.retroId === legacy.retroId)
+      expect(row?.diagnosticData).toBeUndefined()
     })
   })
 
