@@ -19,6 +19,11 @@ Feature: The core loop, end to end
     # rendering it. The layers below each prove their own half; this is the one
     # place all of them are the real thing at once.
     Then the review page shows both solutions of every record
+    # RL-52, through the same real stack: a spawned CLI wrote the evidence into
+    # the revision blob, the server read it back out, and this is the browser
+    # keeping it folded away until the reviewer asks for it — the one thing on a
+    # card that starts shut.
+    And the diagnostic data of every record is folded away until the reviewer opens it
     When the reviewer approves every record
     And the reviewer finishes the review
     Then the AI's wait returns "ReviewFinished" for revision 1
@@ -50,6 +55,10 @@ Feature: The core loop, end to end
     # The reviewer never moved the tick off the AI's recommendation, so that is
     # what the verdict carried — and the level it carries is that solution's.
     And the export carries the solutions, and the recommended one as selected
+    # And the evidence leaves the product with the outcome, character for
+    # character as the AI filed it — the other end of the same field, in the file
+    # rather than on the page.
+    And the export carries the diagnostic data the AI filed
     # The channel the owner asked for, end to end: typed in the browser, written
     # beside the finish, and read out of the database by the CLI that wrote this
     # file — never as a comment (r-finish-confirm-message).
