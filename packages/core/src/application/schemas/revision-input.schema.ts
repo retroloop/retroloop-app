@@ -138,6 +138,19 @@ export const recordInputSchema = z.strictObject({
   problem: nonEmpty('problem'),
   humanWords: z.array(humanWordsSchema),
   rootCause: rootCauseSchema,
+  /**
+   * The evidence behind the diagnosis, as markdown — **required, and with no
+   * `"none"` escape hatch.**
+   *
+   * That is the one place it parts from `workaround` below, which admits the
+   * literal `"none"`: a record with no workaround is a true state of the world —
+   * there was nothing the human could have done — whereas a record filed with
+   * nothing looked at is a record that should not have been filed. Presence is
+   * all that is checked, as everywhere in this file: what counts as evidence is
+   * instructed in SKILL.md, and a regex for it would pass a paragraph of
+   * assertion and fail a pasted log.
+   */
+  diagnosticData: nonEmpty('diagnosticData'),
   /** Free text or the literal `"none"` — never absent (D5). */
   workaround: nonEmpty('workaround'),
   solutions: solutionsSchema,

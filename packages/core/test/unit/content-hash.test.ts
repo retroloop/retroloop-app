@@ -39,6 +39,27 @@ describe('record content hash', () => {
     ).not.toBe(before)
   })
 
+  /**
+   * **Diagnostic data is out of the fingerprint**, and this is the assertion
+   * that says so — the field is supporting evidence the AI gathered, it is on no
+   * comment anchor and the human never answers it, so a record re-filed with a
+   * fuller log is the same record he decided. Whatever actually changed his
+   * mind — the cause, the problem, a proposal — is in the narrative, and every
+   * one of those is hashed above.
+   *
+   * The pair is deliberate: adding evidence to a record that had none, and
+   * changing the evidence a record already carried. The first is the upgrade
+   * path every decided legacy record takes and is the one that would silently
+   * un-decide them.
+   */
+  test('ignores the diagnostic data — it is evidence, not the thing decided', () => {
+    const bare = hashRecordContent(aRecord({ diagnosticData: undefined }))
+
+    expect(hashRecordContent(aRecord({ diagnosticData: '- **A log line.**' }))).toBe(bare)
+    expect(hashRecordContent(aRecord({ diagnosticData: '- **A different log line.**' }))).toBe(bare)
+    expect(hashRecordContent(aRecord())).toBe(bare)
+  })
+
   test('ignores the AI’s proposed defaults — a decision binds to the narrative (D2)', () => {
     expect(
       hashRecordContent(
@@ -122,6 +143,18 @@ describe('changed sections', () => {
     expect(changedSections(aLegacyRecord(), aRecord({ rid: 'x', num: 1 }))).toContain('direction')
     expect(changedSections(aLegacyRecord(), aRecord({ rid: 'x', num: 1 }))).toContain('footprint')
     expect(changedSections(aLegacyRecord(), aRecord({ rid: 'x', num: 1 }))).toContain('solutions')
+  })
+
+  /**
+   * The other half of the exclusion, at the layer the reviewer sees: the
+   * diff highlight has no section to light up for diagnostic data, because the
+   * field is on no comment anchor and nothing about it is under review.
+   */
+  test('lights up nothing when only the diagnostic data changed', () => {
+    expect(
+      changedSections(aRecord(), aRecord({ diagnosticData: '- **Something else.**' })),
+    ).toEqual([])
+    expect(changedSections(aRecord({ diagnosticData: undefined }), aRecord())).toEqual([])
   })
 
   test('reports the fields the section enum has no slot for', () => {

@@ -62,6 +62,20 @@ function solutionsContent(solutions: readonly Solution[] | undefined): JsonLike 
  * record to pending and the reviewer picks again, against what is now in front
  * of them. `severity` and `involvement` are unaffected and stay out.
  *
+ * **`diagnosticData` is deliberately not in here**, and it is the one AI-authored
+ * narrative field that is not. It is supporting evidence — the logs, the timings,
+ * the commands the AI ran while it was diagnosing — and the human never answers
+ * it: it is on no comment anchor, it carries no proposal, and there is nothing
+ * in it for a verdict to be *about*. Whatever actually changed the diagnosis
+ * shows up in the narrative that states it — the problem, the root cause, the
+ * solutions — and every one of those is hashed. So a record re-filed with a
+ * fuller log is the same record the human decided, and his verdict stands.
+ *
+ * It is also what makes the upgrade free: a record decided before this field
+ * existed and re-filed with the evidence the schema now demands must not go back
+ * to pending, and `legacy-record-shape.test.ts` holds that against the same
+ * constant it holds the shape against.
+ *
  * **A legacy record hashes to exactly the bytes it always did.** `canonicalJson`
  * drops undefined members, so `solutions` simply is not a key on a record that
  * has no solutions, and `agreedDirection`/`footprint` are not keys on a record

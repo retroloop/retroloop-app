@@ -56,6 +56,24 @@ describe('a record filed before solutions existed', () => {
     expect(effective.solutionLevel).toBe(1)
   })
 
+  /**
+   * The same promise for the field added after it was filed: a legacy record has
+   * no diagnostic data, and a binary that knows about diagnostic data reads it
+   * back unchanged — the key is not on the blob, `canonicalJson` never sees it,
+   * and the hash the decision is bound to is the constant above.
+   *
+   * The second half is the redraft: the owner re-files a record he already
+   * decided, this time with the evidence the new schema requires. That must not
+   * move the hash, or every carried-over verdict in his five retrospectives would
+   * go back to pending on the first draft written under the new contract.
+   */
+  test('carries no diagnostic data, and gains none without moving the hash', () => {
+    expect(aLegacyRecord().diagnosticData).toBeUndefined()
+    expect(hashRecordContent(aLegacyRecord({ diagnosticData: '- **A log line.**' }))).toBe(
+      LEGACY_CONTENT_HASH,
+    )
+  })
+
   test('still reports its narrative sections as the sections they always were', () => {
     expect(
       changedSections(aLegacyRecord(), aLegacyRecord({ agreedDirection: 'Something else.' })),

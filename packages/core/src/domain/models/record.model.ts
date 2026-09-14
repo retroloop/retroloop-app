@@ -104,6 +104,18 @@ type SharedNarrative = {
   readonly problem: string
   readonly humanWords: readonly HumanWords[]
   readonly rootCause: RootCause
+  /**
+   * **The evidence the AI looked at while it was diagnosing** — the log lines,
+   * the timings, the commands it ran and what they answered — written as
+   * markdown in the same subset every other prose field on a record uses.
+   *
+   * Required of every record filed from here on (`revision-input.schema.ts`) and
+   * `undefined` on every record filed before it, exactly the way `solutions` is
+   * absent from a record filed before solutions existed: revisions are immutable
+   * and nothing backfills one. A reader that has to render a record therefore
+   * asks whether it has any, and shows nothing where it has none.
+   */
+  readonly diagnosticData: string | undefined
   /** Free text or the literal `"none"` — never absent (D5). */
   readonly workaround: string
   readonly requester: Party
