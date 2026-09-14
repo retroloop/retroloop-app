@@ -547,6 +547,49 @@ describe('export', () => {
   })
 
   /**
+   * The evidence leaves the product with the outcome (RL-52).
+   *
+   * It is **optional in the contract and emitted whenever the record has any**,
+   * which is the `globalId` rule rather than the `reviewerNote` one: a document
+   * written before the field existed is a valid `retro.export.v1` and must stay
+   * one, so the key is absent on a legacy record instead of being converted to
+   * `null`. A consumer therefore reads "this record has no diagnostic data" from
+   * the key not being there, exactly as it reads a record's shape from which of
+   * `solutions` and `agreedDirection` it finds.
+   */
+  describe('the diagnostic data', () => {
+    test('carries the evidence of a record filed with it', async () => {
+      const { retroId } = await harness.revision(session.id, [{ rid: 'r-stale-lock', num: 1 }])
+      await harness.decide(retroId, 'r-stale-lock', 'approved')
+      await harness.closeReview(retroId)
+
+      const { export: document } = await harness.app.exports.retrospective.execute({
+        actor: 'ai',
+        retro: { retroId },
+      })
+      const written = JSON.parse(JSON.stringify(document)) as RetroExport
+
+      expect(conformanceProblems(document)).toEqual([])
+      expect(written.records[0]?.diagnosticData).toBe(aRecordInput().diagnosticData)
+    })
+
+    test('leaves the key off a record filed before the field existed, and still conforms', async () => {
+      const legacy = await harness.legacyRevision(session.id, {})
+      await harness.decide(legacy.retroId, legacy.record.rid, 'approved')
+      await harness.closeReview(legacy.retroId)
+
+      const { export: document } = await harness.app.exports.retrospective.execute({
+        actor: 'ai',
+        retro: { retroId: legacy.retroId },
+      })
+      const written = JSON.parse(JSON.stringify(document)) as RetroExport
+
+      expect(conformanceProblems(document)).toEqual([])
+      expect(Object.keys(written.records[0] ?? {})).not.toContain('diagnosticData')
+    })
+  })
+
+  /**
    * A document carries the shape its record was filed in — the two legacy keys,
    * or `solutions` plus the human's pick — and never both, never neither. The
    * contract admits all four keys forever (`export.v1.schema.json`), which is

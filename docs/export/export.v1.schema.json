@@ -162,6 +162,11 @@
           "minLength": 1,
           "$comment": "Free text, or the literal string \"none\"; never absent."
         },
+        "diagnosticData": {
+          "type": "string",
+          "minLength": 1,
+          "$comment": "The evidence the AI diagnosed from — logs, timings, the commands it ran — as markdown in the same subset the record's other prose fields use. Required of every record the product files from here on, and therefore emitted on every record that carries any; optional in this contract because a record filed before the field existed has none, and a document written before it stays a valid v1 (the `globalId` rule). Absent rather than null on such a record: a consumer reads \"no diagnostic data\" off the missing key, the way it already reads a record's shape off `solutions` versus `agreedDirection`. It is not part of the content fingerprint a decision binds to, so re-filing a record with fuller evidence does not reopen a verdict."
+        },
         "agreedDirection": {
           "type": "string",
           "minLength": 1,

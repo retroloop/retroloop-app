@@ -128,6 +128,19 @@ export type ExportRecord = {
   }
   readonly workaround: string
   /**
+   * The evidence the AI diagnosed from, as it wrote it (RL-52).
+   *
+   * Optional here and optional in the published schema, on `globalId`'s standing
+   * rather than `reviewerNote`'s: a record filed before the field existed has
+   * none, and a document written before it existed is a valid `retro.export.v1`
+   * forever. So the key is **absent** on such a record rather than converted to
+   * `null` — a consumer reads "no diagnostic data" off the key not being there,
+   * which is how it already reads a record's shape off `solutions` versus
+   * `agreedDirection`. Emitted on every record that carries any, which from here
+   * on is every record filed.
+   */
+  readonly diagnosticData?: string
+  /**
    * The record's narrative direction and the tree of files it touches — **only
    * on a record filed before solutions existed.**
    *
@@ -295,6 +308,10 @@ export function buildRetroExport(input: BuildExportInput): RetroExport {
           root: record.rootCause.root,
         },
         workaround: record.workaround,
+        // `undefined` here means the key is not in the file at all, which is the
+        // whole convention above — no conversion to null, and nothing emitted
+        // for a record that was filed before the field existed.
+        diagnosticData: record.diagnosticData,
         // The shape the record has, and only that shape: a document carries the
         // two legacy keys or it carries `solutions`, never both and never
         // neither. `undefined` members drop out of `JSON.stringify` entirely,
