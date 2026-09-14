@@ -166,6 +166,11 @@ export function aRevisionDraft(
         whys: ['The process was killed', 'The lock had no owner check'],
         root: 'Locks are advisory with no liveness check.',
       },
+      // Authored markdown, because that is what the field carries and what the
+      // review page renders it as.
+      diagnosticData:
+        '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
+        '- **The holder:** `ps 8123` — no such process.',
       workaround: 'Delete the lock file by hand.',
       solutions: [
         {

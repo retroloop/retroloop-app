@@ -483,6 +483,26 @@ describe('the tRPC surface', () => {
     })
 
     /**
+     * The evidence reaches the page (RL-52), and reaches it as null rather than
+     * as a missing key on a record that has none — the same convention every
+     * other absent narrative half on this wire obeys, so the browser branches on
+     * a value instead of on whether a key is there.
+     */
+    test('carries the diagnostic data, and nulls it on a record filed without any', async () => {
+      const detail = await api.caller.records.get({ retroId, rid: 'r-record-1' })
+
+      expect(detail.record.diagnosticData).toBe(aRecord().diagnosticData)
+
+      const legacy = await api.legacyRevision(sessionId)
+      const old = await api.caller.records.get({
+        retroId: legacy.retroId,
+        rid: legacy.record.rid,
+      })
+
+      expect(old.record.diagnosticData).toBeNull()
+    })
+
+    /**
      * And **not** the record's comments (session 7). They rode here until the
      * owner made the panel the one comments surface — *"Replace inline comments
      * in retro body with comments in the side panel … This enables human to see

@@ -58,6 +58,16 @@ export type LaneRecordRow = {
   readonly problem: string
   readonly rootCause: RootCause
   /**
+   * **The evidence the AI diagnosed from**, as it wrote it — and `undefined` on
+   * a record filed before the field existed (`record.model.ts`).
+   *
+   * It is on the row for the reason the row is wide at all: whoever takes this
+   * record off the queue is about to go and reproduce the friction, and the logs
+   * and timings the AI already gathered are where that starts. A second read per
+   * record to fetch them is the cost this shape exists to avoid.
+   */
+  readonly diagnosticData: string | undefined
+  /**
    * **What the human said about this record, in his words** — the reviewer's
    * note on the verdict first, then every comment he wrote on the record's
    * threads, oldest first.
@@ -272,6 +282,7 @@ export class ListLaneRecordsUseCase {
           type: record.type,
           problem: record.problem,
           rootCause: record.rootCause,
+          diagnosticData: record.diagnosticData,
           ownerWords: ownerWordsOf(decision, words.get(record.rid)),
           selectedSolution: laneSolution(record, decision),
           decision,

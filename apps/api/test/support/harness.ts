@@ -96,6 +96,9 @@ export function aRecord(overrides: Partial<RecordInput> = {}): RecordInput {
       whys: ['The process was killed', 'The lock had no owner check'],
       root: 'Locks are advisory with no liveness check.',
     },
+    diagnosticData:
+      '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
+      '- **The holder:** `ps 8123` — no such process.',
     workaround: 'Delete the lock file by hand.',
     solutions: [
       {
@@ -126,9 +129,19 @@ export function aRecord(overrides: Partial<RecordInput> = {}): RecordInput {
  * shape any more — it is a stored blob, and this is what one looks like.
  */
 export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyRecord {
-  const { solutions: _solutions, defaults, humanWords, ...shared } = aRecord()
+  const {
+    solutions: _solutions,
+    // A record filed then carried no diagnostic data, and taking it off here is
+    // what makes this fixture a record an older binary actually wrote rather
+    // than a new one with two keys renamed.
+    diagnosticData: _diagnosticData,
+    defaults,
+    humanWords,
+    ...shared
+  } = aRecord()
   return {
     ...shared,
+    diagnosticData: undefined,
     // The input type's `context` is optional; the stored record's is required
     // and may be undefined, which is the one difference between the two.
     humanWords: humanWords.map((words) => ({
