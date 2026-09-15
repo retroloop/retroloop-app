@@ -13,8 +13,34 @@ export function sessionRef(value: string): SessionRef {
   return /^\d+$/.test(trimmed) ? Number.parseInt(trimmed, 10) : trimmed
 }
 
-/** `--retro <id>` is the primary address; `--session` means its active retrospective. */
-export function retroRef(args: { readonly retro?: number; readonly session?: string }): RetroRef {
+/**
+ * `--retro <id>` is the primary address; `--session` means its active retrospective.
+ *
+ * `known` is the retrospective a `#globalId` positional has already named —
+ * `record resolve 194` (retro 20 `r-brief-record-resolve-line`). Then neither
+ * flag is required: a `--retro` is accepted when it agrees and refused when it
+ * does not, and a `--session` is refused outright. A rid is minted per
+ * retrospective and is not unique across them, so a flag naming a different
+ * retrospective than the number does is the caller holding two records in mind,
+ * and passing it through could land the act on a same-named record elsewhere.
+ */
+export function retroRef(
+  args: { readonly retro?: number; readonly session?: string },
+  known?: { readonly retroId: number; readonly namedBy: string },
+): RetroRef {
+  if (known !== undefined) {
+    if (args.session !== undefined) {
+      throw new UsageError(
+        `--session is not taken beside ${known.namedBy}: the number names its retrospective on its own`,
+      )
+    }
+    if (args.retro !== undefined && args.retro !== known.retroId) {
+      throw new UsageError(
+        `--retro ${args.retro} disagrees with ${known.namedBy}, which is in retrospective ${known.retroId}`,
+      )
+    }
+    return { retroId: known.retroId }
+  }
   if (args.retro !== undefined) return { retroId: args.retro }
   if (args.session !== undefined) return { session: sessionRef(args.session) }
   throw new UsageError('one of --retro or --session is required')
