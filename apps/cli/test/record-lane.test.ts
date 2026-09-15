@@ -699,6 +699,154 @@ describe('the record lane', () => {
   })
 
   /**
+   * **The lifecycle acts take the number too** (retro 20
+   * `r-brief-record-resolve-line`). The queue and `record get` hand out
+   * `#globalId`s, and until this a manager holding one had to read the record a
+   * second time, for its rid and its retrospective, before it could resolve it —
+   * `resolve` was the one act in the brief's block addressed differently from
+   * its neighbours. A rid can never be all digits (`ridSchema`), so the two
+   * forms cannot be confused, and the number form needs no `--retro`: the number
+   * names its retrospective on its own.
+   */
+  describe('record resolve / reopen by #globalId', () => {
+    test('resolve takes the number, needs no --retro, and clears the claim in the same breath', async () => {
+      const result = await cli.run([
+        'record',
+        'resolve',
+        String(idOf('r-flaky-test')),
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+
+      expect(result.code).toBe(EXIT.ok)
+      expect(result.json()).toMatchObject({
+        retroId: recent,
+        rid: 'r-flaky-test',
+        version: 1,
+        status: 'resolved',
+        refs: ['abc1234'],
+        note: null,
+        actor: 'ai',
+      })
+
+      const after = await cli.run(['record', 'get', String(idOf('r-flaky-test')), '--json'])
+      expect(after.json()).toMatchObject({
+        claim: null,
+        resolved: true,
+        lifecycle: { state: 'resolved', ref: 'abc1234', claimedAt: null },
+      })
+      expect(rowsOf(await cli.run(['record', 'queue', '--json'])).map((row) => row.slug)).toEqual([
+        'r-stale-lock',
+      ])
+    })
+
+    test('reopen takes the number too', async () => {
+      const result = await cli.run(['record', 'reopen', String(idOf('r-silent-tailer')), '--json'])
+
+      expect(result.code).toBe(EXIT.ok)
+      expect(result.json()).toMatchObject({
+        retroId: recent,
+        rid: 'r-silent-tailer',
+        version: 2,
+        status: 'open',
+      })
+    })
+
+    /** The number form is no narrower than the rid form: neither waits for the review to finish. */
+    test('reaches a record whose review the human has not finished', async () => {
+      const result = await cli.run([
+        'record',
+        'resolve',
+        String(idOf('r-late-badge')),
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+
+      expect(result.code).toBe(EXIT.ok)
+      expect(result.jsonAs<{ retroId: number }>().retroId).toBe(open)
+    })
+
+    /**
+     * A rid is minted per retrospective and is not unique across them, so a
+     * `--retro` that names a different retrospective than the number does is the
+     * caller holding two records in mind — refused, rather than passed through to
+     * land on a same-named record elsewhere. One that agrees is merely redundant.
+     */
+    test('a --retro beside the number is accepted when it agrees and exit 2 when it does not', async () => {
+      const disagrees = await cli.run([
+        'record',
+        'resolve',
+        String(idOf('r-stale-lock')),
+        '--retro',
+        String(recent),
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+      expect(disagrees.code).toBe(EXIT.usage)
+      expect(disagrees.error().message).toContain(`retrospective ${past}`)
+      expect(await cli.store.recordLifecycle.findLatest(past, 'r-stale-lock')).toBeUndefined()
+
+      const agrees = await cli.run([
+        'record',
+        'resolve',
+        String(idOf('r-stale-lock')),
+        '--retro',
+        String(past),
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+      expect(agrees.code).toBe(EXIT.ok)
+      expect(agrees.jsonAs<{ retroId: number }>().retroId).toBe(past)
+    })
+
+    test('a --session beside the number is exit 2: the number names its retrospective on its own', async () => {
+      const result = await cli.run([
+        'record',
+        'resolve',
+        String(idOf('r-stale-lock')),
+        '--session',
+        '1',
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+
+      expect(result.code).toBe(EXIT.usage)
+      expect(result.error().message).toContain('--session')
+      expect(await cli.store.recordLifecycle.findLatest(past, 'r-stale-lock')).toBeUndefined()
+    })
+
+    test('the rid form still needs --retro, and the refusal names the number form', async () => {
+      const result = await cli.run([
+        'record',
+        'resolve',
+        'r-stale-lock',
+        '--ref',
+        'abc1234',
+        '--json',
+      ])
+
+      expect(result.code).toBe(EXIT.usage)
+      expect(result.error().message).toContain('needs --retro')
+      expect(result.error().message).toContain('#globalId')
+    })
+
+    test('is exit 3 for a number nothing was minted for, and exit 2 with no record id at all', async () => {
+      const unminted = await cli.run(['record', 'resolve', '404', '--ref', 'abc1234', '--json'])
+      expect(unminted.code).toBe(EXIT.notFound)
+
+      const none = await cli.run(['record', 'resolve', '--ref', 'abc1234', '--json'])
+      expect(none.code).toBe(EXIT.usage)
+      expect(none.error().message).toContain('needs a record id')
+      expect(none.error().message).toContain('#globalId')
+    })
+  })
+
+  /**
    * **What the lane refuses, and what each refusal teaches.** Every one of these
    * is somebody reaching for an argument from a neighbouring command, and an
    * ignored argument answers as if it had meant something.

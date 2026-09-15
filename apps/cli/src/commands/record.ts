@@ -4,6 +4,7 @@ import {
   type LaneRecordRow,
   type LaneState,
   type RecordLifecycleStatus,
+  type RetroRef,
 } from '@retro/core'
 import type { Argv } from 'yargs'
 import { retroRef } from '#args'
@@ -32,9 +33,10 @@ const DONE_OF_ACTION: Record<LifecycleAction, string> = {
  * A `#globalId` off the command line.
  *
  * Refused rather than coerced, and the message names the shape it wanted: the
- * commonest mistake here is reaching for a rid, because the four acts that write
- * a record's own lifecycle take one — so the refusal has to say which of the two
- * names this act uses, and why.
+ * commonest mistake here is reaching for a rid, because a rid is what the
+ * lifecycle acts are addressed by (`resolve` and `reopen` take either form
+ * since retro 20 `r-brief-record-resolve-line`; `lifecycleAddress` below) — so
+ * the refusal has to say which of the two names this act uses, and why.
  */
 function globalId(value: string | undefined, action: string, which?: string): number {
   const parsed = Number(value)
@@ -94,6 +96,13 @@ type RecordArgs = {
  * (the owner, session 8: *"once the AI fixes those issues, we should have a way
  * to … show that this issue was resolved, we should be able to specify a commit
  * id or github issue or something as reference so that it is easy to see"*).
+ *
+ * **Both take the `#globalId` as well as the rid** (retro 20
+ * `r-brief-record-resolve-line`): the queue and `record get` hand out numbers,
+ * and the manager holding one was reading the record a second time for its rid
+ * and its retrospective before it could resolve it. A number needs no `--retro`
+ * — it names its retrospective on its own — and the write is still addressed
+ * `(retroId, rid)` underneath (`lifecycleAddress`).
  *
  * This is the transport for the AI's writes, the way every AI write in this
  * system reaches the store: in-process, against the same SQLite file, never
@@ -182,7 +191,7 @@ export function registerRecordCommand(
         .positional('rid', {
           type: 'string',
           describe:
-            'resolve/reopen/archive/unarchive: which record, e.g. r-stale-lock · get/relations/claim/unclaim: its #globalId · relate/unrelate: the #globalId the relation is authored FROM',
+            'resolve/reopen: which record — its #globalId, e.g. 194, or its rid with --retro, e.g. r-stale-lock · archive/unarchive: its rid with --retro · get/relations/claim/unclaim: its #globalId · relate/unrelate: the #globalId the relation is authored FROM',
         })
         .positional('to', {
           type: 'string',
@@ -193,7 +202,10 @@ export function registerRecordCommand(
           describe:
             'relate: how the two relate, in your words — required, and the row keeps them when the relation is taken off',
         })
-        .option('retro', { type: 'number', describe: 'Retrospective id' })
+        .option('retro', {
+          type: 'number',
+          describe: 'Retrospective id (not needed when resolve/reopen are given a #globalId)',
+        })
         .option('session', { type: 'string', describe: 'Session id or UUID (its active retro)' })
         .option('revision', { type: 'number', describe: 'list: revision number [default: latest]' })
         .option('all', {
@@ -254,9 +266,8 @@ export function registerRecordCommand(
           return
         }
 
-        const retro = retroRef(args)
-
         if (action === 'list') {
+          const retro = retroRef(args)
           // The three lane words are a different question, and the plain listing
           // has no way to answer them: they are folded from the lifecycle and the
           // claim, which a revision listing carries per record but does not
@@ -395,9 +406,13 @@ export function registerRecordCommand(
           return
         }
 
-        const rid = args.rid
-        if (rid === undefined) {
-          throw new UsageError(`record ${action} needs a record id, e.g. r-stale-lock`)
+        // Examined before any retrospective flag, because the number form
+        // needs none (`lifecycleAddress`).
+        const positional = args.rid
+        if (positional === undefined) {
+          throw new UsageError(
+            `record ${action} needs a record id — its #globalId, e.g. 194, or its rid with --retro, e.g. r-stale-lock --retro 19`,
+          )
         }
         // The second positional belongs to the relation pair alone. Refused
         // rather than ignored, on `record list`'s standing: a second argument is
@@ -423,6 +438,8 @@ export function registerRecordCommand(
             `record ${action} takes no --all or --text: they narrow a listing, and this acts on one record`,
           )
         }
+
+        const { retro, rid } = await lifecycleAddress(context, action, positional, args)
 
         const result = await context.app.records.setLifecycle.execute({
           actor: 'ai',
@@ -570,6 +587,11 @@ const LANE_HELP = `The lane — the work, and the marker on it
                                already is, or if the record is not open.
   record unclaim <#globalId>   Give it back. Exit 4 if nobody is holding it.
                                A resolve clears the claim on its own.
+  record resolve <#globalId> --ref <sha>
+                               Mark it fixed, citing the evidence. A #globalId
+                               needs no --retro (one given must agree); the rid
+                               form, r-stale-lock --retro <n>, still works.
+  record reopen <#globalId>    Take that back — the fix did not hold.
 
   get/relations/claim/unclaim take the #globalId — the number \`record list\` puts
   first — not a rid, and refuse --retro/--session/--revision/--state/--ref/--note/--how.
@@ -863,6 +885,44 @@ async function oneRecord(context: CliContext, id: number): Promise<LaneRecordRow
     throw new Error(`record #${id} resolved to no row`)
   }
   return row
+}
+
+/**
+ * Where a lifecycle act is addressed — `(retro, rid)` either way, which is the
+ * address the use case takes and the one every write in the store is keyed on.
+ *
+ * A positional that is all digits is the record's `#globalId` (retro 20
+ * `r-brief-record-resolve-line`): the number `record queue` and `record get`
+ * hand out, looked up here to the `(retroId, rid)` it names. A rid can never be
+ * all digits (`ridSchema`: `r-some-words`), so the two forms cannot be confused.
+ * The lookup is the read `record get` makes, and a number nothing was minted
+ * for, or that a later draft withdrew, is its `NotFoundError` — exit 3, the same
+ * answer `record get` gives. The write then re-reads the record inside its own
+ * transaction (`set-record-lifecycle.use-case.ts`), so a record withdrawn between
+ * the two is a refusal from the write, never a row against a record that is gone.
+ *
+ * The rid form is unchanged and still needs `--retro` or `--session` — a rid
+ * names a record inside one retrospective — and its refusal names the other form,
+ * because the refusal is the only place the difference gets taught.
+ */
+async function lifecycleAddress(
+  context: CliContext,
+  action: LifecycleAction,
+  positional: string,
+  args: { readonly retro?: number; readonly session?: string },
+): Promise<{ readonly retro: RetroRef; readonly rid: string }> {
+  if (/^\d+$/.test(positional) && Number.parseInt(positional, 10) > 0) {
+    const id = Number.parseInt(positional, 10)
+    const row = await oneRecord(context, id)
+    return { retro: retroRef(args, { retroId: row.retroId, namedBy: `#${id}` }), rid: row.rid }
+  }
+  if (args.retro === undefined && args.session === undefined) {
+    throw new UsageError(
+      `record ${action} ${positional} needs --retro or --session: a rid names a record inside one ` +
+        'retrospective — its #globalId, the number `record queue` puts first, names it on its own',
+    )
+  }
+  return { retro: retroRef(args), rid: positional }
 }
 
 /**
