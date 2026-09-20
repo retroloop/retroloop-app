@@ -77,13 +77,13 @@ all three hold for the latest revision:
 
 ### `submitted` — a fourth word, and not a fourth state
 
-A reviewer needs a status between "submitted" and "closed" — one that says the
-human has finished but the AI has not closed yet. That window is the one the
-paragraphs above describe: after `ReviewFinished`, before `ReviewClosed`. Before
-the fourth word existed, nothing said so — the dashboard row and the review
-header both read REVIEWING for the whole of it, and the only surface that knew
-was the review bar's Sent mark, at the bottom of a page the reviewer had already
-left.
+A reader needs a word for the window between `reviewing` and `finished` — one
+that says the human has finished but the AI has not closed yet. That window is
+the one the paragraphs above describe: after `ReviewFinished`, before
+`ReviewClosed`. Before the fourth word existed, nothing said so — the dashboard
+row and the review header both read REVIEWING for the whole of it, and the only
+surface that knew was the review bar's Sent mark, at the bottom of a page the
+reviewer had already left.
 
 So the **read models** answer with a fourth word, and the machine above is
 untouched:

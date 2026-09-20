@@ -32,6 +32,9 @@ choice, so without that variable the hook looks only in the default location.
 
 ## Stages
 
+- **The app never lives inside the plugin tree.** Claude Code replaces that tree
+  on update, so the checkout sits under the root (`~/.retroloop/apps/…`) and the
+  data in the stage — neither is anything an update can overwrite.
 - **One root folder** (default `~/.retroloop`): `apps/` the app checkout,
   `plugins/` the personalization plugins, `data/` the stage, `backups/db/` the
   pre-migration snapshots, `retros/` the exports. Select another root with
