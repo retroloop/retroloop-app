@@ -1,6 +1,6 @@
 # CLI interface
 
-> **AUTHORITY (owner decision 2026-08-24, KC-0021 / fix-lane F4):** the
+> **AUTHORITY:** the
 > authoritative reference for what the CLI actually does is **`retroloop --help`**
 > and each command's own `--help` — generated from the shipped yargs
 > definitions and the core enums, so it cannot drift from behavior. Everything
@@ -14,8 +14,8 @@ The binary `retroloop` serves two audiences: **the AI** (via the plugin skill �
 ## Conventions
 
 - **Addressing:** integer ids everywhere. `--retro <id>` is the primary address; `--session <id|uuid>` is accepted as a convenience meaning "the active retrospective of that session" (the Claude session UUID is an attribute used once at registration). A session has 1→n retrospectives, **exactly one open at a time**; a retrospective has 1→n revisions (numbering restarts per retrospective).
-- **Lifecycle is implicit:** `revision create` starts a new retrospective if the last one is `finished`, otherwise adds a revision to the open one. `ReviewClosed` — `retroloop review close`, after the human's `ReviewFinished` — closes it (retro 4 `r-one-finish-button`).
-- **`--json` everywhere:** one JSON object on stdout; errors as `{"error":{"code","message"}}` on stderr. The object reaches a pipe **whole, whatever its size** — `retroloop … --json | <reader>` is how every skill and persona reads the CLI, and an answer over 128 KiB used to arrive cut at 131,072 bytes with exit 0 (retro 22 `r-cli-json-cut-at-128k-on-pipe`). That is a tested property, not an intention: `apps/cli/test/bin-stdout-pipe.test.ts` reads the real binary through a real pipe and holds the piped bytes equal to the file-redirected ones. A reader that leaves early (`| head`) is not an error.
+- **Lifecycle is implicit:** `revision create` starts a new retrospective if the last one is `finished`, otherwise adds a revision to the open one. `ReviewClosed` — `retroloop review close`, after the human's `ReviewFinished` — closes it.
+- **`--json` everywhere:** one JSON object on stdout; errors as `{"error":{"code","message"}}` on stderr. The object reaches a pipe **whole, whatever its size** — `retroloop … --json | <reader>` is how every skill and persona reads the CLI; an answer over 128 KiB must not arrive cut at 131,072 bytes with exit 0. That is a tested property, not an intention: `apps/cli/test/bin-stdout-pipe.test.ts` reads the real binary through a real pipe and holds the piped bytes equal to the file-redirected ones. A reader that leaves early (`| head`) is not an error.
 - **Actor:** the CLI always acts as `ai`. **No human-decision commands exist** — approve/decline/revise/finish/human comments/notes/annotations are UI-only. `review close` is not one: it decides nothing and refuses unless the human has already finished the round.
 - **Idempotency:** `session create` is idempotent by session UUID; `revision create` takes `--expect-revision <n>` for an optimistic check.
 - **Migrations are invisible:** applied automatically at startup by whichever process runs first, under the write lock. Status shows in `doctor`; `make:migration` is a dev script in the repo, not a binary command.
@@ -30,7 +30,7 @@ The binary `retroloop` serves two audiences: **the AI** (via the plugin skill �
 | 2 | usage |
 | 3 | not found |
 | 4 | conflict (stale version / `--expect-revision` failed) |
-| 5 | forbidden (actor rule) — **and, since session 10, the AI-config-write switch**: `label`/`attribute` writes are refused while the human has it off (`AiConfigWriteDisabledError`, same `FORBIDDEN_ACTOR` code) |
+| 5 | forbidden (actor rule) — **and the AI-config-write switch**: `label`/`attribute` writes are refused while the human has it off (`AiConfigWriteDisabledError`, same `FORBIDDEN_ACTOR` code) |
 | 6 | pending migrations (should not occur — see conventions) |
 | 7 | service/server problem (already running, unreachable, wait timeout) |
 
@@ -230,7 +230,7 @@ Actions:
 
 Options (create):
   --claude-session <uuid>                                              [required]
-  --project <name>      Optional since N2 (KC-0020) — nothing builds on it
+  --project <name>      Optional — nothing builds on it
   --cwd <dir>                                                          [required]
   --branch <name>
   --supervised          Interactive, human-attended session
@@ -334,13 +334,14 @@ top-level `state`, and that one is the retrospective's *stored* state — three
 values, `submitted` never among them. The two commands are asked different
 questions: `revision get` is addressed to a revision and reports the row its
 retrospective is in, while `review status` is the command that answers where the
-round stands. The split is deliberate rather than an oversight, and it is on the
-retro-16 list as a taste question for the owner.
+round stands. The split is deliberate rather than an oversight, and whether one
+field name should carry two answers remains an open question of taste.
 
-**One outcome, and then a decision of your own** (retro 4 `r-one-finish-button`).
+**One outcome, and then a decision of your own.**
 `wait` used to end on one of two events, because the page had one button per
-event; the owner removed the second — *"it should be clear from the content of
-the comments rather than from a redundant button I can press wrong"* — so `wait`
+event; the second button is gone, so that what the round asks for is clear from
+the content of the comments rather than from a redundant button that is easy to
+press wrong — so `wait`
 ends on `ReviewFinished` and the AI reads the round to know what it was:
 `review status` counts the `revise` verdicts, `comment list --unanswered` names
 the threads still waiting. Something open means the next revision; nothing open
@@ -411,11 +412,11 @@ Options:
                         the problem and the root cause
   --state <s>           list: pending | approved | declined | revise | hold
                         | in-progress | resolved | archived
-                        (`revise` is the third verdict, retro 4
-                        `r-verdict-revise` — the records the next revision must
-                        address; `hold` is a pre-`r-hold-semantics` verdict,
+                        (`revise` is the third verdict — the records the next
+                        revision must address; `hold` is a retired verdict,
                         read-only history, and the `held` / `holdNote` fields
-                        that rode beside it went with retro 4 `r-remove-hold`.
+                        that rode beside it went when the hold feature was
+                        removed.
                         The last three are lane states and need `--all`)
   --ref <r>             resolve: repeatable; at least one is required
   --note <text>         resolve/reopen/archive: offered, never demanded
@@ -478,9 +479,9 @@ retrospective to be read in. **`record list` without `--all` is unchanged**: sam
 shape, same order, same answer.
 
 **`relate` and `unrelate` are addressed by `#globalId`, and that is the whole
-shape of them** (the owner, session 11: *"both actors can relate records, each
-relation carries how-they-relate words, and the relation reads from both sides,
-so that AI can easily find past records and build holistic solutions."*). A
+shape of them**: both actors can relate records, each relation carries
+how-they-relate words, and the relation reads from both sides, so that the AI
+can find past records and build holistic solutions. A
 relation names **two** records and `(retro, rid)` is the address of one, so the
 two arguments are the numbers `record list` puts first — list, then relate the
 numbers. `--retro` and `--session` are **refused** on both: a global number needs
@@ -498,7 +499,7 @@ the words, the direction (`outgoing` / `incoming`) and who wrote it. That is the
 address every other read here takes, so following a relation into a retrospective
 that closed sessions ago is `record list --retro <retroId>` with what is already
 in hand. It is also the check after a batch: a listing silent about writes reads
-exactly like a store that refused them (#103 `r-lifecycle-projection-gap`).
+exactly like a store that refused them.
 
 **Both actors may relate, and both may un-relate** — this and the lifecycle pair
 are the only writes in the product open to both. There is no `--actor`: the CLI
@@ -508,8 +509,8 @@ writes as `ai` and nothing else, and the human's half is the browser's.
 retroloop label <action> [name]
 
 The label vocabulary — global, and the AI's half of the settings page. A label is
-a name a record wears, or does not; nothing travels with it (the owner: *"usually
-labels are just labels"*).
+a name a record wears, or does not; nothing travels with it — a label is just a
+label.
 
 Actions:
   list                  Every label, retired ones included, in minting order
@@ -527,8 +528,8 @@ has in hand is the word it read in `label list`. The `--json` answers carry an
 `id` too; nothing here needs one.
 
 **The four writes are gated by a switch on the human's settings page, and it
-starts off** (OWNER RULING 2: *"if it is disabled, the user can be certain that
-the AI cannot mess around"*). With it off they exit **5** with
+starts off**, so that while it is disabled the human can be certain the AI
+cannot change the vocabularies. With it off they exit **5** with
 `error.code = FORBIDDEN_ACTOR` and a message naming the setting and saying a
 human turns it on. This is the one place in this whole surface where an exit 5 is
 a real answer rather than a bug — the check is in core, at the store boundary, so
@@ -537,7 +538,7 @@ it holds whatever transport arrives.
 **Retiring is not deleting.** The row stays, the name stays taken, and every
 record already wearing the label goes on wearing it.
 
-**And it is reversible** (retro-11 `r-retire-burns-a-word`): `unretire` offers
+**And it is reversible**: `unretire` offers
 the same row again, keeping its id, its name and its creation time, and the name
 was never freed in between — so bringing one back can never collide with
 anything. Un-retiring what is not retired is a **4**, the mirror of a second
@@ -552,8 +553,8 @@ is a use-case refusal and no CLI surface at all.
 retroloop attribute <action> [name]
 
 The attribute vocabulary — the queryable primitive: a named value a record
-carries, with one of four fixed types (the owner: *"they can say it's always
-going to be a number. Then it will be easier for them to query"*).
+carries, with one of four fixed types — a definition that promises its values
+are always numbers is easier to query.
 
 Actions:
   list                  Every attribute, retired ones included, in minting order
@@ -600,20 +601,19 @@ Options:
   --json
 ```
 
-**`add` names one of three targets, and never infers one** (retro 4
-`r-cli-review-thread-reply`). It took `--record --section` alone for a session,
-while the store had taken all three since lane B — so the owner's first
-review-level asks had no sanctioned answer and the reply detoured through chat,
+**`add` names one of three targets, and never infers one.** It once took
+`--record --section` alone while the store already accepted all three — so a
+review-level ask had no sanctioned answer and the reply detoured through chat,
 the exact smuggling review-level threads were built to end. `--thread <id>` is
-the one that answers where he asked: a review-level thread carries no `rid` and
+the one that answers where the ask was made: a review-level thread carries no `rid` and
 no `section`, so its id is the only handle on it, and `comment list` is where the
 id comes from. `--review` opens a new one. Naming none is exit 2 rather than a
 review-level default: a bare `comment add` is a forgotten `--record` far more
 often than a deliberate ask.
 
-**`retroloop request` is gone** (retro 4 `r-remove-requests`). `request list` and
+**`retroloop request` is gone.** `request list` and
 `request respond` read and answered a top-level ask channel that duplicated the
-review's comment threads; the owner removed the experience on first contact, and
+review's comment threads, so the channel was removed, and
 `comment list --unanswered` / `comment add` are the whole of the AI's side now.
 `revision get` dropped its `requests` key with them — no store has ever carried
 a request row, so the key could only ever have been empty. The table stays,
@@ -625,7 +625,7 @@ retroloop export
 Write a JSON export (schema: `retroloop schema export`), or Markdown / TOON rendered
 from it. JSON is the public contract for user-written import scripts — there are
 no built-in tracker integrations. (TOON: token-oriented format for LLM
-consumption — exact spec OPEN, see JOURNAL.)
+consumption — exact spec OPEN.)
 
 Options:
   --retro <id>          Export one retrospective (or --session | --project)
@@ -633,8 +633,8 @@ Options:
   --project <name>      Every finished retrospective of a project
                         [DEFERRED with --session --all: multi-retrospective output
                         cannot conform to export.v1's single-retrospective envelope;
-                        needs an owner decision on a collection format — see
-                        brief-001 D6 addendum. Not implemented in item 4.]
+                        it needs a collection format, which is not yet
+                        settled. Not implemented.]
   --since <date>        project: finished after this date
   --state <s>           Only records in this state (e.g. approved)
   --format <f>          json | md | toon                              [default: json]
@@ -657,4 +657,4 @@ Options:
 
 ## Priority note
 
-`backup`, `restore`, `update`, `service` polish, `open --browser`, md/toon export are **low priority** — implemented only after the core loop (session → note → revision → review → wait → export json) works well (owner's tiering).
+`backup`, `restore`, `update`, `service` polish, `open --browser`, md/toon export are **low priority** — implemented only after the core loop (session → note → revision → review → wait → export json) works well.

@@ -1,8 +1,7 @@
 # tRPC surface
 
-> **ASSUMED — pending owner review.** Derived session 2 (owner-authorized safe
-> assumptions) from `data-model.md`, `ui.md`, `realtime.md`, and the merged core
-> use cases. Normative for BACKLOG item 5; the procedure set is deliberately the
+> **Derived** from `data-model.md`, `ui.md`, `realtime.md`, and the merged core
+> use cases. The procedure set is deliberately the
 > **minimum the review page v0 + the e2e loop need** — every procedure earns its
 > place, because the typed mock and the procedure-set meta-test mirror this
 > router key-for-key (R-MOCK-LOCK).
@@ -15,8 +14,8 @@
   no actor negotiation, nothing to spoof: AI writes cannot arrive here at all,
   and core's L3 guards still hold if something tries.
 - **Routers declare `.input()` AND `.output()`** with zod schemas from
-  `@retro/core` — the wire contract is checked both ways. One exception, found
-  in item 5: the subscription has no `.output()` — tRPC v11 validates a
+  `@retro/core` — the wire contract is checked both ways. One exception: the
+  subscription has no `.output()` — tRPC v11 validates a
   subscription's yield as the `tracked()` envelope, not the payload, so an
   output schema rejects every event; the payload is typed via a zod-inferred
   wire mapper instead.
@@ -36,7 +35,7 @@
 | `FinishGateError` | `PRECONDITION_FAILED` (payload: pending rids) |
 | anything else | `INTERNAL_SERVER_ERROR`, message scrubbed |
 
-## Procedures — v0 (item 5)
+## Procedures — v0
 
 Namespaces mirror the core's use-case groups. Inputs/outputs are the core's
 views; ids are integers, `rid` is the record slug.
@@ -47,22 +46,22 @@ views; ids are integers, `rid` is the record slug.
 | `retros.list({})` | query | the dashboard's flat list (N4): every retro newest first, ordinal #n within its session, title (nullable), state (the same displayed reading `retros.get` gives, from the one events read this list was widened to make), pending/decided counts, session `{id, cwd, startedAt}` |
 | `records.list({retroId, revision?})` | query | the records column, effective states incl. D2 carry-over, pending count |
 | `records.get({retroId, rid, revision?})` | query | one record: narrative, proposals, decision, threads (realtime refetch target) |
-| `records.listAll({})` | query | the flat cross-retro records page (session 8): every record of every retrospective in one list, each row carrying its own retro and session identity. No arguments — `strictObject({})` rejects any, because the filters are the page's and a filter parameter would decide ahead of the evidence which ones matter (A4) |
-| `records.byId({id})` | query | one record by the global number a human reads off the page (session 9, `/records/:id`): latest revision only, plus the identity line, the lifecycle, its **relations** (session 11 — both directions, each naming the other record) and the timeline. The one record read that runs the global sequence backwards — every other addresses a record as `(retroId, rid)`, which is right (A5) and is not something anybody types or bookmarks |
-| `records.setLifecycle({retroId, rid, status, refs?, note?})` | mutation | resolve / reopen / archive / unarchive a record after the review that settled its verdict has closed (session 8, widened session 9). One procedure carrying the act rather than one per position; `refs` and `note` are transport-optional and the domain decides which pairings are legal, from which state, and by whom |
-| `records.relate({fromId, toId, related, how?})` | mutation | two records said to belong together, in the words of whoever relates them — or the relation taken off (session 11: *"both actors can relate records, each relation carries how-they-relate words, and the relation reads from both sides, so that AI can easily find past records and build holistic solutions"*). **The one write here addressed by global ids**, because a relation names two records and `(retroId, rid)` is the address of one — and because it deliberately crosses retrospectives. One procedure carrying both acts with a boolean rather than a status word, on `records.setLifecycle`'s standing and `labels.set`'s reason: relating and un-relating are on and off. `how` is transport-optional and the domain decides the pairing — required on a relate, refused on an un-relate, whose row carries forward the words of the relation it takes off |
-| `decisions.record({retroId, rid, revision, state, severity, solutionLevel, involvement, reviewerNote?})` | mutation | approve / decline / revise / back-to-pending + defaults + note (D1/D4); `solutionLevel` input is strictly 1–5 since KC-0021 and `state` is the four write values since `r-hold-semantics` + `r-verdict-revise` (legacy `hold` remains read-only on output shapes) |
+| `records.listAll({})` | query | the flat cross-retro records page: every record of every retrospective in one list, each row carrying its own retro and session identity. No arguments — `strictObject({})` rejects any, because the filters are the page's and a filter parameter would decide ahead of the evidence which ones matter (A4) |
+| `records.byId({id})` | query | one record by the global number a human reads off the page (`/records/:id`): latest revision only, plus the identity line, the lifecycle, its **relations** (both directions, each naming the other record) and the timeline. The one record read that runs the global sequence backwards — every other addresses a record as `(retroId, rid)`, which is right (A5) and is not something anybody types or bookmarks |
+| `records.setLifecycle({retroId, rid, status, refs?, note?})` | mutation | resolve / reopen / archive / unarchive a record after the review that settled its verdict has closed. One procedure carrying the act rather than one per position; `refs` and `note` are transport-optional and the domain decides which pairings are legal, from which state, and by whom |
+| `records.relate({fromId, toId, related, how?})` | mutation | two records said to belong together, in the words of whoever relates them — or the relation taken off. Both actors can relate records, each relation carries how-they-relate words, and the relation reads from both sides, so that the AI can find past records and build holistic solutions. **The one write here addressed by global ids**, because a relation names two records and `(retroId, rid)` is the address of one — and because it deliberately crosses retrospectives. One procedure carrying both acts with a boolean rather than a status word, on `records.setLifecycle`'s standing and `labels.set`'s reason: relating and un-relating are on and off. `how` is transport-optional and the domain decides the pairing — required on a relate, refused on an un-relate, whose row carries forward the words of the relation it takes off |
+| `decisions.record({retroId, rid, revision, state, severity, solutionLevel, involvement, reviewerNote?})` | mutation | approve / decline / revise / back-to-pending + defaults + note (D1/D4); `solutionLevel` input is strictly 1–5, and `state` is the four write values (legacy `hold` remains read-only on output shapes) |
 | `threads.reply({threadId, text})` | mutation | reply in an existing thread |
 | `threads.open({retroId, target, text})` | mutation | open a section/review-level thread (data-model §threads) |
-| `threads.list({retroId})` | query | **every** thread of the retrospective, record-level and review-level alike. It was review-level only when this row was written (session 5, `r-retro-level-comments`) and session 7 widened it — the owner: *"Replace inline comments in retro body with comments in the side panel … This enables human to see all comments in one place"* — so `records.get` stopped carrying a record's threads and this became the one wire source for any of them. **This line said "and only those" until session 10 read it; that was two sessions stale.** |
-| `threads.resolve({threadId, resolved})` | mutation | the human marking a thread dealt with, or reopening one (`r-resolvable-comments`, session 7). One procedure with a boolean rather than a resolve/reopen pair; a write nothing else expresses, since a comment is not a verdict on the conversation and resolution is set rather than inferred |
+| `threads.list({retroId})` | query | **every** thread of the retrospective, record-level and review-level alike. It was review-level only at first and was then widened, so that inline comments in the retro body give way to comments in the side panel and the human sees every comment in one place — so `records.get` stopped carrying a record's threads and this became the one wire source for any of them. |
+| `threads.resolve({threadId, resolved})` | mutation | the human marking a thread dealt with, or reopening one. One procedure with a boolean rather than a resolve/reopen pair; a write nothing else expresses, since a comment is not a verdict on the conversation and resolution is set rather than inferred |
 | `review.finish({retroId})` | mutation | ReviewFinished — the human's one terminal action; surfaces `PRECONDITION_FAILED` with pending rids, and absorbs a second press of the same round |
 | `events.onRetro({retroId, lastEventId?})` | subscription | the one SSE stream; `tracked()` ids; `Last-Event-ID` replay (realtime.md) |
-| `labels.list({})` | query | the whole label vocabulary, retired entries included, in minting order (session 10). One read rather than an offerable/retired pair: the settings page greys the retired ones, a record page resolves a name for one that may since have been retired, and the filter offers one as long as a record still wears it — three readers, three subsets, one answer |
-| `labels.define({name})` | mutation | create a label. Gated for the AI by `ai_config_write` **in core**, not here (OWNER RULING 2) |
+| `labels.list({})` | query | the whole label vocabulary, retired entries included, in minting order. One read rather than an offerable/retired pair: the settings page greys the retired ones, a record page resolves a name for one that may since have been retired, and the filter offers one as long as a record still wears it — three readers, three subsets, one answer |
+| `labels.define({name})` | mutation | create a label. Gated for the AI by `ai_config_write` **in core**, not here |
 | `labels.rename({id, name})` | mutation | rename one; every record wearing it reads the new name at once, because a definition is written over rather than versioned. By `id` because a browser holds the list it just read and an id survives a rename |
 | `labels.retire({id})` | mutation | stop offering it. Never a delete — the records that wear it keep it, and the name stays taken |
-| `labels.unretire({id})` | mutation | offer it again (retro-11 `r-retire-burns-a-word`). The same row, same id, nothing else changed; the name was never freed, so it cannot collide. CONFLICT on one that is not retired, mirroring a second retire |
+| `labels.unretire({id})` | mutation | offer it again. The same row, same id, nothing else changed; the name was never freed, so it cannot collide. CONFLICT on one that is not retired, mirroring a second retire |
 | `labels.set({retroId, rid, labelId, applied})` | mutation | the human putting a label on a record or taking it off. **`set` and not `apply`**: `@trpc/server`'s `reservedWords` are `["then", "call", "apply"]` and a router key of `apply` throws at *runtime*, after typechecking clean. The App's use case is still `labels.apply`. Human-only in the domain whatever the toggle says, and reachable on a **finished** retrospective — the migrate story happens after the close |
 | `attributes.list({})` | query | the attribute vocabulary, same shape and same reasoning, plus each definition's type |
 | `attributes.define({name, type})` | mutation | create one with its type, fixed from then on: there is **no retype** anywhere, because every value already stored was accepted under it |
@@ -71,33 +70,32 @@ views; ids are integers, `rid` is the record slug.
 | `attributes.unretire({id})` | mutation | offer it again, **still of the type it was created with** — which is what makes an un-retire safe where a retype would not be |
 | `attributes.set({retroId, rid, attributeId, value?})` | mutation | set a value on a record, or **clear it by omitting `value`** — the one input on this wire whose absence is an act rather than silence. Validated against the definition's type, lightly, in the domain |
 | `settings.get({})` | query | the global settings — one key, `aiConfigWrite`, as a named boolean. Open to both actors: reading a permission is not exercising it |
-| `settings.setAiConfigWrite({enabled})` | mutation | OWNER RULING 2's switch. Human-only in the domain **forever**, whatever it currently says — a permission switch its own subject can flip is not one. `enabled` is required and has no default: nothing here is granted by omission (KC-0010) |
+| `settings.setAiConfigWrite({enabled})` | mutation | the AI-config-write switch. Human-only in the domain **forever**, whatever it currently says — a permission switch its own subject can flip is not one. `enabled` is required and has no default: nothing here is granted by omission |
 
 Everything else the UI reads on the review page rides on these — `review.status`
 is derivable client-side from `records.list`; it does not get a procedure until
 a page needs it that cannot afford the list.
 
-**The fourteen of sessions 10 and 12 are three namespaces rather than fewer**, and that is
-the owner's ruling made structural: labels and attributes are pure and
-independent primitives, and *"composition is the USER'S convention … never a
-system mechanism"* — a single `definitions.*` would be the first place a reader
-looked for the pairing the system does not have. `settings.*` is the third
+**The fourteen vocabulary and settings procedures are three namespaces rather
+than fewer**, and that is a design rule made structural: labels and attributes
+are pure and independent primitives, and composing them is the user's own
+convention, never a system mechanism — a single `definitions.*` would be the
+first place a reader looked for the pairing the system does not have. `settings.*` is the third
 because a global switch has no retrospective to hang off.
 
 **What is deliberately not among them**, on the every-procedure-is-a-thing-to-mock
 rule: no `retype`, and no per-record read of either primitive — a record's labels
 ride on `records.get`, `records.byId` and `records.listAll`, and its values on
 `records.byId` alone, all of which the pages are already holding. **`unretire`
-was on this list until session 12** and came off it by the only route this list
-recognises: a retro asked for it (retro-11 `r-retire-burns-a-word`, his selected
-solution), because one-press-irreversible was burning words out of a vocabulary
-that never frees a name.
+was on this list** and came off it by the only route this list
+recognises: a retrospective asked for it, because one-press-irreversible was
+burning words out of a vocabulary that never frees a name.
 
-**There is no `review.requestChanges`, and no `review.close`** (retro 4
-`r-one-finish-button`). `requestChanges` was the second half of a pair that put
-one judgment to the human twice, and he removed it on sight: *"I don't like
-having two buttons… it should be clear from the content of the comments rather
-than from a redundant button I can press wrong."* Its use case went with it and
+**There is no `review.requestChanges`, and no `review.close`.**
+`requestChanges` was the second half of a pair that put
+one judgment to the human twice, and it was removed: what a round asks for
+should be clear from the content of the comments rather than from a redundant
+button that is easy to press wrong. Its use case went with it and
 the `ChangesRequested` event name is frozen, readable, unwritten.
 
 Closing a review to export is the *AI's* act and lives in the CLI
@@ -106,50 +104,47 @@ to be corrected later: this context is unconditionally `actor: 'human'`, and
 `CloseReviewUseCase` refuses that actor — a procedure added here could only ever
 return `FORBIDDEN`.
 
-**There are no `holds.*` procedures either** (retro 4 `r-remove-hold`).
-`holds.set/clear` shipped in session 5 and the owner removed the feature on
-sight: *"I remove this hold experience altogether. I can achieve the whole thing
-by selecting something to be only done with the human in the loop."* That is
+**There are no `holds.*` procedures either.**
+`holds.set/clear` shipped once and the hold experience was removed altogether:
+the same thing is achieved by marking a record as one to be done only with the
+human in the loop. That is
 `involvement`, which `decisions.record` already writes. The `holds` table keeps
 its rows; no procedure reads or writes one, and `records.list` / `records.get`
 no longer carry a `held` field.
 
-**There are no `requests.*` procedures, and there will not be again** (retro 4
-`r-remove-requests`, the owner's highest-priority item of that round).
-`requests.list/open/close` shipped in session 5 and he ruled on them the first
-time he saw them: *"I don't like this request experience… we can just have the
-comments at the review level. I can add one individual request per comment."*
+**There are no `requests.*` procedures, and there will not be again.**
+`requests.list/open/close` shipped once and were removed: comments at the review
+level carry the same thing, one individual request per comment.
 Review-level comment threads are the one ask channel. The `requests` table and
 its rows stay in the store the way the `holds` table does — no procedure and no
 use case reads or writes one.
 
 ## Deferred procedures (added with their pages, never before)
 
-**Iteration 2 (KC-0020):** ~~`retros.list`~~ **shipped (N4, session 4)** —
-~~`threads.list`~~ **shipped (r-retro-level-comments, session 5)**: review-level
-threads had a write path and no read path at all, which is most of why the
-owner's asks went in under a record. Both are in the v0 table above.
+**Iteration 2:** ~~`retros.list`~~ **shipped (N4)** —
+~~`threads.list`~~ **shipped**: review-level
+threads had a write path and no read path at all, which is most of why
+review-level asks went in under a record. Both are in the v0 table above.
 `requests.open/close/list` and `holds.set/clear` shipped alongside `threads.list`
-and were **removed again in session 6** (`r-remove-requests`, `r-remove-hold`) —
-see §Procedures.
+and were **removed again** — see §Procedures.
 
 Session pages later add `sessions.list`,
 `sessions.get`. Also later: `notes.addHuman`, `notes.annotate`,
 `records.history`. No `projects.*` procedures — ever, until the project
-construct emerges organically (KC-0020). Each procedure lands together with its
+construct emerges organically. Each procedure lands together with its
 UI and its mock coverage in the same change, keeping the meta-test green.
 
 ## Reserved names — `then`, `call`, `apply`
 
 **Three procedure names are legal TypeScript and illegal tRPC, and they fail
-only when the router is built** (retro 11 `r-trpc-reserved-names`).
+only when the router is built.**
 `createRouterFactory` refuses them outright — the list is
 `["then", "call", "apply"]`, read verbatim out of `@trpc/server@11.18.0`'s own
 `reservedWords` (`apps/api/node_modules/@trpc/server/dist/tracked-DWInO6EQ.mjs:179-183`)
 — because a router is a callable-ish object and those three collide with
 `Function.prototype` and with thenable detection.
 
-**Nothing in the type system says so.** The labels lane named a mutation after
+**Nothing in the type system says so.** The labels work named a mutation after
 its domain verb and `apply` typechecked clean in all four packages; the first
 refusal came from the composed router at runtime. Measured against 11.18.0:
 
@@ -177,12 +172,12 @@ out of `node_modules`.
 ## URL params — `validateSearch` narrows, it does not police
 
 **Not a tRPC procedure, and it is written here because it is the same class of
-mistake as trusting a wire input** (retro-13 `r-validatesearch-narrows-not-polices`).
+mistake as trusting a wire input.**
 TanStack Router's `validateSearch` gives a route's search params their TYPE. It
 does **not** reject values at runtime: a validator that omits an unrecognised
 key still leaves `Route.useSearch()` answering the raw search.
 
-Measured on two independently written surfaces, session 11:
+Measured on two independently written surfaces:
 
 ```
 /settings?tab=nonsense   → validateSearch runs (3×), returns {} …
@@ -196,7 +191,7 @@ Measured on two independently written surfaces, session 11:
 declared. The shipped guards are `records-filter.tsx` §`seeded` (an unknown
 lifecycle is no lifecycle), `retros.$retroId.tsx` §`pinnedRevision` /
 §`anchoredRecord` (a `?rev=` that is not a positive integer is not a pin), and
-the reference fix the class was found by, `ae7e4d2` on `lane/s11-var-a`
+the reference fix the class was found by
 (`openTab` matching the three known names). The `/settings` rebuild carries no
 search params at all, which is the other way to be safe.
 
@@ -217,5 +212,5 @@ the single event→invalidation mapping (announce-don't-swap for
 
 - Biome bans `@trpc/server` value imports in `apps/web`; `check-deps.ts` allows
   `web → api` as type-only.
-- The procedure-set meta-test (item 5/6) asserts the mock module's key set
+- The procedure-set meta-test asserts the mock module's key set
   equals this router's — no more, no fewer.
