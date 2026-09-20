@@ -20,7 +20,7 @@ export type ListLabelsOutput = { readonly labels: readonly LabelDefinition[] }
  * there are tens of these, not thousands.
  *
  * **Empty is the normal answer on a store nobody has configured**, and there is
- * no fallback list anywhere: *"we will not hardcode any labels or attributes"*.
+ * no fallback list anywhere: no labels or attributes are hardcoded.
  */
 export class ListLabelsUseCase {
   constructor(private readonly store: Store) {}

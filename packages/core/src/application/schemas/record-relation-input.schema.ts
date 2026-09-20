@@ -3,21 +3,21 @@ import { parseOrThrow } from '#application/schemas/parse'
 import { nonEmptyTextSchema } from '#application/schemas/text.schema'
 
 /**
- * What a relation write says — the owner's *"each relation carries
- * how-they-relate words"*, made a rule of the shape rather than a convention.
+ * What a relation write says. Each relation carries how-they-relate words, made
+ * a rule of the shape rather than a convention.
  *
  * **`related` is required and has no default**, for the reason `status` and
- * `state` are on their inputs: nothing in this product is inferred from silence
- * (KC-0010). There is no shape of this input that takes two records apart
- * without saying so.
+ * `state` are on their inputs: nothing in this product is inferred from silence.
+ * There is no shape of this input that takes two records apart without saying
+ * so.
  *
  * **`how` and `related` constrain each other**, and the pairing is validated as
  * a union so each half is the schema's answer rather than half the schema's and
  * half the use case's — the standing `recordLifecycleInputSchema` set with
  * `refs`:
  *
- * - relating carries **words**, non-empty. That is the ask itself, and a
- *   relation citing nothing is the bare link this feature exists instead of.
+ * - relating carries **words**, non-empty. That is the point of the feature, and
+ *   a relation citing nothing is the bare link this feature exists instead of.
  * - un-relating carries **none**, and they are refused rather than dropped. A
  *   dropped field is a caller who thinks they said something they did not — and
  *   there is nothing a second account of the relation could be *about*: the act

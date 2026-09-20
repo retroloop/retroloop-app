@@ -19,9 +19,9 @@ export type FinishReviewInput = {
   readonly actor: Actor
   readonly retro: RetroRef
   /**
-   * His final word on the round, offered and never demanded
+   * The human's final word on the round, offered and never demanded
    * (`r-finish-confirm-message`). Blank is the same as absent: an empty box is
-   * not a message, and nothing is ever inferred from silence (KC-0010).
+   * not a message, and nothing is ever inferred from silence.
    */
   readonly finishMessage?: string
 }
@@ -38,17 +38,17 @@ export type FinishReviewOutput = {
 
 /**
  * The human's explicit "Finish review" — **the one terminal action on the page**
- * (retro 4 `r-one-finish-button`), and the end of *his* side of this round.
+ * (`r-one-finish-button`), and the end of the human's side of this round.
  *
- * It is not the end of the retrospective. The owner removed the second button
- * because the choice it asked him to restate is already in what he wrote:
- * *"there should be just one button, I say finish review, and you then look at
- * what I requested and, based on it, send a new revision — or say OK, there are
- * no new requests."* So this appends `ReviewFinished` and leaves the
- * retrospective `reviewing`; the AI reads the round and either files the next
- * revision or closes the review to export (`close-review.use-case.ts`). Nothing
- * here is inferred from silence — the AI acts only *after* this explicit press,
- * and only on words the human actually wrote (KC-0010).
+ * It is not the end of the retrospective. A second button was removed because
+ * the choice it asked the human to restate is already in what they wrote: there
+ * is just one button, the human finishes the review, and the AI then looks at
+ * what was asked and either sends a new revision or says there is nothing new to
+ * address. So this appends `ReviewFinished` and leaves the retrospective
+ * `reviewing`; the AI reads the round and either files the next revision or
+ * closes the review to export (`close-review.use-case.ts`). Nothing here is
+ * inferred from silence — the AI acts only *after* this explicit press, and only
+ * on words the human actually wrote.
  *
  * **The finish gate:** refused while any record of the latest revision is
  * effectively pending. That is what makes an export unambiguous — every record
@@ -56,17 +56,17 @@ export type FinishReviewOutput = {
  * verdicts (`r-verdict-revise`): asking for a rewrite is an answer, and the gate
  * wants an answer.
  *
- * **Once per round** (retro 4 `r-request-changes-multi-press`, the owner:
- * *"why am I able to press it multiple times?"*). A second press for
- * the same revision is absorbed: no second event, no error to read, and the
- * same outcome comes back. The page disables the button on the first press;
- * this is the half that holds when something gets past the page.
+ * **Once per round** (`r-request-changes-multi-press`): the button must not be
+ * pressable more than once for a round. A second press for the same revision is
+ * absorbed: no second event, no error to read, and the same outcome comes back.
+ * The page disables the button on the first press; this is the half that holds
+ * when something gets past the page.
  *
- * **The final message rides the press** (`r-finish-confirm-message`, the owner:
- * *"if it is actually valid and can be closed then it should show a text box
- * where the human can enter their final message before they close so this
- * message is going to be delivered separately from the comments"*). It is
- * optional, it is written in the same unit of work as the event, and a blank one
+ * **The final message rides the press** (`r-finish-confirm-message`): when the
+ * round can be closed, the page offers a text box where the human enters their
+ * final message before closing, and that message is delivered separately from
+ * the comments. It is optional, it is written in the same unit of work as the
+ * event, and a blank one
  * writes no row at all. An absorbed press carries no message either, for the
  * reason it carries no event: the round was already closed, and a second word on
  * a round that already has one would be an edit by another name.
@@ -111,8 +111,8 @@ export class FinishReviewUseCase {
 
       const at = timestamp(this.clock)
 
-      // Written before the event and inside the same `tx`, so the word he left
-      // exists if and only if the round it closes does (KC-0005).
+      // Written before the event and inside the same `tx`, so the word the human
+      // left exists if and only if the round it closes does.
       const message = input.finishMessage?.trim() ?? ''
       if (message.length > 0) {
         const previous = await repositories.finishMessages.findLatest(retrospective.id, revision.n)

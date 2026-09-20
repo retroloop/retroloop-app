@@ -15,22 +15,20 @@ export const noteKindSchema = z.literal(['human-cost', 'ai-cost'])
 /**
  * Every state a stored decision can be in — the **read** shape, all five.
  *
- * `revise` is the third verdict (retro 4 `r-verdict-revise`, the owner: *"either
- * I'm going to approve either I'm going to decline or either I'm going to
- * request a revision"*). It moves a record out of pending like the other two,
- * and it is an instruction to the drafting AI rather than an outcome: a record
- * carrying one must be addressed in the next revision.
+ * `revise` is the third verdict (`r-verdict-revise`): a reviewer either approves,
+ * declines, or asks for a revision. It moves a record out of pending like the
+ * other two, and it is an instruction to the drafting AI rather than an outcome:
+ * a record carrying one must be addressed in the next revision.
  *
- * `hold` is history. Retro 3 `r-hold-semantics` took it off the verdict axis
- * entirely — the owner: *"Hold is not something that should go in review status…
- * It is not a review status of a retro item"* — and it lives on as a lifecycle
- * flag instead (`hold.model.ts`). Human data is append-only and is never
- * rewritten, so every read path keeps admitting a stored `hold`, forever: the
- * wire views, the export, record history, the decisions table's own CHECK.
+ * `hold` is history. `r-hold-semantics` took it off the verdict axis entirely,
+ * because a hold is not a review status of a retrospective item, and it lives on
+ * as a lifecycle flag instead (`hold.model.ts`). Human data is append-only and is
+ * never rewritten, so every read path keeps admitting a stored `hold`, forever:
+ * the wire views, the export, record history, the decisions table's own CHECK.
  * Nothing may *write* one; that is `decisionVerdictSchema` below.
  *
- * This is the same shape of narrowing KC-0021 gave solution level, and for the
- * same reason.
+ * This is the same shape of narrowing solution level got, and for the same
+ * reason.
  */
 export const decisionStateSchema = z.literal(['pending', 'approved', 'declined', 'revise', 'hold'])
 
@@ -42,7 +40,7 @@ export const decisionStateSchema = z.literal(['pending', 'approved', 'declined',
  *
  * `pending` stays, and is not an oversight: a reviewer explicitly moving a
  * record back to undecided is an act, and the whole product turns on nothing
- * being inferred from silence (KC-0010). It is also the shape an undo takes —
+ * being inferred from silence. It is also the shape an undo takes —
  * re-clicking the selected verdict submits `pending`, which is one more append
  * rather than a row anybody edits.
  */
@@ -51,7 +49,7 @@ export const recordSectionSchema = z.literal([...RECORD_SECTIONS])
 
 /**
  * Which way a relation points, **from the side of the record being read** — the
- * shape *"the relation reads from both sides"* takes on a wire.
+ * shape the rule that a relation reads from both sides takes on a wire.
  *
  * It is not a stored column and never becomes one: the row is directed as
  * authored and is never mirrored, so this is computed per reader
@@ -81,8 +79,7 @@ export const retroDisplayStateSchema = z.literal([...RETROSPECTIVE_STATES, 'subm
 
 /**
  * Where a record stands on the lifecycle axis: `open` until somebody resolved
- * it, and `archived` once it is out of the way (the owner's session-8 ask,
- * widened by his session-9 one).
+ * it, and `archived` once it is out of the way.
  *
  * **Derived, never stored** — it is the reading of the entry in force, of the
  * absence of one, and, in that absence, of the verdict beside it: a declined
@@ -99,8 +96,8 @@ export const severitySchema = z.literal([1, 2, 3, 4, 5])
 /**
  * A ceiling, not a target (D1) — the **read** shape, all eight values.
  *
- * `none`, `upstream` and `undecided` are history: the owner cut them from what
- * anyone may choose (KC-0021), and retro 1 already holds two of them. Human data
+ * `none`, `upstream` and `undecided` are history: they were cut from what anyone
+ * may choose, and stored retrospectives already hold two of them. Human data
  * is append-only and is never rewritten, so every read path — the wire views,
  * the export, record history, the database's own CHECK — keeps admitting them,
  * forever. Nothing may *write* one; that is `solutionLevelInputSchema` below.
@@ -111,8 +108,8 @@ export const solutionLevelSchema = z.union([
 ])
 
 /**
- * What may be chosen or proposed from here on: strictly levels 1–5 (KC-0021,
- * the owner's *"cut that list of solutions to only L1 to L5"*).
+ * What may be chosen or proposed from here on: strictly levels 1–5; the list of
+ * solutions was cut to L1–L5 and nothing else.
  *
  * Every write path takes this — the human's decision and the AI's proposed
  * default alike — so a legacy value offered to either is a validation error

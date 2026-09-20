@@ -29,14 +29,13 @@ export type SetAiConfigWriteOutput = {
 }
 
 /**
- * The human decides whether the AI may write label and attribute definitions —
- * OWNER RULING 2, verbatim:
+ * The human decides whether the AI may write label and attribute definitions:
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
+ * > The config page carries a toggle the user can enable to give the AI the
+ * > ability to update the configs. While it is disabled, the user can be certain
+ * > that the AI cannot change them.
  *
- * **An append, not an edit.** *"The user can be certain"* is a claim about the
+ * **An append, not an edit.** "The user can be certain" is a claim about the
  * past as much as the present: the store keeps every version, so "it has been
  * off since the 27th" is readable rather than inferable. Setting it to what it
  * already says still writes a row, unlike almost every other act in this

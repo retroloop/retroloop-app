@@ -14,7 +14,7 @@ export type ListAttributesOutput = { readonly attributes: readonly AttributeDefi
  * the same shape and the same reasoning `ListLabelsUseCase` has.
  *
  * It is a second list rather than one call answering for both primitives, which
- * is the shape the owner's ruling asks for: labels and attributes are pure and
+ * is the shape the design asks for: labels and attributes are pure and
  * independent, and a single `definitions.list` would make every reader of either
  * hold both. The settings page asks for two answers because it renders two
  * sections; the record page asks for two because it renders two blocks.

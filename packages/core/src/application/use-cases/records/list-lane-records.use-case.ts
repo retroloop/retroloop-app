@@ -43,7 +43,7 @@ export type LaneRecordRow = {
   /** The record's number in the whole ledger — what `claim`, `get` and `relations` take. */
   readonly recordId: number
   readonly retroId: number
-  /** Its retrospective's place in its session — the "Retro #n" of the identity line (KC-0011). */
+  /** Its retrospective's place in its session — the "Retro #n" of the identity line. */
   readonly retroNumber: number
   readonly sessionId: number
   /** The Claude session UUID, so an agent can tell whose session filed this. */
@@ -68,15 +68,15 @@ export type LaneRecordRow = {
    */
   readonly diagnosticData: string | undefined
   /**
-   * **What the human said in the session, as the record quotes him** — the
-   * quote twins the record was drafted from (`record.model.ts`): what he
+   * **What the human said in the session, as the record quotes them** — the
+   * quote twins the record was drafted from (`record.model.ts`): what was
    * actually said, the same sentence cleaned up, and what was going on around it.
    *
    * Copied off the record as it stands, like `problem` and `rootCause`. An empty
-   * list means he said nothing quotable about this friction, and nothing else:
-   * the row used to carry no quotes at all, and a team that read `ownerWords: []`
-   * on a record with seven of them reported the store had lost his words (#214
-   * `r-lane-row-omits-human-words`).
+   * list means the human said nothing quotable about this friction, and nothing
+   * else: the row used to carry no quotes at all, and a reader that saw
+   * `ownerWords: []` on a record with seven of them concluded the store had lost
+   * those words (`r-lane-row-omits-human-words`).
    */
   readonly humanWords: readonly HumanWords[]
   /**
@@ -86,19 +86,19 @@ export type LaneRecordRow = {
    */
   readonly workaround: string
   /**
-   * **What the human said about this record, in his words** — the reviewer's
-   * note on the verdict first, then every comment he wrote on the record's
-   * threads, oldest first.
+   * **What the human said about this record, in their own words** — the
+   * reviewer's note on the verdict first, then every comment they wrote on the
+   * record's threads, oldest first.
    *
    * One field rather than two because they are one thing to the reader: the
-   * human's instructions. The note is first because it is the one he wrote *with*
+   * human's instructions. The note is first because it is the one written *with*
    * the verdict, which is the sentence most likely to change how the work is
    * done. The AI's own replies are not here — an agent re-reading what an agent
    * said is noise, and the thread is where a conversation is read.
    *
-   * **Not the record's quotes** — those are `humanWords`, above. This is what he
-   * wrote at review time, so an empty list means no note and no comment; it never
-   * means he said nothing.
+   * **Not the record's quotes** — those are `humanWords`, above. This is what
+   * was written at review time, so an empty list means no note and no comment;
+   * it never means the human said nothing.
    */
   readonly ownerWords: readonly string[]
   /** The fix in effect, with its files (`lane.view.ts`). */
@@ -153,20 +153,20 @@ export type ListLaneRecordsOutput = {
  * One use case rather than four, because the four are the same row asked for
  * with different filters. Two projections that drifted would mean `record queue`
  * and `record get` disagreeing about the record an agent is holding open in two
- * terminals, which is the class of bug #103 `r-lifecycle-projection-gap` was
- * filed about — and there the two projections were of *one* field.
+ * terminals, which is the class of bug `r-lifecycle-projection-gap` was filed
+ * about — and there the two projections were of *one* field.
  *
  * **The queue's definition is three clauses, and each of them is load-bearing:**
  *
- * - **the human finished the round.** Finishing is his one button (retro 4
- *   `r-one-finish-button`) and the gate behind it guarantees every record was
+ * - **the human finished the round.** Finishing is the human's one button
+ *   (`r-one-finish-button`) and the gate behind it guarantees every record was
  *   decided, so a finished round is the point at which an approval means
- *   "go" rather than "he has not got to it yet". It is read from the
+ *   "go" rather than "they have not got to it yet". It is read from the
  *   `ReviewFinished` events rather than from `retrospective.state`, because that
- *   state only moves on the AI's own close — a round he finished an hour ago is
+ *   state only moves on the AI's own close — a round finished an hour ago is
  *   work, closed or not.
- * - **approved.** Nothing is inferred from silence: a pending record is one he
- *   has not answered, not one he would have said yes to.
+ * - **approved.** Nothing is inferred from silence: a pending record is one the
+ *   human has not answered, not one they would have said yes to.
  * - **still open.** Resolved is done and archived is out of the way. A
  *   **claimed** record stays on the queue with its marker showing, because the
  *   person reading the queue needs to see what is in progress — hiding it would
@@ -362,7 +362,7 @@ function matches(row: LaneRecordRow, wanted: string): boolean {
   return haystack.some((field) => field.toLowerCase().includes(wanted))
 }
 
-/** The reviewer's note, then his comments on the record — see `LaneRecordRow.ownerWords`. */
+/** The reviewer's note, then their comments on the record — see `LaneRecordRow.ownerWords`. */
 function ownerWordsOf(
   decision: EffectiveDecision,
   comments: readonly string[] | undefined,
@@ -408,7 +408,7 @@ function ownerWordsByRid(threads: readonly CommentThread[]): ReadonlyMap<string,
  * When each round was finished, keyed `"<retroId> <revisionN>"`.
  *
  * The latest event wins, because the human may finish a round, take a verdict
- * back and finish it again — and what a lane row says is when he last put it
+ * back and finish it again — and what a lane row says is when it was last put
  * down.
  */
 function finishesByRetro(events: readonly DomainEvent[]): ReadonlyMap<string, string> {

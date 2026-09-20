@@ -32,9 +32,9 @@ import {
 import { effectiveDecision } from '#domain/services/record-state.service'
 
 /**
- * One record, anywhere in the stage — the row behind the owner's ask for *"a
- * page that shows all the retro items flat with filtering … to see all the items
- * irrespective of the session or retro or cwd in one place list."*
+ * One record, anywhere in the stage — the row behind a page that shows all the
+ * retrospective items flat, with filtering, so that every item can be seen in
+ * one list irrespective of the session, the retrospective or the cwd.
  *
  * Deliberately narrow, on the rule every wire row in this repo obeys: each field
  * here is a field the typed mock has to produce and keep producing. It carries
@@ -46,14 +46,14 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  */
 export type RecordListAllRow = {
   readonly retroId: number
-  /** Its retrospective's place in its session — the "Retro #n" of the identity line (KC-0011). */
+  /** Its retrospective's place in its session — the "Retro #n" of the identity line. */
   readonly retroNumber: number
   /** Session id, cwd and start — the same shape `retros.list` carries, so one reader renders both. */
   readonly session: RetroListSession
   readonly rid: string
   /**
    * The number this page shows — the record's place in the whole ledger
-   * (`record-id.model.ts`). It is what the owner asked this lane for, and this
+   * (`record-id.model.ts`). It is what the global number exists for, and this
    * page is where the reason is plainest: three retrospectives' records in one
    * list, and every one of them used to open with a "#1".
    */
@@ -62,7 +62,7 @@ export type RecordListAllRow = {
   readonly num: number
   readonly title: string
   readonly type: RecordType
-  /** Who raised it. One of the three filters the owner asked for. */
+  /** Who raised it. One of the three filters this page offers. */
   readonly requester: Party
   /**
    * The verdict **in effect** — carried over from an earlier revision where it
@@ -97,19 +97,17 @@ export type RecordListAllRow = {
    * exactly like `severity` and `state` above.
    *
    * It is here because the dashboard's fourth stat tile counts the records that
-   * are open **and** `interactive` (the owner's ruling: *"just check if something
-   * is open and the human had involvement option is interactive"*), and a count
-   * over every open record cannot be answered by the per-record read — that is 88
-   * round trips on his store today.
+   * are open **and** `interactive` — the tile checks exactly that pair — and a
+   * count over every open record cannot be answered by the per-record read: that
+   * is one round trip per open record.
    *
-   * **This widened the wire, and it was taken knowingly.** The tradeoffs were put
-   * in front of the owner before it was built: two of the five values (`other`,
-   * `undecided`) cannot be read as needs-the-human without a human reading a free
-   * text note, `undecided` is also the field's default, and on his store the tile
-   * reads 3 because 149 of 154 records are `autonomous`. He ruled for it anyway
-   * and named the single value that counts, so the field ships and the tile is
-   * honest about what it is counting rather than approximating it from something
-   * already on the row.
+   * **This widened the wire, and it was taken knowingly.** The tradeoffs are
+   * real: two of the five values (`other`, `undecided`) cannot be read as
+   * needs-the-human without a human reading a free text note, `undecided` is
+   * also the field's default, and on a store where nearly every record is
+   * `autonomous` the tile reads very low. `interactive` is still the single
+   * value that counts, so the field ships and the tile is honest about what it
+   * is counting rather than approximating it from something already on the row.
    *
    * From `effectiveDecision`, never from `record.defaults` — a page counting the
    * AI's proposal while the reviewer had changed it would be counting a
@@ -135,8 +133,8 @@ export type RecordListAllRow = {
    * It is on the row for the reason `lifecycle` is: this page is where somebody
    * looks to see what is going on across every retrospective at once, and "an
    * agent is on this one" is the single most perishable thing a row can say. A
-   * reader that had to open each record to find out would be making 88 round
-   * trips on the owner's store to render one badge.
+   * reader that had to open each record to find out would be making one round
+   * trip per record on the store to render one badge.
    *
    * `undefined` is a record nobody is holding — the same answer for one nobody
    * ever held and one somebody gave back (`record-claim.service.ts`).
@@ -195,7 +193,7 @@ const NO_LABELS: readonly [] = []
 
 /**
  * Every record of every retrospective, flat — the read model behind the records
- * page (the owner's session-8 ask).
+ * page.
  *
  * **A fixed number of reads, whatever the number of rows**: the retrospectives,
  * the sessions, the latest revision of each retrospective, the latest verdict on
@@ -217,8 +215,8 @@ const NO_LABELS: readonly [] = []
  * it is the order the reviewer read them in, and the order the revision stores
  * them in.
  *
- * **No filtering arguments**, deliberately (A4). The owner asked for filters and
- * the filters are the page's: the counts are small enough that the client can
+ * **No filtering arguments**, deliberately (A4). The filters the page offers are
+ * the page's own: the counts are small enough that the client can
  * hold every row, and a filter on the wire would be a decision made ahead of the
  * evidence about which filters matter — the same reasoning `retros.list` gives
  * for taking no input at all.

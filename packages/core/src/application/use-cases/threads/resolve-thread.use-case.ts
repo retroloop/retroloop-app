@@ -18,14 +18,12 @@ export type ResolveThreadInput = {
 export type ResolveThreadOutput = { readonly thread: ThreadView }
 
 /**
- * The human marks a thread dealt with, or reopens it (`r-resolvable-comments`,
- * owner-approved).
+ * The human marks a thread dealt with, or reopens it (`r-resolvable-comments`).
  *
- * His words: *"only the human should be able to mark it, not the AI"*, and this
- * session: *"User and only the user should be able to mark comments as
- * resolved."* So the actor guard is the first statement in the method, below
- * every adapter, and the table's append-only triggers back it up at L1 — an AI
- * that reached the store directly still could not rewrite a row.
+ * The user, and only the user, may mark a comment resolved — never the AI. So
+ * the actor guard is the first statement in the method, below every adapter, and
+ * the table's append-only triggers back it up at L1 — an AI that reached the
+ * store directly still could not rewrite a row.
  *
  * Append-only, like every human field: reopening writes another version and
  * touches nothing, so "resolved at 14:02, reopened at 14:40" stays readable

@@ -29,7 +29,7 @@ export type RecordDecisionInput = {
   readonly rid: string
   /**
    * The revision whose content the human was looking at. Defaults to the latest.
-   * A new revision is announced, never swapped in (KC-0005), so a reviewer can
+   * A new revision is announced, never swapped in, so a reviewer can
    * still be deciding against revision 1 while revision 2 exists — and their
    * verdict must bind to what they actually read.
    */
@@ -55,7 +55,7 @@ export type RecordDecisionOutput = {
  * solution's, and a second way to set it would be two answers that can
  * disagree. A record without solutions is the mirror image. Both refusals are
  * loud — silently ignoring a value the human explicitly sent is exactly the
- * quiet inference this product does not do (KC-0010).
+ * quiet inference this product does not do.
  *
  * **The fallback chain is the one the three dials already use** — `input ??
  * previous ?? the AI's proposal` — and the AI's proposal here is the solution it
@@ -119,16 +119,16 @@ function chooseSolution(
  *
  * Append-only: every call writes a new version and no call touches an existing
  * one, so "changed from approved to declined at 14:02" stays readable forever.
- * **Undo is an append too** (retro 4 `r-verdict-revise`): re-clicking the
- * selected verdict submits `pending`, which writes one more version and leaves
- * the verdict that was undone exactly where it was in the history.
+ * **Undo is an append too** (`r-verdict-revise`): re-clicking the selected
+ * verdict submits `pending`, which writes one more version and leaves the
+ * verdict that was undone exactly where it was in the history.
 
  * The verdict is one of four — pending, approved, declined, revise. `hold` was
- * one until retro 3 `r-hold-semantics`; a decision row that already carries it
- * is still read, and never rewritten, and nothing writes another.
+ * one until `r-hold-semantics`; a decision row that already carries it is still
+ * read, and never rewritten, and nothing writes another.
  * Values the caller leaves out fall back to their previous decision and then to
  * the AI's proposals for that record — never to a state, which is always
- * explicit (KC-0010).
+ * explicit.
  */
 export class RecordDecisionUseCase {
   constructor(

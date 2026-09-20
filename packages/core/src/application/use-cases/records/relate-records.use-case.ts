@@ -17,15 +17,15 @@ import { latestRelationEntry } from '#domain/services/record-relation.service'
 export type RelateRecordsInput = {
   /**
    * **Both actors, with no blanket assert — and that is the feature's first
-   * clause.** *"Both actors can relate records"*: the AI relates a record it has
-   * just filed to the one it is a repeat of, and the human relates two he can
-   * see on his own screen. The row records which of them did it.
+   * clause.** Both actors can relate records: the AI relates a record it has
+   * just filed to the one it is a repeat of, and the human relates two visible
+   * on screen. The row records which of them did it.
    *
    * This is therefore the second write in the system that opens without a
    * `ForbiddenActorError.assert`, and unlike `SetRecordLifecycleUseCase` — where
    * two of the four acts are the human's — there is no per-act guard either:
-   * relating and un-relating are the same act in both directions, and the owner
-   * gave both of them to both actors in one sentence.
+   * relating and un-relating are the same act in both directions, and both of
+   * them belong to both actors.
    */
   readonly actor: Actor
   /** The global id of the record the relation is authored **from**. */
@@ -57,10 +57,9 @@ export type RelateRecordsOutput = {
 
 /**
  * Two records are related, in the words of whoever relates them — or the
- * relation is taken off. The owner's session-11 ask, verbatim: *"both actors can
- * relate records, each relation carries how-they-relate words, and the relation
- * reads from both sides, so that AI can easily find past records and build
- * holistic solutions."*
+ * relation is taken off. Both actors can relate records, each relation carries
+ * how-they-relate words, and the relation reads from both sides, so that the AI
+ * can easily find past records and build holistic solutions.
  *
  * **One use case carrying both acts, and one procedure over it.** The precedent
  * is stated in `records.setLifecycle`'s own docstring and is quoted here because
@@ -72,12 +71,12 @@ export type RelateRecordsOutput = {
  * and no third position exists for a relation to occupy — a relation that means
  * something else is different *words*, or a different pair. Splitting them would
  * duplicate every guard below to gain a second procedure for the typed mock to
- * cover (R-MOCK-LOCK), which is the cost the house counts procedures in.
+ * cover (R-MOCK-LOCK), which is the cost this repository counts procedures in.
  *
  * **It works on a finished retrospective, and that is the point of the feature.**
  * A relation is written *after* the review closes by construction — the AI
  * relating the record it just filed to the one from three retrospectives ago is
- * the whole of *"find past records and build holistic solutions"* — so this joins
+ * the whole of finding past records and building holistic solutions — so this joins
  * `records.setLifecycle`, `labels.apply` and `attributes.set` as a write
  * `refuseWhenFinished` deliberately does not guard, and it is the **fourth**
  * exception in that list. It is safe for the same reason the other three are:
@@ -150,7 +149,7 @@ export class RelateRecordsUseCase {
        *
        * Relating carries the caller's; un-relating carries **the words of the
        * relation it takes off**, copied forward here rather than asked for. The
-       * column is `NOT NULL` because his sentence made the words part of the act,
+       * column is `NOT NULL` because the words are part of the act by design,
        * and the honest value for an un-relate is the account of the thing being
        * undone — a caller free to supply its own could leave the history holding
        * two disagreeing accounts of one relation, and the act itself has nothing

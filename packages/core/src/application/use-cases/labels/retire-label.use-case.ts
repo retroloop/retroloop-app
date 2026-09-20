@@ -30,22 +30,20 @@ export type RetireLabelOutput = { readonly label: LabelDefinition }
  * anybody can apply next.
  *
  * It is the same doctrine as `decline is a state, not a deletion` and as
- * archiving rather than deleting a record — *"we still want to maintain its
- * discussion"*. A delete here would silently rewrite the past of every record
- * that had been classified, which is the one thing this store never does.
+ * archiving rather than deleting a record, so that its discussion is still
+ * kept. A delete here would silently rewrite the past of every record that had
+ * been classified, which is the one thing this store never does.
  *
  * **Retiring twice is refused rather than absorbed**, on the standing
  * `LIFECYCLE_ACT_FROM` sets: answering "done" to an act that did nothing is the
  * quiet inference this product refuses everywhere else, and a caller retiring an
  * already-retired label believes the store says something it does not.
  *
- * **Un-retire is the act beside it, and the retro that asked for it is the
- * reason this paragraph changed** (retro-11 `r-retire-burns-a-word`). The lead
- * default here used to be that a fourth control waited for a retro to ask —
- * and one did: retiring was a single press with no confirmation and no way
- * back, so a mis-press permanently burned a word the store can never free.
- * `UnretireLabelUseCase` is the answer, and the prediction this comment made
- * held — bringing one back cost one repository method and undid nothing.
+ * **Un-retire is the act beside it** (`r-retire-burns-a-word`). A fourth control
+ * was held back until a retrospective asked for one, and one did: retiring was a
+ * single press with no confirmation and no way back, so a mis-press permanently
+ * burned a word the store can never free. `UnretireLabelUseCase` is the answer,
+ * and it cost one repository method and undid nothing.
  *
  * **What that does not change is anything about this use case.** Retiring is
  * still not a delete, a second retire is still refused, and the name is still

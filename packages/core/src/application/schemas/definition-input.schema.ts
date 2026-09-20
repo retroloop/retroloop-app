@@ -6,9 +6,9 @@ export const attributeTypeSchema = z.literal([...ATTRIBUTE_TYPES])
 
 /**
  * How long a definition's name may be. Forty characters is the longest thing
- * that still reads as a *label* on a record card at the width the owner reviews
- * on — a tag is a word or a short phrase, and a sentence in a pill is a sentence
- * nobody can read either way.
+ * that still reads as a *label* on a record card at the width the cards are
+ * reviewed at — a tag is a word or a short phrase, and a sentence in a pill is a
+ * sentence nobody can read either way.
  *
  * It is the one number in this file that is a UI consequence rather than a
  * domain rule, and it is here rather than in a component because the CLI writes
@@ -30,9 +30,9 @@ const NAME_MAX = 40
  * containing one renders as a label the reader can only see half of.
  *
  * That is the whole of it. There is no character class, no slug rule and no
- * reserved-word list: the owner asked for *"very fixed types and not … too many
- * configs, so that we don't have to put in a lot of validations"*, and a label
- * called `needs 🍕` is a label he is entitled to. Uniqueness is not here either
+ * reserved-word list: the design calls for very fixed types and few configs, so
+ * that little validation is needed, and a label called `needs 🍕` is a label the
+ * user is entitled to. Uniqueness is not here either
  * — it needs to see every other definition, which a field schema cannot
  * (`definition.service.ts`).
  */
@@ -44,10 +44,10 @@ export const definitionNameSchema = z
   .refine((name) => !name.includes('\n'), 'a name must be one line')
 
 /**
- * How long an attribute's value may be. Five hundred is generous for the thing
- * the owner described — *"a GitHub issue id, or something like that"* — and
- * short enough that a value cannot turn a record page into a wall. Prose belongs
- * in a comment, which has no cap because it is prose.
+ * How long an attribute's value may be. Five hundred is generous for what an
+ * attribute holds — a GitHub issue id, or something like that — and short enough
+ * that a value cannot turn a record page into a wall. Prose belongs in a
+ * comment, which has no cap because it is prose.
  */
 const VALUE_MAX = 500
 
@@ -62,17 +62,15 @@ function isCalendarDay(value: string): boolean {
 }
 
 /**
- * Light validation, per type — and *light* is the ruling rather than a stage
- * this will grow out of:
- *
- * > *"to keep it simple, we can keep attributes to very fixed types and not with
- * > too many configs, so that we don't have to put in a lot of validations."*
+ * Light validation, per type — and *light* is the design rather than a stage
+ * this will grow out of: to keep it simple, attributes stay very fixed types
+ * with few configs, so that little validation has to be put in.
  *
  * So each rule below goes exactly as far as the type's name promises and stops.
  * A `number` parses as a number; a `url` names a web address; a `date` is a
  * calendar day in ISO form; `text` is text. Nothing here checks that a URL
  * resolves, that a date is in the past, or that a number is in a range —
- * every one of those would be a config the owner asked us not to grow.
+ * every one of those would be a config this design deliberately does not grow.
  *
  * The value is stored **verbatim after trimming**, never canonicalised. `007`
  * stays `007`: nothing in the product does arithmetic on one, and rewriting a

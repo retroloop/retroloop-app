@@ -18,10 +18,10 @@ import type { Session } from '#domain/models/session.model'
 import { effectiveDecision } from '#domain/services/record-state.service'
 
 /**
- * `retro.export.v1` — **the public contract** (`docs/export/export.v1.schema.json`,
- * KC-0007). User-written import scripts read this shape; breaking it is a major
- * version, so the types here are written to match the schema exactly rather than
- * to be convenient.
+ * `retro.export.v1` — **the public contract**
+ * (`docs/export/export.v1.schema.json`). User-written import scripts read this
+ * shape; breaking it is a major version, so the types here are written to match
+ * the schema exactly rather than to be convenient.
  *
  * Three places where the schema is stricter than the domain, and the difference
  * is deliberate:
@@ -73,7 +73,7 @@ export type ExportHumanWords = {
   readonly context?: string
 }
 
-/** One of the AI's proposals, as the export carries it (owner's solutions design). */
+/** One of the AI's proposals, as the export carries it (the multi-solution design). */
 export type ExportSolution = {
   readonly bullets: string
   readonly footprint: string
@@ -84,14 +84,14 @@ export type ExportSolution = {
 export type ExportRecord = {
   readonly rid: string
   /**
-   * The record's number in the whole ledger — what the page shows and what the
-   * owner cites (`record-id.model.ts`).
+   * The record's number in the whole ledger — what the page shows and what a
+   * reader cites (`record-id.model.ts`).
    *
    * Optional here and optional in the published schema, for the reason
    * `finishMessages` and `thread.resolved` are: every document written before
-   * this field existed is still a valid `retro.export.v1`, and the seven the
-   * owner has already exported are the reason that matters. Emitted on every
-   * document written from now on.
+   * this field existed is still a valid `retro.export.v1`, and documents already
+   * exported are the reason that matters. Emitted on every document written from
+   * now on.
    *
    * `num` stays beside it and stays required: a record's position within its own
    * retrospective is a fact the document has carried since v1, and narrowing a
@@ -106,8 +106,8 @@ export type ExportRecord = {
    * on a retrospective decided before `r-hold-semantics`: nothing writes one any
    * more, and a document that already carries one stays valid forever.
    *
-   * `revise` is in the type because it is a verdict a human can give (retro 4
-   * `r-verdict-revise`) and the published schema may never be narrower than the
+   * `revise` is in the type because it is a verdict a human can give
+   * (`r-verdict-revise`) and the published schema may never be narrower than the
    * type — but no document written today carries one: closing a review to
    * export refuses while any record still asks to be rewritten
    * (`close-review.use-case.ts`), which is what "must-address in the next
@@ -128,7 +128,7 @@ export type ExportRecord = {
   }
   readonly workaround: string
   /**
-   * The evidence the AI diagnosed from, as it wrote it (RL-52).
+   * The evidence the AI diagnosed from, as it wrote it.
    *
    * Optional here and optional in the published schema, on `globalId`'s standing
    * rather than `reviewerNote`'s: a record filed before the field existed has
@@ -147,7 +147,7 @@ export type ExportRecord = {
    * They are optional here, and optional in the published schema, for the reason
    * `held` and `holdNote` are: this record object is `additionalProperties:
    * false`, so a key removed from v1 would invalidate every document written
-   * while it existed — the owner's five retrospectives, all of them. The builder
+   * while it existed — every one of them. The builder
    * stops emitting them; the contract goes on admitting them. Narrow the write
    * path, never the read path (data-model.md §Hold).
    */
@@ -180,9 +180,9 @@ export type ExportSession = {
  *
  * `revision` is the round it closes — the same key `ReviewFinished` carries — so
  * a retrospective that went three rounds can carry three of these and a reader
- * can tell which is which. The owner asked for it *"delivered separately from
- * the comments"*, and this is what separately looks like in the document: its own
- * array on the retrospective, touching no thread.
+ * can tell which is which. It is delivered separately from the comments, and
+ * this is what separately looks like in the document: its own array on the
+ * retrospective, touching no thread.
  */
 export type ExportFinishMessage = {
   readonly revision: number
@@ -192,14 +192,14 @@ export type ExportFinishMessage = {
 
 export type ExportRetrospective = {
   readonly id: number
-  /** The final revision's title — the retrospective's name, or null (KC-0020). */
+  /** The final revision's title — the retrospective's name, or null. */
   readonly title: string | null
   readonly state: 'finished'
   readonly finishedAt: string
   readonly revisions: number
   /**
-   * One entry per round he left a word on, ascending by revision; `[]` when he
-   * left none. Always emitted, and optional in the schema, so documents written
+   * One entry per round the human left a word on, ascending by revision; `[]`
+   * when none was left. Always emitted, and optional in the schema, so documents written
    * before the field existed stay valid (the `thread.resolved` precedent).
    */
   readonly finishMessages: readonly ExportFinishMessage[]
@@ -232,7 +232,7 @@ export type BuildExportInput = {
   readonly globalIds: ReadonlyMap<string, number>
   readonly decisions: ReadonlyMap<string, Decision>
   readonly threads: readonly ThreadView[]
-  /** The word he left on each round he left one on, ascending by revision. */
+  /** The word the human left on each round they left one on, ascending by revision. */
   readonly finishMessages: readonly FinishMessage[]
   readonly generatedAt: string
 }
@@ -261,7 +261,7 @@ function isPresent<T>(value: T | undefined): value is T {
  * Content is the **final revision's narrative plus the final human decision
  * fields** (D6). Per-record history stays queryable through `record history` and
  * is deliberately not in the export: the export is the outcome, not the argument
- * that produced it (KC-0011's spirit).
+ * that produced it.
  */
 export function buildRetroExport(input: BuildExportInput): RetroExport {
   const recordThreads = new Map<string, ExportThread[]>()

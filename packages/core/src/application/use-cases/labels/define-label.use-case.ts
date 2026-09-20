@@ -10,7 +10,7 @@ import { definitionNamed } from '#domain/services/definition.service'
 
 export type DefineLabelInput = {
   /**
-   * Either actor, and the AI's half is what the toggle governs — OWNER RULING 2,
+   * Either actor, and the AI's half is what the AI-config-write toggle governs,
    * enforced below at the store boundary rather than at any transport
    * (`config-write.service.ts`).
    */
@@ -24,11 +24,11 @@ export type DefineLabelOutput = { readonly label: LabelDefinition }
  * A label is created — the first half of the settings page, and the only way a
  * label ever comes to exist.
  *
- * **Nothing ships one.** The owner: *"to keep it flexible we will not hardcode
- * any labels or attributes."* There is no seed, no migration insert and no
+ * **Nothing ships one.** To keep the vocabulary flexible, no labels or
+ * attributes are hardcoded. There is no seed, no migration insert and no
  * default, so a store with labels in it is a store somebody typed them into —
- * `migrated` included, which is the example he used rather than a value the
- * product knows about.
+ * `migrated` included, which is an example rather than a value the product
+ * knows about.
  *
  * Two refusals, and they are different kinds of thing:
  *

@@ -53,7 +53,7 @@ export type AddCommentInput = {
    * The revision the writer had in front of them, stored on the message.
    *
    * The browser sends it, because it knows: a new revision is announced and
-   * never swapped in (KC-0005), so the reader may be pinned to revision 1 while
+   * never swapped in, so the reader may be pinned to revision 1 while
    * revision 2 exists, and the comment belongs to what they were reading. The
    * CLI does not send one and does not need to — the AI comments on the draft it
    * just filed — so an absent value resolves to the latest revision here, in the

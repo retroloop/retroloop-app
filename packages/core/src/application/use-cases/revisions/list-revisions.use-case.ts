@@ -34,8 +34,8 @@ export class ListRevisionsUseCase {
     )
     const revisions = await this.store.revisions.listByRetro(retrospective.id)
     /**
-     * One events read for the whole list (#111). The review page asks this for
-     * "has he finished the round I am looking at?", and until now nothing on the
+     * One events read for the whole list. The review page asks this for "has the
+     * human finished the round I am looking at?", and until then nothing on the
      * wire answered it per revision — `retrospective.finishedAt` is the retro's
      * own close and stays null through every round but the last.
      */

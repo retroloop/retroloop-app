@@ -7,7 +7,7 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  *
  * The verdict buckets are `Record<DecisionState, number>` rather than a
  * list, so they cannot fall out of step with the states a decision can be in —
- * `revise` among them since retro 4 `r-verdict-revise`, which is how the AI
+ * `revise` among them since `r-verdict-revise`, which is how the AI
  * reading this after a finish sees that a record was sent back for a rewrite —
  * `hold` among them, which is the **frozen legacy verdict** bucket: nothing can
  * write one any more (`r-hold-semantics`), and every store that never held one
@@ -16,8 +16,8 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  * total.
  *
  * There was a `held` count beside them for one session, over the lifecycle flag
- * `r-hold-semantics` introduced. Retro 4 `r-remove-hold` removed the feature and
- * this count with it, and the verdict buckets are the whole answer again.
+ * `r-hold-semantics` introduced. `r-remove-hold` removed the feature and this
+ * count with it, and the verdict buckets are the whole answer again.
  */
 export type ReviewCounts = Record<DecisionState, number> & {
   readonly total: number

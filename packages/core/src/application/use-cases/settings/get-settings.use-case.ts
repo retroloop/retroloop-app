@@ -10,8 +10,8 @@ export type GetSettingsInput = {
 
 export type GetSettingsOutput = {
   /**
-   * Whether the AI may write label and attribute definitions right now — OWNER
-   * RULING 2's toggle, read as a boolean rather than as the row behind it.
+   * Whether the AI may write label and attribute definitions right now — the
+   * AI-config-write toggle, read as a boolean rather than as the row behind it.
    *
    * A store nobody has configured has no row and answers `false`, which is the
    * safe state a fresh install is born in (`config-write.service.ts`).

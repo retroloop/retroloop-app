@@ -14,10 +14,10 @@ export type ClaimRecordInput = {
    * without one, after `records.setLifecycle` and `records.relate`.
    *
    * The AI is who this exists for: it reads the queue and picks a record up. The
-   * human may hold one too — he is the other party who does the work, and a
+   * human may hold one too — they are the other party who does the work, and a
    * marker that could only say "an agent has this" would go up beside a record
-   * he is editing himself. The row records which, so nothing is inferred from
-   * the table.
+   * the human is editing themselves. The row records which, so nothing is
+   * inferred from the table.
    */
   readonly actor: Actor
   /**

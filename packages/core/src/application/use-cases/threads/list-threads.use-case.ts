@@ -27,7 +27,7 @@ export type ListThreadsOutput = {
  * writer sets, so it cannot drift out of sync with the conversation itself.
  *
  * "Resolved" is the opposite kind of thing and is stored: it is the human saying
- * he is done with a thread, which nothing about the conversation implies
+ * they are done with a thread, which nothing about the conversation implies
  * (`r-resolvable-comments`). The two live side by side on every view here.
  */
 export class ListThreadsUseCase {

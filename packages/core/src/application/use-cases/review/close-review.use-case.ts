@@ -29,9 +29,9 @@ export type CloseReviewOutput = {
  * The AI closes the review to export — `reviewing → finished`, terminal, and
  * the last thing that ever happens to a retrospective.
  *
- * It exists because the human's Finish stopped being terminal (retro 4
- * `r-one-finish-button`). He presses one button; the AI then reads what he
- * wrote and either files the next revision or takes the export. **That second
+ * It exists because the human's Finish stopped being terminal
+ * (`r-one-finish-button`). The human presses one button; the AI then reads what
+ * they wrote and either files the next revision or takes the export. **That second
  * outcome is an act with a name and an event of its own** — a state this
  * important may not arrive as a side effect of something else, and `review
  * wait`, the tailer and the page all learn about it the same way they learn
@@ -43,8 +43,8 @@ export type CloseReviewOutput = {
  * - **The human must have finished this round.** A `ReviewFinished` event for
  *   the latest revision is the only thing that opens this door, so the AI can
  *   never close a review the human has not put down. Nothing is inferred from
- *   silence, from an empty comment list, or from time passing (KC-0010).
- * - **The finish gate must still hold.** He can undo a verdict after finishing
+ *   silence, from an empty comment list, or from time passing.
+ * - **The finish gate must still hold.** The human can undo a verdict after finishing
  *   (`r-verdict-revise`), and a record back in `pending` means the export would
  *   be ambiguous — so the gate is asked again here, not just at the finish.
  * - **No record may still ask to be rewritten.** A `revise` verdict is
