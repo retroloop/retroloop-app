@@ -34,9 +34,9 @@ const DONE_OF_ACTION: Record<LifecycleAction, string> = {
  *
  * Refused rather than coerced, and the message names the shape it wanted: the
  * commonest mistake here is reaching for a rid, because a rid is what the
- * lifecycle acts are addressed by (`resolve` and `reopen` take either form;
- * `lifecycleAddress` below) — so the refusal has to say which of the two names
- * this act uses, and why.
+ * lifecycle acts are addressed by (`resolve` and `reopen` take either form,
+ * `r-brief-record-resolve-line`; `lifecycleAddress` below) — so the refusal has
+ * to say which of the two names this act uses, and why.
  */
 function globalId(value: string | undefined, action: string, which?: string): number {
   const parsed = Number(value)
@@ -79,17 +79,17 @@ type RecordArgs = {
  *
  * It leads with `#globalId`, which is the number the human is looking at when
  * they say "do 47 first" — the per-retro `num` they used to see restarted at 1
- * in every retrospective, which reads oddly. Both numbers are in the
- * `--json` shape, along with the rid every write is still addressed by.
+ * in every retrospective, which reads oddly. Both numbers are in the `--json`
+ * shape, along with the rid every write is still addressed by.
  *
- * There were `held` and `holdNote` fields beside them once and there
- * are not any more. "Not to be picked up without me"
- * is `involvement`, which the human sets with the verdict.
+ * There were `held` and `holdNote` fields beside them once (`r-remove-hold`) and
+ * there are not any more. "Not to be picked up without me" is `involvement`,
+ * which the human sets with the verdict.
  *
  * `--state hold` still filters, and still finds nothing on any store written
  * since `r-hold-semantics`: a decision made before it keeps that state forever.
- * `--state revise` is the live one to reach for after a finish: it lists the
- * records the human asked to see rewritten,
+ * `--state revise` is the live one to reach for after a finish
+ * (`r-verdict-revise`): it lists the records the human asked to see rewritten,
  * which are the ones the next revision has to address.
  *
  * `record resolve` and `record reopen` — **the AI's half of the lifecycle
@@ -97,12 +97,12 @@ type RecordArgs = {
  * issue was resolved, and to name a commit id or a GitHub issue as the reference
  * that makes it easy to see.
  *
- * **Both take the `#globalId` as well as the rid**: the queue and `record get`
- * hand out numbers,
- * and a caller holding one was reading the record a second time for its rid
- * and its retrospective before it could resolve it. A number needs no `--retro`
- * — it names its retrospective on its own — and the write is still addressed
- * `(retroId, rid)` underneath (`lifecycleAddress`).
+ * **Both take the `#globalId` as well as the rid** (`r-brief-record-resolve-line`):
+ * the queue and `record get` hand out numbers, and a caller holding one was
+ * reading the record a second time for its rid and its retrospective before it
+ * could resolve it. A number needs no `--retro` — it names its retrospective on
+ * its own — and the write is still addressed `(retroId, rid)` underneath
+ * (`lifecycleAddress`).
  *
  * This is the transport for the AI's writes, the way every AI write in this
  * system reaches the store: in-process, against the same SQLite file, never

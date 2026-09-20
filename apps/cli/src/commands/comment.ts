@@ -16,12 +16,12 @@ import { threadJson } from '#views'
  * (`impact`, `chain`, `agreed_direction`) the model does not have. The enum is the
  * authority, and `--help` shows what the model will actually accept.
  *
- * **Three targets, because the store has three.** `--record --section` was once
- * the only one, so review-level asks had no sanctioned answer and the reply
- * detoured through chat — the exact smuggling review-level threads were built to
- * end. `--thread <id>` answers a thread that already exists, review-level or
- * record-level, which is what answering where the question was asked needs;
- * `--review` opens a new one anchored to nothing.
+ * **Three targets, because the store has three** (`r-cli-review-thread-reply`).
+ * `--record --section` was once the only one, so review-level asks had no
+ * sanctioned answer and the reply detoured through chat — the exact smuggling
+ * review-level threads were built to end. `--thread <id>` answers a thread that
+ * already exists, review-level or record-level, which is what answering where
+ * the question was asked needs; `--review` opens a new one anchored to nothing.
  */
 type CommentArgs = {
   readonly record?: string

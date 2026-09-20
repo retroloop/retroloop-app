@@ -279,7 +279,7 @@ describe('the /retro skill', () => {
   })
 
   test('says the thing about human notes that nothing enforces', () => {
-    // Caller protocol: the core cannot tell a drafting read from any other read
+    // Caller protocol: the core cannot tell a drafting read from any other read.
     // If the skill stops saying so, nothing else will.
     expect(markdown).toContain('drafting time only')
   })

@@ -291,13 +291,13 @@ async function waitForOutcome(
  * `wait` tails the events table from its own process (realtime.md §CLI waiting) —
  * no server involved, so it works when the server is down, which is the whole
  * reason capture and waiting do not depend on it. It returns on one event name
- * now: the human presses one button, and what
- * the round was *about* is read from the round, not from which button they chose.
+ * now (`r-one-finish-button`): the human presses one button, and what the round
+ * was *about* is read from the round, not from which button they chose.
  *
- * **`--follow` subscribes instead of polling.** Under the poll a human pressed
- * Finish and the watching agent heard it only seconds later. The app side
- * already carries events, so the CLI can take them in realtime the same way the
- * UI updates, and this is it: `--follow` opens the
+ * **`--follow` subscribes instead of polling** (`r-monitor-not-realtime`).
+ * Under the poll a human pressed Finish and the watching agent heard it only
+ * seconds later. The app side already carries events, so the CLI can take them
+ * in realtime the same way the UI updates, and this is it: `--follow` opens the
  * server's `events.onRetro` stream, the same ~300 ms channel every open review
  * page holds, and returns the instant the finish is pushed. It degrades to the
  * poll above whenever the stream cannot deliver — no server on the stage, a

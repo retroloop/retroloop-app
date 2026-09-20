@@ -10,8 +10,9 @@ import type { ThreadView } from '@retro/core'
  * to guess at (cli.md §Conventions).
  *
  * There was a `requestJson` beside it, printed by `request list` and by
- * `revision get`. Both callers are gone and so is it: an ask is a review-level
- * comment now, and comes back through `threadJson` like every other one.
+ * `revision get`. Both callers are gone (`r-remove-requests`) and so is it: an
+ * ask is a review-level comment now, and comes back through `threadJson` like
+ * every other one.
  *
  * It takes a `ThreadView` rather than a `CommentThread` because two of the keys
  * below are read models rather than columns: `revision` is stored or derived
@@ -21,8 +22,8 @@ import type { ThreadView } from '@retro/core'
  *
  * **`resolved` is read-only here, and there is no flag anywhere in the CLI that
  * writes it.** The CLI writes as the AI and only as the AI, and
- * `ResolveThreadUseCase` refuses that actor before it looks at anything: only
- * the human marks a thread resolved, never the AI.
+ * `ResolveThreadUseCase` refuses that actor before it looks at anything
+ * (`r-resolvable-comments`): only the human marks a thread resolved, never the AI.
  * What the AI gets is the ability to see which asks the human has already
  * settled, which is exactly what it needs when drafting the next revision.
  */
