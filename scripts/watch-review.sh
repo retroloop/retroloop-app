@@ -104,8 +104,8 @@ if ! ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
 fi
 
 # ── what this runs ────────────────────────────────────────────────────────────
-# The repo's own CLI first and PATH second, which is the opposite of what an
-# agent reads in the skill — deliberately. A script that lives in `scripts/` is
+# The repo's own CLI first and PATH second, which is the opposite of the order
+# the retro skill tells an agent to use — deliberately. A script in `scripts/` is
 # being run against this checkout, and a `retro` on PATH may be an older
 # installed build; certify would then prove a chain that is not the one under
 # test.

@@ -181,10 +181,10 @@ show_log() {
 # The rule that was already in hand — claims carry their evidence — lived in
 # documents, and the keystroke happened in a comment field with nothing checking
 # it. So this is not another sentence: it is the honest form arriving already
-# formatted at the exact moment the evidence exists, which is where keystroke-level
-# rules win and warnings lose (the `card.sh` precedent — the safe form became the
-# only form there is to type). Typing a number now costs MORE effort than pasting
-# the real one.
+# formatted at the exact moment the evidence exists, which is where
+# keystroke-level rules win and warnings lose — the safe form becomes the only
+# form there is to type. Typing a number now costs MORE effort than pasting the
+# real one.
 excerpt() {
   local start
   [[ -s "$LOG" ]] || return 0
