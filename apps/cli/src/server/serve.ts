@@ -1,3 +1,5 @@
+import { DEFAULT_BIND, humanUrlFor } from '#server/address'
+
 export type ServerHandler = (request: Request) => Response | Promise<Response>
 
 export type RunningServer = {
@@ -25,7 +27,8 @@ export function startServer(options: StartServerOptions): RunningServer {
   const port = server.port ?? options.port
 
   return {
-    url: `http://localhost:${port}`,
+    // The link for the address the socket above took — described, not chosen.
+    url: humanUrlFor(options.hostname ?? DEFAULT_BIND, port),
     port,
     stop: async () => {
       await server.stop(true)
