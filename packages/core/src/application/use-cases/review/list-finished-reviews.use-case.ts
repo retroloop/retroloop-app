@@ -6,7 +6,7 @@ import type { Actor } from '#domain/models/actor.model'
 
 export type FinishedReviewRow = {
   readonly retroId: number
-  /** Its place within its session — the "Retro #n" of the identity line (KC-0011). */
+  /** Its place within its session — the "Retro #n" of the identity line. */
   readonly retroNumber: number
   readonly sessionId: number
   /** The Claude session UUID, so an agent can tell whether the round is its own. */
@@ -39,7 +39,7 @@ export type ListFinishedReviewsOutput = {
  *
  * `review wait` is the other half of this and it answers a narrower question: one
  * retrospective, and only about a finish that lands while the command blocks. An
- * agent that was not running when he pressed the button has nowhere to ask what
+ * agent that was not running when the button was pressed has nowhere to ask what
  * happened — not "which retrospectives exist" (that is the dashboard's read) but
  * "which rounds are finished, and which of them is still waiting on me". So this
  * is addressed to nothing: no retrospective, no session, no actor's own work.

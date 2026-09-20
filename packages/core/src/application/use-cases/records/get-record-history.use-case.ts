@@ -33,8 +33,8 @@ export type GetRecordHistoryOutput = {
 }
 
 /**
- * One record across every revision it appears in (KC-0012): the unit of evolution
- * the reviewer cares about is the record, so there is no whole-revision diff
+ * One record across every revision it appears in: the unit of evolution the
+ * reviewer cares about is the record, so there is no whole-revision diff
  * anywhere in the product — this is the diff.
  *
  * Each appearance carries the sections that changed since the record was last

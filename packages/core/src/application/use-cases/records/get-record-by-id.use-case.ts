@@ -31,13 +31,13 @@ import {
 } from '#domain/services/record-lifecycle.service'
 
 /**
- * One thing that happened to a record, in the order it happened — the owner's
- * *"We can have a timeline at the bottom that shows how the record evolved.
- * timeline can have events like status changes"*.
+ * One thing that happened to a record, in the order it happened. The record page
+ * carries a timeline at the bottom showing how the record evolved, with events
+ * like status changes.
  *
- * Three kinds, and no fourth. **Comments are out by his later word** — *"let's
- * leave out the comments for now"* — so nothing here reads a thread, and a
- * record's conversation stays on the review page where it is written.
+ * Three kinds, and no fourth. **Comments are deliberately out**, so nothing here
+ * reads a thread, and a record's conversation stays on the review page where it
+ * is written.
  *
  * Every one of them carries an `actor`, and two of the three get theirs from the
  * domain rather than from a column. A revision is the AI's — `CreateRevisionUseCase`
@@ -91,7 +91,7 @@ export type GetRecordByIdInput = {
 
 export type GetRecordByIdOutput = {
   readonly retroId: number
-  /** Its retrospective's place in its session — the "Retro #n" of the identity line (KC-0011). */
+  /** Its retrospective's place in its session — the "Retro #n" of the identity line. */
   readonly retroNumber: number
   /** The same session shape `retros.list` and `records.listAll` carry, so one reader renders all three. */
   readonly session: RetroListSession
@@ -127,8 +127,8 @@ export type GetRecordByIdOutput = {
    */
   readonly attributes: readonly RecordAttributeView[]
   /**
-   * What somebody said this record has to do with another, both directions —
-   * the owner's *"the relation reads from both sides"*.
+   * What somebody said this record has to do with another, both directions: a
+   * relation reads from both sides.
    *
    * Each entry names the **other** record three ways: the global number a person
    * says out loud, the `(retroId, rid)` pair every read and write is addressed
@@ -144,9 +144,8 @@ export type GetRecordByIdOutput = {
 
 /**
  * One record, reached by the number a human reads off the page — the read model
- * behind the record page (the owner's session-9 ask: *"when I go to the records
- * page and click on a record, it takes me to the retro page. each record should
- * have it's own dedicated page"*).
+ * behind the record page. Clicking a record on the records page used to land on
+ * its retrospective; each record has a dedicated page of its own instead.
  *
  * **The global id is the whole reason this exists.** Every other record read in
  * the system is addressed by `(retroId, rid)`, which is what actually identifies
@@ -179,8 +178,8 @@ export type GetRecordByIdOutput = {
  * rather than by the store**: one lookup per far end to turn a global id back
  * into the pair it stands for, and one latest-revision read per *distinct* far
  * retrospective to put a title on it. A record holds a handful of relations, and
- * a relation naming a record three retrospectives back is the feature — *"so
- * that AI can easily find past records"* — rather than an edge of it.
+ * a relation naming a record three retrospectives back is the feature — the AI
+ * finding past records easily — rather than an edge of it.
  */
 export class GetRecordByIdUseCase {
   constructor(private readonly store: Store) {}
@@ -333,7 +332,7 @@ function buildTimeline(
   // The first revision that carries the rid, which is where the record was
   // filed. Later appearances are redrafts of the same record and are not events
   // on this list: what changed between two drafts is the record's diff, which
-  // is a page of its own (KC-0012) rather than a line here.
+  // is a page of its own rather than a line here.
   const filed = revisions.find((revision) =>
     revision.records.some((candidate) => candidate.rid === rid),
   )

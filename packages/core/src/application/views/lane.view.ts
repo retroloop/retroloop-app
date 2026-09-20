@@ -40,8 +40,8 @@ export type LaneSolutionView = {
  * **On a legacy record** there is one direction and one footprint for the whole
  * record, so the row is that: index 1, the level the draft authored, and the
  * direction as both title (its first line) and body. Those records are not an
- * edge — the owner's first five retrospectives are full of them, and a lane that
- * skipped them would skip his history.
+ * edge — the earliest retrospectives are full of them, and a lane that skipped
+ * them would skip that history.
  */
 export function laneSolution(record: RetroRecord, decision: EffectiveDecision): LaneSolutionView {
   if (record.solutions === undefined) {

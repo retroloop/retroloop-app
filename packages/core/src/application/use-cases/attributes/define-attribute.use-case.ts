@@ -23,17 +23,16 @@ export type DefineAttributeInput = {
 export type DefineAttributeOutput = { readonly attribute: AttributeDefinition }
 
 /**
- * An attribute is created — the owner's *"they could create an attribute that
- * says 'Jira ticket', or maybe just 'external ticket ID' or whatever, and then
- * they can say it's always going to be a number."*
+ * An attribute is created — a user can define one called "Jira ticket", or just
+ * "external ticket ID", and say that it is always going to be a number.
  *
  * The same two refusals `DefineLabelUseCase` has and for the same reasons: the
  * AI while the toggle is off, and a name another definition already uses. The
  * name check is against **attributes only** — a label called `migrated` and an
  * attribute called `migrated` are two different things a reader will never
  * confuse, because one is worn and the other holds a value, and refusing the
- * pair would be the system enforcing a relationship between two primitives the
- * owner ruled independent.
+ * pair would be the system enforcing a relationship between two primitives that
+ * are independent by design.
  */
 export class DefineAttributeUseCase {
   constructor(

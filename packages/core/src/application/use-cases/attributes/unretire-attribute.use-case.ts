@@ -22,8 +22,7 @@ export type UnretireAttributeOutput = { readonly attribute: AttributeDefinition 
 
 /**
  * A retired attribute is offered again — `UnretireLabelUseCase`'s twin, and it
- * carries the argument for why the act exists at all (retro-11
- * `r-retire-burns-a-word`).
+ * carries the argument for why the act exists at all (`r-retire-burns-a-word`).
  *
  * **The type is untouched, and that is what makes this safe here.** An attribute
  * comes back offering the same type it always had, so every value stored under

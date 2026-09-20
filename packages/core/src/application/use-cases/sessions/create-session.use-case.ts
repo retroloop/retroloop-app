@@ -16,7 +16,7 @@ export type CreateSessionInput = {
    * stable identifier is not the thing this rule exists to catch.
    */
   readonly claudeSession: string
-  /** Optional and dormant since KC-0020 — nothing downstream may depend on it. */
+  /** Optional and dormant — nothing downstream may depend on it. */
   readonly project?: string
   readonly cwd: string
   readonly branch?: string

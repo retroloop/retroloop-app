@@ -27,7 +27,7 @@ export type ExportRetrospectiveOutput = {
 
 /**
  * Renders a finished retrospective as `retro.export.v1` — the product's one
- * public, versioned contract (KC-0007).
+ * public, versioned contract.
  *
  * **Only a finished retrospective can be exported.** The schema states
  * `state: "finished"` and requires `finishedAt`, and the finish gate is what

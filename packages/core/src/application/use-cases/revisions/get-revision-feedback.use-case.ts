@@ -56,10 +56,10 @@ export type GetRevisionFeedbackOutput = {
   readonly records: readonly RecordVerdict[]
   readonly threads: readonly ThreadView[]
   /**
-   * What he wrote when he finished this round, or `undefined` if he left no word
-   * (`r-finish-confirm-message`). It is **not** in `threads`, deliberately: the
-   * owner asked for it *"delivered separately from the comments"*, and a thread
-   * is a conversation the AI answers where this is a summary it reads.
+   * What the human wrote on finishing this round, or `undefined` if they left no
+   * word (`r-finish-confirm-message`). It is **not** in `threads`, deliberately:
+   * it is delivered separately from the comments, and a thread is a conversation
+   * the AI answers where this is a summary it reads.
    */
   readonly finishMessage: string | undefined
 }
@@ -71,15 +71,14 @@ export type GetRevisionFeedbackOutput = {
  * answer belongs to — and nothing of the narrative.
  *
  * Since `r-finish-confirm-message` it also carries the human's final word on the
- * round, which is the one thing here that is neither a verdict nor a comment: he
- * asked for it to travel separately from both, and the drafting step reads it
- * alongside them.
+ * round, which is the one thing here that is neither a verdict nor a comment: it
+ * travels separately from both, and the drafting step reads it alongside them.
  *
- * `held` and `holdNote` rode here for one session and are gone (retro 4
- * `r-remove-hold`). "Do not pick this up without me" is `involvement`, which is
- * part of the verdict and already on every row. `requests` is gone for the
- * matching reason (`r-remove-requests`): the asks arrive as review-level
- * comments, which are in `threads`.
+ * `held` and `holdNote` rode here for a time and are gone (`r-remove-hold`). Not
+ * picking an item up without the human is `involvement`, which is part of the
+ * verdict and already on every row. `requests` is gone for the matching reason
+ * (`r-remove-requests`): the asks arrive as review-level comments, which are in
+ * `threads`.
  */
 export class GetRevisionFeedbackUseCase {
   constructor(private readonly store: Store) {}

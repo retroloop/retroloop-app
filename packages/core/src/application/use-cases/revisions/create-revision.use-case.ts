@@ -139,11 +139,11 @@ function checkIdentityStability(
 /**
  * The AI submits a draft (cli.md `revision create`).
  *
- * Lifecycle is implicit (KC-0011): the revision joins the session's one
- * non-`finished` retrospective, or starts a new one when the last is finished.
- * The first revision moves the retrospective from `open` to `reviewing` (D3).
- * Everything — the new retrospective, the revision, the state change and both
- * events — commits as one unit of work, so a rejected draft leaves no orphan
+ * Lifecycle is implicit: the revision joins the session's one non-`finished`
+ * retrospective, or starts a new one when the last is finished. The first
+ * revision moves the retrospective from `open` to `reviewing` (D3). Everything
+ * — the new retrospective, the revision, the state change and both events —
+ * commits as one unit of work, so a rejected draft leaves no orphan
  * retrospective behind.
  */
 export class CreateRevisionUseCase {
@@ -181,7 +181,7 @@ export class CreateRevisionUseCase {
       }
 
       /**
-       * **Round integrity** (#113 `r-revision-sneaks-past-review`, human-directed).
+       * **Round integrity** (`r-revision-sneaks-past-review`).
        *
        * A revision may land as the first of a retrospective, or as the answer to a
        * round the human has finished — and nothing else. Until this gate the store
@@ -189,20 +189,20 @@ export class CreateRevisionUseCase {
        * review's state was never an input, and the file-review-finish-file
        * choreography lived only in SKILL.md prose, which binds nobody at the API.
        *
-       * It fired twice in one retrospective, on the cooperative case: the owner
+       * It fired twice in one retrospective, on the cooperative case: the human
        * asked for changes mid-review, and filing immediately was the obliging thing
-       * the choreography did not forbid. His words: *"You were able to send a
-       * revision while I had not finished the review — that shouldn't be allowed.
-       * … We don't want the human spending time on a review while the AI sneaks in
-       * and sends a new revision."* The cost is that a replacement can flip a
-       * record he has already decided back to `pending` (D2), so review time is
-       * spent on a moving target with no signal that it moved.
+       * the choreography did not forbid. Sending a revision while the human has not
+       * finished the review must not be allowed — the human should not be spending
+       * time on a review while the AI slips a new revision in underneath it. The
+       * cost is that a replacement can flip a record the human has already decided
+       * back to `pending` (D2), so review time is spent on a moving target with no
+       * signal that it moved.
        *
        * `ReviewFinished` for the latest revision is the whole of the question, and
        * it is the same signal `close-review.use-case.ts` reads for the same
-       * reason: it is the human's one explicit act ending his side of a round, and
-       * nothing here is inferred from silence, from an empty comment list or from
-       * time passing (KC-0010).
+       * reason: it is the human's one explicit act ending their side of a round,
+       * and nothing here is inferred from silence, from an empty comment list or
+       * from time passing.
        *
        * **Checked before `--expect-revision`**, because this is a refusal to write
        * at all rather than a disagreement about which number the write would take:

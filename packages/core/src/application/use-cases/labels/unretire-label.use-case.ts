@@ -22,12 +22,9 @@ export type UnretireLabelOutput = { readonly label: LabelDefinition }
 
 /**
  * A retired label is offered again — **the act that makes retiring reversible**,
- * and the whole of retro-11 `r-retire-burns-a-word` (the owner's selected
- * solution 2):
- *
- * > *"Un-retire, symmetric with retire: a retired definition can be brought back
- * > to offerable by the human — same row, same one-press shape, no history
- * > rewritten, the name never freed either way."*
+ * and the whole of `r-retire-burns-a-word`: un-retire, symmetric with retire, so
+ * a retired definition can be brought back to offerable by the human — same row,
+ * same one-press shape, no history rewritten, the name never freed either way.
  *
  * The record it closes is the sharpest edge the labels build shipped: retire was
  * one press, with no confirmation and no way back, so a mis-press permanently

@@ -12,8 +12,8 @@ import { effectiveDecision } from '#domain/services/record-state.service'
 
 /**
  * The session a retrospective is shown under. Session id and `cwd` are the
- * identity line — "Retro #n · Session S · <cwd>" (KC-0020, shortlist N1) — and
- * `cwd` is the anchor because Claude Code pins it for the life of a session.
+ * identity line — "Retro #n · Session S · <cwd>" — and `cwd` is the anchor
+ * because Claude Code pins it for the life of a session.
  */
 export type RetroListSession = {
   readonly id: number
@@ -31,9 +31,9 @@ export type RetroListCounts = {
 
 export type RetroListRow = {
   readonly retroId: number
-  /** Its place within its session — the "Retro #n" of the identity line (KC-0011). */
+  /** Its place within its session — the "Retro #n" of the identity line. */
   readonly retroNumber: number
-  /** The latest revision's title; absent when that revision proposed none (KC-0020). */
+  /** The latest revision's title; absent when that revision proposed none. */
   readonly title: string | undefined
   /**
    * The **displayed** state, `submitted` among them — this row and the review
@@ -80,7 +80,7 @@ function countRecords(
 
 /**
  * Every retrospective in the stage, newest first — the whole read model behind
- * dashboard v1 (KC-0020, shortlist N4).
+ * dashboard v1.
  *
  * Flat and unfiltered: a retro is shown under its session and its cwd, and
  * nothing here groups, routes or filters by project. "Newest first" is retro id

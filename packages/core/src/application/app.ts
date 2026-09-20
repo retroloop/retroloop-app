@@ -53,10 +53,10 @@ export type AppDependencies = {
 }
 
 /**
- * The use-case layer, assembled — **the only boundary any driving adapter sees**
- * (KC-0004). The tRPC routers and the CLI commands both hold one of these and
- * know nothing below it, which is what keeps the actor rules and the invariants
- * true for every adapter, present and future.
+ * The use-case layer, assembled — **the only boundary any driving adapter
+ * sees**. The tRPC routers and the CLI commands both hold one of these and know
+ * nothing below it, which is what keeps the actor rules and the invariants true
+ * for every adapter, present and future.
  *
  * There is no DI container: both composition roots (`serve()` and the CLI's
  * `main.ts`) construct explicitly, `createApp(openStore())`.
@@ -95,29 +95,27 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       get: new GetRecordUseCase(store),
       /**
        * One record reached by the number a human reads off the page — the
-       * record page's whole read model (`/records/:id`, the owner's session-9
-       * ask). It is the only record read addressed by the global id rather than
-       * by `(retroId, rid)`, and the only one that carries the record's
-       * timeline.
+       * record page's whole read model (`/records/:id`). It is the only record
+       * read addressed by the global id rather than by `(retroId, rid)`, and
+       * the only one that carries the record's timeline.
        */
       byId: new GetRecordByIdUseCase(store),
       history: new GetRecordHistoryUseCase(store),
       /**
-       * Resolve or reopen, after the review that filed the record has closed
-       * (the owner's session-8 ask). **The one mutating use case open to both
-       * actors besides `threads.addComment`**: the AI marks what it fixed, the
-       * human marks from the browser, and the row records which.
+       * Resolve or reopen, after the review that filed the record has closed.
+       * **The one mutating use case open to both actors besides
+       * `threads.addComment`**: the AI marks what it fixed, the human marks
+       * from the browser, and the row records which.
        */
       setLifecycle: new SetRecordLifecycleUseCase(store, clock),
       /**
        * Two records said to belong together, in the words of whoever relates
-       * them — or the relation taken off (the owner's session-11 ask). **The
-       * second mutating use case open to both actors on every act**: the AI
-       * relates the record it just filed to the one it is a repeat of, the human
-       * relates two he can see, and the row records which. It is also the
-       * fourth write the finish lock deliberately does not guard, because
-       * relating a closed retrospective's record to a new one is the feature
-       * rather than an edge of it.
+       * them — or the relation taken off. **The second mutating use case open
+       * to both actors on every act**: the AI relates the record it just filed
+       * to the one it is a repeat of, the human relates two they can see, and
+       * the row records which. It is also the fourth write the finish lock
+       * deliberately does not guard, because relating a closed retrospective's
+       * record to a new one is the feature rather than an edge of it.
        */
       relate: new RelateRecordsUseCase(store, clock),
       /**
@@ -144,24 +142,23 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       record: new RecordDecisionUseCase(store, clock),
     },
     /**
-     * The two vocabularies the owner ruled into scope — *"we will not hardcode
-     * any labels or attributes … adding those will require setting up a settings
-     * page, because each label or attribute is going to be a global thing"*.
+     * The two vocabularies in scope. No labels or attributes are hardcoded:
+     * adding one is a settings-page act, because each label or attribute is a
+     * global thing.
      *
-     * **Pure and independent**, which is the ruling and is why they are two
-     * groups rather than one `definitions`: labels classify, attributes carry
-     * data, and *"composition is the USER'S convention … never a system
-     * mechanism"*. Nothing on either side reads the other.
+     * **Pure and independent**, which is why they are two groups rather than
+     * one `definitions`: labels classify, attributes carry data, and
+     * composition is the *user's* convention, never a system mechanism. Nothing
+     * on either side reads the other.
      *
      * The four definition acts take **either actor**, and the AI's half is
      * gated by the settings toggle at the store boundary
-     * (`config-write.service.ts`). **`unretire` is the fourth** and it arrived
-     * with retro-11 `r-retire-burns-a-word`: retire was one press with no way
-     * back, and the owner's selected solution made a mis-press a two-press round
-     * trip rather than a burned word. `apply` and `set` are **human-only this
-     * session** whatever the toggle says — the toggle governs the config, and
-     * whether the AI may mark up its own draft records is an open his ruling did
-     * not reach.
+     * (`config-write.service.ts`). **`unretire` is the fourth**
+     * (`r-retire-burns-a-word`): retire was one press with no way back, and
+     * pairing it with an inverse makes a mis-press a two-press round trip
+     * rather than a burned word. `apply` and `set` are **human-only for now**
+     * whatever the toggle says — the toggle governs the config, and whether the
+     * AI may mark up its own draft records is still open.
      */
     labels: {
       define: new DefineLabelUseCase(store, clock),
@@ -183,9 +180,9 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       set: new SetAttributeValueUseCase(store, clock),
     },
     /**
-     * The global settings — one key, and it is OWNER RULING 2's guarantee:
-     * *"if it is disabled, the user can be certain that the AI cannot mess
-     * around."*
+     * The global settings — one key, and it carries a guarantee: while it is
+     * disabled, the user can be certain that the AI cannot change the
+     * vocabularies.
      *
      * `get` is open to both actors, because reading a permission is not
      * exercising it and an agent that can see the switch is off can say so.
@@ -197,11 +194,11 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       setAiConfigWrite: new SetAiConfigWriteUseCase(store, clock),
     },
     /**
-     * The one channel for an ask, since retro 4 `r-remove-requests`. Requests
-     * were the other one and the owner removed them on first contact — "we can
-     * just have the comments at the review level" — so there are no request use
-     * cases here to reach for, and no read path either. The table and its rows
-     * stay in the store, the way the `holds` table does.
+     * The one channel for an ask (`r-remove-requests`). Requests were a second
+     * one and they were removed: comments at the review level carry the same
+     * weight, so there are no request use cases here to reach for, and no read
+     * path either. The table and its rows stay in the store, the way the
+     * `holds` table does.
      */
     threads: {
       addComment: new AddCommentUseCase(store, clock),
@@ -217,7 +214,7 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       status: new GetReviewStatusUseCase(store),
       /**
        * Every round the human has already put down, across the whole stage —
-       * for the agent that was not watching when he pressed the button.
+       * for the agent that was not watching when the button was pressed.
        * `status` answers about one retrospective and `wait` only about a finish
        * that lands while it blocks; this is the catch-up read, addressed to
        * nothing.
@@ -226,9 +223,9 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       finish: new FinishReviewUseCase(store, clock),
       /**
        * The AI's half of the loop, and the only act on this list it may take:
-       * the human's Finish closes his side of the round (retro 4
-       * `r-one-finish-button`) and this is what turns "nothing left to address"
-       * into a finished retrospective, once, explicitly, with an event.
+       * the human's Finish closes the human side of the round
+       * (`r-one-finish-button`), and this is what turns "nothing left to
+       * address" into a finished retrospective, once, explicitly, with an event.
        */
       close: new CloseReviewUseCase(store, clock),
     },

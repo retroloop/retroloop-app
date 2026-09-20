@@ -16,12 +16,12 @@ import { type EffectiveDecision, effectiveDecision } from '#domain/services/reco
  * A record as a reader sees it: the AI's content, which revision it came from,
  * and where the human's decision stands against *that* content (D2).
  *
- * **There is no `hold` beside the decision any more** (retro 4 `r-remove-hold`).
- * A lifecycle flag rode here for one session and the owner removed it on first
- * contact — *"I can achieve the whole thing by selecting something to be only
- * done with the human in the loop. So we don't need the hold."* Whether the
- * solving side may touch an item without him is `involvement`, which is already
- * on the decision. The `holds` table keeps every row that was written.
+ * **There is no `hold` beside the decision any more** (`r-remove-hold`). A
+ * lifecycle flag rode here for a time and was removed on first contact: marking
+ * an item as only to be done with the human in the loop achieves the same thing,
+ * so the hold is unnecessary. Whether the solving side may touch an item without
+ * the human is `involvement`, which is already on the decision. The `holds` table
+ * keeps every row that was written.
  *
  * Read models live here rather than inside one use case because several use cases
  * return the same shape — record list, record get, revision get — and adapters
@@ -47,9 +47,9 @@ export type RecordView = {
 }
 
 /**
- * A `RecordView` with the axis that outlives the review beside the verdict —
- * `open`, `resolved` or `archived`, plus the entry in force (#103
- * `r-lifecycle-projection-gap`).
+ * A `RecordView` with the axis that outlives the review beside the verdict
+ * (`r-lifecycle-projection-gap`) — `open`, `resolved` or `archived`, plus the
+ * entry in force.
  *
  * **Its own type rather than a field on `RecordView`**, because six use cases
  * build a `RecordView` and only the listings answer for lifecycle: a required
@@ -67,27 +67,27 @@ export type RecordViewWithLifecycle = RecordView & {
    *
    * It is here rather than in a `RecordViewWithClaim` of its own because every
    * reader that pays for the lifecycle read wants this in the same breath: a
-   * listing showing `open` beside no answer to "is somebody on it?" is the gap
-   * #103 was filed about, one table further out. `undefined` is a record nobody
-   * is holding, which is the same answer for one nobody ever held and one
-   * somebody gave back (`record-claim.service.ts`).
+   * listing showing `open` beside no answer to "is somebody on it?" is the same
+   * projection gap, one table further out. `undefined` is a record nobody is
+   * holding, which is the same answer for one nobody ever held and one somebody
+   * gave back (`record-claim.service.ts`).
    */
   readonly claim: EffectiveClaim | undefined
 }
 
 /**
  * A `RecordViewWithLifecycle` with what the record was said to have to do with
- * other records — the AI's read-back channel for the relation feature (the
- * owner's session-11 ask).
+ * other records — the AI's read-back channel for the relation feature.
  *
- * **Its own type again, and for #103's reason rather than for tidiness.** That
- * record was filed because the revision listing answered nothing about lifecycle
- * while the flat one answered correctly, and it was found the worst way: the AI
- * wrote a batch of rows, listed the records to check, and read a store that
- * looked broken. A relation is written through the same command and checked the
- * same way, so `record list` carries them or the same gap reopens one table
- * over. Only the listing that the AI reads back through pays for the join — the
- * six use cases that build a bare `RecordView` take no relation read at all.
+ * **Its own type again, and for the projection gap's reason rather than for
+ * tidiness.** That record was filed because the revision listing answered
+ * nothing about lifecycle while the flat one answered correctly, and it was
+ * found the worst way: the AI wrote a batch of rows, listed the records to
+ * check, and read a store that looked broken. A relation is written through the
+ * same command and checked the same way, so `record list` carries them or the
+ * same gap reopens one table over. Only the listing that the AI reads back
+ * through pays for the join — the six use cases that build a bare `RecordView`
+ * take no relation read at all.
  *
  * The entries carry the far record's **address** and not its title: what a
  * machine does with a relation is go and read the record at the other end, and

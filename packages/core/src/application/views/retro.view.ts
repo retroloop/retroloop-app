@@ -5,13 +5,12 @@ import type { RetrospectiveState } from '#domain/models/retrospective.model'
  * What a reader is told a retrospective is in — the three states it is *stored*
  * in, and a fourth that is only ever **derived**.
  *
- * `submitted` is the owner's session-11 add, carried on his ack ever since:
- * *"There should be a status in between that indicates that the human has
- * submitted but AI hasn't closed"*. Until now the product had the fact and no
- * word for it — the review bar said "Retro submitted" beside a header tag that
- * still read REVIEWING, and the dashboard row said REVIEWING too, so the one
- * screen that told him a round was with the AI was the one he had already
- * scrolled to the bottom of.
+ * `submitted` is the status in between: the human has submitted but the AI has
+ * not closed. Before it existed the product had the fact and no word for it —
+ * the review bar said "Retro submitted" beside a header tag that still read
+ * REVIEWING, and the dashboard row said REVIEWING too, so the one screen that
+ * told a reader a round was with the AI was the one they had already scrolled to
+ * the bottom of.
  *
  * **It is a reading, not a state.** `retrospective.state` is untouched: the
  * machine is still `open → reviewing → finished`, `ReviewFinished` is still an
@@ -33,9 +32,9 @@ export type RetroDisplayState = RetrospectiveState | 'submitted'
  * `finished`. Without the second, the word would appear the moment a revision
  * was filed, which is the opposite of what it means.
  *
- * The round that counts is the **latest** one. A round he finished two
- * revisions ago is not what he is waiting on; the AI answered it by filing the
- * next draft, and the retro went back to being his.
+ * The round that counts is the **latest** one. A round finished two revisions
+ * ago is not what the human is waiting on; the AI answered it by filing the next
+ * draft, and the retrospective went back to being the human's.
  */
 export function retroDisplayState(
   state: RetrospectiveState,
@@ -55,7 +54,7 @@ export function retroDisplayState(
  *
  * The **earliest** press wins, for the reason `finishedAtByRevision` gives: a
  * repeat press appends no second event (`finish-review.use-case.ts` absorbs it),
- * and "when did he finish it" has one honest answer — the first time he said so.
+ * and "when was it finished" has one honest answer — the first time it was said.
  */
 export function finishedAtByRetro(
   events: readonly DomainEvent[],

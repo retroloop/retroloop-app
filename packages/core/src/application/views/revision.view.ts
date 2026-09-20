@@ -14,11 +14,11 @@ export type RevisionMeta = {
   readonly title: string | undefined
   readonly records: number
   /**
-   * When the human finished **this round**, and absent while he has not (#111).
+   * When the human finished **this round**, and absent while they have not.
    *
    * Per revision, which is the whole point of it: `retrospective.finishedAt` is
    * the retro's own close, written once by `ReviewClosed` at the very end, and a
-   * page asking "has he put this round down?" was reading it and getting null
+   * page asking "has this round been put down?" was reading it and getting null
    * through every round but the last. There is no `review.status` procedure to
    * ask instead — `review.finish` is that router's only member — so the fact
    * rides on the revision it is about.
@@ -36,11 +36,11 @@ export type RevisionMeta = {
  * When each round was finished, keyed by revision number.
  *
  * Built once per read and handed to `toRevisionMeta` rather than looked up per
- * revision, so a retrospective with N revisions still costs one events read.
- * A round finished twice cannot happen — `finish-review.use-case.ts` absorbs a
+ * revision, so a retrospective with N revisions still costs one events read. A
+ * round finished twice cannot happen — `finish-review.use-case.ts` absorbs a
  * repeat press without appending a second event — but the earliest is taken
- * anyway, because "when did he finish it" has one honest answer and it is the
- * first time he said so.
+ * anyway, because "when was it finished" has one honest answer and it is the
+ * first time it was said.
  */
 export function finishedAtByRevision(events: readonly DomainEvent[]): ReadonlyMap<number, string> {
   const finished = new Map<number, string>()

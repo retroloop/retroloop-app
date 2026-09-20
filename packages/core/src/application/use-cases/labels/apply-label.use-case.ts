@@ -27,13 +27,13 @@ export type ApplyLabelInput = {
   /**
    * **Human only, whatever the AI-config-write toggle says.**
    *
-   * The toggle governs the *definitions* — *"the ability to update the
-   * configs"* — and this is not one: it is a mark on a human's record. Whether
-   * the AI may ever suggest a label on its own draft is one of the four opens
-   * the owner's ruling did not reach, and the session default is that the write
-   * side stays human-only until he says otherwise. So the guard here is the
-   * blanket one `ResolveThreadUseCase` opens with, above the transaction, and
-   * there is no CLI surface for it at all (`apps/cli/src/commands/label.ts`).
+   * The toggle governs the *definitions* — the ability to update the configs —
+   * and this is not one: it is a mark on a human's record. Whether the AI may
+   * ever suggest a label on its own draft is still open, and the default is
+   * that the write side stays human-only until it is decided. So the guard here
+   * is the blanket one `ResolveThreadUseCase` opens with, above the
+   * transaction, and there is no CLI surface for it at all
+   * (`apps/cli/src/commands/label.ts`).
    */
   readonly actor: Actor
   readonly retro: RetroRef
@@ -64,11 +64,11 @@ export type ApplyLabelOutput = {
  * A label goes on a record, or comes off it.
  *
  * **It works on a finished retrospective, and that is the point of the feature.**
- * The owner's second usage archetype is a team that uses Retro to reach
- * agreement and then moves everything out: *"on completion of the retro they may
- * actually want to move everything into GitHub right away and manage their
- * lifecycle there … they could actually put a label that says 'migrated'"*. That
- * labelling happens **after** the review closes, by construction, so this joins
+ * The second usage archetype is a team that uses Retroloop to reach agreement
+ * and then moves everything out: on completion of the retrospective they may
+ * want to move everything into GitHub right away and manage the lifecycle there,
+ * putting a label that says `migrated` on what they moved. That labelling
+ * happens **after** the review closes, by construction, so this joins
  * `records.setLifecycle` as a write `refuseWhenFinished` deliberately does not
  * guard — and it is safe for the same reason: labels are not in the export, so a
  * document taken from a finished retrospective cannot change behind its reader
@@ -87,10 +87,10 @@ export type ApplyLabelOutput = {
  * **A no-op is refused rather than absorbed.** Applying a label a record already
  * wears is a caller who believes the store says something it does not, which is
  * the standing `LIFECYCLE_ACT_FROM` sets. It parts from `threads.resolve`, which
- * writes a row for a repeat on the grounds that *"the human doing it again is a
- * thing that happened"* — and the difference is what the two acts are: resolving
- * a thread is the human declaring he is finished with a conversation, which he
- * can meaningfully do twice, while a label is a property of the record and
+ * writes a row for a repeat on the grounds that the human doing it again is a
+ * thing that happened — and the difference is what the two acts are: resolving
+ * a thread is the human declaring they are finished with a conversation, which
+ * they can meaningfully do twice, while a label is a property of the record and
  * "already on" is not a thing anyone means to say again. The page never offers
  * the refused act either way, because it offers Apply for what is off and Remove
  * for what is on.

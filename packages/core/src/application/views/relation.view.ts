@@ -8,8 +8,8 @@ import {
 } from '#domain/services/record-relation.service'
 
 /**
- * One relation, read from the side of the record that is being looked at — the
- * shape *"the relation reads from both sides"* turns into above the store.
+ * One relation, read from the side of the record that is being looked at — what
+ * the rule that a relation reads from both sides turns into above the store.
  *
  * **It names the other record, never this one.** A reader standing on #5 wants
  * to know about #12; repeating #5 on every line of its own page would be the
@@ -17,12 +17,12 @@ import {
  * `from` is on `direction` instead, so nothing is lost and one field carries it.
  *
  * **The other record is addressed three ways, and each has a reader.**
- * `globalId` is what a person says out loud and what a URL carries;
- * `(retroId, rid)` is what every read and write in this system is actually
- * addressed by (A5), and it is what makes this block answer the ask — *"so that
- * AI can easily find past records"* means the AI can follow the relation with
- * the same `--retro`/rid arguments every one of its other commands takes,
- * without a second lookup to turn a number back into a pair.
+ * `globalId` is what a person says out loud and what a URL carries; `(retroId,
+ * rid)` is what every read and write in this system is actually addressed by
+ * (A5), and that is what makes this block useful: the AI can follow the
+ * relation with the same `--retro`/rid arguments every one of its other
+ * commands takes, without a second lookup to turn a number back into a pair —
+ * which is how it finds past records easily.
  */
 export type RecordRelationView = {
   /** The **other** record's number in the whole ledger. */
@@ -56,12 +56,12 @@ export type RecordRelationDetail = RecordRelationView & {
    * rid**, when a later draft withdrew it.
    *
    * The fallback is the one the whole web surface already makes for a record
-   * with no name to show (session 12 D5), and it is honest here for a reason of
-   * its own: a rid is a record's name, authored by the AI and stable for the
-   * life of the record, and it is the one thing a withdrawn record still has.
-   * The relation itself is not hidden — the row was written about a record that
-   * existed, and a read that quietly dropped it would be this product inferring
-   * something from an absence.
+   * with no name to show (D5), and it is honest here for a reason of its own: a
+   * rid is a record's name, authored by the AI and stable for the life of the
+   * record, and it is the one thing a withdrawn record still has. The relation
+   * itself is not hidden — the row was written about a record that existed, and
+   * a read that quietly dropped it would be this product inferring something
+   * from an absence.
    */
   readonly title: string
 }

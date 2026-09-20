@@ -19,9 +19,9 @@ export type AnnotateNoteInput = {
 export type AnnotateNoteOutput = { readonly annotation: Annotation }
 
 /**
- * The human's one-shot remark on one AI note (KC-0015). Deliberately not a thread
- * — "we don't want him back-and-forth communication there" — so a second
- * annotation on the same note is a `ConflictError`, not a second row.
+ * The human's one-shot remark on one AI note. Deliberately not a thread — there
+ * is to be no back-and-forth there — so a second annotation on the same note is
+ * a `ConflictError`, not a second row.
  *
  * Annotating a *human* note is a `ValidationError`: the target is wrong, not the
  * state. Annotations exist to steer the agent, and the agent does not write the

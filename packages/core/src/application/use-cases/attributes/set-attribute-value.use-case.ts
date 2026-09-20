@@ -62,14 +62,13 @@ export type SetAttributeValueOutput = {
 
 /**
  * A record gets a value for an attribute, or has one cleared — the second half
- * of the owner's pairing: *"whenever we add the migrated label, we should also
- * have an attribute that requires a GitHub issue id"*.
+ * of a pairing a team may adopt: whenever the `migrated` label goes on, an
+ * attribute holding a GitHub issue id goes on beside it.
  *
- * The pairing is his team's convention and **nothing here checks it**. A record
- * can carry a value with no labels at all, and wear `migrated` with nothing set;
- * the system enforces no relationship between the two primitives, which is the
- * ruling in as many words: *"composition is the USER'S convention … never a
- * system mechanism"*.
+ * The pairing is a user convention and **nothing here checks it**. A record can
+ * carry a value with no labels at all, and wear `migrated` with nothing set; the
+ * system enforces no relationship between the two primitives, because
+ * composition is the *user's* convention, never a system mechanism.
  *
  * Everything else this use case does, `ApplyLabelUseCase` does one table over:
  * it is human-only, it works on a **finished** retrospective because that is
@@ -82,8 +81,7 @@ export type SetAttributeValueOutput = {
  *    after the attribute is resolved, because the rule to check depends on the
  *    row — a `date` attribute and a `text` attribute take different values under
  *    the same call. It is deliberately light: a number parses, a URL names a web
- *    address, a date is a calendar day (*"we don't have to put in a lot of
- *    validations"*).
+ *    address, a date is a calendar day — and no more validation than that.
  * 2. **Setting the same value again is allowed**, where applying a label a
  *    record already wears is refused. A label is a bit and "already on" is not a
  *    thing anyone means to say twice; a value is an assignment, and re-asserting

@@ -49,7 +49,7 @@ export const rootCauseSchema = z.strictObject({
 })
 
 /**
- * One proposed solution (the owner's multi-solution design).
+ * One proposed solution, in the multi-solution design.
  *
  * Presence is mechanical here as everywhere: that `bullets` leads each bullet
  * with a few bold words, and that `footprint` is a tagged tree rather than a
@@ -69,17 +69,16 @@ export const solutionSchema = z.strictObject({
  * The three rules a set of solutions obeys, and why each is mechanical rather
  * than instructed.
  *
- * - **One to three.** The owner: *"the AI should do deep-dive and propose
- *   solutions (up to 3). In some places only 1-2 might make sense when it is a
- *   quick fix."* One is a real answer; a fourth is not.
- * - **Sorted from the lowest level to the highest.** His words: *"It should
- *   always be sorted from lower level solution to high level solution."* The
- *   order is not presentation — "Solution 2" is a *position*, and the human's
- *   selection is stored as one, so a draft that arrives out of order would
- *   rename the thing the reviewer picked. Ties keep the order they were given.
- * - **Exactly one recommended.** *"some indication like a * that shows what is
- *   solution recommended by the AI"* — none leaves the reviewer without the
- *   default tab, and two is the AI declining to make the call it was asked for.
+ * - **One to three.** The AI deep-dives and proposes up to three solutions; in
+ *   some places only one or two make sense, when it is a quick fix. One is a
+ *   real answer; a fourth is not.
+ * - **Sorted from the lowest level to the highest.** The order is not
+ *   presentation — "Solution 2" is a *position*, and the human's selection is
+ *   stored as one, so a draft that arrives out of order would rename the thing
+ *   the reviewer picked. Ties keep the order they were given.
+ * - **Exactly one recommended.** The reviewer gets one indication of which
+ *   solution the AI recommends — none leaves the reviewer without the default
+ *   tab, and two is the AI declining to make the call it was asked for.
  */
 export const solutionsSchema = z
   .array(solutionSchema)
@@ -160,13 +159,14 @@ export const recordInputSchema = z.strictObject({
 })
 
 /**
- * The retrospective's name, as the AI proposes it (KC-0020, ledger v2 #120).
+ * The retrospective's name, as the AI proposes it.
  *
- * A flat list of retros needs something to read: "Retro #1, Retro #2" is the bare
- * ticket number the owner has ruled against everywhere else. It is optional
+ * A flat list of retros needs something to read: "Retro #1, Retro #2" is the
+ * bare ticket number this product avoids everywhere else. It is optional
  * because a retrospective without one still works — the reader falls back to
- * "Retro #n — <cwd basename>" — and capped at 80 characters because it is a name
- * on a row, not a summary. The latest revision's title is the retro's title.
+ * "Retro #n — <cwd basename>" — and capped at 80 characters because it is a
+ * name on a row, not a summary. The latest revision's title is the retro's
+ * title.
  */
 export const revisionTitleSchema = z
   .string()

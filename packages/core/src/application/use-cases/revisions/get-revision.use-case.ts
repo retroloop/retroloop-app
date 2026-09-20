@@ -37,11 +37,11 @@ export type GetRevisionOutput = {
  * each record's effective decision, and all comment threads, record-level and
  * review-level alike (cli.md `revision get`).
  *
- * Requests rode here too until retro 4 `r-remove-requests` removed the surface
- * that wrote them. Nothing has ever written one on any store, so the key could
- * only ever have been an empty array — a vestige of the living feature rather
- * than history. The rows, the table and the repository stay; no read path
- * surfaces them, exactly as with holds.
+ * Requests rode here too until `r-remove-requests` removed the surface that
+ * wrote them. Nothing has ever written one on any store, so the key could only
+ * ever have been an empty array — a vestige of the living feature rather than
+ * history. The rows, the table and the repository stay; no read path surfaces
+ * them, exactly as with holds.
  */
 export class GetRevisionUseCase {
   constructor(private readonly store: Store) {}

@@ -24,8 +24,8 @@ export type ListEventsOutput = {
 }
 
 /**
- * The read side of the outbox (KC-0005). One query surface serves both consumers:
- * the server's tailer polls it from a persisted cursor and fans out over SSE, and
+ * The read side of the outbox. One query surface serves both consumers: the
+ * server's tailer polls it from a persisted cursor and fans out over SSE, and
  * `review wait` polls it directly from its own process, filtered to
  * `ReviewFinished` for one retrospective (`REVIEW_WAIT_EVENT_NAMES`).
  *

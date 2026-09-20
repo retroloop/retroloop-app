@@ -32,8 +32,8 @@ export type SetRecordLifecycleInput = {
    * its first line; this one is written by the AI resolving what it just fixed
    * and by the human resolving from the browser, and the row records which.
    *
-   * Archiving and unarchiving are the human's alone — the owner's session-9
-   * ruling, enforced at the top of `execute` rather than at any transport.
+   * Archiving and unarchiving are the human's alone, enforced at the top of
+   * `execute` rather than at any transport.
    */
   readonly actor: Actor
   readonly retro: RetroRef
@@ -54,14 +54,12 @@ export type SetRecordLifecycleOutput = {
 }
 
 /**
- * A record is marked resolved, reopened, archived or unarchived — the owner's
- * session-8 ask (*"once the AI fixes those issues, we should have a way to …
- * show that this issue was resolved, we should be able to specify a commit id or
- * github issue or something as reference so that it is easy to see"*) widened by
- * his session-9 one (*"maybe we can have a type called archived so it's just
- * going to be archived and the user should be able to unarchive … by default all
- * others that have approval, those are normal records so if a user wants, they
- * can just archive it"*).
+ * A record is marked resolved, reopened, archived or unarchived. Once the AI
+ * fixes an issue there has to be a way to show that it was resolved, citing a
+ * commit id, a GitHub issue or something like it as reference so that the fix is
+ * easy to see. `archived` sits beside that: a record can be archived and
+ * unarchived again, and every approved record that is not archived is a normal
+ * record.
  *
  * Four things this deliberately does **not** do, each of them a rule somewhere
  * else in the product that does not apply here:
@@ -76,22 +74,22 @@ export type SetRecordLifecycleOutput = {
  * 2. **No `refuseWhenFinished`.** A finished retrospective refuses every human
  *    write in the product, and this is the exception the doctrine already
  *    anticipated (`finish-lock.service.ts` names the two `holds` procedures that
- *    held the same position). It has to be: the owner asked for this *because*
- *    the retro is closed — *"even after a retro has been closed, we should be
- *    able to attach metadata to issues so that we can manage their life cycle"*.
+ *    held the same position). It has to be: the feature exists *because* the
+ *    retrospective is closed — even after a retrospective has been closed,
+ *    metadata can be attached to its records so their lifecycle can be managed.
  *    The export is not endangered by it, because lifecycle is not exported
  *    (A8): a document taken from a finished retrospective still cannot change
  *    behind its reader.
- * 3. **Nothing is inferred, and nothing is written at close** (KC-0010). Every
- *    row here is this call, made by a named actor; no commit message, no merge,
- *    no review close writes one. A declined record reads as `archived` with no
- *    row at all — that is `effectiveLifecycle` reading a verdict the human gave,
- *    not this use case writing an act nobody took.
+ * 3. **Nothing is inferred, and nothing is written at close.** Every row here is
+ *    this call, made by a named actor; no commit message, no merge, no review
+ *    close writes one. A declined record reads as `archived` with no row at all
+ *    — that is `effectiveLifecycle` reading a verdict the human gave, not this
+ *    use case writing an act nobody took.
  * 4. **No update and no delete.** Every act appends a version, so "resolved on
  *    the 29th citing abc123, archived on the 30th" is readable forever — the
  *    same shape a declined record has, where decline is a state rather than a
  *    deletion. Archiving in particular is not a delete and never becomes one:
- *    the discussion is what the owner asked to keep.
+ *    the discussion is the thing archiving exists to keep.
  *
  * **Transitions are checked, and a bad one is a `ConflictError`** rather than a
  * silent no-op — the standing that reopening-what-was-never-resolved set.
@@ -116,13 +114,13 @@ export class SetRecordLifecycleUseCase {
 
     /**
      * **The actor rule, per act, above everything else.** Archiving and
-     * unarchiving are the human's — *"the user should be able to unarchive …
-     * if a user wants, they can just archive it"* — and this is the guard
-     * `ResolveThreadUseCase` opens with, applied to two of this use case's four
-     * acts rather than to all of them. It sits here, above the transaction, for
-     * the reason that one sits above its first read: an actor who may not do a
-     * thing is told so before the store is asked anything about it, and no
-     * transport can route around it by sending a different payload.
+     * unarchiving are the human's — the user archives a record if they want to,
+     * and unarchives it again — and this is the guard `ResolveThreadUseCase`
+     * opens with, applied to two of this use case's four acts rather than to
+     * all of them. It sits here, above the transaction, for the reason that one
+     * sits above its first read: an actor who may not do a thing is told so
+     * before the store is asked anything about it, and no transport can route
+     * around it by sending a different payload.
      */
     if (lifecycleActIsHumanOnly(entry.status)) {
       ForbiddenActorError.assert('human', input.actor, `marking a record ${entry.status}`)
@@ -214,11 +212,11 @@ export class SetRecordLifecycleUseCase {
        * standing would make every resolved record read as still being worked on
        * — and the next agent scanning the lane would skip work nobody is doing.
        *
-       * **This is not an inference from silence** (KC-0010), which is the rule it
-       * has to answer to: nothing here reads a commit, a close or the passage of
-       * time. It is the same actor, in the same unit of work, at the same
-       * instant, saying that they finished — and the row it writes says so, with
-       * their name on it.
+       * **This is not an inference from silence**, which is the rule it has to
+       * answer to: nothing here reads a commit, a close or the passage of time.
+       * It is the same actor, in the same unit of work, at the same instant,
+       * saying that they finished — and the row it writes says so, with their
+       * name on it.
        *
        * **Only the resolve.** A reopen does not hand the record back to whoever
        * had it (picking it up again is a claim, and somebody has to make it), and

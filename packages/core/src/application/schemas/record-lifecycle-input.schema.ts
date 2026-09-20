@@ -46,21 +46,18 @@ function citesNothing<T extends string>(status: T, doing: string) {
 }
 
 /**
- * What a lifecycle write says (the owner's session-8 ask, widened by his
- * session-9 one).
+ * What a lifecycle write says.
  *
  * `status` is required and has no default, for the reason `decisionInputSchema`
- * gives about `state`: nothing in this product is inferred from silence
- * (KC-0010). There is no shape of this input that resolves a record without
- * saying "resolved".
+ * gives about `state`: nothing in this product is inferred from silence. There
+ * is no shape of this input that resolves a record without saying "resolved".
  *
  * **`refs` and `status` constrain each other**, and the rule is enforced here
  * rather than left to the caller:
  *
  * - a `resolved` entry carries **at least one** reference. That is the whole
- *   point of the ask — *"we should be able to specify a commit id or github
- *   issue or something as reference so that it is easy to see"* — and a resolve
- *   citing nothing is the claim without the evidence.
+ *   point: a commit id, a GitHub issue or something like it makes the fix easy
+ *   to see, and a resolve citing nothing is the claim without the evidence.
  * - every other act carries **none**, for the reasons above `citesNothing`.
  *
  * The pairing is validated as a union so that each half is the schema's answer

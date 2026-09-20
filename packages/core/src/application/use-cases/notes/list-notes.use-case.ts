@@ -23,7 +23,7 @@ export type ListNotesOutput = { readonly notes: readonly NoteView[] }
 /**
  * The session's notes, oldest first.
  *
- * The one-way glass (KC-0015) — the AI sees human notes and annotations **only at
+ * The one-way glass — the AI sees human notes and annotations **only at
  * drafting time** — is caller protocol, not a mechanical rule, and it is not
  * enforced here: this use case returns exactly what it is asked for, and the
  * drafting step is the caller that asks for human data. Making it mechanical
