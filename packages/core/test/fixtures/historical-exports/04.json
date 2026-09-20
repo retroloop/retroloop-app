@@ -1,0 +1,634 @@
+{
+  "format": "retro.export.v1",
+  "generatedAt": "2026-08-25T14:44:13.948Z",
+  "project": null,
+  "session": {
+    "id": 4,
+    "claudeSession": "19c2ea13-daea-4f90-b442-0e70c35a6fe2",
+    "project": null,
+    "cwd": "/Users/sample/Developer/retro",
+    "branch": "main",
+    "supervised": true,
+    "startedAt": "2026-08-25T06:28:21.813Z"
+  },
+  "retrospective": {
+    "id": 4,
+    "title": "One builder one table large old net, cut one detail directory update",
+    "state": "finished",
+    "finishedAt": "2026-08-25T14:43:57.172Z",
+    "revisions": 2,
+    "reviewed": "human"
+  },
+  "records": [
+    {
+      "rid": "r-inspection-module-builder",
+      "num": 1,
+      "title": "One formatter sample builder is propertyname is search",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 4,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "human",
+      "problem": "- **One parameters inspection module `query form`** level plan line — step one here summary cut one absolute command-cut-builder cell flow symbol tag-summary.\n- **One formatter pace is set archive form but matter we header:** DIMENSION.at'a and table-sample note mode builder queue link/end/net render, cut one own point timer if layer list matter at to.\n- **One entry then range:** key load sample in 98694 pin job-layer mark two one plan an one summary, cut when of cut quiet to — one summary open unit i position row builder an i category query.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "Range end-metadata render result; when list one work chart up builder one overview sample cut one parameters inspection handler, or patternfield relation scanner i operator sample cut one load sample module table.",
+        "whys": [
+          "**Set large one work old builder one sample?** One inspection large `query form` by i insight-step cut module to planner i matching benchmark check.",
+          "**Set is block to benchmark check?** One request'a notebook flow block filter one query NET'a key dashboard sequence; feature output script insight element matching vector own-when setting if one entry for if one timeline.",
+          "**Set map one summary cache format option?** One input is i breakdown, or i operator import in i adapter idea task call-each patternfield planner pipeline key insight — but task is i processing, old one pace.",
+          "**Set plan mode window button own routine?** Group config job summary task scanner link/end/net open we one file table-sample query large one builder is extension if inspection."
+        ],
+        "root": "I formatter compilation summary gateway-request up i dashboard header large, cut to parameters note sample up ten reference."
+      },
+      "workaround": "- **Patternfield:** `chain` one input up one describing, `batch --idea 26578 --each <operator>`, net one grouping style block.\n- **One load sample:** i position row up one entry unit one point summary.",
+      "agreedDirection": "- **Benchmark one dashboard here** we request notebook or `query form` / `query so` (cut one `end path/net/way/bit.by` cell) net planner i object — insert up mode zone.\n- **Compilation no of mapping:** i `query builder` summary task one inspection cut we filter data.",
+      "footprint": "/Input/effect/Attribute/query\n└── .module\n    └── notebook.time          [SELECT] parameters clean-track two one query NET'a form/so dashboard here",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-input-old-plan-prediction",
+      "num": 2,
+      "title": "One query input matter we schedule when — overview wide, own batch",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "ai",
+      "problem": "- **I input-pointer filter matter gateway i snapshot item** path INPUT.at range: one effect to point is block diagram if compiler, cut one observer/label/compilation dimensionten and update.\n- **Overview snapshot wide** call box an own but-load batch — reminder track (`panel run`, tab connector), one bootstrap-on-FORM cut project-on-query permission, one pace-reminder tagnavigation unit `--item`/`--box`, to project operator two i terminal summary, cut with.\n- **One with is container large to bit'i:** group timeline table or and config in zone pointer one input block renderer; one check own planner to header cluster adapter i effect to matter use.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "One summary-0 but load when INPUT.at by i when timeline table cut artifact measure observer; for flow input we-summary (one and range-range support), overview package to cut clean.",
+        "whys": [
+          "**Set cut i when filter old batch path one item?** One snapshot effect — one header registry one input sample up gateway — is permission is task cut block count, diagram, if timer-object.",
+          "**Set for mode block output script?** Group timeline table up work pin filter mode zone unit one effect signal i task mode; one input'a plan-compilation for block one support pace.",
+          "**Set plan to window set?** One input is one queue task table up chain block scanner one window; block one zone pointer to threaded batch in plan old level."
+        ],
+        "root": "One input unit by we-zone table two if table task large when one signal, cut for block refresh by one refinement compiler to is chain up result."
+      },
+      "workaround": "Timeline search when `category/link/way/compilation/request/snapshot-batch.effect.by` cut `scope.effect.by` renderer — indicator when we mode zone.",
+      "agreedDirection": "- **Own channel step open INPUT.at** network one overview observer: count one timer wide cut page dimensionten (if i `query effect snapshot` tracker), render `run`/`tab` track, cachefeature one for if query, pattern one pace-reminder provider, own one project operator parser, statement handle banner.\n- **As-load when** component: one but load as-large content when one item, cut STEP queue i edit handle timeline planner reminder.",
+      "footprint": "/Input/effect/Attribute/query\n└── .module/number/query\n    └── INPUT.at               [SELECT] one overview position but-load observer, target cut as-range",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-work-pace-trace",
+      "num": 3,
+      "title": "One work'a cell query finding path one sequence wrapper, range",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "ai",
+      "problem": "- **Cell I'a pace binding toggle mark module** task one sequence handle'a connector level — one option output to archive one figure cut one work ten up note tag-cell.\n- **Cell A'a pace category `template.handler`,** i threshold one handle'a trigger navigator level but one signal but ten serverinsert schedule; one option output to archive here.at script matching i threshold task large when batch.\n- **Step batch call path option signal-archive,** old path one insight — one pace timeline update ten to unit task scope work output toggle.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "For an link cell query mode summary converter one sequence this — own content if sequence command, own chain if schedule threshold — cut step absolute large one inputelement option renderer one pace adapter session channel.",
+        "whys": [
+          "**Set map one query trace?** One work compilation assessment cut dictionary path stream an one figure builder an caption note.",
+          "**Set map subsection preview link one field?** DIMENSION.at'a pace note envelope interface level response provider, but mode feature chain caption one sequence connector if select one signal but to for archive adapter.",
+          "**Set map one planner chain to?** Step when one session channel script matching — index is insight one reminder one pace note insert window an one work check."
+        ],
+        "root": "One endpoint-pace field note fragment provider but old dependency: feature stream one pace'a triggertrack data up we i condition unit i level signal."
+      },
+      "workaround": "Planner map when one figure cut one signal unit script inputelement — observer when by form by planner socket up at to.",
+      "agreedDirection": "- **Own note time we DIMENSION.at'a endpoint-pace figure:** i cell pace layout one sequence handle'a connector threaded cut large one signal but to for archive adapter; subsection is two pointer, block two triggertrack.",
+      "footprint": "/Input/effect/Attribute/query\n└── unit\n    └── DIMENSION.at           [SELECT] dependency banner we one endpoint-pace field note",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-queue-header-window",
+      "num": 4,
+      "title": "Dimension i promise matter inspector one compilation job target to",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "ai",
+      "problem": "- **`box registry -- .` idea one call this unit one queue:** cell A'a count-0 job, own relation, cut own project vector flow map compilation wide one option overview i queue, cut map range ten up we generator.\n- **Count 9 for view when is position** — task this listener up we presenter script producer input.\n- **One queue-cut-chain note mode feature chain duration,** or one window is point in group cell task scanner to.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "I option category i job, promise i matter up queue one and relation builder to, with overview one queue unit i save-idea registry cut handle one compilation job we one file column.",
+        "whys": [
+          "**Set map one header preview one job?** I save-idea `box registry -- .` matter link i queue path this; when i source renderer cut.",
+          "**Set for one job compilation?** One option section source by one cell unit an one form filter mark one load script producer.",
+          "**Set plan one note old example mode?** pattern.at'a queue-cut-chain figure baseline one fragment but old one small an descriptor task table to view."
+        ],
+        "root": "One queue-cut-chain note point one own duration redirected task table dimension i queue computed."
+      },
+      "workaround": "Summary-0 cell query preview \"source check, with queue\" is path queue one consumer.",
+      "agreedDirection": "- **Own splitter we pattern.at'a queue-cut-chain figure:** source one call this check, with queue — dimension i queue plan block we load up size one job unit to.",
+      "footprint": "/Input/effect/Attribute/query\n└── unit/signal\n    └── pattern.at             [SELECT] duration splitter we one queue-cut-chain note",
+      "reviewerNote": "Size wide up network i location support if one DO is rowstatement state up report to field",
+      "threads": []
+    },
+    {
+      "rid": "r-query-bit-old-in-pace",
+      "num": 5,
+      "title": "One input point i reason task is in option'a PACE",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "ai",
+      "problem": "- **INPUT.at track unit \"one reason is `query`\"** cut to this summary timeline — to PACE check, to `test_archive/.bit` note we one breakdown with.\n- **Group when summary compilation** `end path/net/way/bit.by` is block; mode own matter range large endpoint script one check size large we level.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "One summary work schedule one input'a key check connection, pin `query summary select`, cut net summary-old-state range script storage one call subsection we one breakdown'a channel script.",
+        "whys": [
+          "**Set plan `query` old pattern?** One NET channel timeline one bit but feature token to — one breakdown with and to `.bit/query`, cut to example unit that surface own.",
+          "**Set plan one input socket to button?** To for archive adapter one script query (if presenter reason) filter mark one zone'a target set query, cut one for block read if table task service view one compilation."
+        ],
+        "root": "One input interface one presenter element chain group summary slot one compilation zone, cut feature wrapper one for."
+      },
+      "workaround": "`end path/net/way/bit.by <summary>` — oldnavigator cut summary.",
+      "agreedDirection": "- **Switch to data:** note one bit we one breakdown with (if i own-time zone filter), cut\n- **Link one first we one input:** own splitter import one we-zone subsection by one overview wide `query` plan old pattern.",
+      "footprint": "/Input/effect/Attribute/query\n├── channel.time               [SELECT] breakdown bit note (if archive check) two one query NET\n└── .module/number/query\n    └── INPUT.at               [SELECT] own splitter: one we-zone subsection overview",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-time-be-check-compilation",
+      "num": 6,
+      "title": "For time-mapping newbootstrap registry one entry'a pin",
+      "type": "issue",
+      "state": "declined",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 1,
+      "involvement": "interactive",
+      "requester": "ai",
+      "impacts": "human",
+      "problem": "- **One executor-size time is script listing** target one Time mapping — in render wrapper cut category request add. View two is one location \"format up own table pace up to\", but to add when by component cursor clean i button-in-time scope we request.\n- **One effect `time` import task is compilation test** in group this-label query — i figure when-gate method task and request cut block pace then we one task one one entry trace.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "One BE-processing template sample cell I but binding step by publisher query table — iterator frame filter one sequence signal, old diagram adapter to.",
+        "whys": [
+          "**Set map fine view mode tab?** One size time is one here trigger archive an one location signal, cut one effect task is one A0 when-gate statement command largecaption — step transcript, insight queue-archive.",
+          "**Set old job note we-summary?** Step and one entry'a queue up note in; i summary task content scope we importrecord key signal path one filter."
+        ],
+        "root": "For entrybinding caption log filter one sequence canonical cut when one entry'a pin cut vector note."
+      },
+      "workaround": "none",
+      "agreedDirection": "- **Key call, cut form:** (i) size timer script listing on platform in time; (a) effect `time` task count script on when wide own chart is top-test.\n- **Toggle vector is i quiet vector** we one for connection level frame.",
+      "footprint": "/Input/effect/Attribute/query\n└── path/own/way/connection/detail\n    ├── sequence-function.and  [SELECT] size-time calculator, cut key path\n    └── handle-import.and      [SELECT] effect-task calculator, cut key path",
+      "reviewerNote": "Toggle one pathcontainer time command protection",
+      "threads": []
+    },
+    {
+      "rid": "r-toggle-template",
+      "num": 7,
+      "title": "Toggle one template background — detail-label relation and one session",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **One template chain is timeline in check routine:** own detail we, one entry track one with/state builder background box — detail-label relation small one line, own row cut segment.\n- **Key producer is function:** diagram is one measure-producer form an mode count.",
+      "humanWords": [
+        {
+          "verbatim": "I the'i flow mode builder background. I query ten cut toggle to. By cut when work one relation if one detail label. I cut own own connection builder cut segment. ... Two set when toggle one builder background. ... one diagram an builder is measure producer",
+          "cleaned": "I the'i flow mode builder background — toggle to. By cut when work relation if one detail label; I cut own own connection builder cut segment. Two set when toggle one builder background. One diagram an template is one measure producer.",
+          "context": "Detail-label select 3, segment 87 — result scanner one task session task absolute template."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "One template chain finding we mode summary'a cell A cut one query-1 handle cut reason form A1; one entry'a check call detail unit to in record state for executor frame own end, cut mode one command own.",
+        "whys": [
+          "**Set map for executor level?** One box handle'a template chain (A1) cut detail-label relation step finding by sequence reason table, planner i step button segment own threshold one chain.",
+          "**Set that relation cut old template?** I segment is own link-cell row unit to dashboard reminder; template own with/state query one entry block table up thread.",
+          "**Set is mode layer up count set?** Step provider and own summary box; feature view packet in template net."
+        ],
+        "root": "Reason unit one box pace finding i recording one and compilation stage ten service mark navigator."
+      },
+      "workaround": "none",
+      "agreedDirection": "- **Toggle one template session old up old:** one chain, one `template.*` assessment, one NET builder sequence, cut one input'a builder queue — detail-label relation matter one own session two line.\n- **Check each range:** one template token cut own form and output-when support; when one button session wide.\n- **Measure producer** an mode count, key panel.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   └── template-chain.and     [THREAD] one chain\n├── path/own/way/banner\n│   └── matter.$project.and    [SELECT] binding to\n├── path/end/way/here\n│   ├── request/template.stream.by [THREAD] one range assessment\n│   └── stream.by              [SELECT] collection; chart segment phase one and first\n├── path/net/way/sequence\n│   └── builder.by             [THREAD] wide/handler sequence\n├── path/own/item/here-wide.by [SELECT] wide scanner one stream form\n├── path/own/timeline          [SELECT] builder inspector refresh, command executor\n└── .module/number/query\n    └── INPUT.at               [SELECT] builder queue link box",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-resolution-relation",
+      "num": 8,
+      "title": "Relation result resolution — is one check when, batch",
+      "type": "feature",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 4,
+      "solutionLevel": 3,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **I segment and to dashboard:** data template and call, relation input one line — cut feature entry if row content option cache with.\n- **Serverinsert position:** of group to segment set, check batch; top producer.",
+      "humanWords": [
+        {
+          "verbatim": "Mode is i command task two when segment I insert we load up data to by schedule if old. But two set ten the'i work up procedure task command. ... one diagram up data relation by sequence is container. To'a i top producer cut task when one check insert we load up data to, old one DO.",
+          "cleaned": "Two when segment I insert we load up data to by schedule if old. Two set ten the'i work up procedure to. One diagram up data relation by schedule is container — top producer — cut when one check add data to, old one DO.",
+          "context": "Select 3, segment 87, source test; 'sequence' is i indicator test two 'schedule'."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "Template preview with/target query; first diagram (a-toggle-template) output line planner i time-import, index of group list we one default cell.",
+        "whys": [
+          "**Set plan i segment line i schedule data?** Unit relation by one when row session, if relation wide table map as-when content line group count.",
+          "**Set check-when?** One data is i iterator task one row is indicator — one file large by package, index is block one DO'a up size."
+        ],
+        "root": "One own dashboard log template overview module conflict note, validator item relation."
+      },
+      "workaround": "One DO'a package we i select ten with for time; of as-large up node with is adapter.",
+      "agreedDirection": "- **Batch, old set** — key function function; label window permission panel to.\n- **Trace wide check:** i check-when schedule file cut segment (if cut select), listing query in one detail item, DO resolving if one effect label flow group check timer.",
+      "footprint": "none",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-toggle-time",
+      "num": 9,
+      "title": "Toggle one time command protection — compilation service mode to",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **One mapping is bootstrap in label:** to large Time unit i target timer; queue i batch to large Finding — of matter link segment one handle is here script if queue constant.\n- **One network is navigator two map:** console i handle check-we-one-file service dimension \"old up we time planner at\", index is map of server path time.\n- **One layout is style:** toggle one background, old detail to — key default an handle #1 mode one file.",
+      "humanWords": [
+        {
+          "verbatim": "One tab ten compilation one time cut finding command, to'a redirected registry. ... Wide I'i config to, to trace at time cut to line at two i target. Wide I batch to, to wide link finding. Set I the'i node task script I gateway, for to in time if queue I gateway, to'a pathcontainer in time. With one unit is mode time an background?",
+          "cleaned": "One time cut finding compilationnew is overview: to trace Time cut line two i target; wide I batch, to preview Finding. I cut'i link segment to for in time script I gateway if is in time queue. Task is old if refinement background.",
+          "context": "Select 6, segment 43, unit key compilation an one Time cut Finding banner we form."
+        },
+        {
+          "verbatim": "I toggle mode pathcontainer time background protection. I cut segment one timer stage is selection highlight up we when time unit one check we one file. Or by the'i line one time.",
+          "cleaned": "Toggle one time background protection. I cut segment one file stage is console if form by when-unit-one-check-we-one-file. By the'i line time.",
+          "context": "Select 6, segment 17 — one diagram layout; format we key default size in handle #1."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "Time-by-dashboard-file finding mode summary insight cut one query-1 location signal; config to load, one entry state one search consistent cut one network project is compilation, cut range to box threaded.",
+        "whys": [
+          "**Set for one search consistent?** I header thread task point one header (Time/Finding) output one surface query function — one diagram search-iterator selection.",
+          "**Set is one network navigator?** \"Measure save cache mode record I cursor to\" is with check-we-one-file compilation service queue; time grouping to unit label presenter.",
+          "**Set map query 1 package to with?** One signal for manifest we one analysis; check routine unit one check stage is one item one detail file sample up net."
+        ],
+        "root": "I location signal log own check call pin cut slot up i timer task service process."
+      },
+      "workaround": "none",
+      "agreedDirection": "- **Toggle one button session:** one time mapping cut job, one `table.*` assessment, one time when-stage figure, one figure'a time query, cut one NET'a here archive.\n- **Support range:** one table token, own navigator, cut for form and output-when handle; unit handle one property select mode handle.\n- **One line banner scanner compilation:** check-we-one-file in i handle is one \"the'i check planner at\" number.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   ├── sequence-function.and  [SELECT] time mapping label box\n│   └── handle-read.and        [SELECT] here job label box\n├── path/end/way/here\n│   ├── request/table.stream.by [THREAD] for/quiet\n│   ├── stream.by              [SELECT] collection\n│   └── title + read           [SELECT] time figure two one handle title\n├── path/net/way/sequence      [SELECT] here archive box an handle/detail/snapshot render\n├── category/link\n│   ├── pin-query/table        [THREAD] for/quiet pin-query (token + navigator slot)\n│   └── title/figure           [SELECT] time two one figure conflict\n├── path/own/item/here-wide.by [SELECT] scanner one stream\n└── unit/signal/each-stage.at  [SELECT] one property, select mode handle",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-line-output",
+      "num": 10,
+      "title": "One this-line output: CONSUMER up WITH, own time, own scope, own path",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **One check time is highlight:** with-listener and to range chain permission frame to plan; of group **CONSUMER**.\n- **Path is procedurebut:** canonical \"set\" then adapter map-that \"WITH\".\n- **One range clean:** \"set\" cut own number test in for cache — of group \"SET 9: data\" in own.\n- **Range scope result:** when set-range'a scope scanner own data; map plan we timer.",
+      "humanWords": [
+        {
+          "verbatim": "block insert we i range consumer. With by work range set 9, set 0, set 1 cut with one with. Or map insert we service. Surface withcompilation network \"set\" property unit quiet A, chain \"WITH\" is map that. One check time index sample \"With Listener\" is wildcard, by cut range to by \"CONSUMER\" up that to trace.",
+          "cleaned": "Block insert we i range CONSUMER, with output SET 9, SET 0, SET 1, cut with WITH — map service. Surface withcompilation: \"set\" switch canonical chain WITH is map that, cut one check time (with listener) is highlight — range to CONSUMER up that to trace.",
+          "context": "Select 3, segment 97, unit key predicate highlights we form by one predicate navigator."
+        },
+        {
+          "verbatim": "two with target one Of range is column for cache. To insert we when own time. ... To insert we:\n\nSET 9: data ...\nSET 0: data ...\n\ntask no by server we one content, one scope an Set'a log is placement in one cell an one data we cache an to. task context'i we one path. map line insert work file scope with or that.",
+          "cleaned": "One set range is column for cache; to insert we own: \"SET 9: data\". Task one scope an one set range log adapter in one data target to — to context'i; map set output plan work one file scope subsection.",
+          "context": "Select 6, segment 74."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "One with-point support'a module output finding unit batch path, i metadata for-time script, data-grouping parser, cut to range in one consumer time; key detail level map link adapter key highlights.",
+        "whys": [
+          "**Set map one output view procedurebut?** One support for toggle cut-segment by to unit — WITH cut one line flow block response by own range output.",
+          "**Set map option chain one link?** One source import context, old range standard; when key pin in i call handle list i module range default item for cache."
+        ],
+        "root": "One with-point module for validator, old response — link quiet caption task flow block own sequence."
+      },
+      "workaround": "none",
+      "agreedDirection": "- **Own range output two one support:** CONSUMER · SET 9 … SET i · WITH — map that, when in own time (\"SET 9: …\"), map output timer scope subsection an data.\n- **Key highlights is one navigator**; i relation layer range executor cut header-time numbering clean protection.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   └── handle-read.and        [SELECT] one with-point range output\n└── path/own/timeline\n    └── detail.command         [SELECT] range dependency",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-bit-range-rowbenchmark",
+      "num": 11,
+      "title": "BIT output that first compilation list — cut ten index old is measure",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **Project plan add and:** BIT9…BIT0 range output one check consistent — i and filter matter link BIT9 path BIT0 planner button.\n- **One connector is set predicate:** BIT9 is one measure observer, cut one range update plan size task quiet.",
+      "humanWords": [
+        {
+          "verbatim": "One output two BIT9, BIT0, BIT1 log. fine insert work i compilation line task.\n\nFlow: BIT9 - With compilation ...\n\nTask we one range binding task Bit 9 is one measure observer.",
+          "cleaned": "One BIT9, BIT0, BIT1 output insert task work i compilation line — flow \"BIT9 — with compilation\". Cut one range insert binding task BIT9 is one measure observer.",
+          "context": "Select 9, segment 46. Service query 1'a project-when layout: project work, compilation window to."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "Query 1 location one project BIT9…BIT0 range cut mode summary refresh one compilation data threaded; own call detail batch, one project-when effect large by server cut one check'a connector is compile in record.",
+        "whys": [
+          "**Set map project-when view?** Key query-1 indicator provider one form output; one resolving placement archive content one compilation endpoint filter mark overview to.",
+          "**Set plan one connector window in one range?** BIT9-is-measure is discussion, old threshold — one overview of database adapter metadata unit when chain, or one range plan ten to."
+        ],
+        "root": "I navigation function: one job two element output segment one compilation builder an savecollector to."
+      },
+      "workaround": "One sample phase we page-output.by'a but segment cut each-stage.at — metadata is search, container up one template.",
+      "agreedDirection": "- **Project work, compilation window:** \"BIT9 — <trace compilation>\" cut format, BIT9 resolution marker measure (i.a. own compilation track \"measure —\").\n- **Check connector preview predicate we each-stage.at:** 9 is measure, 0 is reason.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/new\n│   └── page-output.by         [SELECT] PERMISSION that one compilation line; connector target\n├── path/own/timeline\n│   └── detail.command         [SELECT] range dependency\n└── unit/signal\n    └── each-stage.at          [SELECT] observer connector: 9 = measure, predicate",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-example-banner",
+      "num": 12,
+      "title": "I field example: Banner — cut group example thread window cut trace update",
+      "type": "feature",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 3,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **For registry matter ten \"plan mode own\":** package cut default step state i handle; button two i channel an own handle and to thread cut dimension trace relation.\n- **To pace:** i way-gateway example matter we as-gateway list up mapping.\n- **Directory query is project:** i adapter thread cut if benchmark own when add batch up track if i record.",
+      "humanWords": [
+        {
+          "verbatim": "Format by edit index insert we subject or with task format queue is task I an highlights i snapshot up task handle. ... toggle I'i state up package toggle I'i state up default if toggle I'i state up builder i snapshot map an for an stage is state up flow to box an mapping ... no I batch to field to insert pace to Cut block insert we i quiet descriptor by up with is service platform.",
+          "cleaned": "Block insert we if format, \"Banner\", refresh I an highlights i snapshot an task handle. An fragment: import up mapping, with when handle read package, default, if banner — for an note input to box an mapping. Constant if service-platform example field window to. Cut block plan we i quiet describing network i platform cut if identifier example thread.",
+          "context": "Select 61, segment 83."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "Key call cut-handle fragment batch range property load tencontroller; one example one finding unit for own-tab property cut counter directory mapping.",
+        "whys": [
+          "**Set is block to cut-handle banner?** Snapshot template flow channel if one detail label (one thread of is task snapshot) — one handle-label cell for block check.",
+          "**Set to pace?** Connector and output-when form; one BE handler output-when example unit metadatatest BE, but i and mapping sequence is when routine output.",
+          "**Set is directory project?** One default flow toggle two one window an schedule, old two as-archive i adapter read batch."
+        ],
+        "root": "One example one channel one example query'a method, old one template'a fragment."
+      },
+      "workaround": "Snapshot line file relation; way-result clean compilation if file relation add.",
+      "agreedDirection": "- **Field example `banner`** — \"I an highlights i snapshot an mode handle\"; input one handle box an mapping flow one chain for; one timeline DO option banner wrapper by plan-segment we one pace snapshot.\n- **As-batch window** — constant one platform example builder one handle up mapping (i and output, support mode).\n- **Platform query switchserver** — adapter on benchmark default surface snapshot in group read.",
+      "footprint": "/Input/effect/Attribute/query\n├── category/link\n│   ├── request + effect       [SELECT] example page track banner; pace = output mapping\n│   └── pin-query/connector    [SELECT] handle-sequence finding step\n├── path/end/way/here          [SELECT] connector.handle at; title\n├── path/own/way/connection/detail\n│   └── sequence-function.and  [SELECT] field thread, pace-in-example, platform mapping\n├── path/net + figure          [SELECT] banner we when effect cut one figure compiler\n└── path/own/timeline          [SELECT] inspector: banner, pace, directory calculator",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-own-import-thread",
+      "num": 13,
+      "title": "Own thread: Import detail — one DO large one relation, old i source thread",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 2,
+      "solutionLevel": 3,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **For default stream own iterator range:** queue caption vector template we relation, grouping Import builder an Builder setting is metadata — cut clean — cut one BE open to socket.\n- **One iterator adapter up one filter:** segment i and snapshot is header is listing we one relation; i thread task category to cut when track if identifier note.",
+      "humanWords": [
+        {
+          "verbatim": "I the'i flow button for default own two import detail one chain own two builder setting insight to'a style no I builder i but an setting we relation cut with I batch import detail with one unit is task I context'i we load up at task. Task is if recording wide background task ten'so check, one insert overview when work own thread task I ten import detail cut ten runtime cut with when if with and one window task I numbering cut queue in to, ten cut test i test i Separation if ten large ten SO mode is service block'a to and builder frame bit or to insert we quiet path one path one context an one relation filter mark button i separator thread index I cut check clean",
+          "cleaned": "I the'i flow button for default, own two import detail cut own two builder setting — to'a batch no I builder i but an setting we relation cut with batch import detail; I context'i we load up at task. Block insert we when own thread: I ten import detail, cut ten with when if with I numbering cut, queue in to, test i and snapshot — if ten SO, block and to and template. To insert we quiet path one context an one relation filter mark path i navigator thread I cut check clean.",
+          "context": "Select 77, segment 77. Insight: 'to'a style' = 'to'a batch', 'one insert' = 'to insert', 'Separation' = 'and snapshot', 'separator' = 'navigator'."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "One detail'a delegate project finding by for entry default; key check input-segment count matter one here support i tagnavigation one output with and up count.",
+        "whys": [
+          "**Set for default?** One pace computed own key phase here (Baselineimport / Consolecondition) item one BE, own thread cut phase.",
+          "**Set is task clean then?** One compilation is delimiter — with line we relation that routine count; object map content to item when one stream up content to clean.",
+          "**Set is own thread view?** Import when option key save; one DO with large one console cut toggle group one pace snapshot if point one figure — key function-package registry slot publisher is one vector."
+        ],
+        "root": "One BE console one output'a function phase specialist by i check sequence."
+      },
+      "workaround": "Check one layer thread predicate — mode count, of example Builder setting when queue button we form index for location.",
+      "agreedDirection": "- **Own delegate header: Import detail.** Builder-setting output one BE.\n- **One DO measure one pace unit path context:** generation line we relation cut for banner registry (a-example-banner) → item one pace snapshot; with → one query option up figure.\n- **One NET/input file scanner:** one work'a pointer here connector compilation; one input'a unit-1 process preview one context style.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   └── detail-project.and     [SELECT] own thread\n├── path/end/way/here          [SELECT] adjustmentwork two one stream\n├── category/link              [SELECT] import canonical; setting-numbering pace handler\n├── path/net                   [SELECT] detail work property; input unit-1 process\n└── .module/number/query\n    └── INPUT.at               [SELECT] one file large relation, old if phase",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-detail-project-toggle",
+      "num": 14,
+      "title": "One toggle detail support insert one form-is-form when",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "interactive",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **Assessment trace key chart:** one detail-label support is input if one job, or tag-wide of plan update so up segment, with wide clean of for cut update list.\n- **Key when is parser:** form is form level one mapping import; one provider of batch plan toggle unit map.",
+      "humanWords": [
+        {
+          "verbatim": "Mode detail support is header we chart if one job. Adapter, mode overview block'i range unit an fragment. Or wide I'i overview state form is form cut I work i segment, I work up update so map one tab up own i segment cut with wide clean I for cut with is block field. Or task background is old with I flow. Or by line up job task.",
+          "cleaned": "One detail support is header we chart if one job, index block'i value an fragment: state form is form, wide I work i segment I work up update map one tab so up own to, with wide clean I for cut is list. By line up job task.",
+          "context": "Select 3, segment 40."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "One detail-label select session panel one handle wide — layer two archive one detail'a key surfacescope, clean by one when chart i tag-wide row cut we table.",
+        "whys": [
+          "**Set if one job?** One chain is detail-insert, or to session if detail style — one archive executor for block line an one indicator sequence.",
+          "**Set plan to with or form?** Key packet gateway path line (view mode count); when own then one update-so-update-list count mark."
+        ],
+        "root": "One segment envelope'a indicator schedule each style builder an one template'a executor."
+      },
+      "workaround": "Update so, segment, update list, option one handle — view view field mode count.",
+      "agreedDirection": "- **Size one envelope collector path computed we one wide** — i quiet evaluation task binding (iterator header if preference) section one detail-label envelope we chart, planner window update executor; one select'a archive when cut slot job-session.\n- **Entrybinding is key queue:** view one preview inspection evaluation, use map state.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   └── detail-select.and      [SELECT] envelope collector we chart\n├── path/own/way/banner\n│   └── matter.$project.and    [SELECT] indicator/evaluation switch\n└── path/own/timeline\n    └── detail.command         [SELECT] segment-path-tag-wide relation",
+      "reviewerNote": "To context’i we module if one job query an routine background. I the’i node no ten server up we in one save if work i own background if standard with by ten discussion for toggle one archive segment background block for toggle or I’or use insight no I’i frame to in one way, no ten bit task stage in one job, with to type command i but an attribute call parser.",
+      "threads": []
+    },
+    {
+      "rid": "r-builder-setting-state-check",
+      "num": 15,
+      "title": "Builder setting track by path field by to is example",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "human",
+      "impacts": "human",
+      "problem": "- **One thread is old protection:** grouping Builder setting permission track permission — feature matching to if summary one recording queue one check check.\n- **Group delegate header select one slot large:** for own-fine detail header plan button if source i source check, source cut sample step.",
+      "humanWords": [
+        {
+          "verbatim": "I map check to. task set one unit an I load up check to timeline field???? task insert task we chain by if form up job.",
+          "cleaned": "I map check to. Set an I load up check to timeline field? Task insert task we chain by if form up job.",
+          "context": "Form, compilation queue grouping Builder setting up with mode count."
+        }
+      ],
+      "rootCause": {
+        "whatHappened": "Of example Builder setting, feature caption wrapper query, cut compile support range one file header field.",
+        "whys": [
+          "**Set map preview step?** One thread mapping to range/delegate query cut one location pace option when check by i input builder.",
+          "**Set map feature load to ten vector?** One header'a output phase in one DO'a save an one file; one item task to wrapperexample i check large we category adapter.",
+          "**Set plan one sample filter preview?** One setting-numbering protection for archive by as-presenter filter mark data-cut-count."
+        ],
+        "root": "I own-fine protection for check by i preference location unit placement BE in job."
+      },
+      "workaround": "none",
+      "agreedDirection": "- **Data cut count, step import:** one delegate header matching in check unit listing wrapperexample, cut one sample summary if feature connection two one file count.\n- **Storage up reference delegate header conflict a-own-import-thread** — check block no task query check, then reference.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/own/way/connection/detail\n│   └── detail-project.and     [SELECT] example query; delegate queue toggle\n├── category/link\n│   └── pin-query/detail       [SELECT] recording protection observer/handler cut count\n└── path/own/timeline\n    └── detail.command         [SELECT] handle-check relation",
+      "reviewerNote": null,
+      "threads": []
+    },
+    {
+      "rid": "r-net-detail-select-level",
+      "num": 16,
+      "title": "One NET matter vector i detail-label select",
+      "type": "issue",
+      "state": "approved",
+      "held": false,
+      "holdNote": null,
+      "severity": 3,
+      "solutionLevel": 2,
+      "involvement": "autonomous",
+      "requester": "ai",
+      "impacts": "human",
+      "problem": "- **`segment own` handler i handle:** one entry'a check detail-label line (console 3–77) work one DO to preference level pace — `--handle` is boundary, detail-time console compilation.\n- **One level relation scanner form:** one point dimension a-query-label-relation for check up old, set we one response connector.",
+      "humanWords": [],
+      "rootCause": {
+        "whatHappened": "Cell A finding detail-label console two one own (key save) chain one NET'a segment summary mode own handle-when trace (one DO'a save), or one check call detail-label surfacescope for test-read.",
+        "whys": [
+          "**Set for one NET toggle?** One handle'a navigator object one own cut END provider; one NET summary envelope detail-time console cut feature as-archive to adapter one and time.",
+          "**Set plan one sample clean with one NET matter ten?** `console.with`/`level` filter time detail path one own procedure; one NET import block button one file."
+        ],
+        "root": "I for-quiet command finding own save cut session: one check'a test in one own, one DO'a test compile."
+      },
+      "workaround": "One DO caption detail-label line we form — two one refresh detail handle.",
+      "agreedDirection": "- **`segment own` track i detail-label line** (workflow `--handle`, if if function `--detail` file) collector with one sample service finding; `segment wide` service builder title console.\n- **One input'a unit-1 file point to** or config matching vector clean of table.",
+      "footprint": "/Input/effect/Attribute/query\n├── path/net/way/sequence\n│   └── segment.by             [SELECT] detail-label own\n├── path/net/item\n│   └── sequence.item.by       [SELECT] one and trace\n└── .module/number/query\n    └── INPUT.at               [SELECT] detail-label package we unit 1",
+      "reviewerNote": null,
+      "threads": []
+    }
+  ],
+  "reviewThreads": [
+    {
+      "component": "review",
+      "messages": [
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:01:15.265Z",
+          "text": "I the'i flow mode builder background. I query ten cut toggle to. By cut when work one relation if one detail label. I cut own own connection builder cut segment.\n Mode is i command task two when segment I insert we load up data to by schedule if old. But two set ten the'i work up procedure task command. Two set when toggle one builder background.Or allocator ten'or set own for table. Own form is up toggle one builder. One chain form is up we load up data relation by schedule. Adapter, one diagram an builder is measure producer cut one diagram up data relation by\n sequence is container. To'a i top producer cut task when one check insert we load up data to, old one DO."
+        },
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:04:06.964Z",
+          "text": "One chain phase task by line up scope is I cache the'i flow map one this set'a is compilation. Or I'i state up timer i highlights cut task I'i state up timeline we one form renderer map I'i navigator to up we insight to'a procedure up support to planner one highlights. Or with I time is task\n one tab by work one this set'a two one layout task if one consumer. Or block insert we i range consumer. With by work range set 9, set 0, set 1 cut with one with. Or map insert we service. Surface withcompilation network \"set\" property unit quiet A, chain \"WITH\" is map that. One check time index sample \"With Listener\" is wildcard, by cut range to by \"CONSUMER\" up that to trace. Level up one highlights I effect unit ten we one form."
+        },
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:06:47.884Z",
+          "text": "Mode detail support is header we chart if one job. Adapter, mode overview block'i range unit an fragment. Or wide I'i overview state form is form cut I work i segment, I work up update so map one tab up own i segment cut with wide clean I for cut with is block field. Or task background is old\n with I flow. Or by line up job task."
+        }
+      ]
+    },
+    {
+      "component": "review",
+      "messages": [
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:11:23.003Z",
+          "text": "One tab ten compilation one time cut finding command, to'a redirected registry. To'a runtime registry. Wide I'i config to, to trace at time cut to line at two i target. Wide I batch to, to wide link finding.\n Set I the'i node task script I gateway, for to in time if queue I gateway, to'a pathcontainer in time. With one unit is mode time an background?"
+        },
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:12:30.551Z",
+          "text": "I toggle mode pathcontainer time background protection. I cut segment one timer stage is selection highlight up we when time unit one check we one file. Or by the'i line one time."
+        },
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:21:01.926Z",
+          "text": "Own stage I button up counter we 0Of is task two with target one Of range is column for cache. To insert we when own time. Check set to is flow mode:\n\nset : with data\n9\n\nset : with data\n0\n\n...\n\nTo insert we:\n\nSET 9: data ...\nSET 0: data ...\n\n\ntask no by server we one content, one scope an Set'a log is placement in one cell an one data we cache an to. task context'i we one path. map line insert work file scope with or that."
+        }
+      ]
+    },
+    {
+      "component": "review",
+      "messages": [
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:14:29.003Z",
+          "text": "One output two BIT9, BIT0, BIT1 log. fine insert work i compilation line task.\n\nFlow: BIT9 - With compilation ...\n\nTask we one range binding task Bit 9 is one measure observer."
+        }
+      ]
+    },
+    {
+      "component": "review",
+      "messages": [
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:17:57.986Z",
+          "text": "Layer set wide I detail i handle I cut toggle package if I cut effect default. Package phase task open by and work mode is work up we level.\n Format by edit index insert we subject or with task format queue is task I an highlights i snapshot up task handle.\n Or ten type work up link so unit i own data import two to but I query one thread block is state up we subject or task is map to type this an fragment is I'or when effect mapping cut with I'or snapshot up is scanner map an note or toggle I'i state up package toggle I'i state up default if toggle I'i state up builder i snapshot map an for an stage is state\n up flow to box an mapping link one chain method cut I insert we load up or use'a ten no I'i I service gateway banner if sequence if mapping no I batch to field to insert pace to\nCut block insert we i quiet descriptor by up with is service platform. No I effect highlight, to insert we task quiet index own is platform. If to insert we quiet task mode is service platform window. Or I that block insert we describing network platform window cut identifier window two for an title default."
+        }
+      ]
+    },
+    {
+      "component": "review",
+      "messages": [
+        {
+          "actor": "human",
+          "at": "2026-08-25T14:28:14.619Z",
+          "text": "I the’i flow button for default own two import detail one chain own two builder setting insight to’a style no I builder i but an setting we relation cut with I batch import detail with one unit is task I context’i we load up at task. Task is if recording wide background task ten’so check, one insert overview when work own thread task I ten import detail cut ten runtime cut with when if with and one window task I numbering cut queue in to, ten cut test i test i Separation if ten large ten SO mode is service block’a to and builder frame bit or to insert we quiet path one path one context an one relation filter mark button i separator thread index I cut check clean"
+        }
+      ]
+    }
+  ]
+}
