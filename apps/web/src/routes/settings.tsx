@@ -20,33 +20,30 @@ export const Route = createFileRoute('/settings')({ component: SettingsPage })
  * hardcoded, to keep the vocabulary flexible: adding one requires setting
  * up a settings page, because each label or attribute is a global thing.
  *
- * **A left nav of sections with the content on the right**, built with
- * shadcn's vertical tabs: the shape a reader already knows from every
- * settings screen they use — a
- * standing list of section names, the current one highlighted, one panel beside
- * it.
+ * **A left nav of sections with the content on the right**, built with shadcn's
+ * vertical tabs: the shape a reader already knows from every settings screen
+ * they use — a standing list of section names, the current one highlighted, one
+ * panel beside it.
  *
- * **The counted chip row it replaces was an earlier design's
- * mechanism, retired in the same redesign** — other shapes were tried and
- * this is the one that shipped. The chips are
- * gone rather than kept as a narrow
- * fallback: two mechanisms for choosing the same four panels would be one too
- * many, and a responsive layout that changes mechanism is a page that has to be
- * learned twice.
+ * **The counted chip row it replaces was an earlier design's mechanism, retired
+ * in the same redesign** — other shapes were tried and this is the one that
+ * shipped. The chips are gone rather than kept as a narrow fallback: two
+ * mechanisms for choosing the same four panels would be one too many, and a
+ * responsive layout that changes mechanism is a page that has to be learned
+ * twice.
  *
  * **Deliberately absent**, on the every-element-earns-its-place rule: no stage
  * or server settings (`retro doctor` is where those live and they are the
  * CLI's), no export configuration, no usage counts beside a definition, no
  * reordering, and no delete. A delete is not a thing this product does at all —
  * retiring is what keeps a name readable on the records that already wear it,
- * and it is reversible rather than permanent
- * (`vocabulary.tsx`).
+ * and it is reversible rather than permanent (`vocabulary.tsx`).
  *
  * The two vocabularies are two sections rather than one table with a "kind"
- * column, which makes visible that labels and attributes are
- * pure and independent, and composition is the user's convention, never a
- * system mechanism. A single table would be the first place a reader looked
- * for the pairing the system does not have.
+ * column, which makes visible that labels and attributes are pure and
+ * independent, and composition is the user's convention, never a system
+ * mechanism. A single table would be the first place a reader looked for the
+ * pairing the system does not have.
  */
 function SettingsPage() {
   return (
@@ -76,13 +73,13 @@ type Section = 'general' | 'appearance' | 'labels' | 'attributes'
 /**
  * The four sections, and the vertical nav that chooses between them.
  *
- * **General is first, by rule**: General needs to be the first item in
- * the list. The order that shipped
- * before — the two vocabularies, then General — had a rationale that has since
- * stopped being true: it was scroll-distance reasoning from the single-page
- * layout, where the switch had to come before two lists nobody should have to
- * scroll past. Behind a section list there is no scroll distance to reason
- * about, so this convention wins outright and nothing argues with it.
+ * **General is first, by rule**: General needs to be the first item in the
+ * list. The order that shipped before — the two vocabularies, then General —
+ * had a rationale that has since stopped being true: it was scroll-distance
+ * reasoning from the single-page layout, where the switch had to come before
+ * two lists nobody should have to scroll past. Behind a section list there is
+ * no scroll distance to reason about, so this convention wins outright and
+ * nothing argues with it.
  *
  * **Appearance is second, and it is a section of its own by design** —
  * appearance is another tab of its own, like general etc. It could have
@@ -162,12 +159,12 @@ function SettingsSections() {
 /**
  * One section in the nav: its name, and its count if it has one.
  *
- * **The count is parenthesised, and that is a rule rather than a choice
- * here**: if labels are to have a count, the count needs to be in
- * brackets — like 'Labels (1)' instead of 'Labels 1'. The
- * brackets are what make the number read as an annotation on the name rather
- * than as part of it; the typographic separation this replaced — a lighter,
- * spaced number — said the same thing in a channel that read unclearly.
+ * **The count is parenthesised, and that is a rule rather than a choice here**:
+ * if labels are to have a count, the count needs to be in brackets — like
+ * 'Labels (1)' instead of 'Labels 1'. The brackets are what make the number
+ * read as an annotation on the name rather than as part of it; the typographic
+ * separation this replaced — a lighter, spaced number — said the same thing in
+ * a channel that read unclearly.
  *
  * **It is one formatting site on purpose.** Every counted navigation item in
  * this product goes through here or through something that copies this line, so

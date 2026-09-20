@@ -12,8 +12,8 @@ import { Given, Then, When } from '../fixtures'
  * real system too.
  *
  * Everything here addresses a record by **`(retro, rid)`**, never by rid alone.
- * That is the identity a record actually has (A5, scout-core: a rid is minted
- * per retrospective), and the fixture mints `r-stale-lock` in two of them — so a
+ * That is the identity a record actually has (a rid is minted per
+ * retrospective), and the fixture mints `r-stale-lock` in two of them — so a
  * step that took a bare rid would be a step that could not say which record it
  * meant, on the one page where the difference exists.
  */
@@ -78,9 +78,8 @@ Given('the reviewer opens the records page of a fresh install', async ({ page })
 })
 
 /**
- * The row is the way to the record, and the record is on a page of its own.
- * It used to land on the record's review page instead, which was
- * read as a bug.
+ * The row is the way to the record, and the record is on a page of its own. It
+ * used to land on the record's review page instead, which was read as a bug.
  *
  * The wait is on the record's heading being in the document and nothing more:
  * *which* record arrived is the next step's question, and answering it here
@@ -129,18 +128,18 @@ When('the reviewer filters to the requester {string}', async ({ page }, party: s
  * Closing is by Escape rather than by a second press on the trigger: a click
  * lands wherever the panel happens to be and Radix's dismiss layer may take it
  * as the outside press that closes the panel anyway, which would leave the
- * trigger's own state depending on which of the two won. Escape has one meaning.
- * The step is over when the panel is out of the document and the page takes
- * presses again — the same two conditions `chrome.steps.ts` §followAppMenuItem
- * waits on, and the account of *why* lives there rather than in a second copy
- * here. Read it before trusting either: a follow-up measurement checked the
- * swallowed-press hazard both
- * of these comments used to assert and could not reproduce it on `radix-ui`
- * 1.6.7, where the layer releases the body before it unmounts.
+ * trigger's own state depending on which of the two won. Escape has one
+ * meaning. The step is over when the panel is out of the document and the page
+ * takes presses again — the same two conditions `chrome.steps.ts`
+ * §followAppMenuItem waits on, and the account of *why* lives there rather than
+ * in a second copy here. Read it before trusting either: a follow-up
+ * measurement checked the swallowed-press hazard both of these comments used to
+ * assert and could not reproduce it on `radix-ui` 1.6.7, where the layer
+ * releases the body before it unmounts.
  *
- * Exported for `labels.steps.ts`: the label filter is a fourth
- * group in this same panel, and a second copy of this helper would be a second
- * chance to get the Radix dismissal wrong in one of them.
+ * Exported for `labels.steps.ts`: the label filter is a fourth group in this
+ * same panel, and a second copy of this helper would be a second chance to get
+ * the Radix dismissal wrong in one of them.
  */
 export async function withFilterPanel(page: Page, act: () => Promise<void>): Promise<void> {
   await page.getByTestId('records-filter-more').click()
@@ -488,7 +487,7 @@ When(
 
 /**
  * The reader comes back to the tab, which is the one signal this page has that
- * something changed in a process it cannot see (A9: no cross-retro event scope,
+ * something changed in a process it cannot see (no cross-retro event scope,
  * because `events.onRetro` is scoped to one retrospective).
  *
  * The browser's own event, dispatched directly: no Playwright API backgrounds a
@@ -579,9 +578,9 @@ async function lifecycleChipLooks(page: Page): Promise<ChipLook[]> {
  *
  * There is no row to scope inside here — the page *is* one record — so the
  * lifecycle controls, the evidence block and the timeline are all reached
- * directly. That is also why those testids stopped saying `records-row-`:
- * they name a record's lifecycle, and a record has one on two
- * surfaces now (`record-lifecycle.tsx`).
+ * directly. That is also why those testids stopped saying `records-row-`: they
+ * name a record's lifecycle, and a record has one on two surfaces now
+ * (`record-lifecycle.tsx`).
  */
 function timelineEntries(page: Page): Locator {
   return page.getByTestId('record-timeline-entry')
@@ -600,9 +599,9 @@ Given('the reviewer opens record {int} directly', async ({ page }, id: number) =
 
 /**
  * The way to the retrospective this page offers — a way to go to the retro
- * page. A client-side
- * navigation, so the world survives it, and the wait is on the review's own
- * chrome rather than on the landing, which the next step asks about.
+ * page. A client-side navigation, so the world survives it, and the wait is on
+ * the review's own chrome rather than on the landing, which the next step asks
+ * about.
  */
 When('the reviewer follows the link to the retrospective', async ({ page }) => {
   await page.getByTestId('record-retro-link').click()
@@ -753,8 +752,8 @@ When('the reviewer reopens the record', async ({ page }) => {
  * The whole timeline, in order, each line as the pair it reads: who did it and
  * what they did.
  *
- * The list rather than a line at a time, because order is the claim — *"a
- * timeline at the bottom that shows how the record evolved"* — and a set of
+ * The list rather than a line at a time, because order is the claim — a
+ * timeline at the bottom shows how the record evolved — and a set of
  * assertions that each event is *somewhere* would pass on a page that grouped
  * them by kind. The actor rides along because two of the three kinds take theirs
  * from a domain rule rather than a column, and a line that named the wrong one
@@ -918,7 +917,7 @@ When('the reviewer opens the relate panel', async ({ page }) => {
   await expect(relatePanel(page)).toBeVisible()
 })
 
-/** The number, which is what a relation names — never a rid (A5). */
+/** The number, which is what a relation names — never a rid. */
 When('the reviewer names record {int}', async ({ page }, other: number) => {
   await relatePanel(page).getByTestId('record-relate-id').fill(String(other))
 })

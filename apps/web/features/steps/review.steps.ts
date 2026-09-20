@@ -18,10 +18,10 @@ function card(page: Page, rid: string): Locator {
 }
 
 /**
- * The comments panel — the one place on the page a comment is
- * read or written, whichever mount it is in (`review-thread.tsx`). The testid is
- * the same in the rail and in the sheet, and only one of them is ever in the
- * document, so this addresses whichever the viewport called for.
+ * The comments panel — the one place on the page a comment is read or written,
+ * whichever mount it is in (`review-thread.tsx`). The testid is the same in the
+ * rail and in the sheet, and only one of them is ever in the document, so this
+ * addresses whichever the viewport called for.
  */
 function panel(page: Page): Locator {
   return page.getByTestId('review-thread')
@@ -158,17 +158,17 @@ When('the page is reloaded', async ({ page }) => {
  * Leave the review and come back — the mock's own answer to "and then it
  * refreshed".
  *
- * A real refresh presses F5. A scenario cannot: a real reload re-executes the module
- * and the mock's world starts over, so the finish it is asking about would be
- * unmade by the very act of checking for it (`r-mock-world-semantics`, and the
- * mock module's own header). What the reload actually did to the page is
- * destroy the component and its in-memory state and make it work out the answer
- * again, and a client-side round trip does exactly that while the world stands:
- * the bar unmounts, `useMutation` goes with it, and what comes back has only
- * what the store will tell it.
+ * A real refresh presses F5. A scenario cannot: a real reload re-executes the
+ * module and the mock's world starts over, so the finish it is asking about
+ * would be unmade by the very act of checking for it (`r-mock-world-semantics`,
+ * and the mock module's own header). What the reload actually did to the page
+ * is destroy the component and its in-memory state and make it work out the
+ * answer again, and a client-side round trip does exactly that while the world
+ * stands: the bar unmounts, `useMutation` goes with it, and what comes back has
+ * only what the store will tell it.
  *
- * That is the whole mechanism the record is about — *"it behaves like in-memory
- * state that a fresh page cannot recover"* — so this is the assertion's real
+ * That is the whole mechanism the record is about — it behaves like in-memory
+ * state that a fresh page cannot recover — so this is the assertion's real
  * subject rather than a weaker stand-in for it. `goBack` is a `popstate` the
  * router handles, not a navigation, which is what keeps the world.
  */
@@ -183,10 +183,10 @@ When('the reviewer leaves the review and comes back', async ({ page }) => {
 })
 
 /**
- * The narrow half of the two screens this product is read on (ux-brief:
- * laptop and iPad). It is where the long labels have to wrap, so it is the only
- * width at which "the explanation is never dropped" can be observed at all — on
- * a 1280px laptop even the longest severity row fits on one line.
+ * The narrow half of the two screens this product is read on (a laptop and an
+ * iPad). It is where the long labels have to wrap, so it is the only width at
+ * which "the explanation is never dropped" can be observed at all — on a
+ * 1280px laptop even the longest severity row fits on one line.
  */
 When('the reviewer is on an iPad in portrait', async ({ page }) => {
   await page.setViewportSize({ width: 834, height: 1112 })
@@ -204,11 +204,10 @@ Given('the reviewer has asked for reduced motion', async ({ page }) => {
  * review's own.
  *
  * Arranged rather than performed, because it cannot be performed: threads are
- * append-only, so nothing a reviewer can do empties them. This runs before
- * the app boots and the mock's
- * own fixture reads it once (`bareReview` in `test/trpc-mock.ts`); it is starting
- * state, not a step reaching past the tRPC client. Every scenario that does not
- * set it gets the full fixture.
+ * append-only, so nothing a reviewer can do empties them. This runs before the
+ * app boots and the mock's own fixture reads it once (`bareReview` in
+ * `test/trpc-mock.ts`); it is starting state, not a step reaching past the tRPC
+ * client. Every scenario that does not set it gets the full fixture.
  */
 Given('the review has no comments at all', async ({ page }) => {
   await page.addInitScript(() => {
@@ -250,8 +249,8 @@ When('the reviewer asks for a revision of record {string}', async ({ page }, rid
 
 /**
  * The undo: pressing the same verdict again undoes it. The step presses
- * whatever is selected rather than a verdict it was
- * told, because that is the act — the reviewer aims at the button that is lit.
+ * whatever is selected rather than a verdict it was told, because that is the
+ * act — the reviewer aims at the button that is lit.
  */
 When(
   'the reviewer presses the chosen verdict of record {string} again',
@@ -395,7 +394,7 @@ async function glyphSitsAfter(name: Locator, glyph: Locator, what: string): Prom
   expect(gap, `${what}: the glyph starts before the last word ends`).toBeGreaterThan(-2)
   expect(
     gap,
-    `${what}: the glyph is ${Math.round(gap)}px past the last word — that is a column away, not inline (the rule: "it shouldn't be separate on the right")`,
+    `${what}: the glyph is ${Math.round(gap)}px past the last word — that is a column away, not inline (the rule is that the glyph sits beside the last word, never off to the right)`,
   ).toBeLessThan(NEXT_TO)
 
   const nameMid = nameBox.y + nameBox.height / 2
@@ -482,10 +481,9 @@ When(
 
 /**
  * The replies, which a thread keeps behind their count until they are asked
- * for — only top level comments show, with a reply count and a click to
- * view the replies. Asserted open rather than assumed, so a step
- * that silently found nothing to click cannot pass for the reviewer having read
- * a reply.
+ * for — only top level comments show, with a reply count and a click to view
+ * the replies. Asserted open rather than assumed, so a step that silently found
+ * nothing to click cannot pass for the reviewer having read a reply.
  */
 When(
   'the reviewer opens the replies in the {string} thread of record {string}',
@@ -645,9 +643,9 @@ When('the reviewer scrolls to record {string}', async ({ page }, rid: string) =>
 })
 
 /**
- * The record itself, in pixels — which is the whole complaint: *"I have to
- * scroll up all the way to add a comment and then find where I was and then go
- * there again."*
+ * The record itself, in pixels — which is the whole complaint: having to scroll
+ * all the way up to add a comment, then find the place again and scroll back
+ * down to it.
  *
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`), and it has to be: taking a comment surface out
@@ -682,10 +680,10 @@ When('the reviewer turns the iPad to {int} by {int}', async ({ page }, width, he
  * and 368, and the reason the breakpoint moves with the geometry every time.
  *
  * **The band itself has not moved, and that is the point of the wider
- * breakpoint**: the measure grew by exactly what the two rails
- * took, so the prose neither gained nor paid — all of the width goes to the
- * left index panel and the right comments panel. What moved is the width at
- * which the column enters the band.
+ * breakpoint**: the measure grew by exactly what the two rails took, so the
+ * prose neither gained nor paid — all of the width goes to the left index panel
+ * and the right comments panel. What moved is the width at which the column
+ * enters the band.
  *
  * The card is the column: `RecordSlot` is a full-width grid cell inside it.
  *
@@ -696,7 +694,7 @@ const READING_COLUMN = { narrowest: 704, widest: 768 }
 
 /**
  * The right-hand end of the three-column row lands exactly where the page's
- * content does — *"the last column ends where the header's last control does"*
+ * content does — the last column ends where the header's last control does
  * (`app-shell.tsx`), which is the rule that makes the measure a sum rather than a
  * taste value: 24 + 288 + 32 + 768 + 32 + 368 + 24.
  *
@@ -745,11 +743,11 @@ Then('the reading column keeps its measure', async ({ page }) => {
 
 /**
  * Where the reading column *starts*, which is the half of the width question a
- * band cannot answer. The page's measure used to be a function of whether the comment
- * rail had mounted, so the column moved sideways when a query
- * came back with a thread on it; one measure everywhere means the same number
- * here whether the rail is beside the column or not, and the two scenarios that
- * use this step are those two states with the same expected value.
+ * band cannot answer. The page's measure used to be a function of whether the
+ * comment rail had mounted, so the column moved sideways when a query came back
+ * with a thread on it; one measure everywhere means the same number here
+ * whether the rail is beside the column or not, and the two scenarios that use
+ * this step are those two states with the same expected value.
  *
  * The card is the column: `RecordSlot` is a full-width grid cell inside it.
  *
@@ -841,8 +839,8 @@ Then('the review comments are closed', async ({ page }) => {
 })
 
 /**
- * The composer is there to type into, with nothing to press first — *"a small
- * affordance that travels … opening the review-level composer in place"*. The
+ * The composer is there to type into, with nothing to press first — a small
+ * affordance that travels, opening the review-level composer in place. The
  * button that used to swap it in is asserted gone in the same breath, because a
  * composer that is open *and* a button that opens one is the old surface with a
  * new one beside it.
@@ -868,8 +866,8 @@ Then('the comments sheet is {int} pixels wide', async ({ page }, expected: numbe
 
 /**
  * The other half of the reveal rule, and the half that is about the page rather
- * than the sheet: *"the flyouts should have a rule that makes them leave X
- * pixels uncovered, rest should all be covered."*
+ * than the sheet: a flyout leaves a fixed strip of the page uncovered and
+ * covers the rest.
  *
  * Measured as the sheet's own distance from the edge it did *not* come out of —
  * the comments open from the right, so the strip is everything to the left of
@@ -1141,11 +1139,11 @@ Then('record {string} offers nothing that parks it', async ({ page }, rid: strin
  * exact list is what stops a second status coming back next to the first: this
  * fails on an extra tag, a missing one, and a reordering alike.
  *
- * `open-thread` joined the list once title-level comments became possible,
- * and had to be admitted rather than tolerated, which is the list working
- * as intended. It is the last entry because it sits after
- * the title's last word, which is the placement rule — so this ordering is a
- * second, cheaper witness to the placement the geometry step measures.
+ * `open-thread` joined the list once title-level comments became possible, and
+ * had to be admitted rather than tolerated, which is the list working as
+ * intended. It is the last entry because it sits after the title's last word,
+ * which is the placement rule — so this ordering is a second, cheaper witness
+ * to the placement the geometry step measures.
  */
 Then(
   'record {string} wears no status but its verdict and who asked for it',
@@ -1612,12 +1610,12 @@ Then(
 /**
  * "The Ys label is taking two lines. It should be just one line."
  *
- * A controlled assertion (testing.md §Operational rules, `r-uncontrolled-assertions`):
- * hand-run with `.gutter-label`'s width and `nowrap` deleted — the gutter
- * shrinking against the prose beside it until "WHY" and its number were
- * on different lines. Asserted on
- * the iPad in portrait, the screen the review is read on and the width
- * where a text-relative gutter has least room to stay on one line.
+ * A controlled assertion (testing.md §Operational rules,
+ * `r-uncontrolled-assertions`): hand-run with `.gutter-label`'s width and
+ * `nowrap` deleted — the gutter shrinking against the prose beside it until
+ * "WHY" and its number were on different lines. Asserted on the iPad in
+ * portrait, the screen the review is read on and the width where a
+ * text-relative gutter has least room to stay on one line.
  */
 Then(
   'the root-cause labels of record {string} are one line each',
@@ -1786,9 +1784,9 @@ Then(
  * the value, and React commits on a later tick. A single read taken the moment
  * the press returned caught the tab that *was* open about one run in five — a
  * flake reproduced here at 7 in 36 before this changed. Instrumenting it
- * settled the question: the strip reached the right
- * tab **5ms** after the failing read, so the key was never lost and nothing was
- * unready — the step was simply reading a state machine mid-step.
+ * settled the question: the strip reached the right tab **5ms** after the
+ * failing read, so the key was never lost and nothing was unready — the step
+ * was simply reading a state machine mid-step.
  *
  * The claim is a settled one ("tab N is the one open"), so a settled read is
  * what states it. Nothing is weakened: the poll still has to arrive at exactly
@@ -1890,12 +1888,11 @@ Then(
  * three visibility checks — three things all being present says nothing about
  * which one the reader meets first.
  *
- * **One step for both shapes.** The tab body
- * used to run bullets → footprint → level and the single-solution branch
- * level → bullets → footprint, so there were two steps a line apart. The
- * level moved to the top of the tab body, so the user can immediately see
- * what a level like L2 means, which is the order the branch already had,
- * and two orders became one.
+ * **One step for both shapes.** The tab body used to run bullets → footprint →
+ * level and the single-solution branch level → bullets → footprint, so there
+ * were two steps a line apart. The level moved to the top of the tab body, so
+ * the user can immediately see what a level like L2 means, which is the order
+ * the branch already had, and two orders became one.
  */
 Then(
   'solution {int} of record {string} is laid out as its level, then bullets, then a footprint',
@@ -1977,9 +1974,9 @@ Then(
 )
 
 /**
- * The title on the block — *"give it a title, something like 'Change footprint',
- * so it's clear what this section is"*. An exact match: a caption that says half
- * of it says the wrong thing.
+ * The title on the block — a title such as "Change footprint", so it is clear
+ * what the section is. An exact match: a caption that says half of it says the
+ * wrong thing.
  */
 Then(
   'the footprint of solution {int} of record {string} is captioned {string}',
@@ -2197,8 +2194,8 @@ Then(
 /**
  * And where the keyboard rests once it is inside: on the tab that is open, so
  * coming back to the strip returns the reviewer to what they were reading
- * rather than to the first solution. This is the *roving* half — the stop moves with
- * the arrows, and it moves to exactly one place.
+ * rather than to the first solution. This is the *roving* half — the stop moves
+ * with the arrows, and it moves to exactly one place.
  */
 Then(
   'the solution strip of record {string} leaves the keyboard on the open tab',
@@ -2366,9 +2363,9 @@ Then(
 )
 
 /**
- * The defect, asserted as the absence it was: markdown *syntax* on
- * the page. Read off the whole card — sections and comments alike — because a
- * renderer wired into three of four places is still a card with asterisks on it.
+ * The defect, asserted as the absence it was: markdown *syntax* on the page.
+ * Read off the whole card — sections and comments alike — because a renderer
+ * wired into three of four places is still a card with asterisks on it.
  *
  * Whole-card is also why the records this runs on keep their human words plain:
  * a quote is deliberately never parsed, so an asterisk inside one is the human's
@@ -2528,9 +2525,9 @@ Then(
 
 /**
  * A record holding a level that was later cut has nothing on the list to
- * select, and the list must not guess one for it. Asserting "no radio is checked" rather
- * than "some particular radio is not checked" is what catches a pre-selection
- * that landed on the wrong row.
+ * select, and the list must not guess one for it. Asserting "no radio is
+ * checked" rather than "some particular radio is not checked" is what catches a
+ * pre-selection that landed on the wrong row.
  */
 Then('no solution level is chosen on record {string}', async ({ page }, rid: string) => {
   const radios = card(page, rid).getByTestId('solution-level').getByRole('radio')
@@ -2601,14 +2598,14 @@ Then('the comments panel shows {string}', async ({ page }, text: string) => {
  * Every thread of the retrospective, counted — and how many of them say which
  * record they are on.
  *
- * Seeing all comments in one place is a claim
- * about completeness, and a `toBeVisible` on the one thread somebody remembered
- * would not be evidence of it: the total fails on a panel that dropped the
- * record's comments and on one that grew a second copy of the review's. The
- * second number is the other half of the anchor rule, stated where it cannot be
- * circular — a record thread carries a line saying where it hangs, a review
- * thread does not, and counting both at once is what rules out a panel that put
- * an anchor on everything or on nothing.
+ * Seeing all comments in one place is a claim about completeness, and a
+ * `toBeVisible` on the one thread somebody remembered would not be evidence of
+ * it: the total fails on a panel that dropped the record's comments and on one
+ * that grew a second copy of the review's. The second number is the other half
+ * of the anchor rule, stated where it cannot be circular — a record thread
+ * carries a line saying where it hangs, a review thread does not, and counting
+ * both at once is what rules out a panel that put an anchor on everything or on
+ * nothing.
  */
 Then(
   'the comments panel holds {int} threads, {int} of them on a record',
@@ -2620,10 +2617,10 @@ Then(
 
 /**
  * Where a record thread hangs, as the panel prints it: one line, in a fixed
- * order — `#num · Section · title`. The whole line is the
- * claim rather than its parts, because the order is what the record is about: a
- * number and a section and a title all present in some arrangement is exactly
- * what the header did before it was reorganised.
+ * order — `#num · Section · title`. The whole line is the claim rather than its
+ * parts, because the order is what the record is about: a number and a section
+ * and a title all present in some arrangement is exactly what the header did
+ * before it was reorganised.
  */
 Then(
   'the {string} thread of record {string} is anchored to {string}',
@@ -2687,9 +2684,9 @@ Then(
 )
 
 /**
- * Collapsed: the opening message and nothing under it — only top level
- * comments show, with a reply count. Counted on
- * `thread-message`, so a reply rendered without its own count still fails.
+ * Collapsed: the opening message and nothing under it — only top level comments
+ * show, with a reply count. Counted on `thread-message`, so a reply rendered
+ * without its own count still fails.
  */
 Then(
   'the {string} thread of record {string} shows one message and {string}',
@@ -2726,10 +2723,9 @@ Then('the review thread offers no reply count', async ({ page }) => {
 })
 
 /**
- * Comments show the rev number they are
- * associated with, as an exact ordered list over the whole panel, so a page
- * that stamped every message with the same number fails here rather than
- * passing on the one that happened to be right.
+ * Comments show the rev number they are associated with, as an exact ordered
+ * list over the whole panel, so a page that stamped every message with the same
+ * number fails here rather than passing on the one that happened to be right.
  */
 Then(
   'the comments say which revisions they were written against:',
@@ -2758,9 +2754,9 @@ Then(
 /**
  * Settled and out of the way: one line, the opener truncated behind a Resolved
  * mark, nothing else of the thread on screen — resolved comments appear
- * collapsed. The message count is the load-bearing half; a
- * thread that grew a mark and kept its whole conversation would satisfy a check
- * for the mark alone.
+ * collapsed. The message count is the load-bearing half; a thread that grew a
+ * mark and kept its whole conversation would satisfy a check for the mark
+ * alone.
  */
 Then(
   'the {string} thread of record {string} is settled and collapsed',
@@ -2896,9 +2892,9 @@ Then('the keyboard is in the panel composer', async ({ page }) => {
 })
 
 /**
- * One review-level surface and not two. The panel
- * is asserted *present* first: on a page that rendered neither the absence half
- * would be true without observing anything at all.
+ * One review-level surface and not two. The panel is asserted *present* first:
+ * on a page that rendered neither the absence half would be true without
+ * observing anything at all.
  */
 Then('the review shows a comment panel and no requests panel', async ({ page }) => {
   await expect(panel(page)).toBeVisible()
@@ -2913,8 +2909,8 @@ Then('the review shows a comment panel and no requests panel', async ({ page }) 
  * and fails on any of them that is request-shaped, whatever it ends up called.
  *
  * It had one exemption — `request-changes`, the review's own second button —
- * and a later fix removed that button, so the rule is now
- * exactly what it says with nothing carved out of it.
+ * and a later fix removed that button, so the rule is now exactly what it says
+ * with nothing carved out of it.
  */
 Then('the review offers nothing that asks for something outside a comment', async ({ page }) => {
   const rendered = await page.evaluate(() =>
@@ -2998,11 +2994,10 @@ Then('no record offers a way to comment', async ({ page }) => {
 /**
  * The threads are out of the reading column, and this is the sweep that says so
  * — **counted, not named**. The lesson of an earlier renamed-panel miss was
- * that checking one testid proves nothing about a surface that came back
- * under a different one, so this
- * reads every hook the record bodies actually rendered and fails on any of them
- * that is thread-shaped, whatever it ends up called. (`open-thread` is not: it
- * is the way *into* the panel, and it stays.)
+ * that checking one testid proves nothing about a surface that came back under
+ * a different one, so this reads every hook the record bodies actually rendered
+ * and fails on any of them that is thread-shaped, whatever it ends up called.
+ * (`open-thread` is not: it is the way *into* the panel, and it stays.)
  *
  * The panel is asserted to hold threads in the same breath, because "no threads
  * in the records" is trivially true of a page with no threads at all — which is
@@ -3030,9 +3025,9 @@ Then('no record body holds a comment thread', async ({ page }) => {
  * no way to comment on a record.
  *
  * There used to be exactly one exception here, the hold control, and it was
- * asserted *present* on this very step. Removing the feature means the card
- * is shut without qualification and the line that named the
- * exception is gone with it.
+ * asserted *present* on this very step. Removing the feature means the card is
+ * shut without qualification and the line that named the exception is gone with
+ * it.
  */
 Then('record {string} offers no decision buttons', async ({ page }, rid: string) => {
   const record = card(page, rid)
@@ -3185,10 +3180,9 @@ Then('the extra filters read:', async ({ page }, rows: DataTable) => {
 })
 
 /**
- * The indication that extra filters are applied, and it is two things
- * rather than one. The
- * badge is readable without opening the popover; the chip says *which*, so "why
- * is the list short" has an answer on the bar itself.
+ * The indication that extra filters are applied, and it is two things rather
+ * than one. The badge is readable without opening the popover; the chip says
+ * *which*, so "why is the list short" has an answer on the bar itself.
  */
 Then(
   'the extra filters are applied, and the chip beside the icon reads {string}',
@@ -3332,8 +3326,8 @@ type TracedWindow = Window & { __collapseTrace?: number[] }
  * verdict that sends it away.
  *
  * This is the instrument the record was found with, kept rather than described:
- * *"the departing row's `grid-template-rows` steps from full height to zero
- * between two consecutive frames; only the opacity fades."* No test can see
+ * the departing row's `grid-template-rows` steps from full height to zero
+ * between two consecutive frames, and only the opacity fades. No test can see
  * smoothness by asserting on a final state — the row ends at zero height either
  * way, and the opacity fade runs correctly over the same window, which is
  * exactly what made a jump read as "something animated" for four sessions.
@@ -3453,13 +3447,13 @@ const REST_BUDGET_FRAMES = 600
  * Wait until the page has stopped scrolling.
  *
  * The measured account (`r-flaky-landing-test`). The landing itself was never
- * wrong: on every one of 25 traced
- * runs under contention the record came to rest at 112px, exactly where it
- * belongs, and the document height never moved. What varied was *when* — a
- * healthy run settles about 900ms after the click and a starved one had not
- * begun scrolling until 1.7s and settled at 2.7s. The assertion was polling a
- * moving target against a five-second wall clock, so roughly one run in seven
- * read the animation mid-flight and ran out of budget before it landed.
+ * wrong: on every one of 25 traced runs under contention the record came to
+ * rest at 112px, exactly where it belongs, and the document height never moved.
+ * What varied was *when* — a healthy run settles about 900ms after the click
+ * and a starved one had not begun scrolling until 1.7s and settled at 2.7s. The
+ * assertion was polling a moving target against a five-second wall clock, so
+ * roughly one run in seven read the animation mid-flight and ran out of budget
+ * before it landed.
  *
  * So the reading is taken off a scroll that has stopped, and "stopped" is
  * counted in frames the browser actually painted. Under load this waits longer
@@ -3475,15 +3469,15 @@ const REST_BUDGET_FRAMES = 600
  *     --repeat-each=50 --workers=12
  *
  * **The scroll saying so itself comes first**, re-scoped by its own trace.
- * Counting frames is a sound way to notice a scroll
- * is over, but it is not a free one: it cannot know until `REST_FRAMES` more
- * frames have been *painted*, and on a renderer that has almost stopped painting
- * those frames are seconds apart. Measured on a page painting once every six
- * seconds: the landing arrived at 6.3s, correct to the pixel, and this wait did
- * not admit it until 24.4s — against an assertion budget of fifteen. Every
- * sample taken in between read the same mid-flight position, which is precisely
- * the "stable offset for the full fifteen seconds" that was filed as an app race
- * and turned out to be this.
+ * Counting frames is a sound way to notice a scroll is over, but it is not a
+ * free one: it cannot know until `REST_FRAMES` more frames have been *painted*,
+ * and on a renderer that has almost stopped painting those frames are seconds
+ * apart. Measured on a page painting once every six seconds: the landing
+ * arrived at 6.3s, correct to the pixel, and this wait did not admit it until
+ * 24.4s — against an assertion budget of fifteen. Every sample taken in between
+ * read the same mid-flight position, which is precisely the "stable offset for
+ * the full fifteen seconds" that was filed as an app race and turned out to be
+ * this.
  *
  * So the first question is the page's own scroll state (`fixtures.ts`, watched
  * from before load — a listener attached when the wait begins arrives after the
@@ -3734,10 +3728,9 @@ Then('the decision bar is painted, not see-through', async ({ page }) => {
 
 /**
  * What is on the bar, counted as its own children rather than checked one
- * element at a time. The bar holds two things — the filters and the
- * one act — and the box this replaced had grown a third that had to be
- * removed: the box at the bottom reading "X of Y pending - Review finished
- * ...".
+ * element at a time. The bar holds two things — the filters and the one act —
+ * and the box this replaced had grown a third that had to be removed: the box
+ * at the bottom reading "X of Y pending - Review finished ...".
  *
  * It grew a third item with the additional-filters feature: an icon that
  * opens a pop-up where the additional filters can be selected. It is named
@@ -3927,9 +3920,9 @@ Then('finishing is still offered', async ({ page }) => {
 })
 
 /**
- * The AI's side of the round. The final message is delivered
- * separately from the comments, so what proves it arrived is the round
- * carrying it — not a thread, and not anything the page renders back.
+ * The AI's side of the round. The final message is delivered separately from
+ * the comments, so what proves it arrived is the round carrying it — not a
+ * thread, and not anything the page renders back.
  */
 Then('the round carries the final message {string}', async ({ page }, text: string) => {
   const carried = await page.evaluate(() =>

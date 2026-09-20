@@ -3,7 +3,7 @@ import type { AppRouterOutputs } from '@retro/api'
 import { cwdBasename, retroIdentityLine, retroName } from '../src/lib/retro-identity'
 
 /**
- * The retro's name and its identity line (N1/N3).
+ * The retro's name and its identity line.
  *
  * The lowest layer that can express these: they are pure string work over a row
  * the server already proves it produces, and the browser scenarios then assert
@@ -29,26 +29,26 @@ test('the name is what the latest revision called it', () => {
 })
 
 /**
- * **The fallback prints the GLOBAL id** (D5: untitled retros show the
- * global id as fallback), and this fixture is what makes the assertion
- * mean something: `ROW` carries `retroId: 7` and `retroNumber: 2`, two different
- * numbers, so a fallback that had gone back to the per-session number reads
- * `Retro #2 — retro` and fails here rather than passing on a coincidence.
+ * **The fallback prints the GLOBAL id** — untitled retros show the global id as
+ * fallback — and this fixture is what makes the assertion mean something: `ROW`
+ * carries `retroId: 7` and `retroNumber: 2`, two different numbers, so a
+ * fallback that had gone back to the per-session number reads `Retro #2 — retro`
+ * and fails here rather than passing on a coincidence.
  *
- * Still never a bare number — the directory stays — and still
- * the same one definition three surfaces read, which is why it is asserted at this
- * layer instead of once per page.
+ * Still never a bare number — the directory stays — and still the same one
+ * definition three surfaces read, which is why it is asserted at this layer
+ * instead of once per page.
  */
 test('an unnamed retro reads as its global id and its directory, never a bare number', () => {
   expect(retroName({ ...ROW, title: null })).toBe('Retro 7 — retro')
 })
 
 /**
- * The home page shows "Session #X · Retro #Y" rather than "Retro #1 ·
- * Session 1". Session first, because a
- * retrospective is the *n*th of a session and not the other way round. The two
- * ordinals differ here — session 3, retro #2 — so the order is what this asserts
- * rather than which number happened to land where.
+ * The home page shows "Session #X · Retro #Y" rather than "Retro #1 · Session
+ * 1". Session first, because a retrospective is the *n*th of a session and not
+ * the other way round. The two ordinals differ here — session 3, retro #2 — so
+ * the order is what this asserts rather than which number happened to land
+ * where.
  */
 test('the identity line is the session, the ordinal and the directory', () => {
   expect(retroIdentityLine(ROW)).toBe('Session 3 · Retro #2 · /Users/sample/Developer/retro')

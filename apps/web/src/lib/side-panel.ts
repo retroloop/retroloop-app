@@ -20,18 +20,18 @@ import { useState, useSyncExternalStore } from 'react'
  * side column already fill the page below this width, and there is no room for
  * the other.
  *
- * It moved from 80rem to 84rem and then to 92rem, both
- * times because the rails grew and never for its own sake. Rails of 288 and 368
- * leave a 1344px page 576px of prose, which is far below the band the reading
- * column is held to; 1472 is the first width where all three columns fit without
- * the reading one paying for them.
+ * It moved from 80rem to 84rem and then to 92rem, both times because the rails
+ * grew and never for its own sake. Rails of 288 and 368 leave a 1344px page
+ * 576px of prose, which is far below the band the reading column is held to;
+ * 1472 is the first width where all three columns fit without the reading one
+ * paying for them.
  *
- * **The cost is paid by real screens and it is the widest it has ever been**:
- * a 1440px laptop and a landscape iPad at 1366 both
- * read the review in the narrow layout now — one column, both panels behind
- * their glyphs — where at 84rem they had three columns. That is the trade the
- * rail widths make for themselves, and it is tracked as a tradeoff rather
- * than buried here: the two are one dial, and moving the rails is what moves it.
+ * **The cost is paid by real screens and it is the widest it has ever been**: a
+ * 1440px laptop and a landscape iPad at 1366 both read the review in the narrow
+ * layout now — one column, both panels behind their glyphs — where at 84rem
+ * they had three columns. That is the trade the rail widths make for
+ * themselves, and it is tracked as a tradeoff rather than buried here: the two
+ * are one dial, and moving the rails is what moves it.
  */
 const RAIL_FITS = '(min-width: 92rem)'
 

@@ -73,8 +73,8 @@ test('a record picked up or given back makes the records stale, and only them', 
 
 /**
  * The names that survive only so a store written before their feature was
- * removed still parses. They must map to something
- * harmless rather than to a crash or a special case.
+ * removed still parses. They must map to something harmless rather than to a
+ * crash or a special case.
  */
 test('an event nothing raises any more still parses, and changes only the records', () => {
   expect(staleAfter('RequestOpened')).toEqual(['records'])

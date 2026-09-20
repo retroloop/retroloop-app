@@ -40,8 +40,8 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  * 4. **The corpus by any axis** — the Control Room's switchable chart, with the
  *    Retrospective tab dropped.
  * 5. **The readings table** — the rows behind the numbers.
- * 6. **The diary** — the Work Diary's session cards, with relative
- *    dates and global retro ids.
+ * 6. **The diary** — the Work Diary's session cards, with relative dates and
+ *    global retro ids.
  *
  * **Removed, entirely:** "What The Open Queue Costs" (the
  * solution-level donut) and "Which End Is Being Neglected" (the severity radar).
@@ -49,12 +49,11 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  * nobody.
  *
  * **What this replaced.** The previous dashboard led with a records block whose
- * own docstrings argued from "132 records" and "twelve retrospectives" —
- * a count that went stale within a week. Those
- * numbers are gone with the block, and nothing here restates a count in prose: a
- * figure that lives in a comment is a figure that goes stale silently, and this
- * page is now read by four components that all count the same rows through
- * `corpus-stats.ts`.
+ * own docstrings argued from "132 records" and "twelve retrospectives" — a
+ * count that went stale within a week. Those numbers are gone with the block,
+ * and nothing here restates a count in prose: a figure that lives in a comment
+ * is a figure that goes stale silently, and this page is now read by four
+ * components that all count the same rows through `corpus-stats.ts`.
  *
  * **It must still stay calmer than `/records`, or it has no reason to exist.**
  * That page enumerates the corpus — every row, four filters, a reader scanning.

@@ -32,13 +32,12 @@ const baseURL = `http://127.0.0.1:${PREVIEW_PORT}`
  * change to the geometry would move the scenarios that chose their width rather
  * than all the ones that didn't.
  *
- * **A later change caught the laptop.**
- * The rails widened, which moved the breakpoint with
- * them to 92rem / 1472px (`lib/side-panel.ts`), and 1440 is below it: on the
- * laptop the review is now one column with both panels behind their glyphs. Left
- * alone, the default would have silently handed the whole suite the narrow layout
- * — the exact accident the paragraph above exists to prevent — so the default
- * moves and the rule holds.
+ * **A later change caught the laptop.** The rails widened, which moved the
+ * breakpoint with them to 92rem / 1472px (`lib/side-panel.ts`), and 1440 is
+ * below it: on the laptop the review is now one column with both panels behind
+ * their glyphs. Left alone, the default would have silently handed the whole
+ * suite the narrow layout — the exact accident the paragraph above exists to
+ * prevent — so the default moves and the rule holds.
  *
  * 1536×960 is the width at which the three columns close flush against the
  * measure, and the width the feature files name wherever they need the wide layout
@@ -120,11 +119,11 @@ export default defineConfig({
      * **Debugging these does not need the bulk's 348.** `--no-deps` ignores the
      * dependency, so the whole project is reachable on its own:
      *
-     * That number is hand-maintained and nothing checks it — it read 331 when the
-     * bulk was 330, was corrected once, and had gone stale again by five
+     * That number is hand-maintained and nothing checks it — it read 331 when
+     * the bulk was 330, was corrected once, and had gone stale again by five
      * before this line was next read. Two changes landing at once is all it
-     * takes. `bunx playwright test --list` is the authority;
-     * this is a reader's sense of scale and should be treated as one:
+     * takes. `bunx playwright test --list` is the authority; this is a reader's
+     * sense of scale and should be treated as one:
      *
      *   cd apps/web && bun run test --project=starved --no-deps
      */

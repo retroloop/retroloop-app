@@ -8,10 +8,10 @@ import type { AppRouterInputs, AppRouterOutputs } from '@retro/api'
  *
  * The "what — why" strings are **canonical**: `docs/design/data-model.md` §Enum
  * option labels carries them verbatim from v2's `ticket-schemas.md`, and the
- * standing rule is that the explanatory half is never dropped for
- * brevity — a two-line wrap is acceptable, a truncation is not. A UI may subset
- * the values; it may never contradict a label or its meaning. Change them here
- * only when that file changes.
+ * standing rule is that the explanatory half is never dropped for brevity — a
+ * two-line wrap is acceptable, a truncation is not. A UI may subset the values;
+ * it may never contradict a label or its meaning. Change them here only when
+ * that file changes.
  *
  * Solution level is the one enum that comes in two lists, and the split is the
  * subsetting rule above being used rather than an exception to it: `none`,
@@ -52,22 +52,22 @@ export type Option<TValue> = {
 
 /**
  * **Severity is written the other way round from the two below it** — the
- * number leads, the explanation follows — and it took two iterations to
- * land there.
+ * number leads, the explanation follows — and it took two iterations to land
+ * there.
  *
- * It is the one enum addressed
- * *by number* — "sev 4", "a sev 1" — and generalising the "what — why" rule
- * to all three enums buried that number under a sentence that had to be
- * read past on every decision. The labels became `SEV1` … `SEV5` and nothing else.
+ * It is the one enum addressed *by number* — "sev 4", "a sev 1" — and
+ * generalising the "what — why" rule to all three enums buried that number
+ * under a sentence that had to be read past on every decision. The labels
+ * became `SEV1` … `SEV5` and nothing else.
  *
- * A follow-up refines it, after one real review of the
- * compact-only select: the labels for SEV1, SEV2, SEV3 etc. needed a
- * descriptive part too, reading as SEV1 - Some description, and the label
- * clarifies that SEV1 is the highest severity. That correction had overshot —
- * the fix for verbose labels deleted the information instead of demoting it —
- * so the description comes back **behind** the number, short, and SEV1 says
- * outright that it is the top of the scale. The direction is nobody's intuition:
- * comparable products disagree about which end is worst.
+ * A follow-up refines it, after one real review of the compact-only select: the
+ * labels for SEV1, SEV2, SEV3 etc. needed a descriptive part too, reading as
+ * SEV1 - Some description, and the label clarifies that SEV1 is the highest
+ * severity. That correction had overshot — the fix for verbose labels deleted
+ * the information instead of demoting it — so the description comes back
+ * **behind** the number, short, and SEV1 says outright that it is the top of
+ * the scale. The direction is nobody's intuition: comparable products disagree
+ * about which end is worst.
  *
  * `rest` is the **lead of that severity's rubric row**, and nothing invented:
  * the rows are the canonical rubric of `docs/design/data-model.md` §Enum option
@@ -164,9 +164,9 @@ export type RecordSection = NonNullable<AppRouterOutputs['threads']['list'][numb
  * They did not use to. The card wrote its own headings at the `Section` call
  * sites and nothing else needed them, because a comment was rendered inside the
  * section it answered — the reader could see which section they were in. Then
- * every comment moved to the side panel, so a human can see all comments in
- * one place, and a thread that has left its section has to say which
- * section it left. Two copies of "Agreed direction" is one copy too many.
+ * every comment moved to the side panel, so a human can see all comments in one
+ * place, and a thread that has left its section has to say which section it
+ * left. Two copies of "Agreed direction" is one copy too many.
  *
  * Keyed by `RecordSection`, so the compiler refuses a map missing one of the
  * router's sections or inventing one it does not have; `test/section-titles.spec.ts`
@@ -177,9 +177,9 @@ export type RecordSection = NonNullable<AppRouterOutputs['threads']['list'][numb
  * panel needs a word for it.
  *
  * `direction` and `footprint` keep their words for the same reason `solutions`
- * gained one: a record filed before the multi-solution design still
- * renders those two sections, and a thread filed on one still has to say which
- * section it left.
+ * gained one: a record filed before the multi-solution design still renders
+ * those two sections, and a thread filed on one still has to say which section
+ * it left.
  */
 export const SECTION_TITLES: Readonly<Record<RecordSection, string>> = {
   title: 'Title',

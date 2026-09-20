@@ -66,10 +66,9 @@ When('the reviewer opens the {string} settings section', async ({ page }, sectio
 })
 
 /**
- * Which section the page opens on — *"General needs to be the first
- * item in the list"*, and first also means the one that is already
- * open, because a settings page that opened on its second section would be
- * answering a different question about order.
+ * Which section the page opens on — General is first in the list, and first
+ * also means the one that is already open, because a settings page that opened
+ * on its second section would be answering a different question about order.
  */
 Then('the {string} settings section is selected', async ({ page }, section: string) => {
   await expect(page.getByTestId(`settings-tab-${section}`)).toHaveAttribute('aria-selected', 'true')
@@ -108,12 +107,11 @@ Then('the settings sections read, in order:', async ({ page }, table: DataTable)
 })
 
 /**
- * What one section says is behind it, before the reader presses it — asserted as
- * the whole literal, `Labels (3)`, because that is exactly the rule: the
- * count needs to be in brackets like
- * 'Labels (1)' instead of 'Labels 1'. A step that read the number on its own
- * would pass on the bare form this replaced, which is the one state this
- * assertion exists to catch.
+ * What one section says is behind it, before the reader presses it — asserted
+ * as the whole literal, `Labels (3)`, because that is exactly the rule: the
+ * count needs to be in brackets like 'Labels (1)' instead of 'Labels 1'. A step
+ * that read the number on its own would pass on the bare form this replaced,
+ * which is the one state this assertion exists to catch.
  *
  * Both counts in one step, because the claim is that each section counts **its
  * own** vocabulary: the create in the scenario moves one of them and must not
@@ -134,14 +132,13 @@ Then('the settings sections read:', async ({ page }, table: DataTable) => {
  * answer for either alone is "quite a lot".
  *
  * `aria-orientation` is what Radix sets from the `orientation` prop and what
- * drives the up/down arrow-key contract a reader without a mouse depends on — but
- * a page styled into a row would still carry it, so on its own it proves the
- * keyboard and not the layout. The geometry is the other half: the nav's items
- * stack (each below the last, all sharing a left edge) and the whole nav sits to
- * the **left** of the panel it switches, which is the design rule in
- * pixels — a left vertical nav of sections with the content on the right.
- * On its own that would pass a
- * CSS column whose arrow keys still went sideways.
+ * drives the up/down arrow-key contract a reader without a mouse depends on —
+ * but a page styled into a row would still carry it, so on its own it proves
+ * the keyboard and not the layout. The geometry is the other half: the nav's
+ * items stack (each below the last, all sharing a left edge) and the whole nav
+ * sits to the **left** of the panel it switches, which is the design rule in
+ * pixels — a left vertical nav of sections with the content on the right. On
+ * its own that would pass a CSS column whose arrow keys still went sideways.
  *
  * **This is a position assertion, so it is hand-run with the behaviour deleted**
  * (`r-uncontrolled-assertions`) — flexbox stacks children for free in more than
@@ -420,10 +417,10 @@ Then('the dark mode setting reads {string}', async ({ page }, option: string) =>
  * Choosing through the Select, and the step is not over when the option is
  * clicked — it is over when the listbox has finished leaving.
  *
- * Same two conditions the app menu's own step waits on, and the account of why —
- * including what a follow-up measurement checked and could
- * not reproduce on `radix-ui` 1.6.7 — is written once, there
- * (`chrome.steps.ts` §followAppMenuItem), not copied here.
+ * Same two conditions the app menu's own step waits on, and the account of
+ * why — including what a follow-up measurement checked and could not reproduce
+ * on `radix-ui` 1.6.7 — is written once, there (`chrome.steps.ts`
+ * §followAppMenuItem), not copied here.
  */
 export async function chooseDarkMode(page: Page, option: string): Promise<void> {
   const chosen = page.getByTestId(`settings-theme-${option.toLowerCase()}`)

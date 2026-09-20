@@ -302,7 +302,7 @@ Feature: The records page
     Then record "r-stale-lock" of retro 3 is "archived"
     And record "r-stale-lock" of retro 1 is "open"
 
-  # A9: events.onRetro is scoped to one retrospective and a flat page has nothing
+  # events.onRetro is scoped to one retrospective and a flat page has nothing
   # single to subscribe to, so coming back to the tab is what catches it up —
   # which is when the AI, in its own process, has been working the fix queue.
   Scenario: The page catches up with what the AI did while the reviewer was away
@@ -420,8 +420,8 @@ Feature: The records page
     Given the reviewer opens "/records/404"
     Then the page says it cannot find that
 
-  # ux-brief 03: an id that is not an integer is not a request for a record, and
-  # the page says so without asking the server.
+  # An id that is not an integer is not a request for a record, and the page
+  # says so without asking the server.
   Scenario: A record id that is not an integer is not found
     Given the reviewer opens "/records/nope"
     Then the page says it cannot find that
@@ -663,8 +663,8 @@ Feature: The records page
       | outgoing  | 2      | and this one came after                      | Answers come back as bullet lists when prose was asked for | HUMAN |
       | incoming  | 3      | and it turned out to be the same one after all | The tailer stops without saying so                       | HUMAN |
 
-  # ux-brief 04's standing limit on the widest line this block can hold: a title
-  # from another retrospective, free-text words and a link, all on one row.
+  # The standing limit on the widest line this block can hold: a title from
+  # another retrospective, free-text words and a link, all on one row.
   Scenario Outline: A relation reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens record 3 directly
@@ -771,9 +771,9 @@ Feature: The records page
       | AI    | Filed in revision 1 |
       | AI    | Resolved            |
 
-  # ux-brief 04's standing limit, on the two screens this product is read on. A
-  # record page carries the widest content there is — an author-aligned footprint
-  # and a pull-request URL — and it is born on the layout's own measure.
+  # The standing limit, on the two screens this product is read on. A record
+  # page carries the widest content there is — an author-aligned footprint and a
+  # pull-request URL — and it is born on the layout's own measure.
   Scenario Outline: The record page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens record 4 directly
@@ -790,8 +790,8 @@ Feature: The records page
       | 1440  | 900    | 1024    |
       | 1024  | 1366   | 1024    |
 
-  # A7: one way in, now an item of the one menu the chrome carries rather
-  # than a link the dashboard hangs in its header.
+  # One way in, now an item of the one menu the chrome carries rather than a
+  # link the dashboard hangs in its header.
   Scenario: The dashboard is the way in
     Given the reviewer opens the dashboard
     When the reviewer opens the app menu
@@ -845,9 +845,9 @@ Feature: The records page
       | light |
       | dark  |
 
-  # ux-brief 04's standing limit, on the two screens this product is read on. The
-  # pressure is real: a row carries a full working directory and a resolved one
-  # carries a pull-request URL, and neither has a space to break at.
+  # The standing limit, on the two screens this product is read on. The pressure
+  # is real: a row carries a full working directory and a resolved one carries a
+  # pull-request URL, and neither has a space to break at.
   Scenario Outline: The page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens the records page

@@ -253,9 +253,9 @@ type ResolutionRow = {
 
 /**
  * One act of somebody marking a record done, or taking it back. Rows rather
- * than a field on the record, because
- * that is what `record_lifecycle` is: reopening appends a version and the
- * highest one stands, so nothing here overwrites what was done before.
+ * than a field on the record, because that is what `record_lifecycle` is:
+ * reopening appends a version and the highest one stands, so nothing here
+ * overwrites what was done before.
  *
  * `actor` is a real column on this table and on no other, because it is the one
  * both actors write — the AI marking what it fixed (`MockControl.aiResolve`,
@@ -318,8 +318,8 @@ type ClaimRow = {
  * Rows rather than a set on the record, because that is what `record_labels` is:
  * removing a label appends a version and the highest one stands, so nothing here
  * overwrites what was done before. There is **no payload** — a definition id, a
- * version and a bit is the whole of what applying a label means, which is the
- * ruling rather than an omission.
+ * version and a bit is the whole of what applying a label means, which is
+ * deliberate rather than an omission.
  *
  * Keyed by `(retroId, rid, labelId)` exactly as the server keys it, and the
  * version sequence is dense **per label**: a record wearing three labels holds
@@ -357,7 +357,7 @@ type RecordAttributeValueRow = {
  * is: a relation names two records and may name them across two retrospectives,
  * so the `(retroId, rid)` pair every other table here is keyed on is not a handle
  * it could use. The rows are directed as authored and are **never mirrored** —
- * *"reads from both sides"* is a property of the read (`relationsOf` asks about
+ * reading from both sides is a property of the read (`relationsOf` asks about
  * both columns), so a mock holding a second reversed row would be answering a
  * question the server answers from one.
  *
@@ -581,9 +581,8 @@ const staleLock: RecordSeed = {
    * answer and a page reading either would pass; with the flag on the middle
    * one, first, last and recommended are three different tabs, and the ✓ can
    * land on a fourth reading (the reviewer's own pick) without colliding with
-   * any of them.
-   * Three is also the widest strip the design allows, which is the one
-   * that has to fit the narrowest screen this product is read on.
+   * any of them. Three is also the widest strip the design allows, which is the
+   * one that has to fit the narrowest screen this product is read on.
    *
    * The nested sub-point inside the second one's bullets is the other half of the
    * list subset: a bullet indented under another is a bullet, not a run of
@@ -729,11 +728,11 @@ const silentTailer: RecordSeed = {
     'When the poll loop throws, the loop ends and every open page simply stops ' +
     'receiving events. Nothing logs, and the pages look merely quiet.',
   /**
-   * The quote carries a newline and a pair of asterisks, because human words are
-   * the one field nothing may reinterpret: the line breaks are the human's and
-   * so are the asterisks, and both have to reach the page unchanged (the amendment to
-   * r-prose-renders-raw). The cleaned half is a restatement of the same words
-   * and is read the same way.
+   * The quote carries a newline and a pair of asterisks, because human words
+   * are the one field nothing may reinterpret: the line breaks are the human's
+   * and so are the asterisks, and both have to reach the page unchanged (the
+   * amendment to r-prose-renders-raw). The cleaned half is a restatement of the
+   * same words and is read the same way.
    */
   humanWords: [
     {
@@ -747,11 +746,11 @@ const silentTailer: RecordSeed = {
   rootCause: {
     /**
      * The one field in this fixture carrying a token nothing can break, and it
-     * is here on purpose: the gutter rows
-     * are flex pairs, and a cell whose min-content is floored by a 150-character
-     * run is a cell that pushes past the reading column. A resume cursor is what
-     * a tailer would actually print in its last line, so this is the real shape
-     * of the content rather than a string invented to fail a layout.
+     * is here on purpose: the gutter rows are flex pairs, and a cell whose
+     * min-content is floored by a 150-character run is a cell that pushes past
+     * the reading column. A resume cursor is what a tailer would actually print
+     * in its last line, so this is the real shape of the content rather than a
+     * string invented to fail a layout.
      *
      * Every three-viewport outline in the suite reads this record, so the
      * `does not scroll sideways` checks stand on real pressure now instead of
@@ -791,10 +790,11 @@ const silentTailer: RecordSeed = {
   impacts: 'human',
   /**
    * `upstream` is the one thing in this fixture no draft could propose today:
-   * it was cut from selection, and retro 1 carries one. It is here so the scenarios can
-   * show what happens to a record that holds a level nothing offers — the radio
-   * list has nothing to select, a verdict that says nothing about the level
-   * leaves it alone, and the read-only rendering still names it.
+   * it was cut from selection, and retro 1 carries one. It is here so the
+   * scenarios can show what happens to a record that holds a level nothing
+   * offers — the radio list has nothing to select, a verdict that says nothing
+   * about the level leaves it alone, and the read-only rendering still names
+   * it.
    */
   proposed: { severity: 1, solutionLevel: 'upstream', involvement: 'autonomous' },
 }
@@ -1018,12 +1018,12 @@ const exportWidening: RecordSeed = {
  * **The same rid as retro 1's first record, in a different retrospective.**
  *
  * That is not a copy-paste slip and it is the point of this seed: a rid is
- * minted per retrospective (A5, scout-core), so `(retroId, rid)` is the identity
- * everywhere, and the flat records page is the only surface in the product that
- * can hold two rows carrying the same rid at once. A page that keyed a row, a
- * link or a lifecycle write by rid alone renders two rows with one React key,
- * sends the wrong retrospective, or resolves the wrong record — and none of
- * those can fail in a world with one retrospective in it.
+ * minted per retrospective, so `(retroId, rid)` is the identity everywhere, and
+ * the flat records page is the only surface in the product that can hold two
+ * rows carrying the same rid at once. A page that keyed a row, a link or a
+ * lifecycle write by rid alone renders two rows with one React key, sends the
+ * wrong retrospective, or resolves the wrong record — and none of those can
+ * fail in a world with one retrospective in it.
  *
  * Everything about it differs from retro 1's: a different title, a different
  * requester, a different verdict and a different severity, so a row that read
@@ -1187,11 +1187,10 @@ const CLOSED_DECISIONS: readonly DecisionRow[] = [
  * A lifecycle field is `{status:'open', refs:[], note:null, actor:null, at:null}`
  * until something populates it, so a fixture where every record starts open
  * would let a page render the *populated* half however it liked and never be
- * caught: every assertion would be exercising the empty half (F1's
- * null-until-populated finding, proved on the parity plan). One record therefore
- * starts resolved, with **both kinds of reference** — a bare SHA and a URL —
- * because the page treats them differently and a fixture carrying only one kind
- * cannot fail the branch it does not have.
+ * caught: every assertion would be exercising the empty half. One record
+ * therefore starts resolved, with **both kinds of reference** — a bare SHA and
+ * a URL — because the page treats them differently and a fixture carrying only
+ * one kind cannot fail the branch it does not have.
  */
 const CLOSED_LIFECYCLE: readonly LifecycleRow[] = [
   {
@@ -1323,11 +1322,11 @@ const ATTRIBUTE_DEFINITIONS: readonly AttributeDefinition[] = [
  * says where it went: whenever the migrated label is added, an attribute
  * carrying a GitHub issue id goes with it.
  *
- * It is a team's own convention and **not a mechanism**: the world holds the two rows
- * independently, nothing pairs them, and `r-bullet-responses` below wears a
- * label with no value at all. That the fixture happens to show the pairing is
- * the point of a fixture — it is what a real store looks like — and the absence
- * of any enforcement is what the ruling asked for.
+ * It is a team's own convention and **not a mechanism**: the world holds the
+ * two rows independently, nothing pairs them, and `r-bullet-responses` below
+ * wears a label with no value at all. That the fixture happens to show the
+ * pairing is the point of a fixture — it is what a real store looks like — and
+ * the absence of any enforcement is deliberate.
  *
  * A record starts with these for the reason one record starts resolved: a label
  * list is `[]` until something populates it, so a world where every record
@@ -1369,8 +1368,8 @@ const OPENING_ATTRIBUTE_VALUES: readonly RecordAttributeValueRow[] = [
 
 /**
  * The relation the world opens holding — **authored by the AI**, which is the
- * actor the feature exists for: *"so that AI can easily find past records and
- * build holistic solutions."*
+ * actor the feature exists for: so that the AI can find past records and build
+ * holistic solutions.
  *
  * A record starts with one for `OPENING_LABELS`' reason: a relations list is
  * `[]` until something populates it, so a world where every record started
@@ -1417,9 +1416,8 @@ type World = {
   resolutions: ResolutionRow[]
   /**
    * The word the human left on each round it was left on — the round's own
-   * human field, keyed by
-   * revision exactly as the table is. It is not a thread and not a comment: it
-   * is delivered separately from the comments.
+   * human field, keyed by revision exactly as the table is. It is not a thread
+   * and not a comment: it is delivered separately from the comments.
    */
   finishMessages: FinishMessageRow[]
   /** What has been done about each record since the review closed. */
@@ -1453,9 +1451,8 @@ type World = {
    */
   recordRelations: RecordRelationRow[]
   /**
-   * Whether the human has granted the AI the ability to write definitions —
-   * a toggle, as a boolean because that is the whole of what the
-   * wire carries.
+   * Whether the human has granted the AI the ability to write definitions — a
+   * toggle, as a boolean because that is the whole of what the wire carries.
    *
    * The store keeps a **version per act** and the history is the point of the
    * table there; nothing on the settings page renders one, so the wire does not
@@ -1567,11 +1564,11 @@ const REVIEW_THREAD: ThreadRow = {
  * empty panel.
  *
  * It is arranged rather than performed, and it has to be: threads are
- * append-only (D4), so there is no act in the product that empties them. A
- * scenario sets the flag before the app boots (`page.addInitScript`) and the
- * fixture reads it once, here. Nothing under `apps/web/src` knows it exists and
- * it changes no procedure's behaviour — only which rows the world starts with,
- * the way `REVISIONS_ALREADY_FILED` does.
+ * append-only, so there is no act in the product that empties them. A scenario
+ * sets the flag before the app boots (`page.addInitScript`) and the fixture
+ * reads it once, here. Nothing under `apps/web/src` knows it exists and it
+ * changes no procedure's behaviour — only which rows the world starts with, the
+ * way `REVISIONS_ALREADY_FILED` does.
  */
 function bareReview(): boolean {
   return typeof window !== 'undefined' && window.retroMockBareReview === true
@@ -2090,7 +2087,7 @@ function chooseSolution(
  * `effectiveDecision` from core, restated over the wire shapes: a verdict binds
  * to the content it was given for. Identical content carries it forward;
  * changed content sends the record back to pending without writing anything,
- * because pending is the *absence* of a decision for what is on screen (D2).
+ * because pending is the *absence* of a decision for what is on screen.
  */
 function effectiveDecision(
   retro: Retrospective,
@@ -2322,10 +2319,10 @@ const EVENT_OF_ACT: Record<LifecycleRow['status'], WireEvent['name']> = {
  *
  * `open` for an untouched record is the safe half of the inference this feature
  * makes: it reads silence about *acts* as nothing having been done. The one
- * exception is a **declined** record, which is `archived` from birth with no row
- * anywhere: that is a reading of something explicitly decided, and it is
- * derived here rather than seeded, so a scenario
- * that declines a record watches it move.
+ * exception is a **declined** record, which is `archived` from birth with no
+ * row anywhere: that is a reading of something explicitly decided, and it is
+ * derived here rather than seeded, so a scenario that declines a record watches
+ * it move.
  */
 function lifecycleOf(retro: Retrospective, record: RecordSeed): Lifecycle {
   const latest = lifecycleFor(retro.retroId, record.rid).at(-1)
@@ -2609,8 +2606,8 @@ function recordAt(id: number): { retro: Retrospective; record: RecordSeed } | un
 }
 
 /**
- * What a record is related to right now, both directions — the whole of *"the
- * relation reads from both sides"*, done the way the server does it: one pass
+ * What a record is related to right now, both directions — the whole of the
+ * relation reading from both sides, done the way the server does it: one pass
  * over rows that mention the record on either side, folded per **ordered pair**,
  * and the direction read off which column matched.
  *
@@ -2702,7 +2699,7 @@ function definitionName(
 
 /**
  * Light validation, per type — the four rules the server applies, and no more
- * (*"we don't have to put in a lot of validations"*).
+ * (the server deliberately applies few validations).
  *
  * The `date` rule round-trips rather than asking whether `Date.parse` is NaN,
  * because it is not for `2026-02-31`: V8 rolls that over to the 3rd of March, so
@@ -2798,7 +2795,7 @@ function writtenAgainst(retro: Retrospective, revision: number | undefined): num
  * `events.onRetro` is scoped to one, and a listener that heard another
  * retrospective's events would make a page invalidate over something that did
  * not happen to it. The scope is the reason the flat records page has no
- * subscription at all (A9).
+ * subscription at all.
  */
 const listeners = new Set<{ retroId: number; emit: (event: TrackedEvent) => void }>()
 
@@ -2807,13 +2804,13 @@ function track(event: WireEvent): TrackedEvent {
 }
 
 /**
- * `retroId` is nullable, and the null case is the settings
- * page's: a label or attribute definition is **global**, so the row it writes
- * has no retrospective to be addressed to — which also means `events.onRetro`
- * delivers it to nobody, because that subscription is per-retrospective.
+ * `retroId` is nullable, and the null case is the settings page's: a label or
+ * attribute definition is **global**, so the row it writes has no retrospective
+ * to be addressed to — which also means `events.onRetro` delivers it to nobody,
+ * because that subscription is per-retrospective.
  *
  * It is written into the world anyway, because the outbox is this store's audit
- * trail and *"the user can be certain that the AI cannot mess around"* is a
+ * trail, and a human being certain the AI cannot touch the definitions is a
  * claim those rows are the evidence for. The listener loop below already
  * excludes it: no listener's `retroId` is null.
  */
@@ -2860,11 +2857,11 @@ export const mockRouter = {
   },
 
   /**
-   * The dashboard's flat list (N4). One row per retrospective the world
-   * holds, newest first — and every row is the *same* row the server would
-   * compute, derived rather than written out: the counts move as a scenario
-   * decides records, the state follows a finish, and the name follows whatever
-   * the latest draft called it.
+   * The dashboard's flat list. One row per retrospective the world holds,
+   * newest first — and every row is the *same* row the server would compute,
+   * derived rather than written out: the counts move as a scenario decides
+   * records, the state follows a finish, and the name follows whatever the
+   * latest draft called it.
    *
    * **The default world holds one retrospective**, so this is one row unless a
    * scenario arranges otherwise (`crossRetro`). That the list runs newest-first
@@ -2909,10 +2906,11 @@ export const mockRouter = {
 
   /**
    * The narrative, the proposals and the decision — and **not** the record's
-   * comments. They came back from here until an earlier redesign, and the
-   * panel is the one comments surface now, so `threads.list` is the only read path for them
-   * (`views.schema.ts` §recordDetailSchema). `threadsFor` survives because the
-   * AI's reply control still needs to find the newest thread on a record.
+   * comments. They came back from here until an earlier redesign, and the panel
+   * is the one comments surface now, so `threads.list` is the only read path
+   * for them (`views.schema.ts` §recordDetailSchema). `threadsFor` survives
+   * because the AI's reply control still needs to find the newest thread on a
+   * record.
    */
   'records.get': (input) => {
     const retro = requireRetro(input.retroId)
@@ -2922,10 +2920,10 @@ export const mockRouter = {
 
   /**
    * **One record, reached by the number the page shows** — the record page
-   * (`/records/:id`). It is the one record read
-   * addressed by the global id rather than by `(retroId, rid)`, so the world
-   * runs its own sequence backwards exactly as the store does, and everything
-   * after that is the pair every other procedure here takes.
+   * (`/records/:id`). It is the one record read addressed by the global id
+   * rather than by `(retroId, rid)`, so the world runs its own sequence
+   * backwards exactly as the store does, and everything after that is the pair
+   * every other procedure here takes.
    *
    * Two shapes of miss, both the server's. A number nothing was minted for is
    * NOT_FOUND from the lookup; a record a later draft withdrew is NOT_FOUND from
@@ -2934,9 +2932,8 @@ export const mockRouter = {
    * act on.
    *
    * Every key beyond the record itself is derived from the world: the identity
-   * line off the record's own retrospective (never the page's, A5), the
-   * lifecycle off the entry in force, and the timeline off the three tables that
-   * hold it.
+   * line off the record's own retrospective (never the page's), the lifecycle
+   * off the entry in force, and the timeline off the three tables that hold it.
    */
   'records.byId': (input) => {
     const minted = world.recordIds.find((row) => row.id === input.id)
@@ -2966,10 +2963,9 @@ export const mockRouter = {
   },
 
   /**
-   * The flat cross-retro records page: every record
-   * of every retrospective, each row derived rather than written out — the
-   * verdicts move as a scenario decides records, and the lifecycle marks move as
-   * it resolves them.
+   * The flat cross-retro records page: every record of every retrospective,
+   * each row derived rather than written out — the verdicts move as a scenario
+   * decides records, and the lifecycle marks move as it resolves them.
    *
    * **Newest retro first, records by number inside it**, which is the use case's
    * own order (`list-all-records.use-case.ts`: retro id descending, so the order
@@ -3005,7 +3001,7 @@ export const mockRouter = {
               type: record.type,
               requester: record.requester,
               // Both effective rather than stored, so a scenario that decides a
-              // record sees the chip and the SEV follow (D2).
+              // record sees the chip and the SEV follow.
               state: decision.state,
               severity: decision.severity,
               proposedLevel: proposedLevel(record),
@@ -3065,14 +3061,14 @@ export const mockRouter = {
    *
    * **It does not refuse a finished retrospective**, and that is more true here
    * than for `records.setLifecycle` above: the record at the far end is normally
-   * in a retrospective that closed sessions ago, which is what *"find past
-   * records"* means.
+   * in a retrospective that closed sessions ago, which is what finding past
+   * records means.
    *
    * Every refusal the server makes is made here, because a page that offered an
    * act the real server rejects is a page that would ship: a record related to
    * itself, a number nothing was minted for, a record a later draft withdrew, a
    * pair that already stands, and a relate with no words. The words are half the
-   * act — *"each relation carries how-they-relate words"* — and the un-relate row
+   * act — each relation carries how-they-relate words — and the un-relate row
    * carries forward the words of the relation it takes off, which is why this
    * handler never takes them from the caller.
    */
@@ -3225,10 +3221,10 @@ export const mockRouter = {
   },
 
   /**
-   * **Every thread of the retrospective**, record-level and review-level alike —
-   * the same answer the router gives, so a panel that dropped
-   * the record comments would fail in a scenario rather than only against the
-   * real server.
+   * **Every thread of the retrospective**, record-level and review-level
+   * alike — the same answer the router gives, so a panel that dropped the
+   * record comments would fail in a scenario rather than only against the real
+   * server.
    */
   'threads.list': (input) => {
     const retro = requireRetro(input.retroId)
@@ -3257,8 +3253,8 @@ export const mockRouter = {
   },
 
   /**
-   * The page's one terminal action, with both
-   * of the properties earlier fixes gave it:
+   * The page's one terminal action, with both of the properties earlier fixes
+   * gave it:
    *
    * - it does **not** finish the retrospective — it closes the human's side of
    *   this round, and the state stays `reviewing` until the AI closes it
@@ -3399,11 +3395,10 @@ export const mockRouter = {
   /**
    * The human puts a label on a record, or takes it off.
    *
-   * **It does not refuse a finished retrospective**, and that is a
-   * second usage archetype rather than an oversight: on completion of the
-   * retro, records may move into GitHub right away, wearing a label that
-   * says 'migrated'. That act happens
-   * after the close by construction.
+   * **It does not refuse a finished retrospective**, and that is a second usage
+   * archetype rather than an oversight: on completion of the retro, records may
+   * move into GitHub right away, wearing a label that says 'migrated'. That act
+   * happens after the close by construction.
    *
    * Two refusals mirrored from the server, both of them things the page never
    * sends and both of them therefore the only way its guards are falsifiable: a
@@ -3721,7 +3716,7 @@ export type MockControl = {
    * others are acts *within the review the page is on* and there is only ever
    * one of those; this one is the AI working through a fix queue that spans
    * retrospectives, which is the whole reason the flat page exists — and a rid
-   * on its own does not name a record (A5).
+   * on its own does not name a record.
    */
   aiResolve: (retroId: number, rid: string, refs: readonly string[], note?: string) => void
   /**
@@ -3730,23 +3725,23 @@ export type MockControl = {
    *
    * It is here rather than on the router because there is no procedure for it
    * and there is deliberately not going to be one: the claim is the solving
-   * side's, written through the CLI like every other AI write, and
-   * what the review UI does with it is *read* it. A scenario that wants to watch
-   * the badge appear reaches for this, and what it is watching is the page
+   * side's, written through the CLI like every other AI write, and what the
+   * review UI does with it is *read* it. A scenario that wants to watch the
+   * badge appear reaches for this, and what it is watching is the page
    * re-reading `records.list` off the event — which is the whole claim.
    *
    * **It takes a retrospective**, like `aiResolve` and for its reason: an agent
    * works a queue that spans retrospectives, and a rid on its own does not name
-   * a record (A5).
+   * a record.
    */
   aiClaim: (retroId: number, rid: string) => void
   /** The same act backwards: the AI puts the record back on the queue. */
   aiUnclaim: (retroId: number, rid: string) => void
   /**
-   * The AI closes the review to export — `reviewing → finished`, terminal.
-   * It is here rather than on the router
-   * because it is the AI's act, taken in the AI's own process: there is no
-   * procedure for it and the browser could not reach one.
+   * The AI closes the review to export — `reviewing → finished`, terminal. It
+   * is here rather than on the router because it is the AI's act, taken in the
+   * AI's own process: there is no procedure for it and the browser could not
+   * reach one.
    */
   closeReview: () => void
   /**
@@ -3774,9 +3769,9 @@ export type MockControl = {
    * The word the human left finishing the round the page is on, or `null`.
    *
    * A read, like `eventCount` beside it, and not a way in: it is the AI's side
-   * of the channel the final message travels on — what `revision get --feedback-only`
-   * would carry — so a scenario can say the message was *delivered* rather than
-   * that a textarea once held it.
+   * of the channel the final message travels on — what `revision get
+   * --feedback-only` would carry — so a scenario can say the message was
+   * *delivered* rather than that a textarea once held it.
    */
   finishMessage: () => string | null
 }

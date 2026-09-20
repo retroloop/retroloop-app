@@ -3,12 +3,11 @@ import { expect, test } from '@playwright/test'
 import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '../preview-port.ts'
 
 /**
- * The preview
- * server this suite drives used to bind the literal 24302 in every checkout, so
- * two worktrees could not verify at once; then it was derived from the checkout
- * alone, so two *runs* in one worktree could not either — the second died on
- * `--strictPort`, or worse, both ran and starved each other into rotating
- * timeouts that looked like a flaky run.
+ * The preview server this suite drives used to bind the literal 24302 in every
+ * checkout, so two worktrees could not verify at once; then it was derived from
+ * the checkout alone, so two *runs* in one worktree could not either — the
+ * second died on `--strictPort`, or worse, both ran and starved each other into
+ * rotating timeouts that looked like a flaky run.
  *
  * The derivation is what these assert. That it *works* is asserted by the run
  * itself — this file is in the `meta` project of the same config whose

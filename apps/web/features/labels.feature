@@ -477,9 +477,9 @@ Feature: Labels, attributes and the settings page
     And the reviewer opens the records page
     Then the filters do not offer a label group
 
-  # ux-brief 04's standing limit, on the two screens this product is read on. The
-  # settings page carries the widest thing it has — a full attribute name beside
-  # a type and two controls — on the layout's own measure.
+  # The standing limit, on the two screens this product is read on. The settings
+  # page carries the widest thing it has — a full attribute name beside a type
+  # and two controls — on the layout's own measure.
   Scenario Outline: The settings page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens the settings page

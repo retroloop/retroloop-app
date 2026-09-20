@@ -17,7 +17,7 @@
  * retrospectives it is. It carries no title, because the identity line does not
  * print one — and a row that has no title to give must still be able to say
  * where it comes from. `records.listAll` is that row: its retrospective's name
- * is not on the wire (F1 dropped it on "every field earns its place"), and
+ * is not on the wire (it was dropped on "every field earns its place"), and
  * without this split the flat records page could not call the shared function
  * and would have grown a third copy of the line.
  */
@@ -34,14 +34,13 @@ export type RetroPlace = {
 export type RetroIdentity = RetroPlace & {
   /**
    * The retrospective's **global** id — the number every URL, breadcrumb and
-   * record page already uses, and since D5 the number its fallback name is built
-   * from.
+   * record page already uses, and the number its fallback name is built from.
    *
    * It is on this shape and not on `RetroPlace` because `retroName` is the only
    * reader that needs it: the identity line below is deliberately the
-   * *per-session* reading ("Session S · Retro #n"), which was settled and
-   * which is still true. Every output that satisfies this type already carries
-   * the field — `retros.list`, `retros.get`, and `records.byId` through
+   * *per-session* reading ("Session S · Retro #n"), which was settled and is
+   * still true. Every output that satisfies this type already carries the
+   * field — `retros.list`, `retros.get`, and `records.byId` through
    * `recordDetailSchema` — so nothing on the wire changed to make this possible.
    */
   readonly retroId: number
@@ -52,24 +51,24 @@ export type RetroIdentity = RetroPlace & {
  * What to call the retrospective: the name its latest revision gave it, or
  * "Retro <global id> — <cwd basename>" when that revision proposed none.
  *
- * **The fallback used to print `retroNumber`, and that was the bug.** The
- * diary view needed retros to show their global ids rather than a
- * session's internal sequence number, and the rule settled on it
- * directly: untitled retros show the global id as fallback.
- * `retroNumber` counts **within a session** — several
- * retrospectives across sessions are "#1" and more are "#2" — so on any list that shows more
- * than one session the old fallback printed a number that could not identify the
- * thing it was printed on. On the dashboard it was worse than ambiguous: the row
- * showed the global id in one column and `Retro #1` as the name three characters
- * away, which is two different numbers for one retrospective on one line.
+ * **The fallback used to print `retroNumber`, and that was the bug.** The diary
+ * view needed retros to show their global ids rather than a session's internal
+ * sequence number, and the rule settled on it directly: untitled retros show
+ * the global id as fallback. `retroNumber` counts **within a session** —
+ * several retrospectives across sessions are "#1" and more are "#2" — so on any
+ * list that shows more than one session the old fallback printed a number that
+ * could not identify the thing it was printed on. On the dashboard it was worse
+ * than ambiguous: the row showed the global id in one column and `Retro #1` as
+ * the name three characters away, which is two different numbers for one
+ * retrospective on one line.
  *
  * **The directory stays.** The fallback is still not a bare number, which is
- * the standing rule against bare ticket numbers — and `Retro 2 — retro` is
- * the exact shape settled on, so keeping the basename honours that rather
- * than reading past it.
- * With a global id the basename no longer does the *distinguishing* work it was
- * originally there for, but it still says where the retrospective happened, which
- * is the only other thing an unnamed retro can tell you.
+ * the standing rule against bare ticket numbers — and `Retro 2 — retro` is the
+ * exact shape settled on, so keeping the basename honours that rather than
+ * reading past it. With a global id the basename no longer does the
+ * *distinguishing* work it was originally there for, but it still says where
+ * the retrospective happened, which is the only other thing an unnamed retro
+ * can tell you.
  *
  * Changed here and in one place, so all three surfaces inherit it: the dashboard
  * row, the review page's header, and the record page. That is the whole reason
@@ -81,13 +80,12 @@ export function retroName(retro: RetroIdentity): string {
 }
 
 /**
- * "Session S · Retro #n · <cwd>" — the identity line, whole (N1).
+ * "Session S · Retro #n · <cwd>" — the identity line, whole.
  *
  * The order: the home page shows "Session #X · Retro #Y" rather than
- * "Retro #1 · Session 1". The session
- * is the larger thing and comes first — a retrospective is the *n*th of a
- * session, not the other way round — and the line now reads outside-in, the way
- * the breadcrumb already did.
+ * "Retro #1 · Session 1". The session is the larger thing and comes first — a
+ * retrospective is the *n*th of a session, not the other way round — and the
+ * line now reads outside-in, the way the breadcrumb already did.
  *
  * Changed in one place, so three surfaces follow: the dashboard row, the review
  * header, and a row of the flat records page — which is the reader who most

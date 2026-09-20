@@ -51,9 +51,9 @@ Feature: Revisions arriving under a reviewer
       | pending | 4 |
 
   # The reply lands in the comments panel, which is where every comment on the
-  # retrospective is read — and behind the reply count the panel
-  # keeps replies behind, so the open is part of the scenario rather than an
-  # implementation detail of the step.
+  # retrospective is read — and behind the reply count the panel keeps replies
+  # behind, so the open is part of the scenario rather than an implementation
+  # detail of the step.
   Scenario: An AI reply arrives in a thread the reviewer is reading
     Given the reviewer opens retro 1
     When the AI replies "Narrowed it in revision 3." on record "r-bullet-responses"

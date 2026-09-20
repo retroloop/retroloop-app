@@ -111,11 +111,11 @@ Feature: The dashboard
     And the diary's row for retro 1 is "finished"
     And the browser reported no console errors
 
-  # The new tag look is colour, and colour is the one
-  # thing a dark override can suppress without anything else moving. Asserted in
-  # both themes, and asserted as a *separation* rather than as a value: the words
-  # on this page are SUBMITTED and FINISHED, and if the two ever resolved to the
-  # same fill and ink the tag would be carrying its state on the word alone.
+  # The new tag look is colour, and colour is the one thing a dark override can
+  # suppress without anything else moving. Asserted in both themes, and asserted
+  # as a *separation* rather than as a value: the words on this page are
+  # SUBMITTED and FINISHED, and if the two ever resolved to the same fill and
+  # ink the tag would be carrying its state on the word alone.
   #
   # The three-retrospective fixture is what makes the pair available on one page
   # — two of its retros are already finished — so both looks are measured in the
@@ -193,11 +193,11 @@ Feature: The dashboard
 
   # ── the chart, and its orientation rule ───────────────────────────────────
   #
-  # Four axes, and every one of them draws horizontally —
-  # Requester and Type used to be vertical columns. Asserted off the renderer's
-  # own `data-orientation` rather than off tick coordinates: a position assertion
-  # here would be measuring recharts' layout maths, which the browser does half of
-  # for free and which would go green for the wrong reason when it changes.
+  # Four axes, and every one of them draws horizontally — Requester and Type
+  # used to be vertical columns. Asserted off the renderer's own
+  # `data-orientation` rather than off tick coordinates: a position assertion
+  # here would be measuring recharts' layout maths, which the browser does half
+  # of for free and which would go green for the wrong reason when it changes.
   Scenario: The chart offers four axes and draws every one of them horizontally
     Given the stage holds the retrospectives of two sessions
     And the reviewer opens the dashboard
@@ -216,18 +216,18 @@ Feature: The dashboard
 
   # ── the rows behind the numbers ───────────────────────────────────────────
   #
-  # Four cuts since D9, named and ordered to match the tiles above them. On
-  # crossRetro they count 5, 3, 2 and 2 — and Require human differing from High sev
-  # is the whole reason this scenario moved off the one-retrospective fixture,
-  # where both are 2 and a tab picking the wrong predicate would pass. Direction
-  # 3's rule holds: a count on a labelled item renders in brackets.
+  # Four cuts, named and ordered to match the tiles above them. On crossRetro
+  # they count 5, 3, 2 and 2 — and Require human differing from High sev is the
+  # whole reason this scenario moved off the one-retrospective fixture, where
+  # both are 2 and a tab picking the wrong predicate would pass. The standing
+  # rule holds: a count on a labelled item renders in brackets.
   Scenario: The readings table counts its four cuts in brackets
     Given the stage holds the retrospectives of two sessions
     And the reviewer opens the dashboard
     Then the readings tabs read "Still open (5), Require human (3), High sev (2), Closed (2)"
     And the readings table lists 5 rows
 
-  # D9's real claim: the tab and the tile are one reading, not two that happen to
+  # The real claim: the tab and the tile are one reading, not two that happen to
   # agree today. Asserted as an equality between what the tile counts and what the
   # tab lists, so a predicate that drifted on either side fails here — which is the
   # failure that would otherwise be silent, a tab rendering perfectly good rows
@@ -291,10 +291,10 @@ Feature: The dashboard
 
   # ── the two screens this product is read on ───────────────────────────────
   #
-  # ux-brief 04: the laptop and the iPad both ways up, plus the width with no
-  # content of its own to show. The measure numbers are review.feature's, which is
-  # what makes the home page's width not matching the retro page's width a thing
-  # the suite can fail on rather than something a reviewer eyeballs.
+  # The laptop and the iPad both ways up, plus the width with no content of its
+  # own to show. The measure numbers are review.feature's, which is what makes
+  # the home page's width not matching the retro page's width a thing the suite
+  # can fail on rather than something a reviewer eyeballs.
   Scenario Outline: The page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens the dashboard

@@ -13,8 +13,8 @@ Feature: Page chrome
   # The breadcrumbs move out of the top menu to somewhere below it, while the
   # name stays in the menu. These two scenarios are what "below it" means in
   # pixels rather than in prose — the first that the menu still says what the
-  # product is, the second that the trail is genuinely under the menu and not
-  # in it.
+  # product is, the second that the trail is genuinely under the menu and not in
+  # it.
   Scenario: The dashboard states the app name in the top menu and carries no trail
     Given the reviewer opens "/"
     Then the top menu names the app "Retroloop"
@@ -78,14 +78,14 @@ Feature: Page chrome
     Then the page is in the "light" theme
     And the browser reported no console errors
 
-  # The menu items move under a single dropdown in the top right, built with
-  # the shadcn dropdown-menu component.
+  # The menu items move under a single dropdown in the top right, built with the
+  # shadcn dropdown-menu component.
   #
-  # Three claims, and the record made all three: the menu is in the top right, it
-  # holds these two items in this order, and each item is a real link — which is
-  # why open-in-new-tab works and why the table reads hrefs. The absence beside
-  # it is counted rather than named: nothing is left loose up there, not that
-  # two particular testids went away.
+  # Three claims, and the record made all three: the menu is in the top right,
+  # it holds these two items in this order, and each item is a real link — which
+  # is why open-in-new-tab works and why the table reads hrefs. The absence
+  # beside it is counted rather than named: nothing is left loose up there, not
+  # that two particular testids went away.
   Scenario: Global navigation is one dropdown in the top right, with nothing loose beside it
     Given the reviewer opens "/"
     Then the top menu carries no loose navigation links
@@ -111,21 +111,21 @@ Feature: Page chrome
       | Records  | /records  |
       | Settings | /settings |
 
-  # The starved-menu certification drives a deterministically starved menu
-  # close so the waits around it are proven rather than described — without
-  # it, a budget move would be an edit nothing could certify. This scenario
-  # itself does not move a budget: it is what says the ones already there are
-  # sized for the mechanism rather than for a healthy laptop, and it is red
-  # when they are not. It was re-aimed at this menu after the header's theme
-  # toggle was retired.
+  # The starved-menu certification drives a deterministically starved menu close
+  # so the waits around it are proven rather than described — without it, a
+  # budget move would be an edit nothing could certify. This scenario itself
+  # does not move a budget: it is what says the ones already there are sized for
+  # the mechanism rather than for a healthy laptop, and it is red when they are
+  # not. It was re-aimed at this menu after the header's theme toggle was
+  # retired.
   #
   # The renderer is starved by Chromium's own CPU throttle rather than by the
   # main-thread hold review.feature's landing scenario uses, and the choice was
-  # measured. The hold loop quantises the page into whole periods and lets the menu
-  # close commit inside one, between two of the harness's acts; the throttle slows
-  # the close by a factor instead, so the waits actually spend budget and a budget
-  # that is too small is red rather than lucky. Both engines' numbers are in the
-  # step docstrings.
+  # measured. The hold loop quantises the page into whole periods and lets the
+  # menu close commit inside one, between two of the harness's acts; the
+  # throttle slows the close by a factor instead, so the waits actually spend
+  # budget and a budget that is too small is red rather than lucky. Both
+  # engines' numbers are in the step docstrings.
   #
   # The throttle is applied FIRST, before the menu is opened: the open, the close
   # and the navigation after it are all starved, so all three of this scenario's

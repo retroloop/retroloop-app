@@ -37,7 +37,7 @@ import { useTRPC } from '@/lib/trpc'
 const NO_RECORDS: AppRouterOutputs['records']['list']['records'] = []
 
 type ReviewSearch = {
-  /** `?rev=k` pins an older revision, read-only (ux-brief 03). */
+  /** `?rev=k` pins an older revision, read-only. */
   readonly rev?: number
   /**
    * `?record=<rid>` — the record a link is pointing at.
@@ -47,15 +47,14 @@ type ReviewSearch = {
    * carries, so arriving here arrives *at the record* rather than at the top of
    * a review that may hold a dozen of them.
    *
-   * **Who sends it changed, and the ruling behind it moved.** It
-   * was the flat records page's rows, on rulings A6/A7 — no per-record detail
-   * page, this page is a record's detail view and there is no other one. That
-   * reversed on first contact: clicking a record on the records page used to
-   * take the reader to the retro page, but each record now has its own
-   * dedicated page. So a row goes to `/records/:globalId` now, and
-   * the sender of this anchor is that page's own link back to the review — the
-   * way to go to the retro page it asked for. The mechanism is
-   * unchanged; what is upstream of it is not.
+   * **Who sends it changed, and so did the rule behind it.** It was the flat
+   * records page's rows — no per-record detail page, this page is a record's
+   * detail view and there is no other one. That reversed on first contact:
+   * clicking a record on the records page used to take the reader to the retro
+   * page, but each record now has its own dedicated page. So a row goes to
+   * `/records/:globalId` now, and the sender of this anchor is that page's own
+   * link back to the review — the way to go to the retro page it asked for. The
+   * mechanism is unchanged; what is upstream of it is not.
    */
   readonly record?: string
   readonly view?: 'history'
@@ -165,9 +164,9 @@ function Review({ retroId }: { retroId: number }) {
   const comments = useReviewComments(retroId)
   /**
    * `?record=<rid>` on its own is the anchor a link into this review carries —
-   * the record page's link back to it. With `view=history` it
-   * means the Tier 2 stub below instead, which is a page of its own and has
-   * nothing to scroll to.
+   * the record page's link back to it. With `view=history` it means the Tier 2
+   * stub below instead, which is a page of its own and has nothing to scroll
+   * to.
    */
   useAnchorLanding(view === 'history' ? undefined : record, filter)
 
@@ -198,7 +197,7 @@ function Review({ retroId }: { retroId: number }) {
   /**
    * Read-only in two cases, for the same reason: what is on screen is not what a
    * decision could be made against. An older revision is history, and a finished
-   * review is terminal (D3).
+   * review is terminal.
    */
   const readOnly = finished || revision < latest
 
@@ -244,18 +243,19 @@ function Review({ retroId }: { retroId: number }) {
         {/**
          * What this retrospective is called, what state it is in, and where it
          * happened — the same name, the same tag and the same identity line the
-         * dashboard row carried, so the click-through lands somewhere the reader
-         * recognises (N1, N3, G1). The name is the *latest* revision's, which is
-         * why it can change under a reviewer: it changes when they take the
+         * dashboard row carried, so the click-through lands somewhere the
+         * reader recognises. The name is the *latest* revision's, which is why
+         * it can change under a reviewer: it changes when they take the
          * announced revision, not when the AI files it.
          *
-         * The state tag is the whole of G1: until it existed a finished
-         * retrospective never said so anywhere near the top of the page. It is
-         * also all that G1 adds — no revision line, no counts, no timestamps.
-         * The pending count in particular stays where it already is: the
-         * pending chip on the decision bar carries it live, and it is the only
-         * place that does since an earlier redesign took the review's box away — a second
-         * copy in the header would be a number to keep in agreement.
+         * The state tag is what says so: until it existed a finished
+         * retrospective never said it was finished anywhere near the top of the
+         * page. It is also all the tag adds — no revision line, no counts, no
+         * timestamps. The pending count in particular stays where it already
+         * is: the pending chip on the decision bar carries it live, and it is
+         * the only place that does since an earlier redesign took the review's
+         * box away — a second copy in the header would be a number to keep in
+         * agreement.
          */}
         <header className="flex flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2.5">
@@ -285,8 +285,7 @@ function Review({ retroId }: { retroId: number }) {
             <RecordRail records={list.data.records} filter={filter} index={index} />
 
             {/* `min-w-0` so a long word inside a record narrows the column
-                rather than widening the page (ux-brief 04: nothing scrolls
-                sideways).
+                rather than widening the page (nothing scrolls sideways).
 
                 `wide:max-w-[48rem]` is what makes one page measure possible. The
                 extra room the page takes at `wide` was bought for a third
@@ -318,13 +317,13 @@ function Review({ retroId }: { retroId: number }) {
                 and nothing to cap: the reading column is the page, as it was. */}
             <div className="flex min-w-0 flex-1 flex-col gap-5 wide:max-w-[48rem]">
               {/**
-               * The bar's design: the filter on the left, the
-               * review's one act on the right, stuck under the header rather
-               * than scrolling away with the first record. The act was a
-               * bordered box at the end of this column until an earlier
-               * redesign removed it in favor of a button next to the
-               * filters — so it is passed in here rather than rendered
-               * below, and the filter's own landing target moved with it.
+               * The bar's design: the filter on the left, the review's one act
+               * on the right, stuck under the header rather than scrolling away
+               * with the first record. The act was a bordered box at the end of
+               * this column until an earlier redesign removed it in favor of a
+               * button next to the filters — so it is passed in here rather
+               * than rendered below, and the filter's own landing target moved
+               * with it.
                */}
               <RecordFilterBar
                 filter={filter}
@@ -357,16 +356,15 @@ function Review({ retroId }: { retroId: number }) {
 
             {/**
              * The review's own surface — the round as a whole rather than any
-             * one record in it, and **one
-             * surface and not two**: comments at the review level cover the
-             * same need, with one individual request addressable per
-             * comment.
+             * one record in it, and **one surface and not two**: comments at
+             * the review level cover the same need, with one individual request
+             * addressable per comment.
              *
              * It shipped as a full-width panel here, above the first record,
-             * and a later fix took it out of the reading
-             * column: a composer at the top of the page costs a scroll up and a
-             * scroll back for every mid-list ask, and costs the fold whether it
-             * is used or not. Beside the column it costs neither.
+             * and a later fix took it out of the reading column: a composer at
+             * the top of the page costs a scroll up and a scroll back for every
+             * mid-list ask, and costs the fold whether it is used or not.
+             * Beside the column it costs neither.
              *
              * It takes the page's one `readOnly`. The half that matters is
              * `finished`, which is the domain's own terminal state — the server
@@ -376,11 +374,10 @@ function Review({ retroId }: { retroId: number }) {
              * history everywhere else should not be the one place still
              * offering to write.
              *
-             * An earlier redesign made it the *only* comments surface: it
-             * lists every thread of the retrospective, record-level
-             * included, replacing inline comments in the retro body with
-             * comments in the side panel — so a human can see all comments
-             * in one place. It
+             * An earlier redesign made it the *only* comments surface: it lists
+             * every thread of the retrospective, record-level included,
+             * replacing inline comments in the retro body with comments in the
+             * side panel — so a human can see all comments in one place. It
              * takes the revision's records so a record thread can say which
              * record it hangs on, and the filter's `jumpTo` so saying it is one
              * click from getting there — the same landing an index entry uses,

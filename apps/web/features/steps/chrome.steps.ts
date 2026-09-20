@@ -8,11 +8,11 @@ import { chooseDarkMode, openSettingsSection } from './labels.steps'
  * other feature reads its colours in.
  *
  * It is a file of its own because the chrome stopped being two components and a
- * pair of loose links. Global navigation is now one
- * menu the shell renders on every route (`chrome/app-menu.tsx`), so the acts that
- * cross pages — open the menu, follow an item, go and change the theme and come
- * back — belong together rather than scattered across the step files of the
- * pages they happen to start on.
+ * pair of loose links. Global navigation is now one menu the shell renders on
+ * every route (`chrome/app-menu.tsx`), so the acts that cross pages — open the
+ * menu, follow an item, go and change the theme and come back — belong together
+ * rather than scattered across the step files of the pages they happen to start
+ * on.
  *
  * The house rules hold here: address by `data-testid`, and every act goes through
  * the page. The one deliberate exception is the counted sweep below, which is an
@@ -62,13 +62,13 @@ When('the reviewer opens the app menu', async ({ page }) => {
  * change it — a starved page serves the harness's presses out of the same windows
  * it runs its own commits in.
  *
- * **So why the wait is still here, and what does certify it.** Both conditions stay:
- * which of the two comes last is Radix's to change, and a wait that holds only by
- * accident of ordering is one nobody would notice losing. What is provable is the
- * *budget* — that this walk survives a renderer running fifty times slower — and
- * that is what `chrome.feature` §the app menu opens, closes and arrives asserts,
- * red with every budget in it cut to a healthy page's 300ms — 10 green, 10
- * red with the budgets cut, 10 green again.
+ * **So why the wait is still here, and what does certify it.** Both conditions
+ * stay: which of the two comes last is Radix's to change, and a wait that holds
+ * only by accident of ordering is one nobody would notice losing. What is
+ * provable is the *budget* — that this walk survives a renderer running fifty
+ * times slower — and that is what `chrome.feature` §the app menu opens, closes
+ * and arrives asserts, red with every budget in it cut to a healthy page's
+ * 300ms — 10 green, 10 red with the budgets cut, 10 green again.
  */
 export async function followAppMenuItem(page: Page, label: string): Promise<void> {
   const item = page.getByTestId(`app-menu-${label.toLowerCase()}`)
@@ -141,10 +141,10 @@ Then('the reviewer has arrived at the records page', async ({ page }) => {
  * Three claims in one table, and each of them is the record's: the menu holds
  * *these* items in *this* order — an item added, dropped or moved fails here by
  * name — and every one of them is a **real link**, which is what makes
- * open-in-new-tab work. The locator is `a` rather than the
- * menu-item role for exactly that reason: a menu of `onSelect` handlers would
- * look identical on screen, satisfy any assertion made about its text, and refuse
- * every middle click. Reading `href` is what tells the two apart.
+ * open-in-new-tab work. The locator is `a` rather than the menu-item role for
+ * exactly that reason: a menu of `onSelect` handlers would look identical on
+ * screen, satisfy any assertion made about its text, and refuse every middle
+ * click. Reading `href` is what tells the two apart.
  */
 Then('the app menu points at:', async ({ page }, table: DataTable) => {
   const wanted = table.raw().map(([label, href]) => ({ label: String(label), href: String(href) }))

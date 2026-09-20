@@ -38,52 +38,51 @@ function RecordRoute() {
   const { recordId: raw } = Route.useParams()
   const id = integerId(raw)
   // `/records/nope` and `/records/007` are not requests for a record, and this
-  // page says so without asking the server (`lib/ids.ts`, ux-brief 03).
+  // page says so without asking the server (`lib/ids.ts`).
   if (id === undefined) return <NotFoundPage what="record" id={raw} />
   return <RecordPage id={id} />
 }
 
 /**
- * One record, on a page of its own — each record has its own dedicated
- * page, with a consistent width and overall layout, and a way to go to the
- * retro page.
+ * One record, on a page of its own — each record has its own dedicated page,
+ * with a consistent width and overall layout, and a way to go to the retro
+ * page.
  *
  * **The URL is the global number**, which is the one name a record has that is
  * not a pair. `(retroId, rid)` is what addresses a record everywhere inside the
- * product (A5) and is not something anyone types, pastes into a message or
+ * product, and is not something anyone types, pastes into a message or
  * bookmarks; the page a reader sends to somebody else is `/records/7`. Every
  * write this page makes still goes by the pair, which is why `records.byId`
  * answers with it.
  *
- * **It reverses a standing ruling** (A6/A7). Until now the review page was a
- * record's only detail view and the flat page's rows landed on it with
- * `?record=`; that used to read as a bug the first time it was used —
- * clicking a record led to a retrospective. The anchor mechanism did not
- * go away: it is what the link *out* of this page uses, so leaving here
- * for the review lands on this record rather than at the top of a round
- * holding a dozen of them.
+ * **It reverses a standing rule.** Until now the review page was a record's
+ * only detail view and the flat page's rows landed on it with `?record=`; that
+ * used to read as a bug the first time it was used — clicking a record led to a
+ * retrospective. The anchor mechanism did not go away: it is what the link
+ * *out* of this page uses, so leaving here for the review lands on this record
+ * rather than at the top of a round holding a dozen of them.
  *
- * **What is not here.** No comments — they are left out of this page.
- * No settings: the vocabularies are global and are managed at `/settings`, so
- * this page offers the labels a store has and never the ability to invent one.
- * No decision controls: a verdict is given inside its review, against a revision
+ * **What is not here.** No comments — they are left out of this page. No
+ * settings: the vocabularies are global and are managed at `/settings`, so this
+ * page offers the labels a store has and never the ability to invent one. No
+ * decision controls: a verdict is given inside its review, against a revision
  * the reviewer chose, and offering one here would be a second place to decide a
- * record. No revision picker and no history diff — this page is the record as it
- * stands, and one record across every revision is Tier 2. No severity
- * or involvement dials: they are the verdict's values, judged where the verdict
- * is given.
+ * record. No revision picker and no history diff — this page is the record as
+ * it stands, and one record across every revision is Tier 2. No severity or
+ * involvement dials: they are the verdict's values, judged where the verdict is
+ * given.
  */
 function RecordPage({ id }: { id: number }) {
   const trpc = useTRPC()
   /**
    * **`refetchOnWindowFocus` is turned back on for this one query**, against the
-   * app-wide default and for the reason the flat records page turns it on
-   * (A9): `events.onRetro` is scoped to one retrospective, and while this page
-   * *is* about one, subscribing would mean holding a live stream open for a
-   * single record's two axes. What the page does instead is what its own list
-   * does — it invalidates after its own writes, and it asks again when the
-   * reader comes back to the tab, which is exactly when the AI has been working
-   * the fix queue in its own process.
+   * app-wide default and for the reason the flat records page turns it on:
+   * `events.onRetro` is scoped to one retrospective, and while this page *is*
+   * about one, subscribing would mean holding a live stream open for a single
+   * record's two axes. What the page does instead is what its own list does —
+   * it invalidates after its own writes, and it asks again when the reader
+   * comes back to the tab, which is exactly when the AI has been working the
+   * fix queue in its own process.
    */
   const record = useQuery({
     ...trpc.records.byId.queryOptions({ id }),
@@ -118,9 +117,8 @@ function RecordPage({ id }: { id: number }) {
        * dashboard's rows do, and a column centred under a left-aligned trail
        * would be this page disagreeing with every other one.
        *
-       * Below `wide` the column is the page, as everywhere
-       * else; above it the room a rail would use stays empty, because this page
-       * has no rails.
+       * Below `wide` the column is the page, as everywhere else; above it the
+       * room a rail would use stays empty, because this page has no rails.
        */}
       <div className="flex min-w-0 flex-col gap-5 wide:max-w-[48rem]">
         <header className="flex flex-col gap-2">
@@ -162,8 +160,8 @@ function RecordPage({ id }: { id: number }) {
           </h1>
 
           {/**
-           * **The way to the retro** — *"the record page sure should give me
-           * option to go to the retro page."*
+           * **The way to the retro** — the record page offers a way to go to
+           * the retro page.
            *
            * It is the identity line itself rather than a button beside it: the
            * line already says which retrospective the record came from, in the
@@ -212,10 +210,9 @@ function RecordPage({ id }: { id: number }) {
         />
 
         {/**
-         * **What this record was said to have to do with other records**,
-         * in the band that already answers *data about
-         * this record*: between what it carries and the evidence behind its
-         * resolve.
+         * **What this record was said to have to do with other records**, in
+         * the band that already answers *data about this record*: between what
+         * it carries and the evidence behind its resolve.
          *
          * It is here rather than beside the timeline because a relation is not
          * something that happened to this record — it is a second record, with a
@@ -229,8 +226,8 @@ function RecordPage({ id }: { id: number }) {
         {/* The acts this record's state permits, and no others — the same
             controls the row offers, addressed to the same `(retroId, rid)`.
             They work on a closed retrospective by design, which is the whole
-            ask: *"even after a retro has been closed, we should be able to
-            attach metadata to issues."* */}
+            ask: even after a retro has been closed, metadata can still be
+            attached to its records. */}
         <div className="flex flex-wrap items-center gap-1" data-testid="record-actions">
           <LifecycleControl
             row={{ retroId: page.retroId, rid: page.record.rid, lifecycle: page.lifecycle }}

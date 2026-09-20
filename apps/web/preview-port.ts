@@ -25,9 +25,10 @@ import { fileURLToPath } from 'node:url'
  * eighty ports hands the same number to both.
  *
  * The range sits clear of every port this project allocates by hand — the
- * server, the dev server, the reference build, the old preview port, and the
- * review round. A stale worktree still previewing on 24302 is the collision most
- * likely to actually happen, so it is ruled out rather than merely made unlikely.
+ * server, the dev server, the reference build, the old preview port, and one
+ * further reserved port. A stale worktree still previewing on 24302 is the
+ * collision most likely to actually happen, so it is ruled out rather than
+ * merely made unlikely.
  */
 
 /** apps/web/preview-port.ts → apps/web → apps → the checkout root. */
@@ -62,7 +63,7 @@ export function derivePort(checkout: string, pid: number): number {
 /**
  * The ports nothing derived may land on: each of these is handed to
  * something by name — 24100 the server, 24300 `dev`, 24301 the reference build,
- * 24302 the preview port this replaces, 24310 the review round.
+ * 24302 the preview port this replaces, and 24310, reserved.
  */
 export const RESERVED_PORTS: readonly number[] = [24100, 24300, 24301, 24302, 24310]
 

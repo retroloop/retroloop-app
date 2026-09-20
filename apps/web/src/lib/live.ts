@@ -38,9 +38,8 @@ export type QueryFamily = 'records' | 'threads' | 'retros'
  *
  * `RevisionCreated` maps to **nothing**, and that is the one entry that must
  * stay empty: refetching there would move the records under the reviewer's
- * cursor the moment the AI filed a draft, which is the exact failure
- * "announce, don't swap" exists to prevent. The hook raises the
- * banner instead.
+ * cursor the moment the AI filed a draft, which is the exact failure "announce,
+ * don't swap" exists to prevent. The hook raises the banner instead.
  *
  * Every comment event carries `threads` as well as `records`:
  *
