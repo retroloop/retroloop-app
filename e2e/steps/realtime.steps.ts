@@ -13,7 +13,7 @@ import { Given, Then, When } from '../fixtures'
  * same standing-in-for-the-server move the CLI suite makes one layer down.
  *
  * It exists because `revision create` refuses to replace a round nobody has
- * finished (#113 `r-revision-sneaks-past-review`), and because doing it through
+ * finished (`r-revision-sneaks-past-review`), and because doing it through
  * the UI here would spend a dozen steps of a scenario whose subject is the SSE
  * stream. `revise` is the verdict the refusal itself names, so what follows is
  * the designed path rather than a detour around the gate.
@@ -43,14 +43,14 @@ Then('both pages announce revision {int}', async ({ reviewers }, revision: numbe
 })
 
 Then('neither page has swapped in the new content', async ({ reviewers, retro }) => {
-  // "Announce, don't swap" (KC-0005): the reviewer keeps reading what they were
-  // reading until they ask for the new draft, because a verdict has to bind to
-  // the content the person actually saw.
+  // "Announce, don't swap": the reviewer keeps reading what they were reading
+  // until they ask for the new draft, because a verdict has to bind to the
+  // content the person actually saw.
   const first = retro.state.rids[0] ?? ''
   for (const index of [0, 1]) {
     const page = reviewers.at(index)
-    // `revise` is the verdict the human left in the round he finished, and it is
-    // still what these pages show: they are reading revision 1.
+    // `revise` is the verdict the human left in the round they finished, and
+    // it is still what these pages show: they are reading revision 1.
     await expect(page.getByTestId(`record-${first}`).getByTestId('record-state')).toContainText(
       'revise',
     )

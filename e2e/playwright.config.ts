@@ -5,9 +5,6 @@ import { defineBddConfig } from 'playwright-bdd'
  * All-real e2e suite (suite 5 in docs/design/testing.md): real binary CLI, real
  * server, real browser contexts, real export file. Capped at ~3 scenarios — they
  * prove wiring only, because everything else is proven a layer down.
- *
- * The scenarios land with BACKLOG item 7; until then this config exists so the
- * runner is wired and the gate exercises it (`--pass-with-no-tests`).
  */
 const testDir = defineBddConfig({
   features: ['features/**/*.feature'],

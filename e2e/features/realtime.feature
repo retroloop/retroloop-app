@@ -6,10 +6,10 @@ Feature: Real time, across two browsers and a CLI
   Scenario: a new revision is announced to every open page, and a decision propagates
     Given a stage with the server running
     And the AI has filed a revision with 2 records
-    # The loop's rhythm, and since #113 `r-revision-sneaks-past-review` the only
-    # way a second revision lands: the human marks what he wants rewritten and
-    # finishes his round, and the AI's next draft answers it. It happens before
-    # the pages open so that this scenario stays about the stream.
+    # The loop's rhythm, and the only way a second revision lands: the human
+    # marks what is to be rewritten and finishes the round, and the AI's next
+    # draft answers it. It happens before the pages open so that this scenario
+    # stays about the stream.
     And the human has asked for a rewrite and finished the round
     And two reviewers have the review open
     When the AI files a second revision

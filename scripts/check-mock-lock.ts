@@ -179,6 +179,6 @@ if (findings.length > 0) {
 
 const mockState =
   mockModules.length === 0
-    ? `no mock module yet (${MOCK_MODULE} lands with BACKLOG item 6)`
+    ? `no mock module yet (${MOCK_MODULE} is not present)`
     : `single mock module: ${MOCK_MODULE}`
 console.log(`mock-lock: OK — ${files.length} file(s) scanned under ${WEB_DIR}/, ${mockState}`)

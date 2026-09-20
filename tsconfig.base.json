@@ -17,7 +17,7 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
 
-    /* Strict beyond `strict` — the compiler is the lie-check (KC-0001). */
+    /* Strict beyond `strict` — the compiler is the lie-check. */
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,

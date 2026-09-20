@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # The merge gate. Nothing reaches `main` that has not exited 0 here, and no
-# worker "done" is relayed to the owner before it has (CLAUDE.md).
+# change counts as done before it has (CLAUDE.md).
 #
 # Suites 1-6 of docs/design/testing.md, in the order that fails cheapest first:
 #
@@ -30,7 +30,7 @@ RESET=$'\033[0m'
 # `bun.lock` travels with git. `worktree add`, `merge` and `rebase` each move the
 # lockfile out from under the installed packages, and the drift then surfaces as a
 # 0-second `Cannot find module` typecheck that names nothing about install state —
-# three faces in one session, patched three times (retro-15 `r-install-state-drift`).
+# three faces of one fault, patched three times (`r-install-state-drift`).
 # The gate is the one choke point every git path crosses, so it reconciles here,
 # in front of the typecheck phase that would otherwise report the lag as a source
 # bug. `--frozen-lockfile` can resolve nothing new and rewrite nothing, so a lag

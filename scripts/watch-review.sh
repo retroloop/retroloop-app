@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
 #
 # The finish watch — one exit-on-event wait, and the certification that proves
-# the chain before anyone trusts it (retro-12 `r-monitor-notify-gap`, his
-# selected L3; retro-13 `r-fourth-finish-channel-failure`).
+# the chain before anyone trusts it (`r-monitor-notify-gap`,
+# `r-fourth-finish-channel-failure`).
 #
 # THE CHANNEL HAS FAILED FOUR TIMES, ONE HOP FURTHER ALONG EACH TIME:
 #
-#   retro 7  `r-finish-event-unnoticed`  — the press went unnoticed; the watcher
-#            was built. The hop fixed: nothing was watching.
-#   retro 9  `r-monitor-not-realtime`    — the watcher polled and slept 20s, so
-#            a press sat in the database for the length of the sleep. `review
-#            wait --follow` made it live. The hop fixed: store → wait latency.
-#   retro 12 `r-monitor-notify-gap`      — the watcher SAW the press, printed
-#            `review finished: revision 1` to a file, and told nobody: this
-#            harness re-invokes an agent when a background task EXITS, never
-#            when it prints a line. The hop fixed: watcher → agent.
-#   retro 13 `r-fourth-finish-channel-failure` — the harness killed the watcher
-#            twice from outside and the lead STOOD THE WATCH DOWN, asking the
-#            human to say "done" in chat. The hop that broke: watcher survival.
+#   `r-finish-event-unnoticed`
+#       — the press went unnoticed; the watcher was built.
+#         The hop fixed: nothing was watching.
+#   `r-monitor-not-realtime`
+#       — the watcher polled and slept 20s, so a press sat in the database for
+#         the length of the sleep. `review wait --follow` made it live.
+#         The hop fixed: store → wait latency.
+#   `r-monitor-notify-gap`
+#       — the watcher SAW the press, printed `review finished: revision 1` to a
+#         file, and told nobody: this harness re-invokes an agent when a
+#         background task EXITS, never when it prints a line.
+#         The hop fixed: watcher → agent.
+#   `r-fourth-finish-channel-failure`
+#       — the harness killed the watcher twice from outside and the watch was
+#         STOOD DOWN, asking the human to say "done" in chat.
+#         The hop that broke: watcher survival.
 #
 # Each fix repaired the hop that had just broken. None ever owned the chain
 # press → store → wait → watcher → agent as one system, so every hop nobody had
@@ -36,16 +40,16 @@
 #   watcher mid-wait, press while nothing at all is armed, re-arm, and prove the
 #   press is still delivered.
 #
-# NEVER STAND DOWN, RE-ARM ON KILL (retro-13, and it is doctrine now). While a
-# review is open the watch is never voluntarily abandoned. A kill is not a stop
-# gesture — it is a notification, which means re-arming costs one command and
-# leaves no window. The watch ends at review close, or on the human's explicit
-# word to stop watching, and on nothing else.
+# NEVER STAND DOWN, RE-ARM ON KILL — it is a standing rule now. While a review is
+# open the watch is never voluntarily abandoned. A kill is not a stop gesture —
+# it is a notification, which means re-arming costs one command and leaves no
+# window. The watch ends at review close, or on the human's explicit word to stop
+# watching, and on nothing else.
 #
 # Usage:
 #
 #   scripts/watch-review.sh <retroId> [--timeout <seconds>]
-#       Arms one wait. Exit 0 = he pressed Finish, and the event JSON is on
+#       Arms one wait. Exit 0 = Finish was pressed, and the event JSON is on
 #       stdout. Exit 7 = the timeout elapsed and nothing else; re-arm. Any other
 #       exit is an error; re-arm and read the message.
 #
@@ -100,8 +104,8 @@ if ! ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
 fi
 
 # ── what this runs ────────────────────────────────────────────────────────────
-# The repo's own CLI first and PATH second, which is the opposite of what an
-# agent reads in the skill — deliberately. A script that lives in `scripts/` is
+# The repo's own CLI first and PATH second, which is the opposite of the order
+# the retro skill tells an agent to use — deliberately. A script in `scripts/` is
 # being run against this checkout, and a `retro` on PATH may be an older
 # installed build; certify would then prove a chain that is not the one under
 # test.
@@ -164,7 +168,7 @@ arm() {
   # guidance has to already be in the output the notification carries.
   say "armed on retro $retro — one wait, ${timeout}s, and its EXIT is the notification."
   say 'hops: press → store → wait → watcher(this) → agent(the exit notification).'
-  say 'exit 0 = he pressed Finish; the event JSON is on stdout.'
+  say 'exit 0 = the human pressed Finish; the event JSON is on stdout.'
   say "exit 7 = the timeout elapsed and NOTHING else. Re-arm; do not read it as a decline."
   say 'any other exit = an error. Re-arm, and read the message.'
   say 'RE-ARM ON KILL: a killed watcher is re-armed immediately, never stood down.'
@@ -273,8 +277,8 @@ certify() {
   require_cli
   resolve_stage_tool ||
     refuse "no stage tool — certify presses Finish through e2e/support/stage-tool.ts,
-  which has no CLI surface because finishing is the human's (KC-0010). Run this
-  from the repo, or set WATCH_REVIEW_STAGE_TOOL."
+  which has no CLI surface because finishing is the human's. Run this from the
+  repo, or set WATCH_REVIEW_STAGE_TOOL."
 
   CERTIFY_HOME="$(mktemp -d "${TMPDIR:-/tmp}/retro-watch-certify-XXXXXX")"
   CERTIFY_STAGE="$CERTIFY_HOME/data"
@@ -343,7 +347,7 @@ certify() {
   fi
 
   # ── leg 3 · the killed-watcher drill ───────────────────────────────────────
-  # retro-13's hop, and the one the approved fix would NOT have survived on its
+  # The fourth hop, and the one the approved fix would NOT have survived on its
   # own: this script's wait is the same task shape the harness killed twice. The
   # drill presses while NOTHING is armed, which is the harder claim — not "a
   # re-arm works" but "the gap costs nothing", because the wait listens from the
@@ -369,7 +373,7 @@ certify() {
 
   pressed="$(press_finish "$retro")" ||
     fail "the stage-tool could not press Finish while unwatched: $pressed"
-  say "pressed with NOTHING armed — this is the window retro 13 lost a press in"
+  say "pressed with NOTHING armed — this is the window a press was once lost in"
 
   started=$SECONDS
   event="$(stage_cli review wait --follow --retro "$retro" --timeout "$CERTIFY_TIMEOUT")"
@@ -406,7 +410,7 @@ verdict() {
   printf '\n' >&2
   if [[ $LEGS_FAILED -gt 0 ]]; then
     say "CERTIFICATION FAILED — $LEGS_FAILED leg(s) did not hold."
-    say 'Do NOT trust this bridge with his press. Say so in the handoff.'
+    say 'Do NOT trust this bridge with a real press. Say so in the handoff.'
     return 1
   fi
 
@@ -462,8 +466,8 @@ RETRO_ID="$1"
 shift
 [[ "$RETRO_ID" =~ ^[0-9]+$ ]] ||
   refuse "$RETRO_ID is not a retro id. The id is the number 'revision create' answered
-  with — not the retrospective's ordinal, and not the session's (SKILL.md, the names
-  and numbers). Or did you mean: scripts/watch-review.sh certify"
+  with — not the retrospective's ordinal, and not the session's. Or did you mean:
+  scripts/watch-review.sh certify"
 
 TIMEOUT="$DEFAULT_TIMEOUT"
 while [[ $# -gt 0 ]]; do

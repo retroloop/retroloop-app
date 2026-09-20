@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
 
 /**
- * R-MOCK-LOCK enforcement — the fourth direction (retro 6 `r-mock-extra-field-blind`).
+ * R-MOCK-LOCK enforcement — the fourth direction (`r-mock-extra-field-blind`).
  *
  * `mockRouter satisfies MockRouter` fails the build on a missing procedure, an
  * extra procedure and a mistyped field. It does **not** fail on an extra field
  * canned into a procedure's answer, and that is not an oversight anyone can fix
  * in the mock: TypeScript infers an arrow handler's return type from its literal
  * and then checks the whole function type for assignability, so excess-property
- * checking never fires on the returned object. A mock-lock seat proved it with
- * an isolated repro in session 7 — extra procedure, missing procedure and
- * mistyped field all fail; an extra field compiles clean. Layer 2's text scan
- * cannot see it either, which left the reviewer agent as the only detector for a
- * re-canned derived field, and that is the most expensive one the repo runs.
+ * checking never fires on the returned object. An isolated repro proved it —
+ * extra procedure, missing procedure and mistyped field all fail; an extra field
+ * compiles clean. Layer 2's text scan cannot see it either, which left the
+ * reviewer agent as the only detector for a re-canned derived field, and that is
+ * the most expensive one the repo runs.
  *
  * So this script runs every mock procedure against the mock's own fixture world
  * and hands each answer to the schema the real router validates that answer
@@ -66,7 +66,7 @@ type ParseIssue = {
 
 type ProcedureDef = { readonly type: string; readonly output?: Parser }
 
-/* ── the reserved names (retro 11 `r-trpc-reserved-names`) ────────────────── */
+/* ── the reserved names (`r-trpc-reserved-names`) ─────────────────────────── */
 
 /**
  * The three keys tRPC will not let a router carry, read verbatim out of
@@ -76,9 +76,9 @@ type ProcedureDef = { readonly type: string; readonly output?: Parser }
  * `Function.prototype` and with thenable detection.
  *
  * **They are legal TypeScript and illegal tRPC.** A procedure named `apply`
- * typechecks clean in all four packages — the labels lane shipped one, and the
- * only thing that ever said no was `createRouterFactory` at the moment the
- * router was built. The shipped answer is a naming split: the wire procedure is
+ * typechecks clean in all four packages — one was shipped, and the only thing
+ * that ever said no was `createRouterFactory` at the moment the router was
+ * built. The shipped answer is a naming split: the wire procedure is
  * `labels.set` while the App keeps the domain's `labels.apply`
  * (`apps/api/src/trpc/routers/labels.router.ts`), and until now that split was
  * documented in one file's header, which protects one router and nobody else.
@@ -245,7 +245,7 @@ function definitionId(path: 'labels.list' | 'attributes.list', name: string): nu
 
 /**
  * **This is the third list that pins the procedure set, and it is the one that
- * does it silently** (retro 7 `r-parity-plan-discipline`).
+ * does it silently** (`r-parity-plan-discipline`).
  *
  * `apps/api/test/procedures.test.ts` and `apps/web/test/procedure-set.spec.ts`
  * both name the twenty-nine out loud, so adding a procedure fails them by name.
@@ -428,7 +428,7 @@ const PLAN: readonly Step[] = [
    * lifecycle fields; here it is a whole arm of a union.
    */
   /**
-   * **The two vocabularies, and what records wear from them** (session 10).
+   * **The two vocabularies, and what records wear from them.**
    *
    * The three reads run first here rather than last, and that is not the
    * *mutate-before-you-read* rule being ignored — it is the rule being already
@@ -676,7 +676,7 @@ export function checkMockParity(router: Record<string, Handler> = handlers): Fin
   const findings: Finding[] = []
 
   // Before anything is enumerated, because a router that would not build has
-  // nothing to enumerate (retro 11 `r-trpc-reserved-names`).
+  // nothing to enumerate (`r-trpc-reserved-names`).
   if (realRouter.failure !== undefined) return [realRouter.failure]
 
   const mocked = Object.keys(router).sort()
