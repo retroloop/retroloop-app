@@ -64,8 +64,8 @@ export function describeRevisionRepositoryContract(label: string, makeStore: Sto
     })
 
     /**
-     * The retrospective's name rides on the revision that proposed it.
-     * A revision filed before titles existed has none, and both stores have to
+     * The retrospective's name rides on the revision that proposed it. A
+     * revision filed before titles existed has none, and both stores have to
      * say so as `undefined` — never as an empty string, which would render as a
      * retro whose name is a blank.
      */
@@ -107,9 +107,9 @@ export function describeRevisionRepositoryContract(label: string, makeStore: Sto
 
     /**
      * What the dashboard reads: the newest draft of every retrospective in one
-     * go, because the retro's name and its record counts both come from it.
-     * A retrospective with no revision is simply absent — it has no
-     * latest draft to report, and inventing an empty one would give it a name.
+     * go, because the retro's name and its record counts both come from it. A
+     * retrospective with no revision is simply absent — it has no latest draft
+     * to report, and inventing an empty one would give it a name.
      */
     test('finds the latest revision of every retrospective at once', async () => {
       await store.revisions.add(aNewRevision(1))

@@ -11,10 +11,10 @@ import { createHarness, type Harness } from '../support/harness'
  * number, so that records carrying it can be queried on it.
  *
  * The vocabulary half of this file is the label file's twin and is kept short
- * for that reason (`labels.test.ts` carries the arguments). What is here that is
- * not there is the type: four of them, validated exactly as far as each one's
- * name promises, with fixed types rather than a general validation config so
- * there is no configuration surface to get wrong.
+ * for that reason (`labels.test.ts` carries the arguments). What is here that
+ * is not there is the type: four of them, validated exactly as far as each
+ * one's name promises, with fixed types rather than a general validation config
+ * so there is no configuration surface to get wrong.
  */
 describe('attributes', () => {
   let harness: Harness
@@ -54,7 +54,7 @@ describe('attributes', () => {
 
     /**
      * **The two vocabularies do not collide with each other**, and that is the
-     * ruling rather than an oversight: labels and attributes are pure and
+     * design rather than an oversight: labels and attributes are pure and
      * independent, so a label called `migrated` and an attribute called
      * `migrated` are two different things and refusing the pair would be the
      * system enforcing a relationship that does not exist.
@@ -128,8 +128,8 @@ describe('attributes', () => {
         'rename',
         'retire',
         'set',
-        // Retire's inverse (`r-retire-burns-a-word`) — and still no
-        // `retype`, which is the absence this assertion exists for.
+        // Retire's inverse (`r-retire-burns-a-word`) — and still no `retype`,
+        // which is the absence this assertion exists for.
         'unretire',
       ])
     })

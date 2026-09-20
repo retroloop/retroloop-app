@@ -44,22 +44,22 @@ export type Harness = {
   /**
    * A stored `hold` verdict — the one state no write path can produce any more.
    *
-   * `r-hold-semantics` narrowed the input enum, and human data is
-   * append-only, so a store written before that still carries rows in it and
-   * every read path has to go on answering for one. The only way to build that
-   * store in a test is the way it happened: straight into the repository, past
-   * the schema that would refuse it today.
+   * `r-hold-semantics` narrowed the input enum, and human data is append-only,
+   * so a store written before that still carries rows in it and every read path
+   * has to go on answering for one. The only way to build that store in a test
+   * is the way it happened: straight into the repository, past the schema that
+   * would refuse it today.
    */
   holdVerdict(retroId: number, rid: string): Promise<void>
   /**
    * The human's half of one round: decide whatever is still pending, then press
    * Finish.
    *
-   * It exists because filing a second revision is no longer something the AI can
-   * simply do (`r-revision-sneaks-past-review`) — a round has to be finished
-   * before the next one may replace it, which is the loop's own rhythm and is now
-   * the write path's rule as well. A test that wants two revisions runs the
-   * rhythm rather than pretending the gate is not there.
+   * It exists because filing a second revision is no longer something the AI
+   * can simply do (`r-revision-sneaks-past-review`) — a round has to be
+   * finished before the next one may replace it, which is the loop's own rhythm
+   * and is now the write path's rule as well. A test that wants two revisions
+   * runs the rhythm rather than pretending the gate is not there.
    *
    * Approves what is pending because the finish gate demands an answer on every
    * record and this helper is for tests whose subject is something else; a test
@@ -70,8 +70,8 @@ export type Harness = {
    * The end of the loop, both halves: the human finishes his side of the round
    * and the AI closes the review to export. It takes two acts since
    * `r-one-finish-button` — a finished retrospective is what `ReviewClosed`
-   * makes, so a test that wants one runs both rather than pretending the
-   * button still did it.
+   * makes, so a test that wants one runs both rather than pretending the button
+   * still did it.
    */
   closeReview(retroId: number): Promise<void>
   /** Every event name in the outbox, in order. */

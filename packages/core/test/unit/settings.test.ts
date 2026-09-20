@@ -4,15 +4,15 @@ import { AiConfigWriteDisabledError } from '#domain/services/config-write.servic
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * **A config page toggle the user can enable to let the AI update the
- * configs — disabled, the user can be certain the AI will not touch them —
- * and the tests that make that a guarantee rather than a convention.**
+ * **A config page toggle the user can enable to let the AI update the configs —
+ * disabled, the user can be certain the AI will not touch them — and the tests
+ * that make that a guarantee rather than a convention.**
  *
- * Being certain is what this file is about. Everything below is
- * asserted **through the App**, below every adapter, because that is where the
+ * Being certain is what this file is about. Everything below is asserted
+ * **through the App**, below every adapter, because that is where the
  * enforcement lives: a page could be bypassed, a tRPC call could be
- * hand-rolled, and the AI runs in its own process against the same SQLite
- * file. Nothing here goes near a transport.
+ * hand-rolled, and the AI runs in its own process against the same SQLite file.
+ * Nothing here goes near a transport.
  */
 describe('the AI-config-write toggle', () => {
   let harness: Harness
@@ -112,11 +112,11 @@ describe('the AI-config-write toggle', () => {
   /**
    * **The whole point of the switch, from the AI's side.** Eight definition
    * writes, every one of them refused while it is off and accepted while it is
-   * on — the base six plus the un-retire pair (`r-retire-burns-a-word`). An
-   * act that the AI could take while the switch was off would be a hole in
-   * the guarantee that the AI cannot touch configs while it is disabled, and
-   * un-retire puts a word back into the vocabulary, which is exactly that
-   * kind of change.
+   * on — the base six plus the un-retire pair (`r-retire-burns-a-word`). An act
+   * that the AI could take while the switch was off would be a hole in the
+   * guarantee that the AI cannot touch configs while it is disabled, and
+   * un-retire puts a word back into the vocabulary, which is exactly that kind
+   * of change.
    *
    * The refusal is typed — `AiConfigWriteDisabledError`, carrying the
    * `FORBIDDEN_ACTOR` code — so it arrives as FORBIDDEN over tRPC and as exit 5
@@ -264,8 +264,8 @@ describe('the AI-config-write toggle', () => {
   /**
    * **The switch governs the configuration and nothing else.** Applying a label
    * and setting a value are human-only *whatever it says* — that write side is
-   * left for a later change by design, and the toggle is only about the
-   * ability to update the configs.
+   * left for a later change by design, and the toggle is only about the ability
+   * to update the configs.
    */
   test('does not open the record write side to the AI, in either position', async () => {
     const session = await harness.session()

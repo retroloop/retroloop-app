@@ -23,8 +23,8 @@ const MIGRATION = MIGRATIONS[INDEX]
  * handle a record has, a self-relation the store cannot hold, one version
  * sequence per **ordered** pair, and words that are never null.
  *
- * The seeded store is the shape the feature exists for — two retrospectives, one
- * of them closed long ago — because the relation exists for the case that
+ * The seeded store is the shape the feature exists for — two retrospectives,
+ * one of them closed long ago — because the relation exists for the case that
  * crosses them: the AI finding past records and building holistic solutions.
  */
 function storeBeforeTheMigration(): Database {

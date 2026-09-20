@@ -9,19 +9,19 @@ import { aLegacyRecord } from '../support/fixtures'
  * keeps its decision.
  *
  * The whole of that promise reduces to one number. A decision binds to a
- * canonical-JSON hash of the record's narrative (D2), and a record whose hash no
- * longer matches goes back to `pending` — so if adding `solutions` to
- * `recordContent()` changed what a legacy record hashes to, every decided record
- * in production would have silently un-decided itself on
- * the first read after the upgrade.
+ * canonical-JSON hash of the record's narrative (D2), and a record whose hash
+ * no longer matches goes back to `pending` — so if adding `solutions` to
+ * `recordContent()` changed what a legacy record hashes to, every decided
+ * record in production would have silently un-decided itself on the first read
+ * after the upgrade.
  *
  * `LEGACY_CONTENT_HASH` is pinned against the encoding in force, over the
  * `aLegacyRecord()` fixture below. It is a constant here rather than a
- * comparison against a rebuilt record on purpose: a test that hashes twice
- * with the same code passes however wrong that code is, and this one has to
- * fail if `recordContent()` changes what a legacy record hashes to.
+ * comparison against a rebuilt record on purpose: a test that hashes twice with
+ * the same code passes however wrong that code is, and this one has to fail if
+ * `recordContent()` changes what a legacy record hashes to.
  */
-const LEGACY_CONTENT_HASH = 'b2a306e0419b2347760ece5974276e45968104d952bf5c2f45b962fe14c1498e'
+const LEGACY_CONTENT_HASH = 'c6530e1b49f7fec3e0936a3e98b68fbfdb90c01b0305dcdc01570a3553861457'
 
 describe('a record filed before solutions existed', () => {
   test('hashes to its pinned content hash', () => {
@@ -31,7 +31,8 @@ describe('a record filed before solutions existed', () => {
   test('keeps the decision that was made against it', () => {
     const record = aLegacyRecord()
     // As a production store holds it: approved on revision 1, bound to the hash
-    // above, and read back on a later revision by a binary that knows solutions.
+    // above, and read back on a later revision by a binary that knows
+    // solutions.
     const decision: Decision = {
       id: 1,
       retroId: 1,
@@ -63,9 +64,9 @@ describe('a record filed before solutions existed', () => {
    * and the hash the decision is bound to is the constant above.
    *
    * The second half is the redraft: a record already decided gets re-filed,
-   * this time with the evidence the new schema requires. That must not
-   * move the hash, or every carried-over verdict in production would
-   * go back to pending on the first draft written under the new contract.
+   * this time with the evidence the new schema requires. That must not move the
+   * hash, or every carried-over verdict in production would go back to pending
+   * on the first draft written under the new contract.
    */
   test('carries no diagnostic data, and gains none without moving the hash', () => {
     expect(aLegacyRecord().diagnosticData).toBeUndefined()

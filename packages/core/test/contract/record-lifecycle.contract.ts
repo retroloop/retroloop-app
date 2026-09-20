@@ -199,10 +199,9 @@ export function describeRecordLifecycleRepositoryContract(
 
     /**
      * **The whole history of one record, which is what the table was
-     * append-only for** — the record page's timeline. Until it
-     * existed, every reader of this table asked only for the version in force,
-     * so "resolved on the 29th citing abc123, reopened on the 30th" was stored
-     * and unreadable.
+     * append-only for** — the record page's timeline. Until it existed, every
+     * reader of this table asked only for the version in force, so "resolved on
+     * the 29th citing abc123, reopened on the 30th" was stored and unreadable.
      *
      * Oldest first by `version`, not by `id`: `version` is the order the acts
      * were taken in per record, and it is the column the store's own uniqueness

@@ -27,9 +27,9 @@ import { describeThreadResolutionRepositoryContract } from './thread-resolution.
 /**
  * The memory store against every repository contract (testing.md suite 1).
  *
- * Item 3 adds `sqlite.contract.test.ts` next to this file, calling the same
- * functions with a temp-file store. Two implementations, one set of tests — which
- * is the only way "the memory adapter behaves like the real thing" can be a fact
+ * `sqlite.contract.test.ts` sits next to this file, calling the same functions
+ * with a temp-file store. Two implementations, one set of tests — which is the
+ * only way "the memory adapter behaves like the real thing" can be a fact
  * rather than a hope.
  *
  * The last four suites are read models rather than repositories: `retros.list`

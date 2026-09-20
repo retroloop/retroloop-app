@@ -9,10 +9,10 @@ import type { StoreFactory } from './store.contract'
 /**
  * `records.listAll`, against every adapter (testing.md suite 1).
  *
- * Here for the reason `list-retros.contract.ts` is: it is a use case rather than
- * a repository, and it is a **fold over five reads** — an ordinal counted within
- * a session, a verdict that may or may not still bind, a proposed level that
- * depends on which of two shapes the record was filed in, and a lifecycle
+ * Here for the reason `list-retros.contract.ts` is: it is a use case rather
+ * than a repository, and it is a **fold over five reads** — an ordinal counted
+ * within a session, a verdict that may or may not still bind, a proposed level
+ * that depends on which of two shapes the record was filed in, and a lifecycle
  * derived from the entry in force. Proving that against the memory store alone
  * would leave the one thing worth proving unproven: that the store used in
  * production answers identically.
@@ -118,9 +118,9 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /**
      * Newest first is retro id descending; the ordinal is the retrospective's
-     * position **within its session**, so the newest row here is "#1"
-     * of the second session while an older one is "#2" of the first — exactly
-     * the distinction the identity line exists to draw.
+     * position **within its session**, so the newest row here is "#1" of the
+     * second session while an older one is "#2" of the first — exactly the
+     * distinction the identity line exists to draw.
      *
      * Within a retrospective the order is `num` ascending: the order the
      * reviewer read them in. Both directions in one assertion, because getting
@@ -401,11 +401,12 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     })
 
     /**
-     * **Both record shapes, in one listing.** A legacy record's proposed level is
-     * the field its draft authored; a solutions record has no such field and the
-     * level is the recommended solution's. `proposedLevel()` answers both, and a
-     * page that reached for `defaults.solutionLevel` directly would read
-     * `undefined` on every record filed since solutions carried their own levels.
+     * **Both record shapes, in one listing.** A legacy record's proposed level
+     * is the field its draft authored; a solutions record has no such field and
+     * the level is the recommended solution's. `proposedLevel()` answers both,
+     * and a page that reached for `defaults.solutionLevel` directly would read
+     * `undefined` on every record filed since solutions carried their own
+     * levels.
      */
     test('reads the proposed level of both record shapes', async () => {
       const sessionId = await startSession('uuid-shapes', '/Users/sample/Developer/retro')

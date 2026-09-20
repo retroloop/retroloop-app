@@ -40,8 +40,8 @@ describe('createApp', () => {
       'attributes.retire',
       'attributes.set',
       // Retire's inverse, and the two of them arrived close together:
-      // `r-retire-burns-a-word` made a mis-press a two-press round
-      // trip rather than a permanently burned word.
+      // `r-retire-burns-a-word` made a mis-press a two-press round trip rather
+      // than a permanently burned word.
       'attributes.unretire',
       'decisions.record',
       'events.list',
@@ -79,10 +79,9 @@ describe('createApp', () => {
       'records.list',
       'records.listAll',
       // Two records said to belong together, in the words of whoever relates
-      // them — or the relation taken off. One
-      // entry rather than two, because relating and un-relating are on and off
-      // and the boolean widened the input rather than the surface
-      // (`relate-records.use-case.ts`).
+      // them — or the relation taken off. One entry rather than two, because
+      // relating and un-relating are on and off and the boolean widened the
+      // input rather than the surface (`relate-records.use-case.ts`).
       'records.relate',
       'records.setLifecycle',
       'retros.list',
@@ -175,8 +174,8 @@ describe('the core loop', () => {
       text: 'This understates the cost. Say how long the suite actually takes.',
     })
     // The one button needs every record decided, so the record he wants
-    // rewritten gets the verdict that says so (`r-verdict-revise`) —
-    // and then he presses Finish, which is the only terminal action on the page
+    // rewritten gets the verdict that says so (`r-verdict-revise`) — and then
+    // he presses Finish, which is the only terminal action on the page
     // (`r-one-finish-button`).
     await harness.decide(first.retroId, 'r-slow-tests', 'revise')
     await harness.app.review.finish.execute({ actor: 'human', retro: { retroId: first.retroId } })

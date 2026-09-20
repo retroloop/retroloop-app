@@ -42,8 +42,8 @@ describe('sessions', () => {
     })
 
     /**
-     * The project construct is off the critical path: one project
-     * routinely holds several software packages, so it was the wrong unit. The
+     * The project construct is off the critical path: one project routinely
+     * holds several software packages, so it was the wrong unit. The
      * registration still has to succeed and still has to announce itself — the
      * session's identity is its uuid and its cwd, and neither of those moved.
      */

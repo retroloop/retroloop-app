@@ -34,8 +34,8 @@ function records(...entries: readonly (readonly [string, number])[]): string {
 
 /**
  * Two sessions, three retrospectives, seven records, and one of them withdrawn
- * by a later draft — the fixture production data is a bigger version of,
- * plus the one case it does not have.
+ * by a later draft — the fixture production data is a bigger version of, plus
+ * the one case it does not have.
  */
 function seededDatabaseBeforeTheMigration(): Database {
   const db = new Database(join(createTempStage(), 'retro.db'), { create: true })

@@ -218,10 +218,9 @@ describe('comment threads', () => {
   })
 
   /**
-   * A comment shows the revision it is associated with, but shows across
-   * every revision. The thread stays put across revisions
-   * — it is keyed on `(retroId, rid, section)` — and each message says which
-   * draft it answers.
+   * A comment shows the revision it is associated with, but shows across every
+   * revision. The thread stays put across revisions — it is keyed on `(retroId,
+   * rid, section)` — and each message says which draft it answers.
    */
   describe('the revision a comment was written against', () => {
     test('stamps the latest revision when the writer names none — the CLI’s path', async () => {
@@ -249,9 +248,9 @@ describe('comment threads', () => {
     })
 
     /**
-     * A revision is announced and never swapped in, so the reviewer
-     * can still be reading revision 1 while revision 3 exists — and what they
-     * write belongs to what they were reading, not to what was newest.
+     * A revision is announced and never swapped in, so the reviewer can still
+     * be reading revision 1 while revision 3 exists — and what they write
+     * belongs to what they were reading, not to what was newest.
      */
     test('stores the revision the writer names, even when a newer one exists', async () => {
       await harness.finishRound(retroId)
@@ -325,8 +324,8 @@ describe('comment threads', () => {
   })
 
   /**
-   * `r-resolvable-comments`: only the human can mark a comment resolved,
-   * never the AI.
+   * `r-resolvable-comments`: only the human can mark a comment resolved, never
+   * the AI.
    */
   describe('resolve', () => {
     async function aThread(): Promise<number> {

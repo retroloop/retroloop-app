@@ -178,10 +178,10 @@ describe('labels', () => {
     })
 
     /**
-     * **Retire is reversible, and that is the whole of `r-retire-burns-a-word`**
-     * — a retired definition can be brought back to offerable by the human:
-     * same row, same one-press shape, no history rewritten, the name never
-     * freed either way.
+     * **Retire is reversible, and that is the whole of
+     * `r-retire-burns-a-word`** — a retired definition can be brought back to
+     * offerable by the human: same row, same one-press shape, no history
+     * rewritten, the name never freed either way.
      *
      * The round trip is asserted as a return to the *same row*, not merely to an
      * offerable one: a store that answered by minting a fresh definition would
@@ -329,9 +329,9 @@ describe('labels', () => {
     })
 
     /**
-     * **Human-only this session**, whatever the AI-config-write toggle says: the
-     * toggle governs the definitions, and whether the AI may mark up its own
-     * draft records is a question the design deliberately leaves open
+     * **Human-only this session**, whatever the AI-config-write toggle says:
+     * the toggle governs the definitions, and whether the AI may mark up its
+     * own draft records is a question the design deliberately leaves open
      * (`settings.test.ts` asserts both positions of the switch).
      */
     test('is refused to the AI', async () => {

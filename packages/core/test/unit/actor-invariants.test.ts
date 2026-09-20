@@ -82,8 +82,8 @@ const INVARIANTS: readonly Invariant[] = [
   },
   /**
    * The human's verdict on a *conversation* (`r-resolvable-comments`). The AI
-   * may answer a thread — comments are the one write both actors make — and
-   * it may never declare one dealt with: only the human may mark a comment
+   * may answer a thread — comments are the one write both actors make — and it
+   * may never declare one dealt with: only the human may mark a comment
    * resolved, never the AI.
    */
   {
@@ -182,9 +182,9 @@ describe('actor invariants', () => {
      * - `threads.addComment` — the CLI writes the AI's replies, the UI writes
      *   the human's (D4).
      * - `records.setLifecycle` — the AI marks what it fixed, the human marks
-     *   from the browser. This is the one
-     *   append-only table with an `actor` column, precisely because it is the
-     *   one whose author cannot be inferred from the table.
+     *   from the browser. This is the one append-only table with an `actor`
+     *   column, precisely because it is the one whose author cannot be inferred
+     *   from the table.
      * - `records.claim` — whoever does the work holds the record, and that is
      *   the AI most of the time and the human sometimes (`record-claim.model.ts`).
      */
@@ -230,12 +230,12 @@ describe('actor invariants', () => {
    * **The exception inside the exception.**
    *
    * `record_lifecycle` is the one table both actors write, which is why it has
-   * an `actor` column at all — but that was decided for *resolving*, a report of
-   * work the AI did. Archiving is a judgment about what is worth looking at, and
-   * it stays human-only: the user can archive or unarchive a record at will, but
-   * the AI cannot. So the guard is per act, and it lives in the use case
-   * rather than at a transport, which is what this asserts: the AI is refused
-   * through the same call the browser makes.
+   * an `actor` column at all — but that was decided for *resolving*, a report
+   * of work the AI did. Archiving is a judgment about what is worth looking at,
+   * and it stays human-only: the user can archive or unarchive a record at
+   * will, but the AI cannot. So the guard is per act, and it lives in the use
+   * case rather than at a transport, which is what this asserts: the AI is
+   * refused through the same call the browser makes.
    */
   test('archiving and unarchiving are the human’s, on the table both actors write', async () => {
     for (const status of ['archived', 'unarchived'] as const) {
@@ -269,12 +269,12 @@ describe('actor invariants', () => {
 
   describe('nothing is ever deleted, and nothing is ever inferred from silence', () => {
     test('no repository offers a way to update or delete a stored row', () => {
-      // Human data is append-only and revisions are immutable. At this layer the
-      // enforcement *is* the absence of the method (item 3 adds SQLite triggers
-      // underneath). The mutators that do exist are not edits: two are state
+      // Human data is append-only and revisions are immutable. At this layer
+      // the enforcement *is* the absence of the method (SQLite triggers back it
+      // up underneath). The mutators that do exist are not edits: two are state
       // machines, and `cursors.save` moves a reader's position — the one row in
-      // the database that records progress rather than history, and therefore the
-      // one that is meant to be overwritten.
+      // the database that records progress rather than history, and therefore
+      // the one that is meant to be overwritten.
       const writers: Record<keyof Repositories, readonly string[]> = {
         sessions: ['add'],
         retrospectives: ['add', 'setState'],
@@ -334,18 +334,18 @@ describe('actor invariants', () => {
          */
         recordClaims: ['add'],
         // The human's permission switch, versioned — and this is the one table
-        // where the history *is* the feature: being certain the AI cannot
-        // touch the configs is a claim about the past as much as the
-        // present (`setting.model.ts`).
+        // where the history *is* the feature: being certain the AI cannot touch
+        // the configs is a claim about the past as much as the present
+        // (`setting.model.ts`).
         settings: ['add'],
         notes: ['add'],
         annotations: ['add'],
         threads: ['addThread', 'addComment'],
         threadResolutions: ['add'],
         // Same standing as `holds` above: no use case reaches these any more
-        // (`r-remove-requests`), and they are still listed, because
-        // append-only is a property of this layer rather than of whoever
-        // happens to call it this year.
+        // (`r-remove-requests`), and they are still listed, because append-only
+        // is a property of this layer rather than of whoever happens to call it
+        // this year.
         requests: ['add', 'addResponse', 'close'],
         events: ['append'],
         cursors: ['save'],

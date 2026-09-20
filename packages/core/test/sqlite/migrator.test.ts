@@ -85,8 +85,8 @@ describe('migrator', () => {
         // every migration's SQL one statement at a time — which is the only way
         // a runtime failure in any of them reaches this test at all. A raw
         // `Database` is structurally acceptable here and would quietly put
-        // every one of them back on the swallowing path, so the wrapping is
-        // the assertion. (It used to assert an exact migration count until more
+        // every one of them back on the swallowing path, so the wrapping is the
+        // assertion. (It used to assert an exact migration count until more
         // were added, which is why it counts nothing now.)
         const checked = checkedDb(db)
 

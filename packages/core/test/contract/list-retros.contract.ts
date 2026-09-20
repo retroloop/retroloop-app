@@ -11,10 +11,10 @@ import type { StoreFactory } from './store.contract'
  * The suites beside this one are per repository; this one is a use case, and it
  * is here for the same reason they are. The dashboard's row is assembled from
  * four reads and a fold over their results — an ordinal counted within a
- * session, a name taken from the newest draft, counts derived from verdicts that
- * may or may not still bind (D2). Proving that against the memory store alone
- * would leave the one thing worth proving unproven: that the store actually
- * used in production answers identically.
+ * session, a name taken from the newest draft, counts derived from verdicts
+ * that may or may not still bind (D2). Proving that against the memory store
+ * alone would leave the one thing worth proving unproven: that the store
+ * actually used in production answers identically.
  */
 export function describeListRetrosContract(label: string, makeStore: StoreFactory): void {
   describe(`${label} · ListRetrosUseCase`, () => {
@@ -69,9 +69,9 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
 
     /**
      * Newest first is retro id descending, and the ordinal is the position
-     * *within the session* — so the newest row can be "#1" while an
-     * older one is "#2", which is exactly the distinction the identity line
-     * exists to draw.
+     * *within the session* — so the newest row can be "#1" while an older one
+     * is "#2", which is exactly the distinction the identity line exists to
+     * draw.
      */
     test('lists every session’s retrospectives together, newest first, numbered per session', async () => {
       const first = await startSession('uuid-first', '/Users/sample/Developer/retro')
@@ -134,8 +134,8 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
 
     /**
      * The latest revision's title wins, and silence in a later draft is not a
-     * vote for the previous answer. The "Retro #n — <cwd
-     * basename>" fallback is the reader's, not this row's: absent stays absent.
+     * vote for the previous answer. The "Retro #n — <cwd basename>" fallback is
+     * the reader's, not this row's: absent stays absent.
      */
     test('takes its name from the latest revision, and has none when that revision proposed none', async () => {
       const sessionId = await startSession('uuid-title', '/Users/sample/Developer/retro')
@@ -149,12 +149,11 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
 
     /**
      * The fourth word on the dashboard's own row, against the store actually
-     * used in production — which is the reason this suite is a
-     * contract rather than a unit test. `submitted` is the only value on this
-     * row with no column behind it: it is read out of the `ReviewFinished`
-     * events by the fifth read this use case was widened to make, and an adapter
-     * whose events table answered that filter differently would be invisible
-     * anywhere else.
+     * used in production — which is the reason this suite is a contract rather
+     * than a unit test. `submitted` is the only value on this row with no
+     * column behind it: it is read out of the `ReviewFinished` events by the
+     * fifth read this use case was widened to make, and an adapter whose events
+     * table answered that filter differently would be invisible anywhere else.
      *
      * All three readings in one walk, because the boundaries are the claim.
      */

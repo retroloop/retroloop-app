@@ -8,14 +8,14 @@ import type { StoreFactory } from './store.contract'
 /**
  * `records.byId`, against every adapter (testing.md suite 1).
  *
- * Here for the reason `list-all-records.contract.ts` and `list-retros.contract.ts`
- * are: it is a use case rather than a repository, and it is a **fold over six
- * reads** — a number resolved backwards into the pair that addresses a record,
- * an ordinal counted within a session, the verdict in effect against the latest
- * draft, the lifecycle in force, and a timeline stitched out of three tables
- * that each keep their own clock. Proving that against the memory store alone
- * would leave the one thing worth proving unproven: that the store used in
- * production answers identically.
+ * Here for the reason `list-all-records.contract.ts` and
+ * `list-retros.contract.ts` are: it is a use case rather than a repository, and
+ * it is a **fold over six reads** — a number resolved backwards into the pair
+ * that addresses a record, an ordinal counted within a session, the verdict in
+ * effect against the latest draft, the lifecycle in force, and a timeline
+ * stitched out of three tables that each keep their own clock. Proving that
+ * against the memory store alone would leave the one thing worth proving
+ * unproven: that the store used in production answers identically.
  *
  * The fixture is deliberately awkward — **two retrospectives that mint the same
  * rid**, a redraft that sends a decided record back to pending, and a record
@@ -105,8 +105,8 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       expect(second.retroId).toBe(there)
       expect(second.record.record.title).toBe('The lock, again')
       expect(second.record.globalId).not.toBe(first.record.globalId)
-      // The second retrospective of the same session, which is what the identity
-      // line prints — and it is a position rather than an id.
+      // The second retrospective of the same session, which is what the
+      // identity line prints — and it is a position rather than an id.
       expect(first.retroNumber).toBe(1)
       expect(second.retroNumber).toBe(2)
     })

@@ -13,9 +13,9 @@ import { lifecycleActPermitted } from '#domain/services/record-lifecycle.service
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * `SetRecordLifecycleUseCase` — the record's second axis: once the AI fixes
- * an issue, there needs to be a way to show it was resolved, citing a commit
- * id or a GitHub issue or something else as a reference so it is easy to see.
+ * `SetRecordLifecycleUseCase` — the record's second axis: once the AI fixes an
+ * issue, there needs to be a way to show it was resolved, citing a commit id or
+ * a GitHub issue or something else as a reference so it is easy to see.
  */
 describe('record lifecycle', () => {
   let harness: Harness
@@ -146,10 +146,10 @@ describe('record lifecycle', () => {
     })
 
     /**
-     * Not a silent no-op. There is nothing to take back, and answering "done" to
-     * an act that did nothing is the quiet inference this product refuses
-     * everywhere else — the caller believed the record was resolved,
-     * and it was not.
+     * Not a silent no-op. There is nothing to take back, and answering "done"
+     * to an act that did nothing is the quiet inference this product refuses
+     * everywhere else — the caller believed the record was resolved, and it was
+     * not.
      */
     test('refuses to reopen a record that was never resolved', async () => {
       await expect(set({ status: 'reopened' })).rejects.toBeInstanceOf(ConflictError)
@@ -189,8 +189,7 @@ describe('record lifecycle', () => {
 
   /**
    * A type called `archived`: the user can unarchive it, and by default every
-   * other approved record is a normal record that the user can archive at
-   * will.
+   * other approved record is a normal record that the user can archive at will.
    */
   describe('archiving', () => {
     const archive = (extra: { readonly note?: string } = {}) =>
@@ -298,8 +297,8 @@ describe('record lifecycle', () => {
     /**
      * **The actor rule, per act** — the human can archive and unarchive at
      * will. It is asserted here as well as in `actor-invariants.test.ts`
-     * because this is the file that says what each act means, and the refusal is
-     * part of what `archived` means.
+     * because this is the file that says what each act means, and the refusal
+     * is part of what `archived` means.
      */
     test('is the human’s, on the one table the AI may otherwise write', async () => {
       await expect(set({ status: 'archived', actor: 'ai' })).rejects.toBeInstanceOf(
@@ -347,9 +346,9 @@ describe('record lifecycle', () => {
 
     /**
      * `hold` is here because human data is append-only: it stopped being a
-     * verdict anyone can give (`r-hold-semantics`), and a store written
-     * before that still holds one. It is not `declined`, so it is born open —
-     * which is the reading a row nobody can write any more has to keep having.
+     * verdict anyone can give (`r-hold-semantics`), and a store written before
+     * that still holds one. It is not `declined`, so it is born open — which is
+     * the reading a row nobody can write any more has to keep having.
      */
     const VERDICTS: readonly {
       readonly verdict: DecisionState
@@ -394,8 +393,8 @@ describe('record lifecycle', () => {
           expect(records.find((record) => record.rid === rid)?.lifecycle.status).toBe(expected)
 
           // And through the per-retro projection, which is the other reader of
-          // the same rows (`r-lifecycle-projection-gap`). Asserting the
-          // same value twice is the point: this projection answered `null` on a
+          // the same rows (`r-lifecycle-projection-gap`). Asserting the same
+          // value twice is the point: this projection answered `null` on a
           // populated store for a long stretch because nothing held the two to
           // each other.
           const perRetro = await harness.app.records.list.execute({
@@ -429,18 +428,19 @@ describe('record lifecycle', () => {
   })
 
   /**
-   * **The two projections answer the same thing** (`r-lifecycle-projection-gap`).
+   * **The two projections answer the same thing**
+   * (`r-lifecycle-projection-gap`).
    *
-   * Found while dogfooding: after a whole retrospective's records were
-   * resolved, `record list --retro` reported no lifecycle at all while a
-   * direct table read showed every one of them resolved with its refs — so
-   * the natural check after a batch resolve read as if nothing had been
-   * written, which is the AI's own read-back channel lying to it.
+   * Found in use: after a whole retrospective's records were resolved, `record
+   * list --retro <n>` reported no lifecycle at all while a direct table read
+   * showed every one of them resolved with its refs — so the natural check
+   * after a batch resolve read as if nothing had been written, which is the
+   * AI's own read-back channel lying to it.
    *
    * The sweep above pins `status` across all 35 verdict × history cells. This
-   * pins the **whole** entry — refs, note, actor, at — because a projection that
-   * derived the status and dropped the references would satisfy the sweep and
-   * still lose the thing the feature exists for: citing a commit id or a
+   * pins the **whole** entry — refs, note, actor, at — because a projection
+   * that derived the status and dropped the references would satisfy the sweep
+   * and still lose the thing the feature exists for: citing a commit id or a
    * GitHub issue or something else as a reference so it is easy to see.
    */
   describe('the two record projections agree', () => {
@@ -544,11 +544,11 @@ describe('record lifecycle', () => {
 
   /**
    * **The deliberate relaxation of the actor rule.** Every other append-only
-   * table is single-writer and asserts so on its first line; this one is written
-   * by the AI marking what it fixed and by the human marking from the browser,
-   * by design. The `actor` column is what keeps
-   * the two readable apart — on the two acts that take both, which is
-   * `archiving` above for the two that do not.
+   * table is single-writer and asserts so on its first line; this one is
+   * written by the AI marking what it fixed and by the human marking from the
+   * browser, by design. The `actor` column is what keeps the two readable apart
+   * — on the two acts that take both, which is `archiving` above for the two
+   * that do not.
    */
   test('both actors may write, and the row records which one did', async () => {
     const written = await set({ status: 'resolved', refs: ['a1b2c3d'], actor: 'ai' })
@@ -599,8 +599,8 @@ describe('record lifecycle', () => {
   })
 
   /**
-   * **The exception `finish-lock.service.ts` anticipated.** Every human write on
-   * a finished retrospective refuses; this one does not, and it has to not —
+   * **The exception `finish-lock.service.ts` anticipated.** Every human write
+   * on a finished retrospective refuses; this one does not, and it has to not —
    * even after a retro has been closed, its issues still need metadata attached
    * so their life cycle can be managed.
    *

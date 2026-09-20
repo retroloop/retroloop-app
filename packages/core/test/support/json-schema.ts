@@ -7,10 +7,10 @@ import { fileURLToPath } from 'node:url'
  * uses — `$ref`/`$defs`, `type`, `required`, `additionalProperties`, `enum`,
  * `const`, `items`, and the length/range keywords.
  *
- * Why not a real validator: ajv would be a runtime dependency for a test, and the
- * alternative — hand-listing the fields the export ought to have — is a copy of
- * the schema that silently stops matching it. This reads **the shipped file**, so
- * when the contract changes the test changes with it.
+ * Why not a real validator: ajv would be a runtime dependency for a test, and
+ * the alternative — hand-listing the fields the export ought to have — is a
+ * copy of the schema that silently stops matching it. This reads **the shipped
+ * file**, so when the contract changes the test changes with it.
  *
  * It is deliberately small enough to audit, and `json-schema.test.ts` holds it to
  * that: the validator is itself tested against documents known to be invalid, so

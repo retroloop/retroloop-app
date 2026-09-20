@@ -50,9 +50,9 @@ describe('revisions', () => {
     })
 
     /**
-     * The retro's name rides on the draft that proposed it, and it is
-     * stored trimmed exactly as the schema parsed it — the CLI hands the payload
-     * over untouched, so this is the only place the title is normalised.
+     * The retro's name rides on the draft that proposed it, and it is stored
+     * trimmed exactly as the schema parsed it — the CLI hands the payload over
+     * untouched, so this is the only place the title is normalised.
      */
     test('stores the title the draft proposed, trimmed, and none when it proposed none', async () => {
       const titled = await harness.app.revisions.create.execute({
@@ -90,8 +90,8 @@ describe('revisions', () => {
       expect(second.retroStarted).toBe(false)
       expect(second.revision.n).toBe(2)
       // The human's half of round 1 sits between the two filings now, which is
-      // the loop's rhythm made mandatory: decide, Finish, then the next
-      // draft answers it.
+      // the loop's rhythm made mandatory: decide, Finish, then the next draft
+      // answers it.
       expect(await harness.eventNames()).toEqual([
         'SessionCreated',
         'RetrospectiveStarted',
@@ -148,12 +148,13 @@ describe('revisions', () => {
      * the human should not spend time on a review while the AI sneaks in a new
      * revision underneath it.
      *
-     * It happened twice in one retrospective. Both filings were legal: `revision
-     * create` guarded identity and races, and the review's state was never an
-     * input to it — the file-review-finish-file rhythm lived in SKILL.md prose,
-     * which binds nobody at the API. The cost is real: a replaced round can flip a
-     * record the reviewer has already decided back to pending, so the time was
-     * spent on a moving target with no signal that it moved.
+     * It happened twice in one retrospective. Both filings were legal:
+     * `revision create` guarded identity and races, and the review's state was
+     * never an input to it — the file-review-finish-file rhythm lived in
+     * SKILL.md prose, which binds nobody at the API. The cost is real: a
+     * replaced round can flip a record the reviewer has already decided back to
+     * pending, so the time was spent on a moving target with no signal that it
+     * moved.
      */
     describe('while the human is still reviewing the round', () => {
       test('refuses the next revision, and leaves the round exactly as it was', async () => {
@@ -201,10 +202,10 @@ describe('revisions', () => {
       })
 
       /**
-       * Every round after the first is gated too, not just the second: the point
-       * is the rhythm, and a gate that let revision 3 replace an unfinished
-       * revision 2 would have allowed exactly the second of the two filings
-       * this gate exists to refuse.
+       * Every round after the first is gated too, not just the second: the
+       * point is the rhythm, and a gate that let revision 3 replace an
+       * unfinished revision 2 would have allowed exactly the second of the two
+       * filings this gate exists to refuse.
        */
       test('gates every later round, not only the second', async () => {
         const first = await harness.revision(session.id)
@@ -687,8 +688,9 @@ describe('revisions', () => {
      *
      * `retrospective.finishedAt` is the retro's own close, written once at the
      * very end, so a reader asking "has the human put down the round I am
-     * showing?" got null through every round but the last. There is no `review.status`
-     * procedure to ask instead, so the fact rides on the revision it describes.
+     * showing?" got null through every round but the last. There is no
+     * `review.status` procedure to ask instead, so the fact rides on the
+     * revision it describes.
      *
      * Both directions in one test, because either alone passes on a broken fix:
      * a field hard-wired to null satisfies "absent before", and one hard-wired to

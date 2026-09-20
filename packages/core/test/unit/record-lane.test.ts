@@ -324,9 +324,10 @@ describe('the lane', () => {
   describe('the queue', () => {
     /**
      * **The queue's whole definition, in one assertion.** Approved, unresolved,
-     * not archived, in a retrospective the human finished — and a record somebody
-     * is already holding stays on it, because whoever is working the queue needs
-     * to see what is in progress rather than being told it does not exist.
+     * not archived, in a retrospective the human finished — and a record
+     * somebody is already holding stays on it, because whoever is working the
+     * queue needs to see what is in progress rather than being told it does not
+     * exist.
      */
     test('is the approved, unresolved work of finished retrospectives, claims included', async () => {
       expect(await queue()).toEqual(['r-stale-lock', 'r-flaky-test'])
@@ -493,8 +494,8 @@ describe('the lane', () => {
   })
 
   /**
-   * **The evidence travels with the work.** An agent that picks a record
-   * off the queue is about to go and reproduce the friction, and what the AI
+   * **The evidence travels with the work.** An agent that picks a record off
+   * the queue is about to go and reproduce the friction, and what the AI
    * already looked at is the difference between starting from the top and
    * starting from the logs. It is on the row rather than behind a second read
    * for the reason every wide field on this row is: the alternative is opening

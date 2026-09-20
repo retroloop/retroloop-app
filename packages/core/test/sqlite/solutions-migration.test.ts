@@ -107,8 +107,8 @@ describe('solutions_anchor_and_selection', () => {
     expect(rowsOf(db, 'comments')).toEqual(commentsBefore)
     expect(rowsOf(db, 'thread_resolutions')).toEqual(resolutionsBefore)
     // Decisions gain the one new column and nothing else moves — including the
-    // `upstream` level that later dropped out of the enum, which no write
-    // path could put back.
+    // `upstream` level that later dropped out of the enum, which no write path
+    // could put back.
     expect(rowsOf(db, 'decisions')).toEqual([
       {
         id: 1,
@@ -153,8 +153,9 @@ describe('solutions_anchor_and_selection', () => {
       `INSERT INTO comment_threads (retro_id, rid, section, opened_at)
        VALUES (1, 'r-new', 'solutions', '2026-08-24T09:00:00.000Z')`,
     )
-    // The two sections a production store already anchors threads to: still writable, so a
-    // rebuild that reinserts them cannot fail half-way, and still readable.
+    // The two sections a production store already anchors threads to: still
+    // writable, so a rebuild that reinserts them cannot fail half-way, and
+    // still readable.
     db.run(
       `INSERT INTO comment_threads (retro_id, rid, section, opened_at)
        VALUES (1, 'r-old', 'direction', '2026-08-24T09:01:00.000Z'),

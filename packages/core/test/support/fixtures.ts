@@ -105,13 +105,12 @@ export function someSolutions(overrides: readonly Partial<Solution>[] = []): Sol
  * A record in the shape every revision before the solutions change was written
  * in — `agreedDirection` + `footprint`, no `solutions`.
  *
- * It is **not** a builder over `aRecordInput`: nothing may author this shape any
- * more (the write path takes solutions only), so the only way one exists is as a
- * JSON blob an earlier binary wrote. This is that blob, modeled on record 11 of
- * a real legacy export (`~/.retroloop/retros/_legacy-exports/retro-1.json`,
- * `r-falsifiability-paid`) so the upgrade is tested against a document that
- * actually existed rather than against a shape a test invented; its structure
- * and values are unchanged, its prose reworded for this public copy.
+ * It is **not** a builder over `aRecordInput`: nothing may author this shape
+ * any more (the write path takes solutions only), so the only way one exists is
+ * as a JSON blob an earlier binary wrote. This is that blob, modeled on a
+ * record of a legacy export (`r-falsifiability-paid`) so the upgrade is tested
+ * against a document shaped like one that actually existed rather than against
+ * a shape a test invented.
  *
  * `defaults` is not in the export — the export carries the human's decided
  * values, not the AI's proposals — so those three are the decided ones, which is
@@ -125,7 +124,7 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
     title: 'Plant-and-catch found two real bugs that every written test had passed',
     type: 'feature',
     problem:
-      "**Filed as a practice that paid, not a friction.** The falsifiability discipline — deliberately planting defects and watching the suites catch them before reporting a change finished — found two real bugs in finished, fully-green work: item 5's frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and item 7's unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: an unwritten habit, not a documented rule.",
+      '**Filed as a practice that paid, not a friction.** The falsifiability discipline — deliberately planting defects and watching the suites catch them before reporting a change finished — found two real bugs in finished, fully-green work: a frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and an unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: an unwritten habit, not a documented rule.',
     humanWords: [],
     rootCause: {
       whatHappened:
