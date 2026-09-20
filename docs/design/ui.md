@@ -2,7 +2,7 @@
 
 > **The dashboard's look is fixed by a separate visual mock; this file covers
 > what that mock does not:** the review page (the only fully-built route in
-> Tier 1) and the stubs. Route contract per the ux brief; data
+> Tier 1) and the stubs. The route contract is stated here; data
 > shapes per `docs/design/data-model.md`.
 
 **Governing rule: every element earns its place.** Each element below
@@ -60,8 +60,8 @@ no cap.
 
 | element | pays for it |
 |---|---|
-| Breadcrumb `Project › Session › Retro #n · Rev k` (project crumb only when the session has one — N2) | route contract (ux-brief 03) |
-| Theme toggle (dark/light/system, persisted) | route contract (ux-brief 03) |
+| Breadcrumb `Project › Session › Retro #n · Rev k` (project crumb only when the session has one — N2) | route contract |
+| Theme toggle (dark/light/system, persisted) | route contract |
 | Review header: the retro's name (title or the #120 fallback) + identity line `Retro #n · Session S · cwd` + the retro's state tag (shared Tag primitive; a finished retro says FINISHED) — two lines + one tag, nothing more | N1/N3 + G1 |
 | **The decision bar** — sticky under the header (`top-14`, opaque, z below the header's): filter chips on the left, the review's one act on the right, and nothing else. See "The decision bar" below | G5 (the chips); the filters must stick to the top rather than scrolling away, with the filters on the left of the bar and the finish button on its right |
 | Record index — every record of the shown revision: state icon + #num + truncated title, one-click jump sharing G5's landing mechanic; entries hidden by the filter dim and go inert; no heading, no counts, no scroll-spy. **`wide:`+**: a rail beside the reading column, sticky and capped at the viewport. **Below `wide:`**: a list glyph on the *left* of the sticky header opening a `min(26rem, 100vw − 4rem)` sheet from the left edge; a tap jumps and closes the sheet on the way. Exactly one mount exists at a time | G2 (v2 C21, v1 #1). On an iPad the record index must still be reachable, opening in a left panel the way comments open from the right panel — which overturns the earlier "no drawer, no button to open it" stance on exactly that width |
@@ -102,7 +102,7 @@ the filter chips and the review's one act. Nothing else may go on it.
 | **Finish review** — the page's one terminal action, on the right. Refused while any record is effectively pending, and the refusal names them in a **popover on the button itself**, dismissed by Escape or a press elsewhere, with the keyboard handed back to the button | D3 finish gate; `ReviewFinished`; one finish button, and a mis-press costs one press |
 | Once pressed this round: the button goes disabled and a compact **Sent** mark appears beside it, carrying the sentence about what the AI does next on its accessible name and its tooltip | the press needs an acknowledgment, and a bar has no room for the sentence |
 | Once the AI has closed the review: the button is **replaced** by a check icon and the words *Retro submitted* — shape and word, never a colour alone, asserted in both themes | once a review is finished the button is replaced by an icon and text saying the retro has been submitted |
-| On a pinned older revision: the read-only sentence stands where the act would be | ux-brief 03 — history is not a place to decide from |
+| On a pinned older revision: the read-only sentence stands where the act would be | history is not a place to decide from |
 | ~~**Request changes**~~ **removed** | It shipped because the event pair had two names and the UI mirrored them one button each. That invites a contradiction — comments full of asks, then a Finish press that says there are none — so there is just one button, and what the round asks for is clear from the content of the comments rather than from a redundant button that is easy to press wrong. The AI reads the round and either files the next revision or closes the retro |
 | ~~Pending count ("3 of 9 pending") in a box at the end of the reading column~~ **removed** | The pending chip on the same bar carries the number live, and two copies on one strip are two numbers to keep in agreement |
 
@@ -129,8 +129,8 @@ edit-narrative anywhere (the human corrects via comments → next revision).
   the session, not the autoincrement id) · session cwd · state (+ pending count
   while reviewing) · click → `/retros/:retroId`. No project cards, no grouping,
   no summary strip — the mock's **visual language only**, its information
-  architecture is superseded. Spec: the iteration-2 shortlist,
-  N4/N5. **Built** (`routes/index.tsx`, `dashboard/retro-row.tsx`;
+  architecture is superseded. Spec: N4/N5. **Built**
+  (`routes/index.tsx`, `dashboard/retro-row.tsx`;
   identity strings shared with the review header via `lib/retro-identity.ts`;
   empty state = one quiet line; no error state, no live updates — deliberate,
   a retrospective adds them back if wanted). It takes the same measure as the
@@ -184,8 +184,8 @@ edit-narrative anywhere (the human corrects via comments → next revision).
 - **`/projects/:id`** — dead stub; no project construct. Nothing
   builds on it.
 - **`/sessions/:id`** — breadcrumb + title + one-line placeholder; unknown ids
-  render "not found" (ux-brief 03). Session page's live notes are later.
-- **Review-page parity items** (v2 had them; picked from the shortlist, not
+  render "not found". Session page's live notes are later.
+- **Review-page parity items** (v2 had them; picked deliberately, not
   auto-built): retro header G1 · record index rail G2 · comment presentation
   G3 · review-level threads/requests G4 · filter-to-pending flow G5 (G5 reverses
   this file's "read in full" stance, so it needs an explicit decision before it
