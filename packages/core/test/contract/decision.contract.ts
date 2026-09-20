@@ -110,7 +110,7 @@ export function describeDecisionRepositoryContract(label: string, makeStore: Sto
     })
 
     /**
-     * The dashboard counts pending and decided per retrospective (KC-0020), so
+     * The dashboard counts pending and decided per retrospective, so
      * it wants the same "latest version per record" answer for every
      * retrospective at once. Versions are numbered per record, so two
      * retrospectives both holding a `r-one` v1 and a `r-one` v2 must not be

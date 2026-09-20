@@ -57,7 +57,7 @@ describe('records', () => {
       ])
       await harness.decide(retroId, 'r-one', 'approved')
       await harness.decide(retroId, 'r-two', 'approved')
-      // The round has to be put down before the next one may answer it (#113).
+      // The round has to be put down before the next one may answer it.
       await harness.finishRound(retroId)
 
       await harness.revision(session.id, [

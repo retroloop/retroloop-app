@@ -30,7 +30,7 @@ describe('revision schema — the mechanical half of D5', () => {
   })
 
   /**
-   * The retrospective's own name (KC-0020, ledger v2 #120). Optional, because a
+   * The retrospective's own name. Optional, because a
    * draft without one still reads; capped, because it is a name on a row and not
    * a summary; trimmed, because a title padded with whitespace is a title that
    * sorts and renders wrong for a reason nobody can see.
@@ -216,11 +216,10 @@ describe('revision schema — the mechanical half of D5', () => {
   })
 
   /**
-   * The owner's design, as mechanical rules: *"the AI should do deep-dive and
-   * propose solutions (up to 3). In some places only 1-2 might make sense when it
-   * is a quick fix"*, *"It should always be sorted from lower level solution to
-   * high level solution"*, and *"some indication like a `*` that shows what is
-   * solution recommended by the AI"*.
+   * The design, as mechanical rules: the AI proposes one to three solutions,
+   * fewer for a quick fix where more would not make sense; they are always
+   * sorted from the lowest level to the highest; and exactly one is marked
+   * as the one the AI recommends.
    *
    * Order and the single recommendation are validated rather than instructed
    * because both are load-bearing at the other end: the human's pick is stored as
@@ -267,7 +266,7 @@ describe('revision schema — the mechanical half of D5', () => {
       )
     })
 
-    test('holds each level to the five KC-0021 left', () => {
+    test('holds each level to the five that remain', () => {
       for (const level of [1, 2, 3, 4, 5] as const) {
         expect(
           withSolutions(someSolutions([{ level: 1 }, { level, recommended: true }])),

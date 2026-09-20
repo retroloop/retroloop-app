@@ -13,10 +13,9 @@ import { lifecycleActPermitted } from '#domain/services/record-lifecycle.service
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * `SetRecordLifecycleUseCase` — the record's second axis (the owner's session-8
- * ask): *"once the AI fixes those issues, we should have a way to … show that
- * this issue was resolved, we should be able to specify a commit id or github
- * issue or something as reference so that it is easy to see."*
+ * `SetRecordLifecycleUseCase` — the record's second axis: once the AI fixes
+ * an issue, there needs to be a way to show it was resolved, citing a commit
+ * id or a GitHub issue or something else as a reference so it is easy to see.
  */
 describe('record lifecycle', () => {
   let harness: Harness
@@ -149,7 +148,7 @@ describe('record lifecycle', () => {
     /**
      * Not a silent no-op. There is nothing to take back, and answering "done" to
      * an act that did nothing is the quiet inference this product refuses
-     * everywhere else (KC-0010) — the caller believed the record was resolved,
+     * everywhere else — the caller believed the record was resolved,
      * and it was not.
      */
     test('refuses to reopen a record that was never resolved', async () => {
@@ -189,10 +188,9 @@ describe('record lifecycle', () => {
   })
 
   /**
-   * The owner's session-9 pair: *"maybe we can have a type called archived so
-   * it's just going to be archived and the user should be able to unarchive. by
-   * default all others that have approval, those are normal records so if a user
-   * wants, they can just archive it."*
+   * A type called `archived`: the user can unarchive it, and by default every
+   * other approved record is a normal record that the user can archive at
+   * will.
    */
   describe('archiving', () => {
     const archive = (extra: { readonly note?: string } = {}) =>
@@ -226,7 +224,7 @@ describe('record lifecycle', () => {
       expect(await entries()).toEqual([])
     })
 
-    /** *"if a user wants, they can just archive it"* — including one already fixed. */
+    /** A user can archive a record at will — including one already fixed. */
     test('takes a resolved record out of the way too', async () => {
       await set({ status: 'resolved', refs: ['a1b2c3d'] })
 
@@ -298,8 +296,8 @@ describe('record lifecycle', () => {
     })
 
     /**
-     * **The actor rule, per act** (the owner: *"the user should be able to
-     * unarchive"*). It is asserted here as well as in `actor-invariants.test.ts`
+     * **The actor rule, per act** — the human can archive and unarchive at
+     * will. It is asserted here as well as in `actor-invariants.test.ts`
      * because this is the file that says what each act means, and the refusal is
      * part of what `archived` means.
      */
@@ -349,7 +347,7 @@ describe('record lifecycle', () => {
 
     /**
      * `hold` is here because human data is append-only: it stopped being a
-     * verdict anyone can give in retro 3 `r-hold-semantics`, and a store written
+     * verdict anyone can give (`r-hold-semantics`), and a store written
      * before that still holds one. It is not `declined`, so it is born open —
      * which is the reading a row nobody can write any more has to keep having.
      */
@@ -396,9 +394,9 @@ describe('record lifecycle', () => {
           expect(records.find((record) => record.rid === rid)?.lifecycle.status).toBe(expected)
 
           // And through the per-retro projection, which is the other reader of
-          // the same rows (#103 `r-lifecycle-projection-gap`). Asserting the
+          // the same rows (`r-lifecycle-projection-gap`). Asserting the
           // same value twice is the point: this projection answered `null` on a
-          // populated store for a whole session because nothing held the two to
+          // populated store for a long stretch because nothing held the two to
           // each other.
           const perRetro = await harness.app.records.list.execute({
             actor: 'human',
@@ -431,20 +429,19 @@ describe('record lifecycle', () => {
   })
 
   /**
-   * **The two projections answer the same thing** (#103 `r-lifecycle-projection-gap`).
+   * **The two projections answer the same thing** (`r-lifecycle-projection-gap`).
    *
-   * Found at the dogfood step: after all 19 retro-7 records were resolved,
-   * `record list --retro 7` reported no lifecycle at all while a direct table read
-   * showed 19 resolved rows with their refs — so the natural check after a batch
-   * resolve read as if nothing had been written, which is the AI's own read-back
-   * channel lying to it.
+   * Found while dogfooding: after a whole retrospective's records were
+   * resolved, `record list --retro` reported no lifecycle at all while a
+   * direct table read showed every one of them resolved with its refs — so
+   * the natural check after a batch resolve read as if nothing had been
+   * written, which is the AI's own read-back channel lying to it.
    *
    * The sweep above pins `status` across all 35 verdict × history cells. This
    * pins the **whole** entry — refs, note, actor, at — because a projection that
    * derived the status and dropped the references would satisfy the sweep and
-   * still lose the thing the owner asked the feature for: *"we should be able to
-   * specify a commit id or github issue or something as reference so that it is
-   * easy to see."*
+   * still lose the thing the feature exists for: citing a commit id or a
+   * GitHub issue or something else as a reference so it is easy to see.
    */
   describe('the two record projections agree', () => {
     /** The same record, read both ways: flat cross-retro, and per-retro. */
@@ -549,7 +546,7 @@ describe('record lifecycle', () => {
    * **The deliberate relaxation of the actor rule.** Every other append-only
    * table is single-writer and asserts so on its first line; this one is written
    * by the AI marking what it fixed and by the human marking from the browser,
-   * which is exactly what the owner asked for. The `actor` column is what keeps
+   * by design. The `actor` column is what keeps
    * the two readable apart — on the two acts that take both, which is
    * `archiving` above for the two that do not.
    */
@@ -604,9 +601,8 @@ describe('record lifecycle', () => {
   /**
    * **The exception `finish-lock.service.ts` anticipated.** Every human write on
    * a finished retrospective refuses; this one does not, and it has to not —
-   * the owner asked for it *because* the retro is closed: *"even after a retro
-   * has been closed, we should be able to attach metadata to issues so that we
-   * can manage their life cycle."*
+   * even after a retro has been closed, its issues still need metadata attached
+   * so their life cycle can be managed.
    *
    * It endangers nothing the finish lock protects. That rule exists so an export
    * cannot grow new feedback behind its reader, and lifecycle is not exported

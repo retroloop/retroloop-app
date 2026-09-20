@@ -182,7 +182,7 @@ describe('actor invariants', () => {
      * - `threads.addComment` — the CLI writes the AI's replies, the UI writes
      *   the human's (D4).
      * - `records.setLifecycle` — the AI marks what it fixed, the human marks
-     *   from the browser (the owner's session-8 lifecycle ask). This is the one
+     *   from the browser. This is the one
      *   append-only table with an `actor` column, precisely because it is the
      *   one whose author cannot be inferred from the table.
      * - `records.claim` — whoever does the work holds the record, and that is
@@ -227,13 +227,13 @@ describe('actor invariants', () => {
   })
 
   /**
-   * **The exception inside the exception** (the owner's session-9 ruling).
+   * **The exception inside the exception.**
    *
    * `record_lifecycle` is the one table both actors write, which is why it has
    * an `actor` column at all — but that was decided for *resolving*, a report of
    * work the AI did. Archiving is a judgment about what is worth looking at, and
-   * he kept it: *"the user should be able to unarchive … if a user wants, they
-   * can just archive it."* So the guard is per act, and it lives in the use case
+   * it stays human-only: the user can archive or unarchive a record at will, but
+   * the AI cannot. So the guard is per act, and it lives in the use case
    * rather than at a transport, which is what this asserts: the AI is refused
    * through the same call the browser makes.
    */
@@ -314,7 +314,7 @@ describe('actor invariants', () => {
          * exception is listed: it clears the offered-again flag and removes
          * nothing, the name was never freed by the retire it undoes, and the
          * two acts leave two rows in the outbox. It is `RecordUnarchived`'s
-         * shape one table over (retro-11 `r-retire-burns-a-word`).
+         * shape one table over (`r-retire-burns-a-word`).
          */
         labelDefinitions: ['add', 'rename', 'retire', 'unretire'],
         attributeDefinitions: ['add', 'rename', 'retire', 'unretire'],
@@ -334,8 +334,8 @@ describe('actor invariants', () => {
          */
         recordClaims: ['add'],
         // The human's permission switch, versioned — and this is the one table
-        // where the history *is* the feature: *"the user can be certain that the
-        // AI cannot mess around"* is a claim about the past as much as the
+        // where the history *is* the feature: being certain the AI cannot
+        // touch the configs is a claim about the past as much as the
         // present (`setting.model.ts`).
         settings: ['add'],
         notes: ['add'],
@@ -343,7 +343,7 @@ describe('actor invariants', () => {
         threads: ['addThread', 'addComment'],
         threadResolutions: ['add'],
         // Same standing as `holds` above: no use case reaches these any more
-        // (retro 4 `r-remove-requests`), and they are still listed, because
+        // (`r-remove-requests`), and they are still listed, because
         // append-only is a property of this layer rather than of whoever
         // happens to call it this year.
         requests: ['add', 'addResponse', 'close'],

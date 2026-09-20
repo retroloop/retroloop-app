@@ -137,7 +137,7 @@ describe('the validator’s keyword coverage', () => {
   })
 
   /**
-   * The shipped contract, walked. When the owner adds a keyword to
+   * The shipped contract, walked. When a keyword is added to
    * `export.v1.schema.json`, this fails naming it — and the answer is either to
    * implement it in `validate` or to record it in `IGNORED_KEYWORDS` with the
    * reason it is annotation-only. What it may not be is nothing.

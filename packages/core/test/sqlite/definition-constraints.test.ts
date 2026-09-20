@@ -17,8 +17,8 @@ afterAll(removeTempStages)
  *
  * None of these is the rule the product enforces. Uniqueness is
  * case-**insensitive** and lives in the use cases so both stores answer it
- * identically (`definition.service.ts`); the type and key enums are closed by
- * the owner's ruling and by zod at the boundary. What is asserted here is that a
+ * identically (`definition.service.ts`); the type and key enums are closed
+ * by design and by zod at the boundary. What is asserted here is that a
  * writer who came through none of that still cannot leave the store in a state
  * a reader would have to cope with.
  */

@@ -6,10 +6,9 @@ import type { Actor } from '#domain/models/actor.model'
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * `RelateRecordsUseCase` — the owner's session-11 ask, verbatim: *"both actors
- * can relate records, each relation carries how-they-relate words, and the
- * relation reads from both sides, so that AI can easily find past records and
- * build holistic solutions."*
+ * `RelateRecordsUseCase` — both actors can relate records, each relation
+ * carries how-they-relate words, and the relation reads from both sides, so
+ * that the AI can easily find past records and build holistic solutions.
  *
  * Four claims run through the whole file, and each has a test that fails without
  * it: **both actors** write, the **words** are part of the act, the relation

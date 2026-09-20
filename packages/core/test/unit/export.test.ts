@@ -92,7 +92,7 @@ describe('export', () => {
       id: session.id,
       claudeSession: 'uuid-export',
       project: 'retro',
-      cwd: '/Users/haider/Developer/retro',
+      cwd: '/Users/sample/Developer/retro',
       branch: 'main',
       supervised: true,
       startedAt: harness.clock.iso(),
@@ -111,8 +111,8 @@ describe('export', () => {
   })
 
   /**
-   * `r-finish-confirm-message`, the half of it the document carries: the owner
-   * asked for the message *"delivered separately from the comments"*, and per
+   * `r-finish-confirm-message`, the half of it the document carries: the
+   * finish message is delivered separately from the comments, and per
    * revision round — so it is its own array on the retrospective, keyed by the
    * revision whose round it closes, and no thread is involved.
    */
@@ -309,8 +309,8 @@ describe('export', () => {
   })
 
   /**
-   * KC-0020: `session create --project` is optional. The export is the one
-   * public contract (KC-0007), so the absence has to arrive as `null` in both
+   * `session create --project` is optional. The export is the one
+   * public contract, so the absence has to arrive as `null` in both
    * places the document names a project — an import script reading a key that
    * comes and goes has to guess which of the two happened.
    */
@@ -318,7 +318,7 @@ describe('export', () => {
     const { session: unnamed } = await harness.app.sessions.create.execute({
       actor: 'ai',
       claudeSession: 'uuid-no-project',
-      cwd: '/Users/haider/Developer/retro',
+      cwd: '/Users/sample/Developer/retro',
     })
     const { retroId } = await harness.revision(unnamed.id, [{ rid: 'r-one', num: 1 }])
     await harness.decide(retroId, 'r-one', 'approved')
@@ -442,7 +442,7 @@ describe('export', () => {
   })
 
   /**
-   * The retro's name travels with the outcome (KC-0020). It is the **final**
+   * The retro's name travels with the outcome. It is the **final**
    * revision's title for the same reason the narrative is that revision's: the
    * export is what the review settled on, not what it started from.
    */
@@ -547,7 +547,7 @@ describe('export', () => {
   })
 
   /**
-   * The evidence leaves the product with the outcome (RL-52).
+   * The evidence leaves the product with the outcome.
    *
    * It is **optional in the contract and emitted whenever the record has any**,
    * which is the `globalId` rule rather than the `reviewerNote` one: a document
@@ -593,7 +593,7 @@ describe('export', () => {
    * A document carries the shape its record was filed in — the two legacy keys,
    * or `solutions` plus the human's pick — and never both, never neither. The
    * contract admits all four keys forever (`export.v1.schema.json`), which is
-   * what keeps the owner's five existing exports valid; the builder is what
+   * what keeps existing exports valid; the builder is what
    * narrows.
    */
   describe('the shape of a record’s proposals', () => {

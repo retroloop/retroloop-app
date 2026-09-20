@@ -34,8 +34,8 @@ function records(...entries: readonly (readonly [string, number])[]): string {
 
 /**
  * Two sessions, three retrospectives, seven records, and one of them withdrawn
- * by a later draft — the fixture the owner's own store is a bigger version of,
- * plus the one case his store does not have.
+ * by a later draft — the fixture production data is a bigger version of,
+ * plus the one case it does not have.
  */
 function seededDatabaseBeforeTheMigration(): Database {
   const db = new Database(join(createTempStage(), 'retro.db'), { create: true })
@@ -44,9 +44,9 @@ function seededDatabaseBeforeTheMigration(): Database {
 
   db.exec(`
     INSERT INTO sessions (id, claude_session, project, cwd, branch, supervised, started_at)
-      VALUES (1, 'uuid-1', 'retro', '/Users/haider/Developer/retro', 'main', 1,
+      VALUES (1, 'uuid-1', 'retro', '/Users/sample/Developer/retro', 'main', 1,
               '2026-08-23T09:00:00.000Z'),
-             (2, 'uuid-2', NULL, '/Users/haider/Developer/harbor', 'main', 1,
+             (2, 'uuid-2', NULL, '/Users/sample/Developer/hangar', 'main', 1,
               '2026-08-24T09:00:00.000Z');
     INSERT INTO retrospectives (id, session_id, state, started_at, finished_at)
       VALUES (1, 1, 'finished',  '2026-08-23T09:00:00.000Z', '2026-08-23T18:00:00.000Z'),
@@ -129,10 +129,9 @@ describe('create_record_ids', () => {
    *
    * This is the case that separates this backfill from the narrower reading of
    * it — "the latest revision's records" — which would leave `r-doctor-blind`
-   * with no number at all while `records.list --revision 2` still lists it. On
-   * the owner's seven retrospectives nothing was ever withdrawn and the two
-   * readings agree; the reason to choose this one is the store where they do
-   * not.
+   * with no number at all while `records.list --revision 2` still lists it. In
+   * the common case, where nothing was ever withdrawn, the two readings agree;
+   * the reason to choose this one is the shape where they do not.
    */
   test('numbers a record a later draft withdrew, in the place it first appeared', () => {
     const db = seededDatabaseBeforeTheMigration()

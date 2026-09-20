@@ -67,8 +67,8 @@ export function describeRecordIdRepositoryContract(label: string, makeStore: Sto
     })
 
     /**
-     * The sequence, run backwards — the resolver behind `/records/:id`
-     * (session 9). It is the one read on this repository whose argument is a
+     * The sequence, run backwards — the resolver behind `/records/:id`.
+     * It is the one read on this repository whose argument is a
      * number a human typed, so it is the one that will routinely be asked about
      * a record that is not there.
      *

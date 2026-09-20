@@ -13,8 +13,8 @@ import type { StoreFactory } from './store.contract'
  * four reads and a fold over their results — an ordinal counted within a
  * session, a name taken from the newest draft, counts derived from verdicts that
  * may or may not still bind (D2). Proving that against the memory store alone
- * would leave the one thing worth proving unproven: that the store the owner
- * actually runs answers identically.
+ * would leave the one thing worth proving unproven: that the store actually
+ * used in production answers identically.
  */
 export function describeListRetrosContract(label: string, makeStore: StoreFactory): void {
   describe(`${label} · ListRetrosUseCase`, () => {
@@ -69,17 +69,17 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
 
     /**
      * Newest first is retro id descending, and the ordinal is the position
-     * *within the session* (KC-0011) — so the newest row can be "#1" while an
+     * *within the session* — so the newest row can be "#1" while an
      * older one is "#2", which is exactly the distinction the identity line
      * exists to draw.
      */
     test('lists every session’s retrospectives together, newest first, numbered per session', async () => {
-      const first = await startSession('uuid-first', '/Users/haider/Developer/retro')
+      const first = await startSession('uuid-first', '/Users/sample/Developer/retro')
       const firstRetro = await fileRevision(first, [{}, {}], 'The lock that outlived its process')
       await finishRetro(firstRetro, ['r-record-1', 'r-record-2'])
       const secondRetro = await fileRevision(first, [{}, {}, {}])
 
-      const other = await startSession('uuid-other', '/Users/haider/Developer/harbor')
+      const other = await startSession('uuid-other', '/Users/sample/Developer/hangar')
       const otherRetro = await fileRevision(other, [{}], 'Elsewhere entirely')
 
       const retros = await list()
@@ -88,9 +88,9 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
       expect(retros.map((retro) => retro.retroNumber)).toEqual([1, 2, 1])
       expect(retros.map((retro) => retro.session.id)).toEqual([other, first, first])
       expect(retros.map((retro) => retro.session.cwd)).toEqual([
-        '/Users/haider/Developer/harbor',
-        '/Users/haider/Developer/retro',
-        '/Users/haider/Developer/retro',
+        '/Users/sample/Developer/hangar',
+        '/Users/sample/Developer/retro',
+        '/Users/sample/Developer/retro',
       ])
       expect(retros.map((retro) => retro.state)).toEqual(['reviewing', 'reviewing', 'finished'])
       expect(retros.map((retro) => retro.title)).toEqual([
@@ -107,7 +107,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
      * unchanged, and stops binding the moment the AI rewrites the record.
      */
     test('counts the latest revision’s records by their effective state', async () => {
-      const sessionId = await startSession('uuid-counts', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-counts', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}, {}, {}])
 
       expect((await list())[0]?.counts).toEqual({ pending: 3, decided: 0 })
@@ -116,9 +116,9 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
       await harness.decide(retroId, 'r-record-2', 'declined')
       expect((await list())[0]?.counts).toEqual({ pending: 1, decided: 2 })
 
-      // The round is put down before the next draft may answer it (#113
-      // `r-revision-sneaks-past-review`), and the finish gate wants a verdict on
-      // the third record too — so all three are decided going in.
+      // The round is put down before the next draft may answer it, and the
+      // finish gate wants a verdict on the third record too — so all three are
+      // decided going in.
       await harness.finishRound(retroId)
       expect((await list())[0]?.counts).toEqual({ pending: 0, decided: 3 })
 
@@ -134,11 +134,11 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
 
     /**
      * The latest revision's title wins, and silence in a later draft is not a
-     * vote for the previous answer (KC-0010, KC-0020). The "Retro #n — <cwd
+     * vote for the previous answer. The "Retro #n — <cwd
      * basename>" fallback is the reader's, not this row's: absent stays absent.
      */
     test('takes its name from the latest revision, and has none when that revision proposed none', async () => {
-      const sessionId = await startSession('uuid-title', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-title', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}], 'The first name it was given')
       expect((await list())[0]?.title).toBe('The first name it was given')
 
@@ -148,8 +148,8 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
     })
 
     /**
-     * The fourth word on the dashboard's own row (the owner's session-11 add),
-     * against the store he actually runs — which is the reason this suite is a
+     * The fourth word on the dashboard's own row, against the store actually
+     * used in production — which is the reason this suite is a
      * contract rather than a unit test. `submitted` is the only value on this
      * row with no column behind it: it is read out of the `ReviewFinished`
      * events by the fifth read this use case was widened to make, and an adapter
@@ -159,7 +159,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
      * All three readings in one walk, because the boundaries are the claim.
      */
     test('reads submitted between his finish and the AI’s close, and only there', async () => {
-      const sessionId = await startSession('uuid-submitted', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-submitted', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       const state = async () => (await list())[0]?.state
 
@@ -181,9 +181,9 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
      * did not finish must not inherit the word from the row that did.
      */
     test('attributes each finished round to its own retrospective', async () => {
-      const first = await startSession('uuid-a', '/Users/haider/Developer/retro')
+      const first = await startSession('uuid-a', '/Users/sample/Developer/retro')
       const finished = await fileRevision(first, [{}])
-      const other = await startSession('uuid-b', '/Users/haider/Developer/harbor')
+      const other = await startSession('uuid-b', '/Users/sample/Developer/hangar')
       const untouched = await fileRevision(other, [{}])
       await harness.finishRound(finished)
 
@@ -202,7 +202,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
      * dashboard down with it.
      */
     test('reports a retrospective that has no revision at all', async () => {
-      const sessionId = await startSession('uuid-bare', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-bare', '/Users/sample/Developer/retro')
       const bare = await store.retrospectives.add({
         sessionId,
         state: 'open',
@@ -219,7 +219,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
           counts: { pending: 0, decided: 0 },
           session: {
             id: sessionId,
-            cwd: '/Users/haider/Developer/retro',
+            cwd: '/Users/sample/Developer/retro',
             startedAt: harness.clock.iso(),
           },
         },

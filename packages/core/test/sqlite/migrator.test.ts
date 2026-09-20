@@ -83,11 +83,11 @@ describe('migrator', () => {
         migrate(db, { registry: MIGRATIONS.slice(0, index) })
         // Through the same facade the migrator uses, so this round-trip runs
         // every migration's SQL one statement at a time — which is the only way
-        // a runtime failure in any of them reaches this test at all (#100
-        // `r-db-exec-swallows-errors`). A raw `Database` is structurally
-        // acceptable here and would quietly put every one of them back on the
-        // swallowing path, so the wrapping is the assertion. (It said "all 23"
-        // until session 10 added five more, which is why it counts nothing now.)
+        // a runtime failure in any of them reaches this test at all. A raw
+        // `Database` is structurally acceptable here and would quietly put
+        // every one of them back on the swallowing path, so the wrapping is
+        // the assertion. (It used to assert an exact migration count until more
+        // were added, which is why it counts nothing now.)
         const checked = checkedDb(db)
 
         const before = schemaOf(db)
@@ -145,7 +145,7 @@ describe('migrator', () => {
 
   /**
    * `20260825120000_create_holds` is the only migration that moves data, and the
-   * data it moves does not exist on the owner's store: every one of its 35
+   * data it moves does not exist in the store used in production: every one of its 35
    * decisions is `approved`, as are the 13 in its pre-batch backup, and none of
    * the three exports contains a `hold`. A step nothing exercises is a step
    * nobody has seen work, so the rows are seeded by hand here.
@@ -234,7 +234,7 @@ describe('migrator', () => {
     })
 
     /**
-     * The owner's own store, in the only way a test can hold it: nothing to map.
+     * A brand-new store, in the only way a test can hold it: nothing to map.
      * The insert has to be a no-op rather than an error on a database where no
      * record was ever held — which is every database the product has written.
      */
@@ -311,7 +311,7 @@ describe('migrator', () => {
   })
 
   /**
-   * **The plant that started #100 `r-db-exec-swallows-errors`, as a test.**
+   * **The plant that started `r-db-exec-swallows-errors`, as a test.**
    *
    * The test above uses a prepare-time error, which bun has always reported. This
    * one uses the failure it did not: a benign INSERT, then an UPDATE the

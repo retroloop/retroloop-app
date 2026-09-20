@@ -218,8 +218,8 @@ describe('comment threads', () => {
   })
 
   /**
-   * The owner: *"comment show the rev number they are associated with but the
-   * comment show accross all revisions"*. The thread stays put across revisions
+   * A comment shows the revision it is associated with, but shows across
+   * every revision. The thread stays put across revisions
    * — it is keyed on `(retroId, rid, section)` — and each message says which
    * draft it answers.
    */
@@ -249,7 +249,7 @@ describe('comment threads', () => {
     })
 
     /**
-     * A revision is announced and never swapped in (KC-0005), so the reviewer
+     * A revision is announced and never swapped in, so the reviewer
      * can still be reading revision 1 while revision 3 exists — and what they
      * write belongs to what they were reading, not to what was newest.
      */
@@ -325,9 +325,8 @@ describe('comment threads', () => {
   })
 
   /**
-   * `r-resolvable-comments`, owner-approved: *"only the human should be able to
-   * mark it, not the AI"*, and *"User and only the user should be able to mark
-   * comments as resolved."*
+   * `r-resolvable-comments`: only the human can mark a comment resolved,
+   * never the AI.
    */
   describe('resolve', () => {
     async function aThread(): Promise<number> {

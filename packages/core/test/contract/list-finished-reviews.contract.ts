@@ -61,20 +61,20 @@ export function describeListFinishedReviewsContract(label: string, makeStore: St
     test('lists nothing when no round has been put down', async () => {
       expect(await list()).toEqual([])
 
-      const sessionId = await startSession('uuid-open', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-open', '/Users/sample/Developer/retro')
       await fileRevision(sessionId, [{}])
 
       expect(await list()).toEqual([])
     })
 
     /**
-     * The whole row, against the store the owner actually runs: three
+     * The whole row, against the shape the store actually holds in production: three
      * retrospectives across two sessions, one of each reading, and the two
      * orders that have to disagree — retro id ascending for the list, position
      * within the session for the ordinal.
      */
     test('lists each finished round oldest first, with its ordinal, state and counts', async () => {
-      const first = await startSession('uuid-first', '/Users/haider/Developer/retro')
+      const first = await startSession('uuid-first', '/Users/sample/Developer/retro')
       const closed = await fileRevision(first, [{}, {}])
       await harness.decide(closed, 'r-record-1', 'approved')
       await harness.decide(closed, 'r-record-2', 'declined')
@@ -84,7 +84,7 @@ export function describeListFinishedReviewsContract(label: string, makeStore: St
 
       // Somebody else's retrospective, still with the human — and started
       // between the two of the first session, so the ids interleave.
-      const other = await startSession('uuid-other', '/Users/haider/Developer/harbor')
+      const other = await startSession('uuid-other', '/Users/sample/Developer/hangar')
       const reviewing = await fileRevision(other, [{}])
 
       harness.clock.advance(60_000)
@@ -128,7 +128,7 @@ export function describeListFinishedReviewsContract(label: string, makeStore: St
      * has already given.
      */
     test('drops a retrospective whose finished round has been answered', async () => {
-      const sessionId = await startSession('uuid-answered', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-answered', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       await harness.finishRound(retroId)
       expect((await list()).map((row) => row.retroId)).toEqual([retroId])

@@ -24,7 +24,7 @@ export type Harness = {
   ): Promise<CreateRevisionOutput>
   /**
    * A retrospective holding one record in the shape written before solutions
-   * existed — what the owner's store is full of.
+   * existed — what production stores end up full of.
    *
    * It goes **straight to the repository**, because that is the only way one can
    * exist: `CreateRevisionUseCase` takes the new shape and nothing else, which is
@@ -38,13 +38,13 @@ export type Harness = {
   /**
    * Decides a record as the human would. The verdict enum is three values since
    * `r-hold-semantics`, and the verdict is the only axis a record has since
-   * retro 4 `r-remove-hold` took the lifecycle flag out again.
+   * `r-remove-hold` took the lifecycle flag out again.
    */
   decide(retroId: number, rid: string, state: z.infer<typeof decisionVerdictSchema>): Promise<void>
   /**
    * A stored `hold` verdict — the one state no write path can produce any more.
    *
-   * `r-hold-semantics` narrowed the input enum in retro 3, and human data is
+   * `r-hold-semantics` narrowed the input enum, and human data is
    * append-only, so a store written before that still carries rows in it and
    * every read path has to go on answering for one. The only way to build that
    * store in a test is the way it happened: straight into the repository, past
@@ -56,7 +56,7 @@ export type Harness = {
    * Finish.
    *
    * It exists because filing a second revision is no longer something the AI can
-   * simply do (#113 `r-revision-sneaks-past-review`) — a round has to be finished
+   * simply do (`r-revision-sneaks-past-review`) — a round has to be finished
    * before the next one may replace it, which is the loop's own rhythm and is now
    * the write path's rule as well. A test that wants two revisions runs the
    * rhythm rather than pretending the gate is not there.
@@ -68,7 +68,7 @@ export type Harness = {
   finishRound(retroId: number): Promise<void>
   /**
    * The end of the loop, both halves: the human finishes his side of the round
-   * and the AI closes the review to export. It takes two acts since retro 4
+   * and the AI closes the review to export. It takes two acts since
    * `r-one-finish-button` — a finished retrospective is what `ReviewClosed`
    * makes, so a test that wants one runs both rather than pretending the
    * button still did it.
@@ -100,7 +100,7 @@ export function createHarness(backing?: Store): Harness {
         actor: 'ai',
         claudeSession,
         project: 'retro',
-        cwd: '/Users/haider/Developer/retro',
+        cwd: '/Users/sample/Developer/retro',
         branch: 'main',
         supervised: true,
       })

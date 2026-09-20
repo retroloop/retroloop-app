@@ -33,13 +33,13 @@ describe('review', () => {
         pending: 1,
         approved: 1,
         declined: 1,
-        // The third verdict, counted like the others (retro 4
-        // `r-verdict-revise`) — this is where the AI reads that a record was
+        // The third verdict, counted like the others
+        // (`r-verdict-revise`) — this is where the AI reads that a record was
         // sent back for a rewrite.
         revise: 0,
         // Frozen: nothing writes a `hold` verdict any more, and this store never
         // held one (`r-hold-semantics`). There is no `held` count beside it —
-        // the lifecycle flag that had one is gone (retro 4 `r-remove-hold`).
+        // the lifecycle flag that had one is gone (`r-remove-hold`).
         hold: 0,
         total: 3,
       })
@@ -74,9 +74,9 @@ describe('review', () => {
     })
 
     /**
-     * The owner's session-11 add, in the field the AI reads between its `review
-     * wait` and its `review close`: *"There should be a status in between that
-     * indicates that the human has submitted but AI hasn't closed"*. That window
+     * A status in between, in the field the AI reads between its `review
+     * wait` and its `review close`: one that says the human has submitted but
+     * the AI has not closed yet. That window
      * is exactly the stretch this use case is called in, so the word has to be
      * here and not only in the browser.
      *
@@ -219,7 +219,7 @@ describe('review', () => {
     })
 
     /**
-     * The round the AI has already answered (#113 `r-revision-sneaks-past-review`
+     * The round the AI has already answered (`r-revision-sneaks-past-review`
      * put the finish before the next draft, so this pair is the normal rhythm).
      * Its `ReviewFinished` is still in the outbox forever; what changed is that
      * it is no longer about the revision under review.
@@ -236,7 +236,7 @@ describe('review', () => {
   })
 
   /**
-   * The human's one button (retro 4 `r-one-finish-button`). It ends *his* side
+   * The human's one button (`r-one-finish-button`). It ends *his* side
    * of the round and nothing else: the retrospective stays `reviewing` until
    * the AI closes it, which is the describe below this one.
    */
@@ -301,11 +301,11 @@ describe('review', () => {
     })
 
     /**
-     * A `revise` record is decided, so the gate lets the review finish (retro 4
-     * `r-verdict-revise`): asking for a rewrite is an answer, and the owner's
-     * workflow is to give every record one of the three and then press the one
-     * button. What happens with the ask afterwards is the AI's next step, not
-     * the gate's business.
+     * A `revise` record is decided, so the gate lets the review finish
+     * (`r-verdict-revise`): asking for a rewrite is an answer, and the
+     * reviewer's workflow is to give every record one of the three and then
+     * press the one button. What happens with the ask afterwards is the AI's
+     * next step, not the gate's business.
      */
     test('counts a revise verdict as decided', async () => {
       const { retroId, revision } = await harness.revision(session.id, [{}, {}])
@@ -343,8 +343,8 @@ describe('review', () => {
     })
 
     /**
-     * Retro 4 `r-request-changes-multi-press`, the owner: *"why am I
-     * able to press it multiple times?"* The second press is absorbed rather
+     * `r-request-changes-multi-press`: the button should not answer more than
+     * once to being pressed multiple times. The second press is absorbed rather
      * than refused — a repeat of an act that already happened is not an error
      * anybody can act on, and an error toast on a double-click would be one
      * more thing to read. What must not happen is a second event, because a
@@ -393,8 +393,8 @@ describe('review', () => {
     /**
      * The half of `r-finish-confirm-message` that is not the confirm: a valid
      * finish may carry his final word on the round, and it files with the finish
-     * rather than as one more comment — the owner: *"this message is going to be
-     * delivered separately from the comments"*.
+     * rather than as one more comment — delivered separately from the
+     * comments.
      */
     describe('the final message', () => {
       async function aDecidedRound() {
@@ -427,7 +427,7 @@ describe('review', () => {
         expect(await harness.store.finishMessages.findLatest(retroId, revisionN)).toBeUndefined()
       })
 
-      /** An empty box is not a message: blank is the same as absent (KC-0010). */
+      /** An empty box is not a message: blank is the same as absent. */
       test('writes nothing for a blank one', async () => {
         const { retroId, revisionN } = await aDecidedRound()
 
@@ -528,7 +528,7 @@ describe('review', () => {
         expect(await harness.eventNames()).not.toContain('ReviewFinished')
       })
 
-      /** `revision get --feedback-only` is where the AI reads it (KC-0004). */
+      /** `revision get --feedback-only` is where the AI reads it. */
       test('reaches the drafting step through the feedback view', async () => {
         const { retroId } = await aDecidedRound()
         await harness.app.review.finish.execute({
@@ -604,7 +604,7 @@ describe('review', () => {
   })
 
   /**
-   * The AI's close to export (retro 4 `r-one-finish-button`). Every guard on it
+   * The AI's close to export (`r-one-finish-button`). Every guard on it
    * is mechanical, because the thing it must never do — file the human's ask as
    * an outcome — is exactly what a judgment call would eventually do.
    */
@@ -779,17 +779,17 @@ describe('review', () => {
   /**
    * Read-only after `finished`, with **no exceptions** — `finish-lock.service.ts`.
    *
-   * This enumeration lived in `holds.test.ts` and moved here when retro 4
+   * This enumeration lived in `holds.test.ts` and moved here when
    * `r-remove-hold` deleted that file. It was written to prove the exception was
    * exactly two procedures wide: `holds.set` and `holds.clear` stayed reachable
    * on a finished review because the solving side read a hold long after the
-   * review closed (retro 3 `r-hold-semantics`). The feature is gone, so the
+   * review closed (`r-hold-semantics`). The feature is gone, so the
    * exception is gone with it, and this list is now the whole set of human
    * writes — one place that names them all, rather than three tests that each
    * forgot the fourth.
    *
    * What makes a retrospective finished is the AI's close, not the human's
-   * finish (retro 4 `r-one-finish-button`) — so the arrangement below runs the
+   * finish (`r-one-finish-button`) — so the arrangement below runs the
    * whole of the end of the loop, and `review.requestChanges` has left the list
    * because it has left the product.
    */
@@ -859,32 +859,31 @@ describe('review', () => {
      * still complete** — because none of them is a write on the *review*.
      *
      * They are the exceptions `finish-lock.service.ts` anticipated when it
-     * recorded the two `holds` procedures that held the same position in retro
-     * 3: a feature the solving side reads long after the review closed cannot be
-     * locked by the review closing. Each was asked for **because** the retro is
+     * recorded the two `holds` procedures that held the same position: a
+     * feature the solving side reads long after the review closed cannot be
+     * locked by the review closing. Each stays open **because** the retro is
      * closed:
      *
-     * - the lifecycle — *"even after a retro has been closed, we should be able
-     *   to attach metadata to issues so that we can manage their life cycle"*;
-     * - the label and the attribute value — the owner's second usage archetype,
-     *   where a team reaches agreement here and manages the work elsewhere:
-     *   *"on completion of the retro they may actually want to move everything
-     *   into GitHub right away … they could actually put a label that says
-     *   'migrated'"*. That act happens after the close by construction, so a
-     *   lock over it would have made the feature unreachable in the one case it
-     *   was designed for.
-     * - the relation, session 11 — *"both actors can relate records … so that AI
-     *   can easily find past records and build holistic solutions."* This is the
+     * - the lifecycle — metadata still needs to be attachable to issues after a
+     *   retro has closed, so their life cycle can be managed;
+     * - the label and the attribute value — the second usage archetype, where a
+     *   team reaches agreement here and manages the work elsewhere: on
+     *   completing the retro they may move everything into an external tracker
+     *   right away, putting on a label that says "migrated". That act happens
+     *   after the close by construction, so a lock over it would have made the
+     *   feature unreachable in the one case it was designed for.
+     * - the relation — both actors can relate records, so that the AI can
+     *   easily find past records and build holistic solutions. This is the
      *   most closed-retro-shaped of the four: the record being related **to** is
-     *   normally in a retrospective that closed sessions ago, and a lock over it
+     *   normally in a retrospective that closed long ago, and a lock over it
      *   would make the feature unreachable in the only case it exists for.
      *
      * None of the four endangers what the lock protects, for the same reason:
      * **none is in the export**, so the document taken from this retrospective
-     * reads the same before and after (A8, the session-10 default that keeps
-     * labels and attributes out of export v1, and the session-11 default that
-     * keeps relations out on exactly this argument — a relation *can* be added
-     * after an export was taken, which is precisely why it is not in one).
+     * reads the same before and after (A8: labels and attributes stay out of
+     * export v1 by design, and relations stay out on exactly this argument —
+     * a relation *can* be added after an export was taken, which is precisely
+     * why it is not in one).
      *
      * Asserted here rather than only in their own files because this is the file
      * that claims to enumerate the whole set, and a claim about a set is only

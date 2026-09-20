@@ -20,7 +20,7 @@ describe('revisions', () => {
   /**
    * The next round: the human finishes the one on the table, then the AI files.
    *
-   * Since #113 `r-revision-sneaks-past-review` that is the only way a second
+   * Since `r-revision-sneaks-past-review` that is the only way a second
    * revision lands, so a test whose subject is something else — identity
    * stability, the global sequence, reading an older revision back — runs the
    * rhythm rather than filing over a round nobody put down.
@@ -50,7 +50,7 @@ describe('revisions', () => {
     })
 
     /**
-     * The retro's name rides on the draft that proposed it (KC-0020), and it is
+     * The retro's name rides on the draft that proposed it, and it is
      * stored trimmed exactly as the schema parsed it — the CLI hands the payload
      * over untouched, so this is the only place the title is normalised.
      */
@@ -90,7 +90,7 @@ describe('revisions', () => {
       expect(second.retroStarted).toBe(false)
       expect(second.revision.n).toBe(2)
       // The human's half of round 1 sits between the two filings now, which is
-      // the loop's rhythm made mandatory (#113): decide, Finish, then the next
+      // the loop's rhythm made mandatory: decide, Finish, then the next
       // draft answers it.
       expect(await harness.eventNames()).toEqual([
         'SessionCreated',
@@ -111,7 +111,7 @@ describe('revisions', () => {
 
       expect(second.retroStarted).toBe(true)
       expect(second.retroId).not.toBe(first.retroId)
-      // Revision numbering restarts per retrospective (KC-0011).
+      // Revision numbering restarts per retrospective.
       expect(second.revision.n).toBe(1)
     })
 
@@ -143,18 +143,17 @@ describe('revisions', () => {
     })
 
     /**
-     * **#113 `r-revision-sneaks-past-review`** — the owner, mid-review of the
-     * round that filed this: *"You were able to send a revision while I had not
-     * finished the review — that shouldn't be allowed. … We don't want the human
-     * spending time on a review while the AI sneaks in and sends a new
-     * revision."*
+     * **`r-revision-sneaks-past-review`** — a revision could be sent while the
+     * human had not finished reviewing the round, which should not be allowed:
+     * the human should not spend time on a review while the AI sneaks in a new
+     * revision underneath it.
      *
      * It happened twice in one retrospective. Both filings were legal: `revision
      * create` guarded identity and races, and the review's state was never an
      * input to it — the file-review-finish-file rhythm lived in SKILL.md prose,
-     * which binds nobody at the API. The cost is his: a replaced round can flip a
-     * record he has already decided back to pending, so the time was spent on a
-     * moving target with no signal that it moved.
+     * which binds nobody at the API. The cost is real: a replaced round can flip a
+     * record the reviewer has already decided back to pending, so the time was
+     * spent on a moving target with no signal that it moved.
      */
     describe('while the human is still reviewing the round', () => {
       test('refuses the next revision, and leaves the round exactly as it was', async () => {
@@ -361,8 +360,8 @@ describe('revisions', () => {
 
     /**
      * The third name a record has, and the only one the AI does not author
-     * (`record-id.model.ts`): the owner's *"obviously I will like the global
-     * sequence rather than this retro prefix."*
+     * (`record-id.model.ts`): a global sequence across every retrospective,
+     * rather than a number scoped to the one that filed the record.
      */
     describe('the global number', () => {
       const minted = async (retroId: number) =>
@@ -422,7 +421,7 @@ describe('revisions', () => {
       /**
        * The whole point of the change: a second retrospective does not start
        * counting again. `num` does — both retrospectives hold a record 1 — and
-       * that is exactly the reading the owner called weird.
+       * that per-retro reset is exactly what made the old numbering confusing.
        */
       test('runs on across retrospectives, where the per-retro number restarts', async () => {
         const first = await harness.revision(session.id, [

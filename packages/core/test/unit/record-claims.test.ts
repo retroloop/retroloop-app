@@ -239,8 +239,8 @@ describe('record claims', () => {
   /**
    * One claim, three read models. They are built differently on purpose — one
    * folds a revision, one folds the whole store, one reads a single record — so
-   * the assertion that matters is that all three say the same thing (#103
-   * `r-lifecycle-projection-gap`, one table over).
+   * the assertion that matters is that all three say the same thing
+   * (`r-lifecycle-projection-gap`, one table over).
    */
   describe('what the read models say', () => {
     test('every projection shows the same claim, and nothing while there is none', async () => {

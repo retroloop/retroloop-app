@@ -7,7 +7,7 @@ function aNewSession(overrides: Partial<NewSession> = {}): NewSession {
   return {
     claudeSession: 'uuid-1',
     project: 'retro',
-    cwd: '/Users/haider/Developer/retro',
+    cwd: '/Users/sample/Developer/retro',
     branch: 'main',
     supervised: true,
     startedAt: '2026-08-23T09:00:00.000Z',
@@ -50,7 +50,7 @@ export function describeSessionRepositoryContract(label: string, makeStore: Stor
     })
 
     /**
-     * KC-0020: `project` is optional and dormant. Both stores have to hand back
+     * `project` is optional and dormant. Both stores have to hand back
      * the absence as `undefined` rather than as an empty string or a null that
      * leaked out of a column — the read path is where a nullable column usually
      * stops looking like the domain it is supposed to speak for.

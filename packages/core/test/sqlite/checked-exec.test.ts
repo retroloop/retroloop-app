@@ -49,12 +49,12 @@ function threwFrom(act: () => void): string | undefined {
 }
 
 /**
- * **The characterization (#100 `r-db-exec-swallows-errors`), re-derived.**
+ * **The characterization (`r-db-exec-swallows-errors`), re-derived.**
  *
- * The original five-case table was written into the s9-ids lane report and did
- * not survive that worktree's retirement, so this is the evidence itself rather
- * than a copy of it: every case below was run against bun 1.4.0 on a throwaway
- * database and asserts what the driver actually did.
+ * The original five-case table was written up elsewhere and did not survive,
+ * so this is the evidence itself rather than a copy of it: every case below
+ * was run against bun 1.4.0 on a throwaway database and asserts what the
+ * driver actually did.
  *
  * **It corrects the record's prose in one place, and the correction makes the bug
  * worse rather than smaller.** `r-db-exec-swallows-errors` says a runtime failure

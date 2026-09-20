@@ -436,7 +436,7 @@ describe('the lane', () => {
    * first, then his comments. It is the reason an agent can act on a queue row
    * without opening the review page.
    */
-  describe('the owner’s words', () => {
+  describe('the reviewer’s words', () => {
     test('are the reviewer note first, then his comments, oldest first', async () => {
       const row = (await lane()).find((candidate) => candidate.rid === 'r-stale-lock')
 
@@ -481,7 +481,7 @@ describe('the lane', () => {
       expect(row?.selectedSolution.level).toBe(2)
     })
 
-    /** The owner's first retrospectives are full of these, and the lane reads them. */
+    /** Early retrospectives are full of these, and the lane reads them. */
     test('reads a record filed before solutions existed as solution 1', async () => {
       const session = await harness.session('uuid-legacy')
       const legacy = await harness.legacyRevision(session.id)
@@ -493,7 +493,7 @@ describe('the lane', () => {
   })
 
   /**
-   * **The evidence travels with the work** (RL-52). An agent that picks a record
+   * **The evidence travels with the work.** An agent that picks a record
    * off the queue is about to go and reproduce the friction, and what the AI
    * already looked at is the difference between starting from the top and
    * starting from the logs. It is on the row rather than behind a second read

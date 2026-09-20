@@ -12,7 +12,7 @@ import { aLegacyRecord } from '../support/fixtures'
  * canonical-JSON hash of the record's narrative (D2), and a record whose hash no
  * longer matches goes back to `pending` — so if adding `solutions` to
  * `recordContent()` changed what a legacy record hashes to, every decided record
- * in the owner's five retrospectives would have silently un-decided itself on
+ * in production would have silently un-decided itself on
  * the first read after the upgrade.
  *
  * `LEGACY_CONTENT_HASH` was computed against the code as it stood **before**
@@ -30,7 +30,7 @@ describe('a record filed before solutions existed', () => {
 
   test('keeps the decision that was made against it', () => {
     const record = aLegacyRecord()
-    // As the owner's store holds it: approved on revision 1, bound to the hash
+    // As a production store holds it: approved on revision 1, bound to the hash
     // above, and read back on a later revision by a binary that knows solutions.
     const decision: Decision = {
       id: 1,
@@ -62,9 +62,9 @@ describe('a record filed before solutions existed', () => {
    * back unchanged — the key is not on the blob, `canonicalJson` never sees it,
    * and the hash the decision is bound to is the constant above.
    *
-   * The second half is the redraft: the owner re-files a record he already
-   * decided, this time with the evidence the new schema requires. That must not
-   * move the hash, or every carried-over verdict in his five retrospectives would
+   * The second half is the redraft: a record already decided gets re-filed,
+   * this time with the evidence the new schema requires. That must not
+   * move the hash, or every carried-over verdict in production would
    * go back to pending on the first draft written under the new contract.
    */
   test('carries no diagnostic data, and gains none without moving the hash', () => {
