@@ -10,11 +10,11 @@ import { toWireAttributeDefinition, toWireRecordAttribute } from '#trpc/wire'
  * why the definitions and the record write sit together and what the actor
  * story is).
  *
- * **A second namespace rather than a shared `definitions` one**, and that is the
- * owner's ruling made structural: labels and attributes are pure and
- * independent, and *"composition is the USER'S convention … never a system
- * mechanism"*. A single namespace would be the first place a reader looked for
- * the pairing the system does not have.
+ * **A second namespace rather than a shared `definitions` one**, and that is a
+ * standing rule made structural: labels and attributes are pure and independent,
+ * and composition is the user's own convention and never a system mechanism. A
+ * single namespace would be the first place a reader looked for the pairing the
+ * system does not have.
  *
  * Two differences from the label side, both of them the type:
  *
@@ -23,9 +23,9 @@ import { toWireAttributeDefinition, toWireRecordAttribute } from '#trpc/wire'
  *   type, and this store never rewrites what somebody wrote. Retiring the
  *   attribute and defining the one you meant is the whole alternative.
  * - `set` validates against it, lightly — a number parses, a URL names a web
- *   address, a date is a calendar day. The owner asked for exactly that much:
- *   *"very fixed types and not … too many configs, so that we don't have to put
- *   in a lot of validations."*
+ *   address, a date is a calendar day. That is deliberately all of it: very
+ *   fixed types and few configs, so that there is no need for a lot of
+ *   validation.
  */
 export const attributesRouter = router({
   /** The whole vocabulary, retired entries included, in minting order. */

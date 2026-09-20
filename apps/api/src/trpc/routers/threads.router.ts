@@ -13,10 +13,10 @@ const targetSchema = z.union([
 /**
  * The revision the writer had on screen. Optional, and stored when it is given.
  *
- * A revision is announced and never swapped in (KC-0005), so the reader may be
- * pinned to `?rev=1` while revision 2 exists — and what they write belongs to
- * what they were reading, which only the page knows. Left out, the comment is
- * stamped with the latest revision, in the same unit of work as the write.
+ * A revision is announced and never swapped in, so the reader may be pinned to
+ * `?rev=1` while revision 2 exists — and what they write belongs to what they
+ * were reading, which only the page knows. Left out, the comment is stamped with
+ * the latest revision, in the same unit of work as the write.
  */
 const revisionSchema = z.int().positive()
 
@@ -32,17 +32,16 @@ export const threadsRouter = router({
   /**
    * **Every thread of the retrospective, record-level and review-level alike.**
    *
-   * This filtered to review-level threads until session 7, and the reason it
-   * gave — one thread, one source — now points the other way. The owner:
-   * *"Replace inline comments in retro body with comments in the side panel …
-   * This enables human to see all comments in one place."* A panel that is the
-   * one comments surface needs one call that answers "every comment in this
-   * retrospective", and no arrangement of record-scoped calls can: the review's
-   * own threads hang off no record.
+   * This filtered to review-level threads at first, and the reason it gave — one
+   * thread, one source — now points the other way. Inline comments in the retro
+   * body were replaced by comments in the side panel, so that the human sees all
+   * comments in one place. A panel that is the one comments surface needs one
+   * call that answers "every comment in this retrospective", and no arrangement
+   * of record-scoped calls can: the review's own threads hang off no record.
    *
    * **This is that one source.** `records.get` no longer carries a record's
    * threads at all (`views.schema.ts` §recordDetailSchema) — the key came off
-   * the wire in the same session, with the inline rendering that read it. Two
+   * the wire at the same time, with the inline rendering that read it. Two
    * procedures answering for the same threads would be two answers to keep in
    * agreement, and the one scoped to a record was never able to give the whole.
    */

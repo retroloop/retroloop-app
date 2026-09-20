@@ -14,26 +14,26 @@ import { toWireDecision } from '#trpc/wire'
  * `decisions.record` — approve or decline (or move back to pending), with the
  * three values and the reviewer's note (D1/D4).
  *
- * **`hold` is not one of them any more** (retro 3 `r-hold-semantics`). It left
- * the verdict axis to become a lifecycle flag of its own, and retro 4
- * `r-remove-hold` removed that too. The output enum still speaks all four,
- * because a record decided `hold` before the split keeps that state: this narrows
- * what can be written, never what can be read — the same cut KC-0021 made to
- * solution level, one field over.
+ * **`hold` is not one of them any more** (`r-hold-semantics`). It left the
+ * verdict axis to become a lifecycle flag of its own, and `r-remove-hold`
+ * removed that too. The output enum still speaks all four, because a record
+ * decided `hold` before the split keeps that state: this narrows what can be
+ * written, never what can be read — the same cut made to solution level, one
+ * field over.
  *
  * **`revision` is required, not defaulted.** A new revision is announced, never
- * swapped in (KC-0005), so the reviewer may still be looking at revision 1 when
- * revision 2 exists — and a verdict has to bind to the content they actually
- * read. Making the page say which revision it was showing is what keeps the
- * carry-over rule honest; defaulting to "latest" here would silently attach the
- * click to a draft nobody had seen.
+ * swapped in, so the reviewer may still be looking at revision 1 when revision 2
+ * exists — and a verdict has to bind to the content they actually read. Making
+ * the page say which revision it was showing is what keeps the carry-over rule
+ * honest; defaulting to "latest" here would silently attach the click to a draft
+ * nobody had seen.
  *
  * The state has no default either: nothing in this product is decided by
- * omission (KC-0010).
+ * omission.
  *
- * `solutionLevel` accepts levels 1–5 and nothing else (KC-0021). The output
- * still speaks the full eight, because a record decided before the cut keeps
- * what it was given: this narrows what can be written, never what can be read.
+ * `solutionLevel` accepts levels 1–5 and nothing else. The output still speaks
+ * the full eight, because a record decided before the cut keeps what it was
+ * given: this narrows what can be written, never what can be read.
  *
  * **`solutionLevel` and `selectedSolution` are one input each for one shape of
  * record**, and the pair is not interchangeable: on a record that proposes

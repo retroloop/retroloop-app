@@ -36,11 +36,11 @@ export const revisionMetaSchema = z.strictObject({
    *
    * It is not `retrospective.finishedAt`, which is the retro's own close by the
    * AI and stays null through every round but the last. The review page needs
-   * "has he finished the revision I am looking at?", and until session 10
-   * nothing on the wire answered it — so the bar's Sent state was in-memory
-   * only and a refresh offered the button again for a round the store had
-   * already recorded as finished. The store always knew: the CLI's review wait
-   * answers this from the same events.
+   * "has the human finished the revision I am looking at?", and for a while
+   * nothing on the wire answered it — so the bar's Sent state was in-memory only
+   * and a refresh offered the button again for a round the store had already
+   * recorded as finished. The store always knew: the CLI's review wait answers
+   * this from the same events.
    */
   finishedAt: z.string().nullable(),
 })
@@ -48,11 +48,11 @@ export const revisionMetaSchema = z.strictObject({
 /**
  * Where a retrospective happened.
  *
- * Session id and `cwd` are the identity line — "Retro #n · Session S · <cwd>"
- * (KC-0020, shortlist N1) — and `cwd` is the anchor because Claude Code pins it
- * for the life of a session. Both retro views carry this same shape, so the one
- * reader that renders that line renders it identically from either of them: the
- * dashboard row and the review page cannot drift into two identity lines.
+ * Session id and `cwd` are the identity line — "Retro #n · Session S · <cwd>" —
+ * and `cwd` is the anchor because Claude Code pins it for the life of a session.
+ * Both retro views carry this same shape, so the one reader that renders that
+ * line renders it identically from either of them: the dashboard row and the
+ * review page cannot drift into two identity lines.
  */
 export const sessionIdentitySchema = z.strictObject({
   id: z.int(),
@@ -63,21 +63,21 @@ export const sessionIdentitySchema = z.strictObject({
 export const retroSchema = z.strictObject({
   retroId: z.int(),
   session: sessionIdentitySchema,
-  /** Dormant and optional on the session since KC-0020; null when it was never given. */
+  /** Dormant and optional on the session; null when it was never given. */
   project: z.string().nullable(),
   /**
    * The retrospective's plain-language name — the **latest revision's** title,
-   * null when that revision proposed none (KC-0020, ledger v2 #120). Latest
-   * wins because a title is part of the draft: the AI renames a retro by
-   * redrafting it, which is the only way anything in a revision changes (D4).
+   * null when that revision proposed none. Latest wins because a title is part
+   * of the draft: the AI renames a retro by redrafting it, which is the only way
+   * anything in a revision changes (D4).
    */
   title: z.string().nullable(),
-  /** The retrospective's place in its session — the "Retro #n" of the breadcrumb (KC-0011). */
+  /** The retrospective's place in its session — the "Retro #n" of the breadcrumb. */
   retroNumber: z.int().positive(),
   /**
    * The state a reader is shown, which is not the state a row is stored in:
-   * `submitted` — his round is down and the AI has not closed it — is derived
-   * from the `ReviewFinished` events on the way out and written nowhere
+   * `submitted` — the human's round is down and the AI has not closed it — is
+   * derived from the `ReviewFinished` events on the way out and written nowhere
    * (`retro.view.ts`). The other three are the retrospective's own.
    */
   state: retroDisplayStateSchema,
@@ -88,12 +88,12 @@ export const retroSchema = z.strictObject({
 })
 
 /**
- * One row of the dashboard's flat list of retrospectives (KC-0020, shortlist N4).
+ * One row of the dashboard's flat list of retrospectives.
  *
- * Deliberately narrow: the identity line the owner asked for — "Retro #n ·
- * Session S · <cwd>" (N1) — the retro's name, its state, and how much of the
- * review is left. `project` is not here: nothing groups, routes or filters by it
- * (N2), and every field on this row is a field the typed mock has to produce.
+ * Deliberately narrow: the identity line — "Retro #n · Session S · <cwd>" — the
+ * retro's name, its state, and how much of the review is left. `project` is not
+ * here: nothing groups, routes or filters by it, and every field on this row is
+ * a field the typed mock has to produce.
  *
  * `title` is null rather than a fallback string. "Retro #n — <cwd basename>" is
  * what a reader shows when a retro has no name, and inventing it server-side
@@ -114,14 +114,14 @@ export const retroListRowSchema = z.strictObject({
 })
 
 /**
- * Where a record stands **after** the review that filed it closed — the owner's
- * lifecycle ask, on the wire.
+ * Where a record stands **after** the review that filed it closed — the
+ * lifecycle axis, on the wire.
  *
  * `status` is the derived reading — `open`, `resolved` or `archived` — not the
  * act that was written; the acts are `resolved`, `reopened`, `archived` and
  * `unarchived`, and the last one of them is what the four fields below describe.
- * `refs` is a list rather than a nullable string because the owner named several
- * kinds of reference and a fix can cite more than one — it is non-empty exactly
+ * `refs` is a list rather than a nullable string because several kinds of
+ * reference exist and a fix can cite more than one — it is non-empty exactly
  * when the record is resolved, which is why a reader can treat "has refs" and
  * "is resolved" as the same question.
  *
@@ -152,8 +152,8 @@ export const recordLifecycleSchema = z.strictObject({
  *
  * `actor` is asked because either party may hold a record. The AI is who the
  * marker exists for, but the human does the work too, and a badge that could
- * only mean "an agent has this" would go up beside a record he is editing
- * himself (`claim-record.use-case.ts`).
+ * only mean "an agent has this" would go up beside a record the human is editing
+ * themselves (`claim-record.use-case.ts`).
  *
  * **Nullable wherever it rides, never absent**, which is this file's one
  * systematic conversion: a record nobody is holding and one somebody gave back
@@ -168,10 +168,9 @@ export const recordClaimSchema = z.strictObject({
 /**
  * One entry of a vocabulary, as the settings page manages it.
  *
- * The owner's *"each label or attribute is going to be a global thing"* — so
- * there is no retrospective, no session and no scope of any kind on this shape,
- * and the page that edits it is `/settings` rather than anything inside a
- * review.
+ * Each label or attribute is a global thing — so there is no retrospective, no
+ * session and no scope of any kind on this shape, and the page that edits it is
+ * `/settings` rather than anything inside a review.
  *
  * `retiredAt` is a nullable timestamp rather than a `retired` boolean, and the
  * difference earns its place on the settings page itself: the row that says a
@@ -188,8 +187,8 @@ export const labelDefinitionSchema = z.strictObject({
 
 /**
  * The attribute vocabulary — its label twin plus the one field that makes the
- * primitive worth having: *"they can say it's always going to be a number. Then
- * it will be easier for them to query."*
+ * primitive worth having: an attribute can be declared to always hold a number,
+ * which makes it easier to query.
  *
  * The type is on the definition and never on a value, and there is no procedure
  * anywhere that changes one: every value already stored was accepted under it
@@ -241,8 +240,8 @@ export const recordAttributeSchema = z.strictObject({
 })
 
 /**
- * A relation **as one of its two records sees it** — the owner's *"the relation
- * reads from both sides"*, on the wire.
+ * A relation **as one of its two records sees it** — the relation reads from
+ * both sides, on the wire.
  *
  * It names the **other** record and never this one: a page standing on #5 wants
  * to know about #12, and repeating #5 on every line would be the page telling
@@ -325,9 +324,9 @@ export const recordAttributesResultSchema = z.strictObject({
 })
 
 /**
- * The global settings — one key, and it is OWNER RULING 2's guarantee rather
- * than a preference: *"if it is disabled, the user can be certain that the AI
- * cannot mess around."*
+ * The global settings — one key, and it is a standing guarantee rather than a
+ * preference: while it is disabled, the user can be certain that the AI cannot
+ * mess around.
  *
  * A named boolean rather than a key-value bag. There is exactly one setting,
  * every reader wants this one, and a map would make the page ask "is
@@ -385,7 +384,7 @@ export const recordSummarySchema = z.strictObject({
   contentChangedSince: z.int().positive().nullable(),
   /**
    * Where the record stands after the review that filed it closed — the same
-   * shape `records.listAll` already carries, on the review's own list (#103).
+   * shape `records.listAll` already carries, on the review's own list.
    *
    * The core use case has always returned it; the summary simply did not pass
    * it on. It is declared above this schema rather than below it because a
@@ -394,7 +393,7 @@ export const recordSummarySchema = z.strictObject({
   lifecycle: recordLifecycleSchema,
   /**
    * **Whether somebody has picked this record up** — the "in progress" badge the
-   * review card wears, and null while nobody is holding it (RL-50).
+   * review card wears, and null while nobody is holding it.
    *
    * It is on the *review's* list and on the record's own page, and deliberately
    * not on `recordListAllRowSchema`: the flat cross-retro page is a place to
@@ -419,18 +418,17 @@ export const recordListSchema = z.strictObject({
 })
 
 /**
- * One row of the flat cross-retro records list — the owner's *"page that shows
- * all the retro items flat with filtering … irrespective of the session or retro
- * or cwd"*.
+ * One row of the flat cross-retro records list — the page that shows all the
+ * retro items flat with filtering, irrespective of session, retrospective or
+ * cwd.
  *
  * Deliberately narrow, like every row on this wire: the identity line
- * (`retroNumber` + `session`, KC-0011), enough of the record to read and filter
- * it, and where each of its two axes stands. The narrative is not here — a row
- * links to the record's own page and `records.byId` answers for that (session 9;
- * it was the review page's anchor until then, A6/A7) — and neither is the
- * retro's title, because the identity line the owner asked for is
- * "Session S · Retro #n · cwd" and a field nothing renders is a field the mock
- * has to produce for nothing.
+ * (`retroNumber` + `session`), enough of the record to read and filter it, and
+ * where each of its two axes stands. The narrative is not here — a row links to
+ * the record's own page and `records.byId` answers for that (the narrative was
+ * the review page's anchor until that page existed) — and neither is the retro's
+ * title, because the identity line is "Session S · Retro #n · cwd" and a field
+ * nothing renders is a field the mock has to produce for nothing.
  */
 export const recordListAllRowSchema = z.strictObject({
   retroId: z.int(),
@@ -462,10 +460,11 @@ export const recordListAllRowSchema = z.strictObject({
    * records that are open and `interactive`, and no per-record read can answer a
    * question about every open record without one request each.
    *
-   * The widening was the owner's call, made against the tradeoffs (`r-wire-widening-two-package`;
-   * the reasoning is on `RecordListAllRow` in core). It is the only field on this
-   * shape that no reader of a *row* draws, which is stated here rather than left
-   * for someone to discover and delete as dead weight.
+   * The widening was a deliberate call, made against the tradeoffs
+   * (`r-wire-widening-two-package`; the reasoning is on `RecordListAllRow` in
+   * core). It is the only field on this shape that no reader of a *row* draws,
+   * which is stated here rather than left for someone to discover and delete as
+   * dead weight.
    */
   involvement: involvementSchema,
   /**
@@ -513,8 +512,8 @@ export const messageSchema = z.strictObject({
   text: z.string(),
   at: z.string(),
   /**
-   * The revision this message belongs to — the owner's *"comment show the rev
-   * number they are associated with"*.
+   * The revision this message belongs to — a comment shows the revision number
+   * it is associated with.
    *
    * Always a number, never null. It is the revision the writer captured when
    * they wrote, and a derivation from the revision timestamps for the messages
@@ -572,8 +571,8 @@ export const recordDetailSchema = z.strictObject({
       root: z.string(),
     }),
     /**
-     * The evidence the AI diagnosed from, as markdown — **null on a record
-     * filed before the field existed** (RL-52).
+     * The evidence the AI diagnosed from, as markdown — **null on a record filed
+     * before the field existed**.
      *
      * Null and not an absent key, on this file's standing rule: a browser that
      * had to tell "this record has none" from "the server forgot" would be
@@ -587,9 +586,9 @@ export const recordDetailSchema = z.strictObject({
      * says so with nulls rather than absent keys (see this file's header).
      *
      * `agreedDirection` and `footprint` are the record's one direction and one
-     * tree of files — every record filed before the owner's multi-solution
-     * design, which is all of retros 1–5. Null on a record that has
-     * `solutions`, and the page renders the other branch.
+     * tree of files — every record filed before the multi-solution design
+     * existed. Null on a record that has `solutions`, and the page renders the
+     * other branch.
      */
     agreedDirection: z.string().nullable(),
     footprint: z.string().nullable(),
@@ -639,12 +638,12 @@ export const recordDetailSchema = z.strictObject({
   labels: z.array(recordLabelSchema),
   /**
    * **No `threads` here.** A record's comments used to ride on its detail and be
-   * rendered inside the section they answered; since session 7 every comment is
-   * read from `threads.list` and shown in the one panel (the owner: *"Replace
-   * inline comments in retro body with comments in the side panel … This
-   * enables human to see all comments in one place"*). Two procedures answering
-   * for the same threads is two answers to keep in agreement, and the one that
-   * was scoped to a record could never have carried the review's own.
+   * rendered inside the section they answered; every comment is now read from
+   * `threads.list` and shown in the one panel, which replaced the inline
+   * comments in the retro body so that the human sees all comments in one place.
+   * Two procedures answering for the same threads is two answers to keep in
+   * agreement, and the one that was scoped to a record could never have carried
+   * the review's own.
    *
    * **Only the wire narrows.** `GetRecordUseCase` still returns them: it is the
    * core's read model for a record, and what a wire projection stopped needing
@@ -656,9 +655,9 @@ export const recordDetailSchema = z.strictObject({
 })
 
 /**
- * One thing that happened to a record — a line of the record page's timeline
- * (the owner's *"We can have a timeline at the bottom that shows how the record
- * evolved. timeline can have events like status changes"*).
+ * One thing that happened to a record — a line of the record page's timeline,
+ * which sits at the bottom of the page and shows how the record evolved through
+ * events such as status changes.
  *
  * A discriminated union rather than one shape with everything nullable: the
  * three kinds carry genuinely different facts — a draft has a revision and no
@@ -667,9 +666,8 @@ export const recordDetailSchema = z.strictObject({
  * reader switches on, and `z.strictObject` inside each arm still refuses an
  * unknown key.
  *
- * **`comments` is not one of the kinds**, by the owner's word — *"let's leave
- * out the comments for now"*. A record's conversation stays on the review page,
- * which is where it is written.
+ * **`comments` is not one of the kinds**, deliberately left out for now. A
+ * record's conversation stays on the review page, which is where it is written.
  *
  * Every arm carries an `actor`, and two of them get theirs from the domain
  * rather than from a stored column: a revision is the AI's and a verdict is the
@@ -725,11 +723,11 @@ export const recordTimelineEntrySchema = z.discriminatedUnion('kind', [
  * not:
  *
  * - **`retroNumber` + `session`** — the identity line, in the same shape
- *   `retros.list` and `records.listAll` carry (N1). The review page reads it
- *   from `retros.get`, because it is already holding that answer; this page
- *   holds one record and would otherwise need a second round trip to say where
- *   it came from — and where it came from is also the link the owner asked for
- *   (*"the record page sure should give me option to go to the retro page"*).
+ *   `retros.list` and `records.listAll` carry. The review page reads it from
+ *   `retros.get`, because it is already holding that answer; this page holds one
+ *   record and would otherwise need a second round trip to say where it came
+ *   from — and where it came from is also the link this page offers back to the
+ *   retrospective page.
  * - **`lifecycle`** — where the record stands on the axis that outlives the
  *   review, entry in force resolved. It is here rather than derived from
  *   `timeline` below because the page wears the status as a tag and offers
@@ -758,12 +756,11 @@ export const recordPageSchema = recordDetailSchema.extend({
    * The values the record carries, with the name and type of each — **this page
    * and no other**.
    *
-   * It is the owner's *"external ticket ID"* on the record that went to GitHub,
-   * and it is here rather than on `recordDetailSchema` for the reason the header
-   * of this file gives about narrowness: the review card is already dense and a
-   * value is not what a reviewer is scanning for. This page is where a reader
-   * has come to find out about one record, and it is the only surface that pays
-   * for these.
+   * It is the "external ticket ID" on the record that went to GitHub, and it is
+   * here rather than on `recordDetailSchema` for the reason the header of this
+   * file gives about narrowness: the review card is already dense and a value is
+   * not what a reviewer is scanning for. This page is where a reader has come to
+   * find out about one record, and it is the only surface that pays for these.
    */
   attributes: z.array(recordAttributeSchema),
   /**

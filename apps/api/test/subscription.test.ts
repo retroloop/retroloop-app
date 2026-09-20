@@ -34,7 +34,7 @@ async function waitUntil(condition: () => boolean, what: string): Promise<void> 
 /**
  * Any write will do as a live event, and a verdict is the cheapest one that
  * needs no other state. `review.requestChanges` was this file's event source
- * until retro 4 `r-one-finish-button` removed the procedure.
+ * until `r-one-finish-button` removed the procedure.
  */
 async function decideOn(api: ApiHarness, retroId: number): Promise<void> {
   await api.caller.decisions.record({ retroId, rid: 'r-record-1', revision: 1, state: 'approved' })
@@ -176,11 +176,11 @@ describe('events.onRetro', () => {
   })
 
   /**
-   * **The records page's live updates** (session 8). A lifecycle write is
-   * scoped to its retrospective like any other, so it reaches a page watching
-   * that retro through the machinery already here — which is what lets the flat
-   * records list invalidate itself when the AI resolves something in another
-   * process while the human is reading.
+   * **The records page's live updates.** A lifecycle write is scoped to its
+   * retrospective like any other, so it reaches a page watching that retro
+   * through the machinery already here — which is what lets the flat records
+   * list invalidate itself when the AI resolves something in another process
+   * while the human is reading.
    *
    * Both names, because the invalidation map keys off `name` and a map that
    * knew only the resolve would leave a reopened record showing as resolved
