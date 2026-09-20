@@ -69,7 +69,7 @@ export const retroSchema = z.strictObject({
    * The retrospective's plain-language name — the **latest revision's** title,
    * null when that revision proposed none. Latest wins because a title is part
    * of the draft: the AI renames a retro by redrafting it, which is the only way
-   * anything in a revision changes (D4).
+   * anything in a revision changes.
    */
   title: z.string().nullable(),
   /** The retrospective's place in its session — the "Retro #n" of the breadcrumb. */
@@ -105,7 +105,7 @@ export const retroListRowSchema = z.strictObject({
   title: z.string().nullable(),
   state: retroDisplayStateSchema,
   counts: z.strictObject({
-    /** What the finish gate is waiting on, in the latest revision (D3). */
+    /** What the finish gate is waiting on, in the latest revision. */
     pending: z.int().nonnegative(),
     /** Approved or declined — everything the human has answered. */
     decided: z.int().nonnegative(),
@@ -380,7 +380,7 @@ export const recordSummarySchema = z.strictObject({
   /** The revision the binding decision was made against; null while pending. */
   decidedOnRevision: z.int().positive().nullable(),
   carriedOver: z.boolean(),
-  /** Set when the narrative changed after a decision, which sent it back to pending (D2). */
+  /** Set when the narrative changed after a decision, which sent it back to pending. */
   contentChangedSince: z.int().positive().nullable(),
   /**
    * Where the record stands after the review that filed it closed — the same
@@ -445,7 +445,7 @@ export const recordListAllRowSchema = z.strictObject({
   title: z.string(),
   type: recordTypeSchema,
   requester: partySchema,
-  /** The verdict in effect, carry-over resolved (D2) — one of the page's filters. */
+  /** The verdict in effect, carry-over resolved — one of the page's filters. */
   state: decisionStateSchema,
   /** The severity in effect: the human's once decided, the AI's proposal until then. */
   severity: severitySchema,
@@ -687,7 +687,7 @@ export const recordTimelineEntrySchema = z.discriminatedUnion('kind', [
   z.strictObject({
     kind: z.literal('decision'),
     at: z.string(),
-    /** The revision the verdict was given against (D2). */
+    /** The revision the verdict was given against. */
     revision: z.int().positive(),
     state: decisionStateSchema,
     actor: actorSchema,

@@ -209,7 +209,7 @@ describe('the record lane', () => {
     /**
      * **The queue's whole definition, in one assertion and one row.** Approved,
      * unresolved, not archived, in a retrospective the human finished — with
-     * everything an agent needs to start: his words, the solution he picked, and
+     * everything an agent needs to start: their words, the solution they picked, and
      * the files it touches.
      */
     test('returns the approved, unresolved work of finished retrospectives', async () => {
@@ -284,7 +284,7 @@ describe('the record lane', () => {
           diagnosticData:
             '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
             '- **The holder:** `ps 8123` — no such process.',
-          // He wrote nothing on this one at review time, and his quotes are
+          // They wrote nothing on this one at review time, and their quotes are
           // still here — the two lists answer different questions.
           humanWords: [
             {
@@ -567,7 +567,7 @@ describe('the record lane', () => {
     })
 
     /**
-     * **`humanWords: []` means he said nothing quotable** — which is what an empty
+     * **`humanWords: []` means they said nothing quotable** — which is what an empty
      * array on this row should have meant all along. Filed that way on purpose,
      * with a quote that has no `context` beside it in a second record.
      */

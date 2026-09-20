@@ -49,7 +49,7 @@ function solutionsContent(solutions: readonly Solution[] | undefined): JsonLike 
 }
 
 /**
- * The content a decision binds to (D2): identity + narrative, deliberately **not**
+ * The content a decision binds to: identity + narrative, deliberately **not**
  * the AI's proposed defaults — those only seed the human's own values, so the AI
  * re-proposing a different severity must not invalidate a human decision.
  *
@@ -115,7 +115,7 @@ export function hashRecordContent(record: RetroRecord): string {
 }
 
 /**
- * The record content behind each comment-anchor section (D8), used to highlight
+ * The record content behind each comment-anchor section, used to highlight
  * what changed between two appearances of a record.
  *
  * The section enum has no slot for `type`, `requester` and `impacts`, so they ride

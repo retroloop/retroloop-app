@@ -70,7 +70,7 @@ async function seedStage(): Promise<{ home: string; dataDir: string; retroId: nu
     session: session.id,
     revision: JSON.parse(aRevisionDraft()) as unknown,
   })
-  // Every record decided, or the finish gate would refuse (D3).
+  // Every record decided, or the finish gate would refuse.
   for (const record of revision.records) {
     await app.decisions.record.execute({
       actor: 'human',

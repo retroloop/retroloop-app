@@ -4,7 +4,8 @@ import type { Actor } from '#domain/models/actor.model'
 /**
  * The mechanical half of actor separation (architecture.md §Actor model). It lives
  * in the use cases, below every adapter, so no driver can route around it — and
- * SQLite triggers back it up at L1 for human-authored tables (item 3).
+ * SQLite triggers back it up at L1 for human-authored tables — the same
+ * guarantee `decision.repository.ts` describes.
  */
 export class ForbiddenActorError extends DomainError {
   override readonly code: DomainErrorCode = 'FORBIDDEN_ACTOR'

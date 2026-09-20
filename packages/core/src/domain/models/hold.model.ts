@@ -14,7 +14,7 @@
  *
  * There is no revision here, deliberately. A hold is about the **item**, so it
  * is keyed on `(retroId, rid)` and outlives every redraft of that record —
- * unlike a decision, which binds to the content it was given for (D2). A
+ * unlike a decision, which binds to the content it was given for. A
  * paragraph being rewritten does not stop "not until the release ships" being
  * true.
  */

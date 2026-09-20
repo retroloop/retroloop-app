@@ -7,9 +7,9 @@
  * mock, a router, a request handler, or a fetch interceptor.
  *
  * Layer 1 is the compiler (`satisfies MockRouter`, type-only `web -> api`).
- * Layer 3 is the mock-lock reviewer agent, which catches what no regex can —
- * a step that reaches past the tRPC client, or a response literal invented
- * rather than derived from `inferRouterOutputs`.
+ * Layer 3 is human review, which catches what no regex can — a step that
+ * reaches past the tRPC client, or a response literal invented rather than
+ * derived from `inferRouterOutputs`.
  *
  * This script is layer 2 and nothing more: it is a text scan, and it is meant
  * to be noisy rather than clever.

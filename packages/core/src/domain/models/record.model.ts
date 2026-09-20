@@ -1,5 +1,5 @@
 /**
- * A record: one captured friction inside a revision (data-model.md §Record, D1).
+ * A record: one captured friction inside a revision (data-model.md §Record).
  *
  * Named `RetroRecord` rather than `Record` so it never shadows TypeScript's
  * built-in `Record<K, V>` utility type.
@@ -26,7 +26,7 @@ export type Party = 'human' | 'ai'
 export type Severity = 1 | 2 | 3 | 4 | 5
 
 /**
- * A ceiling, not a target (D1) — what a stored level can *be*.
+ * A ceiling, not a target — what a stored level can *be*.
  *
  * The three named values are legacy: they can no longer be chosen or proposed,
  * and early retrospectives hold two of them. They stay in this type because
@@ -40,14 +40,14 @@ export type SolutionLevelInput = 1 | 2 | 3 | 4 | 5
 
 export type Involvement = 'autonomous' | 'pull-request' | 'interactive' | 'other' | 'undecided'
 
-/** Both halves are required (D5); `context` is the quote's optional surrounding. */
+/** Both halves are required; `context` is the quote's optional surrounding. */
 export type HumanWords = {
   readonly verbatim: string
   readonly cleaned: string
   readonly context: string | undefined
 }
 
-/** Five-whys: 1–5 `whys`, a non-empty `root` (D5 validates the shape, not the quality). */
+/** Five-whys: 1–5 `whys`, a non-empty `root` (the schema validates the shape, not the quality). */
 export type RootCause = {
   readonly whatHappened: string
   readonly whys: readonly string[]
@@ -88,9 +88,9 @@ export type LegacyProposedDefaults = ProposedDefaults & {
  * the solution, which is why the record no longer has one of its own.
  */
 export type Solution = {
-  /** Bold-lead bullets, the markdown subset (D5's form 1). */
+  /** Bold-lead bullets, the markdown subset. */
   readonly bullets: string
-  /** The tagged file tree, or the literal `"none"` — not markdown (D5's form 3). */
+  /** The tagged file tree, or the literal `"none"` — not markdown. */
   readonly footprint: string
   readonly level: SolutionLevelInput
   /** Exactly one solution of a record has this. */
@@ -116,7 +116,7 @@ type SharedNarrative = {
    * asks whether it has any, and shows nothing where it has none.
    */
   readonly diagnosticData: string | undefined
-  /** Free text or the literal `"none"` — never absent (D5). */
+  /** Free text or the literal `"none"` — never absent. */
   readonly workaround: string
   readonly requester: Party
   readonly impacts: Party
@@ -147,7 +147,7 @@ export type SolutionsNarrative = SharedNarrative & {
 
 /**
  * The AI-authored half of a record. This — together with the identity fields —
- * is what the decision carry-over hash is taken over (D2): a decision binds to
+ * is what the decision carry-over hash is taken over: a decision binds to
  * the narrative it was made against, not to the AI's proposed defaults.
  *
  * **A record has exactly one of the two shapes**, and the union says so rather
@@ -188,7 +188,7 @@ export type SolutionsRecord = RecordIdentity &
 export type RetroRecord = LegacyRecord | SolutionsRecord
 
 /**
- * The narrative sections a comment thread can anchor to (D8).
+ * The narrative sections a comment thread can anchor to.
  *
  * `solutions` is one anchor for the whole block rather than one per solution: a
  * comment that is about the second proposal says so in its own words, and an

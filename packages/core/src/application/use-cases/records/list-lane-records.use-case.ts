@@ -103,7 +103,7 @@ export type LaneRecordRow = {
   readonly ownerWords: readonly string[]
   /** The fix in effect, with its files (`lane.view.ts`). */
   readonly selectedSolution: LaneSolutionView
-  /** The verdict in effect, carry-over resolved (D2). */
+  /** The verdict in effect, carry-over resolved. */
   readonly decision: EffectiveDecision
   /** Where it stands on the axis that outlives the review. */
   readonly lifecycle: EffectiveLifecycle

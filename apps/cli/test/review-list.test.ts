@@ -149,7 +149,7 @@ describe('review list --finished', () => {
         sessionId: stage.sessionId,
         claudeSession: 'uuid-a',
         finishedAt: AT,
-        // He has finished it and the AI has not closed it — the window that
+        // They have finished it and the AI has not closed it — the window that
         // makes this list worth reading.
         closed: false,
         counts: { pending: 0, approved: 1, declined: 0, revise: 0, hold: 0, total: 1 },

@@ -82,7 +82,7 @@ describe('review wait', () => {
   })
 
   test('does not return an outcome that belongs to an earlier revision', async () => {
-    // Round one ended with the human finishing it; the AI read what he wrote and
+    // Round one ended with the human finishing it; the AI read what they wrote and
     // answered with revision 2. That old event is not news about the draft now
     // under review, and returning it would send the AI round the loop again on
     // feedback it has already addressed.
@@ -435,7 +435,7 @@ describe('review wait --follow', () => {
   })
 
   /**
-   * `--timeout 0` asks "has he finished yet?", and the store answers that
+   * `--timeout 0` asks "has the human finished yet?", and the store answers that
    * instantly and completely — it is where the rows are. No stream can beat a
    * local read, and one opened for a question already answered would be a
    * connection nobody needed, so the subscribing form stands aside. The

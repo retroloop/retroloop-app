@@ -367,7 +367,7 @@ describe('comment threads', () => {
       expect(await harness.eventNames()).toContain('ThreadResolved')
     })
 
-    /** Reopening is a version, not an edit: what he did at 10:00 is still there. */
+    /** Reopening is a version, not an edit: what they did at 10:00 is still there. */
     test('reopening appends a version rather than erasing the one that stands', async () => {
       const threadId = await aThread()
       await harness.app.threads.resolve.execute({ actor: 'human', threadId, resolved: true })

@@ -710,7 +710,7 @@ describe('revisions', () => {
       harness.clock.advance(60 * 60 * 1000)
       await harness.revision(session.id, [{ rid: 'r-one', num: 1 }])
 
-      // Round 1 carries the moment he finished it; round 2 is the one on the
+      // Round 1 carries the moment they finished it; round 2 is the one on the
       // table and carries nothing. The retrospective itself is still unfinished,
       // which is exactly the case the old reading got wrong.
       expect(

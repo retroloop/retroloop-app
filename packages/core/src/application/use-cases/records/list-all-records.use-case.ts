@@ -42,7 +42,7 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  * verdict stands, and where the lifecycle stands. What it does not carry — the
  * problem statement, the solutions, the reviewer's note, the involvement — is
  * one navigation away on the review page, which is the detail view for a record
- * and stays the only one (A6/A7).
+ * and stays the only one.
  */
 export type RecordListAllRow = {
   readonly retroId: number
@@ -66,8 +66,8 @@ export type RecordListAllRow = {
   readonly requester: Party
   /**
    * The verdict **in effect** — carried over from an earlier revision where it
-   * still binds, and back to `pending` where the narrative changed under it
-   * (D2). Resolved by `effectiveDecision`, which writes nothing.
+   * still binds, and back to `pending` where the narrative changed under it.
+   * Resolved by `effectiveDecision`, which writes nothing.
    */
   readonly state: DecisionState
   /**
@@ -168,7 +168,7 @@ function decisionsByRetro(
  *
  * Grouped rather than kept flat under a joined key, because a rid is minted per
  * retrospective and this is the one listing that holds two retrospectives'
- * records at once (A5) — the same reason the lifecycle beside it is keyed on the
+ * records at once — the same reason the lifecycle beside it is keyed on the
  * pair. Inside a group the rid is unique, which is what the store's own
  * `UNIQUE (retro_id, rid)` says.
  */
@@ -214,7 +214,7 @@ const NO_LABELS: readonly [] = []
  * it is the order the reviewer read them in, and the order the revision stores
  * them in.
  *
- * **No filtering arguments**, deliberately (A4). The page filters, and it filters
+ * **No filtering arguments**, deliberately. The page filters, and it filters
  * client-side: the counts are small enough that the client can hold every row,
  * and a filter on the wire would be a decision made ahead of the evidence about
  * which filters matter — the same reasoning `retros.list` gives for taking no

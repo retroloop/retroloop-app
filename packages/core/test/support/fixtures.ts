@@ -3,8 +3,8 @@ import type { LegacyRecord, Solution, SolutionsRecord } from '#domain/models/rec
 
 /**
  * Fixture builders. They produce the *smallest input a real revision could carry*
- * — every mechanical rule of D5 satisfied and nothing more — so a test that
- * overrides one field is unambiguously testing that field.
+ * — every mechanical rule of the schema satisfied and nothing more — so a test
+ * that overrides one field is unambiguously testing that field.
  */
 export function aRecordInput(overrides: Partial<RecordInput> = {}): RecordInput {
   return {

@@ -48,7 +48,7 @@ export type Decision = {
   readonly revisionN: number
   /**
    * Canonical-JSON hash of that revision's record content (identity + narrative).
-   * Denormalized from `revisionN` — derivable, stored so carry-over (D2) is a
+   * Denormalized from `revisionN` — derivable, stored so carry-over is a
    * comparison rather than a second revision read.
    */
   readonly contentHash: string

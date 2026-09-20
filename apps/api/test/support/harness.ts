@@ -77,7 +77,7 @@ function frozenClock(start = '2026-08-24T09:00:00.000Z'): MovableClock {
   }
 }
 
-/** A revision draft satisfying every mechanical rule of the schema (D5). */
+/** A revision draft satisfying every mechanical rule of the schema. */
 export function aRecord(overrides: Partial<RecordInput> = {}): RecordInput {
   return {
     rid: 'r-stale-lock',
@@ -198,7 +198,7 @@ export function createApiHarness(): ApiHarness {
       for (const record of listed.records) {
         if (record.state !== 'pending') continue
         // Against the revision being listed, which is the one the reviewer is on
-        // — a verdict binds to the draft it was given against (D2).
+        // — a verdict binds to the draft it was given against.
         await caller.decisions.record({
           retroId,
           rid: record.rid,

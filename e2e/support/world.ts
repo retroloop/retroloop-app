@@ -217,7 +217,7 @@ export const DIAGNOSTIC_DATA =
   '- **The lock file:** `deploy.lock`, 0 bytes, mtime 40 minutes before the deploy.\n' +
   '- **The holder:** the file records no pid, and `ps 8123` returns nothing.'
 
-/** A revision draft satisfying every mechanical rule of the schema (D5). */
+/** A revision draft satisfying every mechanical rule of the schema. */
 export function aRevisionDraft(rids: readonly string[]): string {
   return JSON.stringify({
     records: rids.map((rid, index) => ({

@@ -173,9 +173,9 @@ describe('the core loop', () => {
       target: { kind: 'record', rid: 'r-slow-tests', section: 'problem' },
       text: 'This understates the cost. Say how long the suite actually takes.',
     })
-    // The one button needs every record decided, so the record he wants
+    // The one button needs every record decided, so the record they want
     // rewritten gets the verdict that says so (`r-verdict-revise`) — and then
-    // he presses Finish, which is the only terminal action on the page
+    // they press Finish, which is the only terminal action on the page
     // (`r-one-finish-button`).
     await harness.decide(first.retroId, 'r-slow-tests', 'revise')
     await harness.app.review.finish.execute({ actor: 'human', retro: { retroId: first.retroId } })

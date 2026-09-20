@@ -23,7 +23,7 @@ export type ReviewCounts = Record<DecisionState, number> & {
 }
 
 /**
- * A revision's records, counted by the state each one is **effectively** in (D2):
+ * A revision's records, counted by the state each one is **effectively** in:
  * a verdict given against an earlier revision counts as decided while the
  * narrative is unchanged, and stops counting the moment the AI rewrites the
  * record.

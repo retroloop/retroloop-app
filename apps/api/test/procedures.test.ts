@@ -964,7 +964,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The same rid in two retrospectives is two records (A5), and this is the
+     * The same rid in two retrospectives is two records, and this is the
      * one page that shows both at once — so it is the page where the number
      * being global rather than per-retro is the difference between two rows a
      * reader can tell apart and two rows that both say "#1".

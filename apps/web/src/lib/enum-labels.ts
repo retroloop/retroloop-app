@@ -7,18 +7,18 @@ import type { AppRouterInputs, AppRouterOutputs } from '@retro/api'
  * above `SEVERITIES` says how it arrived at that shape.
  *
  * The "what — why" strings are **canonical**: `docs/design/data-model.md` §Enum
- * option labels carries them verbatim from v2's `ticket-schemas.md`, and the
- * standing rule is that the explanatory half is never dropped for brevity — a
- * two-line wrap is acceptable, a truncation is not. A UI may subset the values;
- * it may never contradict a label or its meaning. Change them here only when
- * that file changes.
+ * option labels carries them verbatim from the capture pipeline this model
+ * succeeds, and the standing rule is that the explanatory half is never dropped
+ * for brevity — a two-line wrap is acceptable, a truncation is not. A UI may
+ * subset the values; it may never contradict a label or its meaning. Change
+ * them here only when that file changes.
  *
  * Solution level is the one enum that comes in two lists, and the split is the
  * subsetting rule above being used rather than an exception to it: `none`,
- * `upstream` and `undecided` were cut from what anyone may choose, and retro 1
- * holds two of them. So the offered list is five and the readable list is
- * eight — with the cut values keeping the labels they always had, because what
- * they meant when they were chosen has not changed.
+ * `upstream` and `undecided` were cut from what anyone may choose, and stores
+ * written before the cut still hold them. So the offered list is five and the
+ * readable list is eight — with the cut values keeping the labels they always
+ * had, because what they meant when they were chosen has not changed.
  *
  * Every option is `name` + `rest`, and the label is their concatenation. The
  * split is not decoration: solution level renders as a radio list with the level

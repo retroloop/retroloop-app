@@ -27,7 +27,7 @@ function toRevision(row: RevisionRow): Revision {
 }
 
 /**
- * Revisions are immutable (D4): this adapter can insert and read, and there is no
+ * Revisions are immutable: this adapter can insert and read, and there is no
  * statement anywhere in it that updates or deletes one.
  */
 export class SqliteRevisionRepository implements RevisionRepository {

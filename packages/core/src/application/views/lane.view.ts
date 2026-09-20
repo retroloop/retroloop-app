@@ -83,7 +83,7 @@ export function laneSolution(record: RetroRecord, decision: EffectiveDecision): 
 /**
  * The files a solution touches, one per entry.
  *
- * The stored form is D5's tagged tree — free text, one path per line, usually
+ * The stored form is the tagged tree — free text, one path per line, usually
  * bulleted — or the literal `none`. A consumer that wanted to *do* anything with
  * it (open the files, check whether two records touch the same one, count them)
  * would otherwise each write this split, and would each get the bullets and the
@@ -112,8 +112,8 @@ export function laneFootprint(footprint: string): readonly string[] {
 /**
  * The bold lead of a bullet block, which is the one line that names the fix.
  *
- * Bold-lead bullets are D5's form 1 — *"**Write the holder PID.** Check liveness
- * before waiting"* — so the lead is the sentence the author wrote to be read
+ * A bold-lead bullet reads *"**Write the holder PID.** Check liveness before
+ * waiting"* — so the lead is the sentence the author wrote to be read
  * first. A block that carries none falls back to its first line: this is a
  * heading for a list, and a heading that said nothing would leave a queue of
  * rows all labelled the same way.

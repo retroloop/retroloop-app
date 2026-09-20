@@ -260,7 +260,7 @@ async function waitForOutcome(
     options.timeoutSeconds === undefined ? undefined : Date.now() + options.timeoutSeconds * 1000
 
   // Three things have to hold before a connection is worth opening, and
-  // `--timeout 0` is the interesting one: it asks "has he finished yet?", a
+  // `--timeout 0` is the interesting one: it asks "has the human finished yet?", a
   // question the store answers completely and instantly because it is where the
   // rows are. No stream can beat a local read, and opening one for a question
   // already answered would be a connection nobody needed. The third is a
@@ -370,7 +370,7 @@ export function registerReviewCommand(
         .epilogue(
           [
             'FINISHED means the human pressed Finish on the LATEST revision — which',
-            'he cannot do while a record is undecided. A round he finished and the AI',
+            'they cannot do while a record is undecided. A round they finished and the AI',
             'answered with a new revision is not finished any more.',
             '',
             'wait --any blocks until any retrospective on this stage is finished. It',

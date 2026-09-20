@@ -16,7 +16,7 @@ import type { Migration } from '#infrastructure/sqlite/migration'
  * `thread.view.ts`, where both the CLI and the browser read it.
  *
  * `ADD COLUMN` does not fire the table's append-only triggers and rewrites no
- * row, so the immutability `comments` enforces at L1 (D4) is untouched — the
+ * row, so the immutability `comments` enforces at L1 is untouched — the
  * same reasoning `revisions_add_title` wrote down for the same operation.
  */
 export const migration: Migration = {

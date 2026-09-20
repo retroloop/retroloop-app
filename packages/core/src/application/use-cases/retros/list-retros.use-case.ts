@@ -23,7 +23,7 @@ export type RetroListSession = {
 
 /** The latest revision's records, split the way a dashboard row reads them. */
 export type RetroListCounts = {
-  /** Still waiting on the human — what the finish gate blocks on (D3). */
+  /** Still waiting on the human — what the finish gate blocks on. */
   readonly pending: number
   /** Approved or declined: everything the human has answered. */
   readonly decided: number
@@ -60,7 +60,7 @@ export type ListRetrosOutput = {
  * Counted from *effective* state, which is why it needs the verdicts and not
  * just the records: a decision carried over from an earlier revision counts as
  * decided, and a record whose narrative changed after it was decided counts as
- * pending again (D2). These are the same semantics `review status` and the
+ * pending again. These are the same semantics `review status` and the
  * review page's pending count use, because they call the same function.
  */
 function countRecords(

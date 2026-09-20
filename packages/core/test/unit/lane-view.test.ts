@@ -146,9 +146,9 @@ describe('the files a solution touches', () => {
   })
 
   /**
-   * `none` is the literal D5 allows in place of a tree, and it means "this
-   * touches no files" — so it is an empty list rather than a list holding the
-   * word, which a caller would otherwise have to know to filter out.
+   * `none` is the literal the schema allows in place of a tree, and it means
+   * "this touches no files" — so it is an empty list rather than a list holding
+   * the word, which a caller would otherwise have to know to filter out.
    */
   test('reads the literal none as no files at all', () => {
     expect(laneFootprint('none')).toEqual([])

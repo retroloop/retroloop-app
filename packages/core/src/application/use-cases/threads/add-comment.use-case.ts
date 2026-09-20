@@ -65,7 +65,7 @@ export type AddCommentInput = {
 export type AddCommentOutput = { readonly thread: ThreadView }
 
 /**
- * Messages are append-only and immutable once written, whoever wrote them (D4).
+ * Messages are append-only and immutable once written, whoever wrote them.
  * Comments on a finished retrospective are refused: `ReviewFinished` is terminal,
  * and an export taken from a finished review must not grow new feedback behind it.
  */

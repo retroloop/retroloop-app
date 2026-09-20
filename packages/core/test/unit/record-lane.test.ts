@@ -232,7 +232,7 @@ describe('the lane', () => {
         { rid: 'r-noisy-hook', title: 'The hook shouts on every commit' },
       ])
     ).retroId
-    // The human's own words on the record, and the AI answering him in the same
+    // The human's own words on the record, and the AI answering them in the same
     // thread — both before the finish, because a finished review takes no
     // comments.
     await harness.app.threads.addComment.execute({
@@ -434,11 +434,11 @@ describe('the lane', () => {
 
   /**
    * **What the human said about the record, in one field** — the reviewer's note
-   * first, then his comments. It is the reason an agent can act on a queue row
+   * first, then their comments. It is the reason an agent can act on a queue row
    * without opening the review page.
    */
   describe('the reviewer’s words', () => {
-    test('are the reviewer note first, then his comments, oldest first', async () => {
+    test('are the reviewer note first, then their comments, oldest first', async () => {
       const row = (await lane()).find((candidate) => candidate.rid === 'r-stale-lock')
 
       expect(row?.ownerWords).toEqual([
@@ -455,7 +455,7 @@ describe('the lane', () => {
       expect(row?.ownerWords).not.toContain('Good round.')
     })
 
-    test('are empty on a record he said nothing about', async () => {
+    test('are empty on a record they said nothing about', async () => {
       const row = (await lane()).find((candidate) => candidate.rid === 'r-flaky-test')
 
       expect(row?.ownerWords).toEqual([])

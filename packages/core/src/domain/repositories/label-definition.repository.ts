@@ -5,7 +5,7 @@ import type { LabelDefinition, NewLabelDefinition } from '#domain/models/label.m
  * reason is worth stating where a reader meets it.
  *
  * Every other mutable-looking thing in this store is human data — a verdict, a
- * comment, a resolution — and human data is versioned and never rewritten (D4).
+ * comment, a resolution — and human data is versioned and never rewritten.
  * A definition is not that: it is *configuration*, the vocabulary the human data
  * is written in. Renaming a label is not a second opinion about what somebody
  * once said, it is a spelling correction to a shared list, and versioning it

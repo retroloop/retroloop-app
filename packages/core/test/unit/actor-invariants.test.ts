@@ -180,7 +180,7 @@ describe('actor invariants', () => {
      * count:
      *
      * - `threads.addComment` — the CLI writes the AI's replies, the UI writes
-     *   the human's (D4).
+     *   the human's.
      * - `records.setLifecycle` — the AI marks what it fixed, the human marks
      *   from the browser. This is the one append-only table with an `actor`
      *   column, precisely because it is the one whose author cannot be inferred

@@ -10,9 +10,9 @@
  * and then checks the whole function type for assignability, so excess-property
  * checking never fires on the returned object. An isolated repro proved it —
  * extra procedure, missing procedure and mistyped field all fail; an extra field
- * compiles clean. Layer 2's text scan cannot see it either, which left the
- * reviewer agent as the only detector for a re-canned derived field, and that is
- * the most expensive one the repo runs.
+ * compiles clean. Layer 2's text scan cannot see it either, which left human
+ * review as the only detector for a re-canned derived field, and that is the
+ * most expensive one the repo runs.
  *
  * So this script runs every mock procedure against the mock's own fixture world
  * and hands each answer to the schema the real router validates that answer

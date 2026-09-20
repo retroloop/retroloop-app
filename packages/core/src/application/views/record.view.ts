@@ -14,7 +14,7 @@ import { type EffectiveDecision, effectiveDecision } from '#domain/services/reco
 
 /**
  * A record as a reader sees it: the AI's content, which revision it came from,
- * and where the human's decision stands against *that* content (D2).
+ * and where the human's decision stands against *that* content.
  *
  * **There is no `hold` beside the decision any more** (`r-remove-hold`). A
  * lifecycle flag rode here for a time and was removed on first contact: marking

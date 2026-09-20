@@ -103,7 +103,7 @@ describe('export', () => {
       state: 'finished',
       finishedAt: harness.clock.iso(),
       revisions: 1,
-      // He finished the round without writing one; the key is still there,
+      // They finished the round without writing one; the key is still there,
       // because a key that comes and goes is a shape a script has to guess at.
       finishMessages: [],
       reviewed: 'human',
@@ -117,7 +117,7 @@ describe('export', () => {
    * round it closes, and no thread is involved.
    */
   describe('the final message on each round', () => {
-    test('carries the word he left, with the round it closes', async () => {
+    test('carries the word they left, with the round it closes', async () => {
       const { retroId } = await harness.revision(session.id, [{ rid: 'r-stale-lock', num: 1 }])
       await harness.app.decisions.record.execute({
         actor: 'human',
@@ -194,8 +194,8 @@ describe('export', () => {
       expect(conformanceProblems(document)).toEqual([])
     })
 
-    /** A round he left no word on has no entry — nothing is invented for it. */
-    test('skips a round he left no word on', async () => {
+    /** A round they left no word on has no entry — nothing is invented for it. */
+    test('skips a round they left no word on', async () => {
       const { retroId } = await harness.revision(session.id, [{ rid: 'r-stale-lock', num: 1 }])
       await harness.app.decisions.record.execute({
         actor: 'human',
@@ -280,7 +280,7 @@ describe('export', () => {
     ])
   })
 
-  test('exports declined records too — an export is the whole outcome (D6)', async () => {
+  test('exports declined records too — an export is the whole outcome', async () => {
     const retroId = await aFinishedRetrospective()
 
     const { export: document } = await harness.app.exports.retrospective.execute({

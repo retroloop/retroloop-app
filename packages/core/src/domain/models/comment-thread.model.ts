@@ -1,7 +1,7 @@
 import type { Actor } from '#domain/models/actor.model'
 import type { RecordSection } from '#domain/models/record.model'
 
-/** Messages are append-only and immutable, whoever wrote them (D4). */
+/** Messages are append-only and immutable, whoever wrote them. */
 export type Comment = {
   readonly id: number
   readonly threadId: number

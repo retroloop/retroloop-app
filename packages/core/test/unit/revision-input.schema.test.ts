@@ -18,7 +18,7 @@ function expectRejected(overrides: Record<string, unknown>, expectedPath: string
   }
 }
 
-describe('revision schema — the mechanical half of D5', () => {
+describe('revision schema — the mechanical half of the record contract', () => {
   test('accepts a well-formed revision', () => {
     expect(parseRevisionInput(aRevisionInput([{}, {}]))).toBeDefined()
   })
@@ -322,7 +322,7 @@ describe('revision schema — the mechanical half of D5', () => {
 
   test('says nothing about style — the instructed rules are not enforced here', () => {
     // Bold-lead phrasing, computable-cost wording, systemic root causes and
-    // footprint tree layout are judgment (D5). A validator for them would be
+    // footprint tree layout are judgment. A validator for them would be
     // theater: it would pass this and fail good writing that reads differently.
     expect(
       parseWith({

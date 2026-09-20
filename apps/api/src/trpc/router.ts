@@ -58,7 +58,7 @@ import { createCallerFactory, router } from '#trpc/trpc'
  *   settled the verdict has closed, so nothing already here could carry it.
  * - `records.byId` — one record, reached by the number a human reads off the
  *   page (the record page at `/records/:id`). Every other record read here takes
- *   `(retroId, rid)`, which is what addresses a record (A5) and is not something
+ *   `(retroId, rid)`, which is what addresses a record and is not something
  *   anybody types or bookmarks; this is the one that runs the global sequence
  *   backwards. Widening `records.get` instead would have put the identity line,
  *   the lifecycle and a whole timeline on every card of every review to serve

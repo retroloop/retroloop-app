@@ -77,9 +77,9 @@ export type SetRecordLifecycleOutput = {
  *    held the same position). It has to be: the feature exists *because* the
  *    retrospective is closed — even after a retrospective has been closed,
  *    metadata can be attached to its records so their lifecycle can be managed.
- *    The export is not endangered by it, because lifecycle is not exported
- *    (A8): a document taken from a finished retrospective still cannot change
- *    behind its reader.
+ *    The export is not endangered by it, because lifecycle is not exported: a
+ *    document taken from a finished retrospective still cannot change behind
+ *    its reader.
  * 3. **Nothing is inferred, and nothing is written at close.** Every row here is
  *    this call, made by a named actor; no commit message, no merge, no review
  *    close writes one. A declined record reads as `archived` with no row at all

@@ -46,7 +46,7 @@ describe('effective decision', () => {
     expect(view.carriedOver).toBe(false)
   })
 
-  test('unchanged content carries the decision into the next revision (D2)', () => {
+  test('unchanged content carries the decision into the next revision', () => {
     const view = effectiveDecision(aRecord(), 2, aDecision({ revisionN: 1 }))
 
     expect(view.state).toBe('approved')
@@ -56,7 +56,7 @@ describe('effective decision', () => {
 
   /**
    * What a content-changed record actually reads as, field by field — SKILL.md
-   * tells the drafting AI it is "exactly like a record he never touched", and
+   * tells the drafting AI it is "exactly like a record they never touched", and
    * that sentence is what stops it reporting a withdrawn verdict back to the
    * human as though it still stood.
    */
@@ -86,7 +86,7 @@ describe('effective decision', () => {
     const rewritten = aRecord({ problem: 'A materially different problem statement.' })
 
     expect(effectiveDecision(rewritten, 2, decision).state).toBe('pending')
-    // Revision 3 files it byte-identical to what he decided again.
+    // Revision 3 files it byte-identical to what they decided again.
     const restored = effectiveDecision(aRecord(), 3, decision)
     expect(restored.state).toBe('approved')
     expect(restored.carriedOver).toBe(true)

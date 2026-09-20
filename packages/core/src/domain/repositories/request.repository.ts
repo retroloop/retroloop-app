@@ -6,7 +6,7 @@ export type RequestListFilter = {
 
 /**
  * Messages are append-only; `close` flips the state and stamps `closedAt` —
- * a state change, never a deletion, and only the human may ask for it (D4).
+ * a state change, never a deletion, and only the human may ask for it.
  */
 export type RequestRepository = {
   add(request: NewRequest): Promise<Request>

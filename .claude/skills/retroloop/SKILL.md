@@ -5,13 +5,14 @@ description: File a retrospective for this working session through Retroloop —
 
 # Retroloop — the session retrospective loop
 
-Retroloop is a local-first retrospective tool. **You draft; the human decides.** You
-never approve a record, decline one, send one back for a rewrite, write the
-reviewer's note, or press his **Finish review** button — those are his, and the
-CLI has no command for any of them. You write plenty here — drafts, notes,
-replies in his threads — but on **the review's outcome** you have exactly one
-act: **closing it to export** once he is done and nothing is left to address. It
-decides nothing, it refuses if he has not finished, and step 5 is where it lives.
+Retroloop is a local-first retrospective tool. **You draft; the human decides.**
+You never approve a record, decline one, send one back for a rewrite, write the
+reviewer's note, or press their **Finish review** button — those are theirs,
+and the CLI has no command for any of them. You write plenty here — drafts,
+notes, replies in their threads — but on **the review's outcome** you have
+exactly one act: **closing it to export** once they are done and nothing is left
+to address. It decides nothing, it refuses if they have not finished, and step 5
+is where it lives.
 
 Everything you need to run the loop is in this file: the commands, every field
 you author, every vocabulary you choose from, and the shape of every answer you
@@ -110,11 +111,11 @@ code and the error document to the human and stop.
 
 `0` ok · `1` unclassified — the bug case just described · `2` you sent something
 wrong (bad flags, or a revision file that failed validation) · `3` not found ·
-`4` conflict (a stale `--expect-revision`, a `revision create` while his review
-of the latest revision is unfinished, a comment or an export on a finished
-retrospective, or a `review close` that is not allowed yet) · `5` forbidden ·
-`6` pending migrations, which apply themselves and so should never reach you ·
-`7` server problem, **including `review wait --timeout` elapsing**.
+`4` conflict (a stale `--expect-revision`, a `revision create` while their
+review of the latest revision is unfinished, a comment or an export on a
+finished retrospective, or a `review close` that is not allowed yet) · `5`
+forbidden · `6` pending migrations, which apply themselves and so should never
+reach you · `7` server problem, **including `review wait --timeout` elapsing**.
 
 **There is exactly one way to reach `5`, and it is not a mistake you made.**
 It is the actor rule — "only the human may do this" — and the CLI acts as the AI
@@ -210,7 +211,7 @@ Four things to know before you run any of them:
    stays taken, and every record already wearing the label goes on wearing it —
    what stops is the offering, and `unretire` starts it again on the same row.
    Still retire only what the human asked you to: reversible is not permission,
-   and un-retiring something he retired on purpose is the same mistake in the
+   and un-retiring something they retired on purpose is the same mistake in the
    other direction.
 4. **You cannot put a label on a record, or set a value.** Those writes are the
    human's this session and there is no command for them, by design. If a record
@@ -313,8 +314,8 @@ run the other way: see the `retroId` bullet above.
 **Exit 3 here means one of two different things, and they are easy to tell
 apart.** If the session id is wrong, the message names the session
 (`session … not found`) — that is a lost id, and the bullets above are the
-recovery. If the session exists but no revision has ever been filed under it, the
-message names the retrospective — **nothing has been filed yet**, which is not a
+recovery. If the session exists but no revision has ever been filed under it,
+the message names the retrospective — **nothing has been filed yet**, which is not a
 problem to recover from at all: go to step 3 and file revision 1. Do not re-run
 this lookup expecting a different answer.
 
@@ -394,13 +395,13 @@ for a retrospective at the end of a session where you filed no notes as you went
    reads it as the moment work began.
 2. **Draft straight from the conversation in front of you** — go to step 3 and
    write the records from what you can still see. Do **not** replay the session
-   as a burst of `note add` calls first: notes are timestamped when written, so a
-   backfilled note claims a time it did not happen at, and it buys you nothing
+   as a burst of `note add` calls first: notes are timestamped when written, so
+   a backfilled note claims a time it did not happen at, and it buys you nothing
    the draft does not already have. Step 3's `note list --with-human` still
-   earns its place, though: he may have filed notes even though you did not.
-3. **Say so, once, to the human**: *"I did not keep notes during this session, so
-   these records are reconstructed from the conversation."* That is an honest
-   caveat about the evidence, and he reads the records differently knowing it.
+   earns its place, though: they may have filed notes even though you did not.
+3. **Say so, once, to the human**: *"I did not keep notes during this session,
+   so these records are reconstructed from the conversation."* That is an honest
+   caveat about the evidence, and they read the records differently knowing it.
 
 The rule in step 2 — file it the moment it happens — is about the *next* session,
 where the detail is still there to lose. It does not forbid drafting from memory
@@ -411,9 +412,9 @@ work you did not do.** Then there is no conversation to draft from — you canno
 read a session you were not in, and its notes are the human's to show you, not
 yours to go looking for. Say so and ask: *"I wasn't in that session, so I have
 nothing to draft from. Tell me what happened, or point me at the session id if
-notes were filed under it and I will read them back."* With an id you are back in
-step 3 with `note list --with-human`; without one, what he tells you in chat is
-the material, and the records should say that is where they came from.
+notes were filed under it and I will read them back."* With an id you are back
+in step 3 with `note list --with-human`; without one, what they tell you in chat
+is the material, and the records should say that is where they came from.
 
 ## 3 · When the human types `/retroloop`
 
@@ -427,8 +428,8 @@ retroloop up --json
 `started` says whether **this call** started the server: `false` means it was
 already running, which is just as good. Either way the `url` is live, and it is
 the one to hand the human. (If `up` returns a `lanUrl`, the human bound the
-server to the network himself with `--bind`; hand him `url` and leave `lanUrl`
-alone unless he asks.)
+server to the network themselves with `--bind`; hand them `url` and leave
+`lanUrl` alone unless they ask.)
 
 **Read the session back — including the human's side of it.** This is the one
 moment you are allowed to see the human's notes and their annotations on yours:
@@ -446,14 +447,14 @@ else. An `annotation` is the human's one-shot remark on one of your notes —
 there is no reply to it, and it is often the sharpest thing in the list.
 
 **This is a step-3 read, once per retrospective, not once per round.** Later
-rounds do not come back here: after revision 1 every ask of his arrives as a
+rounds do not come back here: after revision 1 every ask of theirs arrives as a
 comment on the review, which is what step 4 reads. Re-running `note list
 --with-human` between rounds tells you nothing new and is the thing the never-do
 list forbids outside this step.
 
 Two things in that shape: `author` is `"human"` or `"ai"`, the only two actors
 there are; and `kind` is `null` on every human note, because who-paid is a
-judgment you make about your own notes and he was never asked for one. `null`
+judgment you make about your own notes and they were never asked for one. `null`
 there is not missing data.
 
 **Run this even when you filed no notes yourself.** It is not a wasted call: the
@@ -463,14 +464,13 @@ costs one call to get it.
 
 ### Before you write: do the deep dive
 
-**Every record is a piece of research before it is a piece of writing.** The ask
-from the human is that the AI does the deep dive and proposes up to three
-solutions, and that is an ask about the work you do before drafting, not about
-how much you type. For each friction, go and look: read the code, the docs and
-the instruction surfaces the friction actually ran through, find where the cost
-came from, and only then decide what could be done about it. A record whose root
-cause is "the AI did not know" and whose solutions are "tell it" is a record
-nobody researched.
+**Every record is a piece of research before it is a piece of writing.** The AI
+does the deep dive and proposes up to three solutions, and that is about the
+work done before drafting, not about how much you type. For each friction, go
+and look: read the code, the docs and the instruction surfaces the friction
+actually ran through, find where the cost came from, and only then decide what
+could be done about it. A record whose root cause is "the AI did not know" and
+whose solutions are "tell it" is a record nobody researched.
 
 **The deep dive includes a mandatory class check against the prior exports.**
 The complete history of every past friction sits machine-readable in
@@ -479,11 +479,9 @@ loop itself produced — so before drafting, search it for the CLASS, not just
 the instance (titles, slugs and problem text are all searchable). A record of
 a recurring class must carry three things: **its priors by name**, **why each
 prior fix did not hold**, and **a solution scoped to the class rather than
-the instance**. The loop's own history is the evidence: the finish channel broke
-three times over successive retrospectives while each fix repaired only the hop
-that had just failed, and rules-that-do-not-bind accumulated six instances after
-an earlier root cause had already named the mechanism — new instances kept
-getting new sentences because nothing in the loop read its own output at
+the instance**. A class that keeps recurring is the evidence: a fix aimed at the
+instance repairs the hop that just failed and leaves the class alive, and new
+instances keep getting new sentences when nothing reads the loop's own output at
 drafting time.
 
 **Then propose one to three ways to solve it, and say which one you recommend.**
@@ -498,19 +496,19 @@ The questions that decide how many, and which one you stand behind:
 
 - **Is there more than one honest answer?** If the only sane fix is one line in
   one file, one solution is the truthful draft and a second one invented to fill
-  the slot wastes his reading.
+  the slot wastes their reading.
 - **More than three?** Three is the cap and there is no flag that lifts it. Two
   of your candidates are almost always the same solution at different sizes —
   merge them and say the size difference in the bullets. If they genuinely are
-  four distinct ceilings, drop the one you would argue against hardest and say in
-  the recommended solution's bullets that you considered it and why it lost.
+  four distinct ceilings, drop the one you would argue against hardest and say
+  in the recommended solution's bullets that you considered it and why it lost.
 - **Do the answers sit at different levels?** The most useful set is a ladder:
-  guidance at level 1, a tune at level 2, a new surface at level 3. He is
+  guidance at level 1, a tune at level 2, a new surface at level 3. They are
   choosing a **ceiling**, and a ladder is what makes that choice mean something.
 - **Would you defend the one you marked?** Exactly one solution carries
   `"recommended": true`, and it is your judgment on the record. Marking the
   expensive one because it is thorough, or the cheap one because it is safe,
-  without saying why in its bullets, is a recommendation he cannot check.
+  without saying why in its bullets, is a recommendation they cannot check.
 
 ### The revision file
 
@@ -529,17 +527,16 @@ list of retros — so write what this retro was *about* in plain language, never
 "Retro 3" and never a bare number. Every revision carries its own and the newest
 one wins, so when a later draft is about something else, retitle it.
 
-**The title is a one-liner of the work, never a summary of the records** — the
-human's own rule. Write it from the reader's vantage, not yours: the title is
-read at the moment someone picks a retro out of a list, and at that moment they
-have not read the records — what they know is what was done. So name the work
-this retro covers, which is everything done in the session since the previous
-retro, or since the session started when this is the first one. A second retro
-on the same session is titled by its own segment alone; a whole-session title on
-it would misname both.
+**The title is a one-liner of the work, never a summary of the records.** Write
+it from the reader's vantage, not yours: the title is read at the moment someone
+picks a retro out of a list, and at that moment they have not read the records —
+what they know is what was done. So name the work this retro covers, which is
+everything done in the session since the previous retro, or since the session
+started when this is the first one. A second retro on the same session is titled
+by its own segment alone; a whole-session title on it would misname both.
 
 - **Right:** `Shipped the last retro's whole fix queue and rebuilt the review experience`
-- **Wrong:** `Four cold reads, a committed scratch report, and two toothless assertions`
+- **Wrong:** `Three stale locks, a missing timeout, and two unverified claims`
   — that is the contents, which is the one thing the reader cannot yet know.
 
 **Every field of a record, and nothing else.** The document is strict about keys
@@ -561,7 +558,7 @@ any of them again. That is the whole list: nothing else moved.
 | `rid` | `"r-lowercase-hyphenated-words"` | the stable slug; see identity below |
 | `num` | positive integer | the display number; see identity below |
 | `title` | string | one line, what the friction was; no length limit (the 80-character cap is the *revision's* title, not this one) |
-| `type` | `"issue"` \| `"feature"` | `issue` = something cost you or him time that should not have; `feature` = nothing broke and the thing is missing, or a practice worth keeping. When both fit, ask what the record is *for*: fixing a cost or adding a capability |
+| `type` | `"issue"` \| `"feature"` | `issue` = something cost you or them time that should not have; `feature` = nothing broke and the thing is missing, or a practice worth keeping. When both fit, ask what the record is *for*: fixing a cost or adding a capability |
 | `problem` | string | bold-lead bullets (form 1 below) |
 | `humanWords` | array of `{verbatim, cleaned, context?}` | may be `[]` when the human said nothing quotable |
 | `rootCause` | `{whatHappened: string, whys: string[], root: string}` | `whys` is 1–5 entries; see form 2 below |
@@ -577,25 +574,25 @@ any of them again. That is the whole list: nothing else moved.
   nothing else changed — not a paraphrase, not a summary. Both halves are
   required on every entry. `context` is optional and says where they said it
   ("while watching the deploy log"). One entry per quotable instance.
-- **Attribute the entries inside a solution's `bullets`.** Nothing is agreed when
-  you write revision 1, and the human needs to see whose idea he is reading:
-  mark an entry `(AI-suggested)`, `(human-suggested)` or `(agreed)`, and only
-  write `(agreed)` for what he has actually said yes to. Attribute the entries
-  that came from somebody in particular; a solution you worked out yourself does
-  not need `(AI-suggested)` on every line.
+- **Attribute the entries inside a solution's `bullets`.** Nothing is agreed
+  when you write revision 1, and the human needs to see whose idea they are
+  reading: mark an entry `(AI-suggested)`, `(human-suggested)` or `(agreed)`,
+  and only write `(agreed)` for what they have actually said yes to. Attribute
+  the entries that came from somebody in particular; a solution you worked out
+  yourself does not need `(AI-suggested)` on every line.
 - **Every string in the document is validated for presence.** `title`,
   `problem`, `diagnosticData`, `workaround`, both halves of every quote,
-  `whatHappened`, each `why`,
-  `root`, and each solution's `bullets` and `footprint`: whitespace alone is exit
-  2 as surely as an omitted key — `revision: records.0.problem — problem must not
-  be empty`. **There is no string in this document that may be empty** —
-  `context` inside a quote is simply omitted when there is nothing to say, which
-  is not the same as sending `""`. When there is no workaround and no file to
-  touch, the literal string `"none"` is the answer.
+  `whatHappened`, each `why`, `root`, and each solution's `bullets` and
+  `footprint`: whitespace alone is exit 2 as surely as an omitted key —
+  `revision: records.0.problem — problem must not be empty`. **There is no
+  string in this document that may be empty** — `context` inside a quote is
+  simply omitted when there is nothing to say, which is not the same as sending
+  `""`. When there is no workaround and no file to touch, the literal string
+  `"none"` is the answer.
 - **`requester` and `impacts` take `"human"` or `"ai"`, and nothing else** —
   those two strings are also the only two actors in the whole system: every
   comment, note and decision you read back is authored by `"ai"` (you) or
-  `"human"` (him).
+  `"human"` (them).
 - **A `records` array may legally be empty, and you should never send one.** The
   schema accepts `{"records": []}` at exit 0 and it files a revision that
   replaces the round with nothing to review. If you have nothing new to say,
@@ -611,11 +608,10 @@ The rules are enforced across every revision, so breaking one costs you a round:
   inside a word (`r-http2-timeout`, `r-retro-4-bug`); capitals, underscores,
   dots, a trailing hyphen and a doubled hyphen are not, and a rid that breaks the
   pattern is exit 2 before anything else is looked at. It is how the human's
-  verdicts,
-  comments and your later revisions all find the same record. Once used in a
-  retrospective it belongs to that record forever — **never reuse it for
-  something else, and never rename it to fix a typo**: a renamed `rid` is a new
-  record, and the verdict on the old one stays behind on a record that has
+  verdicts, comments and your later revisions all find the same record. Once
+  used in a retrospective it belongs to that record forever — **never reuse it
+  for something else, and never rename it to fix a typo**: a renamed `rid` is a
+  new record, and the verdict on the old one stays behind on a record that has
   vanished.
 - **`num` is the display number**, assigned once and never renumbered: a record
   that keeps its `rid` keeps its `num` in every later revision, and a `num` used
@@ -647,17 +643,18 @@ The rules are enforced across every revision, so breaking one costs you a round:
   different record. When you go looking for the highest number ever used, look
   only inside the retrospective you are filing into.
 
-**Dropping a record drops it from the outcome.** A record left out of your latest
-revision is not "still approved somewhere": the gates and the export all read the
-latest revision, so it is not pending, it does not block the close, and **it is
-not in the export file** — its verdict included. Leave a record out only when you
-mean to withdraw it, and if he approved it, say in a thread that you are
-withdrawing it and why.
+**Dropping a record drops it from the outcome.** A record left out of your
+latest revision is not "still approved somewhere": the gates and the export all
+read the latest revision, so it is not pending, it does not block the close, and
+**it is not in the export file** — its verdict included. Leave a record out only
+when you mean to withdraw it, and if they approved it, say in a thread that you
+are withdrawing it and why.
 
 ### The two you propose in `defaults`
 
-Both are *proposals* — the human's values are what count, and he sets them in the
-UI. Propose both anyway; declining to judge is not an option the schema offers.
+Both are *proposals* — the human's values are what count, and they set them in
+the UI. Propose both anyway; declining to judge is not an option the schema
+offers.
 
 ```json
 "defaults": { "severity": 3, "involvement": "autonomous" }
@@ -691,18 +688,19 @@ leave it out and it is `undecided`.
 surface makes the whole record propose `interactive`**, however mechanical the
 fix itself is: an agent granting itself permission rules is the guarded action
 class, so the actor rule — not the difficulty — is what demands the human, and
-involvement is what schedules the fix for a session he is present in. Read
+involvement is what schedules the fix for a session they are present in. Read
 **every** solution's footprint before you propose this field, not just the fix:
-`involvement` is one value for the whole record, so if any solution he could pick
-touches such a surface, that is the one that decides it.
+`involvement` is one value for the whole record, so if any solution they could
+pick touches such a surface, that is the one that decides it.
 
 **Do not *originate* `other`.** The schema accepts it, so this is judgment, not
 validation: `other` means "something else, and the reviewer's note says what" —
-and `reviewerNote` is *his* field, which no draft of yours can write. Proposing
-it therefore proposes a value you cannot explain. When none of the three real
-shapes fits, propose the closest one and **say what you actually mean in the
-recommended solution's `bullets`**, which is the field for it. `other` exists for
-him to pick — and once he has picked it, you carry it forward verbatim (step 4).
+and `reviewerNote` is *their* field, which no draft of yours can write.
+Proposing it therefore proposes a value you cannot explain. When none of the
+three real shapes fits, propose the closest one and **say what you actually mean
+in the recommended solution's `bullets`**, which is the field for it. `other`
+exists for them to pick — and once they have picked it, you carry it forward
+verbatim (step 4).
 
 ### The solutions you propose
 
@@ -729,20 +727,20 @@ each refusal names itself so you can tell which one you broke:
   `revision: records.0.solutions — a record proposes at least one solution` ·
   `revision: records.0.solutions — a record proposes at most three solutions`
 - **Sorted from the lowest level to the highest — by `level`, never by which one
-  you recommend.** The human asked for it: solutions always run from the lower
-  level to the higher one. The order is not presentation — the review page
-  titles them **Solution 1**, **Solution 2** by position and his pick is stored
-  as a position, so a draft that arrives out of order would rename the thing he
-  chose. The recommended one goes wherever its level puts it, which is often the
-  middle. Two solutions may share a level; ties keep the order you gave.
+  you recommend.** Solutions always run from the lower level to the higher one.
+  The order is not presentation — the review page titles them **Solution 1**,
+  **Solution 2** by position and the human's pick is stored as a position, so a
+  draft that arrives out of order would rename the thing they chose. The
+  recommended one goes wherever its level puts it, which is often the middle.
+  Two solutions may share a level; ties keep the order you gave.
   `revision: records.0.solutions.1.level — solutions run from the lowest level to the highest; L2 follows L4`
-- **Exactly one `"recommended": true`.** None leaves him without a starting point;
-  two is you declining to make the call the record is asking you for.
+- **Exactly one `"recommended": true`.** None leaves them without a starting
+  point; two is you declining to make the call the record is asking you for.
   `revision: records.0.solutions — exactly one solution is the recommended one; 0 are marked`
 - **Every `level` is `1`–`5`.** Nothing else is accepted from you, ever. You may
   still *read back* `none`, `upstream` or `undecided` as the decided level of an
-  old record — they were choosable once, human data is never rewritten, and every
-  read path still admits them. Seeing one is not permission to write one.
+  old record — they were choosable once, human data is never rewritten, and
+  every read path still admits them. Seeing one is not permission to write one.
   `revision: records.0.solutions.0.level — Invalid option: expected one of 1|2|3|4|5`
 
 **`level` — a ceiling, not a target.** It is how much the *world outside the fix*
@@ -758,7 +756,7 @@ has to move, not how much work the fix is:
 
 **Write each solution so it can be read on its own.** The human reads one at a
 time — the page gives each its own tab — so a solution that says "same as above
-but cheaper" is a solution he cannot judge without holding two in his head.
+but cheaper" is a solution they cannot judge without holding two in their head.
 Repeat what it needs to repeat.
 
 **The footprints differ, and that is the point of having one per solution.** A
@@ -768,15 +766,14 @@ written twice — collapse them, or say in the bullets what actually differs.
 
 ### Author every record in these three forms
 
-They are normative — the human dictated them after paying a full revision round
-for their absence; he reads by skimming the bold text, so a paragraph is a
-record he cannot read.
+They are normative. A record is read by skimming the bold text, so a paragraph
+is a record that does not get read.
 
 Every prose field in the revision file is a plain JSON string carrying a safe
-markdown subset — write the literal characters: `**bold**`, `` `code` ``,
-`- ` bullets (indent a bullet under another to nest it), `1. ` numbered lines,
-`> ` blockquote lines, which carry bullets and bold inside them and are how a
-reply quotes him back to himself, blank lines between paragraphs, and
+markdown subset — write the literal characters: `**bold**`, `` `code` ``, `- `
+bullets (indent a bullet under another to nest it), `1. ` numbered lines, `> `
+blockquote lines, which carry bullets and bold inside them and are how a reply
+quotes them back to themselves, blank lines between paragraphs, and
 triple-backtick fenced blocks for preformatted excerpts (their contents are
 never parsed). The review page renders exactly that subset; anything else,
 including HTML, shows as literal text. One exemption: a solution's `footprint`
@@ -794,17 +791,18 @@ reads best in the file.
    Skimming only the bold text must tell the whole story.
 2. **The whys are a numbered list with the question in bold.** This is the
    record's `rootCause.whys` field: an array of strings, each one a markdown
-   numbered-list entry. Each entry: the **why-question in bold**, then the answer
-   in plain text. Never write "why 1" / "why 2" labels — the list numbering
-   carries that. Someone reading only the bold text sees exactly the chain of
-   questions. "Five" names the method, not a quota — stop when the chain bottoms
-   out, and the schema takes between one and five.
-3. **Each solution's footprint is a tagged file tree.** One string, per solution:
-   the project root's real path on the first line, then a tree with every entry
-   tagged `[CREATE]`, `[UPDATE]` or `[DELETE]` plus a short description of the
-   exact change at that path, tags aligned in a column (the alignment is part of
-   the form — he scans the tags). No code fence inside the field. A solution with
-   no file to touch writes the literal `none`, like a workaround.
+   numbered-list entry. Each entry: the **why-question in bold**, then the
+   answer in plain text. Never write "why 1" / "why 2" labels — the list
+   numbering carries that. Someone reading only the bold text sees exactly the
+   chain of questions. "Five" names the method, not a quota — stop when the
+   chain bottoms out, and the schema takes between one and five.
+3. **Each solution's footprint is a tagged file tree.** One string, per
+   solution: the project root's real path on the first line, then a tree with
+   every entry tagged `[CREATE]`, `[UPDATE]` or `[DELETE]` plus a short
+   description of the exact change at that path, tags aligned in a column (the
+   alignment is part of the form — they scan the tags). No code fence inside the
+   field. A solution with no file to touch writes the literal `none`, like a
+   workaround.
 
    **An `[UPDATE]` entry names where inside the file the change lands** — the
    section, the rule, the list it extends — **and drafting verifies that surface
@@ -853,14 +851,14 @@ difference.
 
 **A claim about the code names the evidence it was checked against.** A record
 that asserts something concrete about the codebase — this file is stale, that
-flag is unused, this command exists — says in the record how it was checked:
-the command you ran, the `file:line` you read.
-Check it while you draft, not from memory, and if you cannot, write the claim as
-unverified so the human reads it as one. Review reads a record for direction, not
-for code truth, so an unchecked premise is not caught downstream: an approved
-record once directed removing a documented global flag as stale when that flag
-was live in the CLI’s own source, and applying it would have written in the very
-false claim the record existed to remove.
+flag is unused, this command exists — says in the record how it was checked: the
+command you ran, the `file:line` you read. Check it while you draft, not from
+memory, and if you cannot, write the claim as unverified so the human reads it
+as one. Review reads a record for direction, not for code truth, so an unchecked
+premise is not caught downstream: an approved record once directed removing a
+documented global flag as stale when that flag was live in the CLI’s own source,
+and applying it would have written in the very false claim the record existed to
+remove.
 
 ### One whole record, as a file
 
@@ -938,10 +936,10 @@ succeeds without it. Pass it anyway, every time: it costs nothing, and it turns
 the round into exit `4`.
 
 **It names the revision you are about to write, not the one that exists.** The
-first draft of a retrospective is `--expect-revision 1`, and the answer comes back
-`"revision": 1`. Read the number back off the answer rather than counting: it is
-the one every later command addresses this round by. Revision
-numbers start at 1 and count within one retrospective.
+first draft of a retrospective is `--expect-revision 1`, and the answer comes
+back `"revision": 1`. Read the number back off the answer rather than counting:
+it is the one every later command addresses this round by. Revision numbers
+start at 1 and count within one retrospective.
 
 ```
 retroloop revision create --session <session> --file <path> --expect-revision <n> --json
@@ -962,10 +960,10 @@ you will sit in a wait that never returns wondering what went wrong.
 sentence is enough. If it is not — a raw background wait, an unprobed harness, a
 watcher you have not re-armed yet — the same message says the channel is
 **interim** and names its failure mode, so a quiet hour is never mistaken for a
-channel that works. This costs one clause and it is the difference between him
-waiting and him waiting *in the dark*.
+channel that works. This costs one clause and it is the difference between them
+waiting and them waiting *in the dark*.
 
-**Then find out when he finishes.** One command answers that, in two forms.
+**Then find out when they finish.** One command answers that, in two forms.
 `--follow` subscribes to the running server's live events — the same channel
 that updates every open review page, at roughly 300 ms — so the press reaches
 you as it happens. Without it, the command polls the database from its own
@@ -991,7 +989,7 @@ that bites you next is one nobody has looked at yet:
 
 | hop | what carries it | what it cost when it broke |
 |---|---|---|
-| his press → the store | the review page's mutation | — |
+| their press → the store | the review page's mutation | — |
 | the store → the wait | `review wait`, polling or `--follow` | a 20s sleep between the press and the wait noticing |
 | the wait → the watcher | the process you armed | nothing was armed at all |
 | the watcher → YOU | **the watcher's process EXIT** | the watcher saw the press, printed a line, and told nobody |
@@ -1020,12 +1018,13 @@ written after it, and it prints the hop map, the meaning of each exit and the
 exact relaunch line **before** blocking, because by the time the exit or the kill
 arrives the script is gone and that output is all you will have.
 
-- **exit 0** — he pressed Finish. The event JSON is on stdout.
+- **exit 0** — they pressed Finish. The event JSON is on stdout.
 - **exit 7** — the seconds elapsed and *nothing else*. Re-arm.
 - **anything else** — an error. Read the message, and re-arm.
 
-**Certify the chain before you trust it with his press, once per environment.**
-An uncertified bridge has now cost four retros, and words test nothing:
+**Certify the chain before you trust it with a press, once per environment.**
+An uncertified bridge is how this channel has failed before, and words test
+nothing:
 
 ```
 scripts/watch-review.sh certify
@@ -1041,7 +1040,7 @@ being told. Probe it by hand in any new environment before trusting any watcher:
 run a background task that exits immediately — `sleep 1; echo probe` — and
 observe whether its **exit notification** actually reaches you. If it does not,
 this harness carries no watcher at all, and the handoff must say so in as many
-words rather than leaving him waiting on a bridge that does not exist.
+words rather than leaving them waiting on a bridge that does not exist.
 
 **NEVER STAND DOWN. RE-ARM ON KILL.** While a review is open the watch is never
 voluntarily abandoned. A watcher killed from outside is **re-armed immediately,
@@ -1049,13 +1048,11 @@ on the kill notification itself** — the kill is what wakes you, so re-arming
 costs one command and leaves no window. A kill is a fact about the task system;
 it is never a gesture, never a request to stop, and never permission to hand the
 notification burden back to the human. The watch ends at `review close`, or when
-he says in words to stop watching. Nothing else ends it.
+they say in words to stop watching. Nothing else ends it.
 
-The fourth failure is what that sentence is made of: the harness killed the
-watch twice, the second kill was read as a request to be quiet, the watch stood
-down, and the human was asked to say "done" in chat instead — his press then sat
-in the store unread until he asked, angrily, what had been fixed if no
-notification had arrived.
+That rule exists because a stood-down watch is silent: after two outside kills
+the watch was abandoned and the human was asked to report the press in chat, so
+a press that had already landed in the store went unread.
 
 **Re-arming loses nothing, and that is measured rather than hoped.** The wait
 does not listen from "now": it listens from **the retrospective's latest
@@ -1065,12 +1062,12 @@ exactly that — it arms the watcher, kills it mid-wait, presses Finish with
 nothing armed, re-arms, and asserts the press comes straight back.
 
 **If the owned bridge is not in place, SAY the bridge is interim.** Whenever you
-are watching with anything less than a certified watcher — a raw background wait,
-a harness whose exit notifications you have not probed, a session where the watch
-has been killed and not yet re-armed — the handoff that gives him the URL says
-so, and names the failure mode: *"the watch is interim: if it is killed I may not
-hear your press, so ping me if it goes quiet."* Silence must never be mistakable
-for a channel that works.
+are watching with anything less than a certified watcher — a raw background
+wait, a harness whose exit notifications you have not probed, a session where
+the watch has been killed and not yet re-armed — the handoff that gives them the
+URL says so, and names the failure mode: *"the watch is interim: if it is killed
+I may not hear your press, so ping me if it goes quiet."* Silence must never be
+mistakable for a channel that works.
 
 **Rung 2 — a looping monitor, ONLY after you have proved lines reach you.** If
 your harness can run a watching script outside your turns **and hand you each
@@ -1112,64 +1109,64 @@ retrospective stands — `open`, `reviewing`, `submitted`, `finished` — and it
 turns `finished` only when you run `review close` at the very end; it is not the
 `finished` field beside it, which is this round's press and goes true every
 round, and exiting on that one would kill the monitor after round 1. `submitted`
-is the middle of the loop rather than the end of it: he has put this round down
-and you have not closed the retrospective, which is the moment to read the round,
-not to stop.
+is the middle of the loop rather than the end of it: they have put this round
+down and you have not closed the retrospective, which is the moment to read the
+round, not to stop.
 
 **Rung 3 — a budgeted foreground wait, when your harness has neither.** Block in
-the wait, spend a budget, and let the human relay the finish when the budget runs
-out before he does. This rung puts the notification burden back on him, so it is
-the rung you say out loud (the interim-bridge line above).
+the wait, spend a budget, and let the human relay the finish when the budget
+runs out before they do. This rung puts the notification burden back on them, so
+it is the rung you say out loud (the interim-bridge line above).
 
 **Always pass `--timeout` when you are an agent, and set it below your own
-command limit.** Without it the wait blocks until he acts, however long that is —
-and the thing that ends it will not be Retroloop but whatever runs you, killing the
-command from outside. That is not exit 7 and not an error document: it is your
-turn ending mid-command, with no way to tell it from a crash.
+command limit.** Without it the wait blocks until they act, however long that is
+— and the thing that ends it will not be Retroloop but whatever runs you,
+killing the command from outside. That is not exit 7 and not an error document:
+it is your turn ending mid-command, with no way to tell it from a crash.
 
 The number is a **relation, not a constant**: your `--timeout` must sit
 comfortably below whatever cap the harness puts on a single command, so that
-Retroloop is what ends the wait. If you know your cap, take a fraction of it. **If
-you do not know it, go small — 120 to 300 seconds — and re-arm**, which costs
-nothing at all. A short wait re-armed five times is strictly better than one long
-wait killed once. `--timeout 0` polls once and returns immediately — exit 0 with
-the event if he has already finished, exit 7 if he has not.
+Retroloop is what ends the wait. If you know your cap, take a fraction of it.
+**If you do not know it, go small — 120 to 300 seconds — and re-arm**, which
+costs nothing at all. A short wait re-armed five times is strictly better than
+one long wait killed once. `--timeout 0` polls once and returns immediately —
+exit 0 with the event if they have already finished, exit 7 if they have not.
 
-**Exit 7 from a wait means the seconds elapsed and nothing else** — not that he
-declined, not that anything is broken. Reviews take as long as they take. Never
-read a timeout as agreement.
+**Exit 7 from a wait means the seconds elapsed and nothing else** — not that
+they declined, not that anything is broken. Reviews take as long as they take.
+Never read a timeout as agreement.
 
-What to do with one: **re-arm.** A review can take days and your turn should not,
-so if you are burning turns with nothing else to do — say six re-arms, or fifteen
-minutes — **stop re-arming in the foreground and end your turn** with the watcher
-armed in the background: give him the URL again, say in as many words that you
-are waiting on his **Finish review** press and that nothing reaches you until he
-presses it. Sitting in a re-entry loop for an hour costs tokens, produces
-nothing, and looks from the outside exactly like a hung agent. Note what this is
-not: it is not standing the watch down. The background watcher stays armed, and
-it is re-armed on every exit and every kill until the review closes.
+What to do with one: **re-arm.** A review can take days and your turn should
+not, so if you are burning turns with nothing else to do — say six re-arms, or
+fifteen minutes — **stop re-arming in the foreground and end your turn** with
+the watcher armed in the background: give them the URL again, say in as many
+words that you are waiting on their **Finish review** press and that nothing
+reaches you until they press it. Sitting in a re-entry loop for an hour costs
+tokens, produces nothing, and looks from the outside exactly like a hung agent.
+Note what this is not: it is not standing the watch down. The background watcher
+stays armed, and it is re-armed on every exit and every kill until the review
+closes.
 
-**Re-arming is always safe, and it is how you recover.** The wait does not listen
-from "now", and it does not listen from anything you remember: it listens from
-**the retrospective's latest revision as the store has it**. So a finish that
-happened while you were not waiting — between `revision create` and `review
-wait`, during a timeout, after a lost turn, after a kill, or in a session before
-yours — is already there and comes back at once. That is why an agent who has
-just recovered a `retroId` and nothing else can still trust `--timeout 0`: the
-answer comes out of the store, not out of your context. That makes `review wait
---timeout 0` the one sanctioned way to ask "has he finished this round yet?":
-exit 0 says he has, and hands you the event with the `revision` it belongs to. Do
-not try to infer it from record counts; a fully-decided round he has not put down
-is not a finished one.
+**Re-arming is always safe, and it is how you recover.** The wait does not
+listen from "now", and it does not listen from anything you remember: it listens
+from **the retrospective's latest revision as the store has it**. So a finish
+that happened while you were not waiting — between `revision create` and
+`review wait`, during a timeout, after a lost turn, after a kill, or in a
+session before yours — is already there and comes back at once. That is why an
+agent who has just recovered a `retroId` and nothing else can still trust
+`--timeout 0`: the answer comes out of the store, not out of your context. That
+makes `review wait --timeout 0` the one sanctioned way to ask "have they
+finished this round yet?": exit 0 says they have, and hands you the event with
+the `revision` it belongs to. Do not try to infer it from record counts; a
+fully-decided round they have not put down is not a finished one.
 
 ## 4 · When the wait returns: read the round, then decide the next step
 
 There is one button on that page — it reads **Finish review** — and one event
-here. `ReviewFinished` means **the human is done with this round** — not that the
-retrospective is over.
-What happens next is yours to work out from what they actually wrote, which is
-what they asked for: look at what they requested and, based on it, send a new
-revision — or say there are no new requests.
+here. `ReviewFinished` means **the human is done with this round** — not that
+the retrospective is over. What happens next is yours to work out from what they
+actually wrote: read what they requested and answer it with a new revision, or
+say there is nothing new to address.
 
 **The check, every time, before anything else:**
 
@@ -1183,56 +1180,57 @@ retroloop comment list --retro <retroId> --unanswered --json
 retroloop revision get --retro <retroId> --feedback-only --json
 ```
 
-All three, every round. The counts say which records he ruled which way; the
+All three, every round. The counts say which records they ruled which way; the
 threads say what is waiting on you; and the third is **the only command that
-shows you a `reviewerNote` or a `finishMessage`** — his two free channels, which
-no count and no flag will ever surface. The branch list below turns on all three,
-so skipping the last one means deciding the round without having read part of it.
+shows you a `reviewerNote` or a `finishMessage`** — their two free channels,
+which no count and no flag will ever surface. The branch list below turns on all
+three, so skipping the last one means deciding the round without having read
+part of it.
 
-**`finishMessage` is his last word on the round**, written in the box the Finish
-button opens and delivered deliberately apart from the comments, which is what
-the human asked for. It is about the round rather than about any record, it is
-`null` when he left none, and **nothing else surfaces it**: it is not a thread,
-it has no `threadId`, and it will never appear in `comment list`. Read it before
-you decide anything below, because it is the one place he speaks about the round
-as a whole.
+**`finishMessage` is the human's last word on the round**, written in the box
+the Finish button opens and delivered deliberately apart from the comments. It
+is about the round rather than about any record, it is `null` when they left
+none, and **nothing else surfaces it**: it is not a thread, it has no
+`threadId`, and it will never appear in `comment list`. Read it before you
+decide anything below, because it is the one place they speak about the round as
+a whole.
 
 **A revision lands only as the first of a retrospective or as the answer to a
 finished round.** `revision create` returns `CONFLICT` (exit `4`) while the
-latest revision's review is unfinished, so everything below files *after* his
-Finish press and never during his reading. **When he asks for a change
+latest revision's review is unfinished, so everything below files *after* their
+Finish press and never during their reading. **When they ask for a change
 mid-review** — in chat, in a thread, however it reaches you — filing is not the
-answer. Ask him to mark the record `revise` and press **Finish review**, and
+answer. Ask them to mark the record `revise` and press **Finish review**, and
 file the rewrite as the next round; that is the loop's own rhythm, and the
 refusal message names it so you relay the right ask instead of retrying. This
 was convention before it was contract, and the convention lost twice in one
-retrospective: a round replaced while he is mid-read can rewrite records he has
-already decided, flipping them back to pending and spending his review time on
-content that silently stopped existing — the human is not to spend time on a
-review while the AI slips a new revision in behind it. **The price is stated,
-not hidden:** a draft correction seconds after your own filing also waits for a
-finish. That is what buys the guarantee, and loosening it is his call, not a
-flag you reach for.
+retrospective: a round replaced while they are mid-read can rewrite records they
+have already decided, flipping them back to pending and spending their review
+time on content that silently stopped existing — the human is not to spend time
+on a review while the AI slips a new revision in behind it. **The price is
+stated, not hidden:** a draft correction seconds after your own filing also
+waits for a finish. That is what buys the guarantee, and loosening it is their
+call, not a flag you reach for.
 
-- **Any `revise` records** → he asked for a rewrite by name. File revision n+1;
-  `review close` refuses while one stands.
+- **Any `revise` records** → they asked for a rewrite by name. File revision
+  n+1; `review close` refuses while one stands.
 - **Any thread still waiting on you** → answer it. Whether it *also* costs a
   revision depends on what it says, which is the next paragraph.
 - **Any `reviewerNote` that asks for something** → treat it exactly like a
-  thread: it is his free channel, it is not a verdict, and nothing mechanical
+  thread: it is their free channel, it is not a verdict, and nothing mechanical
   will ever surface it. Read every one. A note is **not** a thread and has no
   `threadId`, so to answer one you open a thread on the record yourself:
-  `retroloop comment add --retro <retroId> --record <rid> --section <the section his
-  note is about> --text "…" --json`. When the note is about the record as a
-  whole — priority, sequencing, "do this one first" — use `--section defaults`,
-  which is where severity, involvement and his verdict live and what such a note
-  is really about. A note about *which solution* goes on `--section solutions`,
-  which is where the proposals are. When you genuinely cannot place it, `--section title` hangs it
-  off the record's headline. The reply itself opens with the replay of his words,
-  exactly like a thread reply — the format is in "The threads waiting on you".
+  `retroloop comment add --retro <retroId> --record <rid> --section <the section their note is about> --text "…" --json`.
+  When the note is about the record as a whole — priority, sequencing, "do this
+  one first" — use `--section defaults`, which is where severity, involvement
+  and their verdict live and what such a note is really about. A note about *which solution* goes on
+  `--section solutions`, which is where the proposals are. When you genuinely
+  cannot place it, `--section title` hangs it off the record's headline. The
+  reply itself opens with the replay of their words, exactly like a thread reply
+  — the format is in "The threads waiting on you".
 
 **The section names are not the field names**, and one of them is a trap. Map
-what he is talking about to the section that carries it:
+what they are talking about to the section that carries it:
 
 | the field you author | the `--section` that carries it |
 |---|---|
@@ -1241,61 +1239,60 @@ what he is talking about to the section that carries it:
 | `humanWords` | `human_words` |
 | `rootCause` | `root_cause` |
 | `workaround` | `workaround` |
-| `solutions` — all of them, including their footprints, and anything about *which* one he picked | `solutions` |
+| `solutions` — all of them, including their footprints, and anything about *which* one they picked | `solutions` |
 | the two proposals in `defaults`, and the verdict itself | `defaults` |
 | *(read-only)* an old record's `agreedDirection` | **`direction`** — not `agreed_direction`, which is exit 2 |
 | *(read-only)* an old record's `footprint` | `footprint` |
 
-**`solutions` is one anchor for the whole block, not one per solution.** A thread
-about the second proposal says "Solution 2" in its own words; there is no
+**`solutions` is one anchor for the whole block, not one per solution.** A
+thread about the second proposal says "Solution 2" in its own words; there is no
 `--section solutions.2`. And the last two rows are history: `direction` and
 `footprint` still carry the threads filed on records from before solutions
 existed, and you will read those threads back — you will not be filing new ones
 there, because a record you write has no such section.
 - **A `finishMessage` that asks for something** → it is a request like any
   other, and one about the round rather than one record. It is not a thread, so
-  there is nothing to reply *to*: act on what it says, and tell him in chat what
-  you did with it. If it changes what you file, say so there too.
+  there is nothing to reply *to*: act on what it says, and tell them in chat
+  what you did with it. If it changes what you file, say so there too.
 - **Any `pending` records** → see "When records are pending after a finish"
   below. This is not a branch you can act on alone.
 - **None of those** → there is nothing left to address, so close the review and
   take the export (step 5).
 
 **This list is the floor, not the ceiling.** The counts and flags are what the
-machinery can see; what you owe him is in what he wrote, and he said so himself:
-look at what he requested and, based on it, send a new revision — or say there
-are no new requests. A record with no `revise` verdict whose note says
-"this is the wrong root cause" is a request for another revision, and no field
-will tell you that. Read the notes and threads before you decide, always.
+machinery can see; what you owe the human is in what they wrote: read what they
+requested and answer it with a new revision, or say there is nothing new to
+address. A record with no `revise` verdict whose note says "this is the wrong
+root cause" is a request for another revision, and no field will tell you that.
+Read the notes and threads before you decide, always.
 
-**A question is not automatically a revision.** When his ask is answered by an
-answer — he wanted to know something, and nothing in the record has to change —
-answer it in the thread and file nothing. Nothing gates the close on threads: its
-three conditions are his finish on this revision, no `pending` record and no
-`revise` record (step 5), and an unanswered question is none of them. But the
-close is **terminal** — a finished
-retrospective takes no more comments — so do not answer a question and close in
-the same breath. Closing over an answer he has not seen is inferring agreement
-from silence.
+**A question is not automatically a revision.** When their ask is answered by an
+answer — they wanted to know something, and nothing in the record has to change
+— answer it in the thread and file nothing. Nothing gates the close on threads:
+its three conditions are their finish on this revision, no `pending` record and
+no `revise` record (step 5), and an unanswered question is none of them. But the
+close is **terminal** — a finished retrospective takes no more comments — so do
+not answer a question and close in the same breath. Closing over an answer they
+have not seen is inferring agreement from silence.
 
-**So: post the answer, then end your turn.** Tell him in chat what you answered
-and that you are ready to close when he is happy, and stop there. Do not wait, do
-not poll: he has already pressed Finish review for this round, so nothing is
-coming that you could detect, and a reply from him arrives as a new message to
-you — not as an event. When he comes back and says go ahead, close it (step 5).
-If he replies in the thread instead, you will see it in `comment list` the next
-time he brings you back to this retrospective.
+**So: post the answer, then end your turn.** Tell them in chat what you answered
+and that you are ready to close when they are happy, and stop there. Do not
+wait, do not poll: they have already pressed Finish review for this round, so
+nothing is coming that you could detect, and a reply from them arrives as a new
+message to you — not as an event. When they come back and say go ahead, close
+it (step 5). If they reply in the thread instead, you will see it in
+`comment list` the next time they bring you back to this retrospective.
 
 **The two fields here do not say the same thing.** `state` is where the
 retrospective stands: `open` before the first revision, `reviewing` while the
-round is his, **`submitted`** once he has pressed Finish on the latest round, and
-`finished` only after **you** close it in step 5. `finished` beside it is a
-narrower fact as a boolean: it answers "has this retrospective been closed",
-**not** "has the human finished this round" — it is `false` all the way through
-his review, `submitted` included, and turns `true` only at your own
-`review close`. So `state` is the field that tells you he has finished a round;
-`review wait --timeout 0` (step 3) is still the one that tells you *when* he did
-it, and it is what a monitor blocks on.
+round is theirs, **`submitted`** once they have pressed Finish on the latest
+round, and `finished` only after **you** close it in step 5. `finished` beside
+it is a narrower fact as a boolean: it answers "has this retrospective been
+closed", **not** "has the human finished this round" — it is `false` all the way
+through their review, `submitted` included, and turns `true` only at your own
+`review close`. So `state` is the field that tells you they have finished a
+round; `review wait --timeout 0` (step 3) is still the one that tells you *when*
+they did it, and it is what a monitor blocks on.
 
 `revision` here is the number of the latest revision — the same number
 `revision get` reports as `revision.n` when you read the latest. Call it `n`: the
@@ -1303,11 +1300,11 @@ next draft you file is `--expect-revision <n+1>`.
 
 ### When records are pending after a finish
 
-The finish gate refuses while any record is undecided, so a round cannot *become*
-finished with pending records — but it can *go back* to having them: he can undo
-a verdict in the window between his Finish review and your close, and an undo is
-one more append, not an edit. Then `review close` refuses with `FINISH_GATE`
-(exit 4) and names them:
+The finish gate refuses while any record is undecided, so a round cannot
+*become* finished with pending records — but it can *go back* to having them:
+they can undo a verdict in the window between their Finish review and your
+close, and an undo is one more append, not an edit. Then `review close` refuses
+with `FINISH_GATE` (exit 4) and names them:
 
 ```
 {"error":{"code":"FINISH_GATE","message":"retrospective 34 still has 1 pending record(s): r-slow-tests. Every record must be approved or declined."}}
@@ -1317,43 +1314,43 @@ That message's last sentence is older than the third verdict and reads narrower
 than the rule: **`revise` decides a record too.** Any of the three gets it out of
 `pending`.
 
-**You cannot resolve this yourself** — a verdict is his, and you have no command
-for one. Nor is re-reading the round going to change it.
+**You cannot resolve this yourself** — a verdict is theirs, and you have no
+command for one. Nor is re-reading the round going to change it.
 
 **And `review wait` is spent here: do not use it.** It listens from the revision
-you last submitted, and his finish for that revision has already happened, so it
-returns that same old event instantly — every time, forever. A second press would
-not help either: the one-per-round rule absorbs it, so no new event is ever
-coming for this revision. A "wait again" loop in this state is an infinite loop
-with no delay in it. Do this instead:
+you last submitted, and their finish for that revision has already happened, so
+it returns that same old event instantly — every time, forever. A second press
+would not help either: the one-per-round rule absorbs it, so no new event is
+ever coming for this revision. A "wait again" loop in this state is an infinite
+loop with no delay in it. Do this instead:
 
-1. **Tell him what is blocking, by name.** In the review's own threads —
+1. **Tell them what is blocking, by name.** In the review's own threads —
    `retroloop comment add --retro <retroId> --review --text "…" --json` with the
    rids in it — or in a record's own section thread.
-2. **Say it in chat too**, with the review URL — a comment on a page he has
-   closed is a message he may not see. Name the records and say what you need:
+2. **Say it in chat too**, with the review URL — a comment on a page they have
+   closed is a message they may not see. Name the records and say what you need:
    *"r-slow-tests is back to undecided, so I can't close the review. Give it a
    verdict and I'll finish up."*
 3. **Then retry `review close` on a slow cadence** — once a minute is plenty —
    and read its exit code as the answer. **This is the detector**, and it infers
    nothing: exit 0 means every condition actually held, and `FINISH_GATE` names
-   exactly who is still undecided, so you can even tell him what changed. Nothing
-   is being read out of silence, because the gate is doing the deciding, not you.
-   (`review status --retro` reads the same `counts.pending` without attempting
-   anything, if you would rather look than knock.)
+   exactly who is still undecided, so you can even tell them what changed.
+   Nothing is being read out of silence, because the gate is doing the deciding,
+   not you. (`review status --retro` reads the same `counts.pending` without
+   attempting anything, if you would rather look than knock.)
 4. **Give that a budget too**, and end your turn when it runs out — the same
    rule as the wait: report where it stands, hand back the URL and the record
-   names, and stop. He may be asleep.
+   names, and stop. They may be asleep.
 
-The no-inferring rule is not in tension with this. It forbids concluding he has
-*finished a round* from anything but his press; here the press is already
+The no-inferring rule is not in tension with this. It forbids concluding they
+have *finished a round* from anything but their press; here the press is already
 recorded, and what you are watching for is a verdict the gate itself checks.
 
-**He does not need to press Finish review a second time.** His finish is recorded
-against the revision and an undo does not retract it, so once every record has a
-verdict again, your original `review close` goes through on the finish he already
-gave. (If he does press it again, nothing breaks: a second press for the same
-round is absorbed.)
+**They do not need to press Finish review a second time.** Their finish is
+recorded against the revision and an undo does not retract it, so once every
+record has a verdict again, your original `review close` goes through on the
+finish they already gave. (If they do press it again, nothing breaks: a second
+press for the same round is absorbed.)
 
 A record whose verdict is the legacy `hold` counts as **decided** at both gates —
 it never blocks a finish or a close.
@@ -1366,7 +1363,7 @@ it never blocks a finish or a close.
 | `approved` | agreed |
 | `declined` | rejected. A state, never a deletion: it stays in the record and in the export |
 | `revise` | **must-address** — "redo this one". The next revision has to answer it, and `review close` refuses while one stands |
-| `hold` | history only. It was a verdict for one session and no longer is; nothing writes it any more, and a store may still hold one from before |
+| `hold` | history only. It was a verdict once and no longer is; nothing writes it any more, and a store may still hold one from before |
 
 A `revise` verdict is the human saying *"redo this one"* about a specific record.
 This names them:
@@ -1404,127 +1401,131 @@ retroloop revision get --retro <retroId> --feedback-only --json
 
 `revision.records` there is a **count**, not the records; the records are the
 array beside it. `reviewerNote` is the human's free channel on a record — read
-every one — and `finishMessage` is the same thing for the round, `null` when he
-left none. Both are prose he wrote for you and neither is a verdict.
+every one — and `finishMessage` is the same thing for the round, `null` when
+they left none. Both are prose they wrote for you and neither is a verdict.
 
 **`contentChangedSince` is on `revision get` and nowhere else** — both this
 projection and the full one. `record list` carries `carriedOver` and
-`decidedOnRevision` but not this, so "his verdict stopped binding because I
+`decidedOnRevision` but not this, so "their verdict stopped binding because I
 rewrote the record" is a question only `revision get` answers.
 
 **Whose numbers are these?** The `severity`, `solutionLevel`, `selectedSolution`
-and `involvement` on a record you read back are **his** once he has ruled — and
-**your own proposals echoed back** while the record is still `pending` with
-`decidedOnRevision: null`. The state is what tells you which you are looking at;
-`reviewerNote` is null until he writes one. Never report your own proposal back to
-him as his decision.
+and `involvement` on a record you read back are **theirs** once they have ruled
+— and **your own proposals echoed back** while the record is still `pending`
+with `decidedOnRevision: null`. The state is what tells you which you are
+looking at; `reviewerNote` is null until they write one. Never report your own
+proposal back to them as their decision.
 
-**`selectedSolution` is which solution he chose, 1-based into the `solutions`
-array you sent** — so `2` is the one the page titled "Solution 2". `solutionLevel`
-beside it is that solution's level, not a separate answer he gave. While the
-record is pending it shows the one you recommended, which is the same shape as
-the other numbers: what is on screen is your proposal until he rules. It is
-`null` on a record filed before solutions existed, which had nothing to choose
-between.
+**`selectedSolution` is which solution they chose, 1-based into the `solutions`
+array you sent** — so `2` is the one the page titled "Solution 2".
+`solutionLevel` beside it is that solution's level, not a separate answer they
+gave. While the record is pending it shows the one you recommended, which is the
+same shape as the other numbers: what is on screen is your proposal until they
+rule. It is `null` on a record filed before solutions existed, which had nothing
+to choose between.
 
 **An undone verdict reads as pending, and pending shows your proposals again.**
-When he takes a verdict back the record's `state` returns to `pending` and every
-number on it — severity, involvement, `selectedSolution` and the `solutionLevel`
-that follows it — is your proposal once more, not the answer he withdrew. His
-withdrawn answer is still in the record's history and is not on this projection.
-Do not report it back to him as if it still stood.
+When they take a verdict back the record's `state` returns to `pending` and
+every number on it — severity, involvement, `selectedSolution` and the
+`solutionLevel` that follows it — is your proposal once more, not the answer
+they withdrew. Their withdrawn answer is still in the record's history and is
+not on this projection. Do not report it back to them as if it still stood.
 
-**When he picked a solution you did not recommend, that is the finding.** A
-record where he chose the level-1 write-it-down over your level-3 build-it is him
-telling you what he thinks the fix is worth. Read it, and let it steer what you
-propose on the *other* records and in the next session.
+**When they picked a solution you did not recommend, that is the finding.** A
+record where they chose the level-1 write-it-down over your level-3 build-it is
+them telling you what they think the fix is worth. Read it, and let it steer
+what you propose on the *other* records and in the next session.
 
 **But do not act on it by editing that record's `solutions`.** Moving
-`"recommended": true` onto the one he chose, or dropping the ones he did not,
-looks like agreeing with him and is in fact destroying his answer: the array is
-hashed, so any of those edits sends the record back to `pending` and takes the
-pick with it. **Leave the array exactly as you filed it** — his selection is
-already recorded, it is already what the export carries, and the record needs
-nothing from you. Change a decided record's solutions only when the round asked
-you to, and expect to lose the verdict when you do.
+`"recommended": true` onto the one they chose, or dropping the ones they did
+not, looks like agreeing with them and is in fact destroying their answer: the
+array is hashed, so any of those edits sends the record back to `pending` and
+takes the pick with it. **Leave the array exactly as you filed it** — their
+selection is already recorded, it is already what the export carries, and the
+record needs nothing from you. Change a decided record's solutions only when the
+round asked you to, and expect to lose the verdict when you do.
 
-**What survives into the next revision.** A verdict binds to the *content* it was
-given against, so when you re-file a record unchanged it keeps its verdict and
-comes back with `carriedOver: true` and the `decidedOnRevision` it was decided
-on. Change any narrative field — title, type, problem, human words, root cause,
-workaround, solutions, requester, impacts — and the record is `pending` again
-with `contentChangedSince: <k>`, where `k` is the revision he had decided. That is
-your doing, not his, so change a decided record only when the round asked you to.
+**What survives into the next revision.** A verdict binds to the *content* it
+was given against, so when you re-file a record unchanged it keeps its verdict
+and comes back with `carriedOver: true` and the `decidedOnRevision` it was
+decided on. Change any narrative field — title, type, problem, human words, root
+cause, workaround, solutions, requester, impacts — and the record is `pending`
+again with `contentChangedSince: <k>`, where `k` is the revision they had
+decided. That is your doing, not theirs, so change a decided record only when
+the round asked you to.
 
 **And everything on it reverts to your proposals, not only the verdict.** A
-content-changed record reads exactly like a record he never touched:
-`state: "pending"`, `decidedOnRevision: null`, `reviewerNote: null`, and
-`severity`, `involvement`, `selectedSolution` and `solutionLevel` all back to
-what your new draft proposes. His answers are not gone — the decision he made is
-in the record's history and nothing rewrites it — but they are **not on this
-projection**, and reporting them back to him as though they still stood would be
-telling him a record is decided when the gate says it is pending.
+content-changed record reads exactly like a record they never touched:
+`state: "pending"`, `decidedOnRevision: null`, `reviewerNote: null`, and `severity`,
+`involvement`, `selectedSolution` and `solutionLevel` all back to what your new
+draft proposes. Their answers are not gone — the decision they made is in the
+record's history and nothing rewrites it — but they are **not on this
+projection**, and reporting them back to them as though they still stood would
+be telling them a record is decided when the gate says it is pending.
 
-**It is the record going pending that takes his pick, not the solutions edit
+**It is the record going pending that takes their pick, not the solutions edit
 specifically.** Rewriting the `problem` of a record whose `solutions` you left
-byte-identical loses the selection exactly as rewriting a solution would, because
-`selectedSolution` is read off the verdict and the verdict no longer binds. There
-is one field you can change freely: `defaults` is outside the hash, so a new
-`severity` or `involvement` proposal disturbs nothing.
+byte-identical loses the selection exactly as rewriting a solution would,
+because `selectedSolution` is read off the verdict and the verdict no longer
+binds. There is one field you can change freely: `defaults` is outside the hash,
+so a new `severity` or `involvement` proposal disturbs nothing.
 
 **Restoring the content restores the verdict.** The binding is a hash of the
-narrative, not a one-way door: if a later revision files that record byte-identical
-to revision `k` again, his verdict binds again and comes back with
-`carriedOver: true`. Which is the real reason to leave untouched records alone —
-an "improvement" nobody asked for is a verdict you have to win back.
+narrative, not a one-way door: if a later revision files that record
+byte-identical to revision `k` again, their verdict binds again and comes back
+with `carriedOver: true`. Which is the real reason to leave untouched records
+alone — an "improvement" nobody asked for is a verdict you have to win back.
 
-**`solutions` is in that list, and it is stricter than it looks.** Changing *any*
-part of *any* solution — a word of its bullets, a line of its footprint, its
-level, which one carries the recommendation, adding a fourth idea, dropping one —
-sends the record back to `pending` and his pick with it. It has to: his answer is
-a **position** in that array, and a position means nothing once the thing at it
-has changed. So re-file a decided record's solutions byte-identical unless the
-round asked you to change them, and when it did, expect to have his verdict back
-to win. (Keeping the array byte-identical is necessary, not sufficient — the
-record still goes pending if you rewrite any other narrative field; see "What
-survives into the next revision" above.)
+**`solutions` is in that list, and it is stricter than it looks.** Changing
+*any* part of *any* solution — a word of its bullets, a line of its footprint,
+its level, which one carries the recommendation, adding a fourth idea, dropping
+one — sends the record back to `pending` and their pick with it. It has to:
+their answer is a **position** in that array, and a position means nothing once
+the thing at it has changed. So re-file a decided record's solutions
+byte-identical unless the round asked you to change them, and when it did,
+expect to have their verdict back to win. (Keeping the array byte-identical is
+necessary, not sufficient — the record still goes pending if you rewrite any
+other narrative field; see "What survives into the next revision" above.)
 
 **A ruling is sticky, and your `defaults` cannot overwrite it.** The proposals
-seed a record **he has never ruled on**, and nothing else: once a decision exists,
-his `severity` and `involvement` are what every read returns and what the export
-carries, whatever a later draft proposes. They are outside the content hash too,
-so changing them cannot even send a record back to pending. That makes `defaults`
-on a ruled record a formality — the field is required, so fill it in, and prefer
-his values so the file says what is true. Two cases that need a word:
+seed a record **they have never ruled on**, and nothing else: once a decision
+exists, their `severity` and `involvement` are what every read returns and what
+the export carries, whatever a later draft proposes. They are outside the
+content hash too, so changing them cannot even send a record back to pending.
+That makes `defaults` on a ruled record a formality — the field is required, so
+fill it in, and prefer their values so the file says what is true. Two cases
+that need a word:
 
-- **He ruled `involvement: "other"`.** Carry it forward verbatim — `other` is a
-  legal value in a draft, and echoing his ruling is not the same act as
+- **They ruled `involvement: "other"`.** Carry it forward verbatim — `other` is
+  a legal value in a draft, and echoing their ruling is not the same act as
   proposing one. The rule in step 3 is about *originating* `other`, which you
-  cannot explain because the note that explains it is his.
-- **He ruled a `solutionLevel` you may not write** — `none`, `upstream` or
+  cannot explain because the note that explains it is theirs.
+- **They ruled a `solutionLevel` you may not write** — `none`, `upstream` or
   `undecided`, from before the enum was cut, on a record filed before solutions
   existed. There is no field to carry it forward in, and the old shape cannot be
-  filed again. **Which branch you are in depends on whether the round needs a new
-  revision at all**, and they are not interchangeable:
+  filed again. **Which branch you are in depends on whether the round needs a
+  new revision at all**, and they are not interchangeable:
 
   - **The round needs no new revision.** File none. The revision that holds that
-    record stays the latest one, so his ruling — level included — is what every
-    read and the export return, untouched. This is the only way it survives.
+    record stays the latest one, so their ruling — level included — is what
+    every read and the export return, untouched. This is the only way it
+    survives.
   - **The round does make you file one.** Then the record is in your draft,
-    converted to the new shape, and **his ruling does not survive**: the record
-    is rewritten, so it goes `pending` and every number on it is your proposal
-    again (see "What survives into the next revision" above). Convert it by the
-    recipe in "If you do not have the draft file" below — and take the *rethink*
-    path there, not the transcribe one, **even though the round did not ask you
-    to rethink it, because it is going back to him regardless**. Then say in a
-    thread on the record that re-filing it sent it back to him and why the round
-    required it, and let him rule on what is now in front of him.
+    converted to the new shape, and **their ruling does not survive**: the
+    record is rewritten, so it goes `pending` and every number on it is your
+    proposal again (see "What survives into the next revision" above). Convert
+    it by the recipe in "If you do not have the draft file" below — and take the
+    *rethink* path there, not the transcribe one, **even though the round did
+    not ask you to rethink it, because it is going back to them regardless**.
+    Then say in a thread on the record that re-filing it sent it back to them
+    and why the round required it, and let them rule on what is now in front of
+    them.
 
   **What you may never do is leave that record out of a draft you are filing.**
   Omitting it does not preserve anything — it withdraws the record from the
   outcome entirely, verdict and all, silently (step 3, "Dropping a record drops
-  it from the outcome"). A record he approved would simply stop existing, with no
-  thread and no flag to tell him it had.
+  it from the outcome"). A record they approved would simply stop existing, with
+  no thread and no flag to tell them it had.
 
 **`involvement` says how much of the human this item needs.** `autonomous` is
 the solving side's to take; `interactive` and `pull-request` mean it is not to be
@@ -1554,24 +1555,25 @@ retroloop comment list --retro <retroId> --unanswered --json
 look at `resolved` at all. Drop it to see every thread; add `--record <rid>` to
 narrow to one record.
 
-**`resolved` is whether he has marked the thread dealt with**, and it is a human
-field: only he can set it, there is no flag anywhere in the CLI that writes it,
-and reading it is the point — it tells you which of his asks are already settled.
+**`resolved` is whether they have marked the thread dealt with**, and it is a
+human field: only they can set it, there is no flag anywhere in the CLI that
+writes it, and reading it is the point — it tells you which of their asks are
+already settled.
 
-- **A resolved thread owes you nothing, even when `--unanswered` lists it.**
-  The filter reads only who wrote last, so a thread he settled after his own
-  final message still shows up there. `resolved: true` is his answer to it:
-  do not reply, and do not treat it as an open ask when you decide whether the
+- **A resolved thread owes you nothing, even when `--unanswered` lists it.** The
+  filter reads only who wrote last, so a thread they settled after their own
+  final message still shows up there. `resolved: true` is their answer to it: do
+  not reply, and do not treat it as an open ask when you decide whether the
   round needs another revision.
-- **Reopening is his act too, and it puts the ask back.** A thread that reads
-  `resolved: false` with his message last is waiting on you again, whether it was
-  ever settled before or not. Read the flag, not the history.
+- **Reopening is their act too, and it puts the ask back.** A thread that reads
+  `resolved: false` with their message last is waiting on you again, whether it
+  was ever settled before or not. Read the flag, not the history.
 
 **`revision` on a message says which revision it was written against.** It is
 context, not an expiry date: **a comment from an older revision is still a live
 ask** unless the thread is resolved. Filing a new revision settles nothing —
-only he does that — so a thread stamped `1` that is still `resolved: false` with
-his message last is as much yours to answer in round 3 as it was in round 1.
+only they do that — so a thread stamped `1` that is still `resolved: false` with
+their message last is as much yours to answer in round 3 as it was in round 1.
 
 **A thread with `"rid": null` and `"section": null` is review-level** — an ask
 about the retrospective as a whole rather than about one record. It is where the
@@ -1588,14 +1590,15 @@ retroloop comment add --retro <retroId> --thread <threadId> --text "<your reply>
 
 - **`--thread <threadId>` answers an existing thread** — review-level or
   record-level, whichever it is. **This is the one to use for anything the human
-  opened**, and it is how you answer a review-level ask where he asked it rather
-  than in chat.
-- **`--record <rid> --section <section>` writes in that record's section thread**,
-  creating it on first use and reusing it after. `--section` is one of `title`,
-  `problem`, `human_words`, `root_cause`, `workaround`, `direction`, `footprint`,
-  `solutions`, `defaults`. On a record you wrote, the ones you will use are
-  `solutions` and `defaults`; `direction` and `footprint` belong to records filed
-  before solutions existed, and exist so their threads still have an anchor.
+  opened**, and it is how you answer a review-level ask where they asked it
+  rather than in chat.
+- **`--record <rid> --section <section>` writes in that record's section
+  thread**, creating it on first use and reusing it after. `--section` is one of
+  `title`, `problem`, `human_words`, `root_cause`, `workaround`, `direction`,
+  `footprint`, `solutions`, `defaults`. On a record you wrote, the ones you will
+  use are `solutions` and `defaults`; `direction` and `footprint` belong to
+  records filed before solutions existed, and exist so their threads still have
+  an anchor.
 - **`--review` opens a new review-level thread** for something you want to raise
   about the retrospective as a whole.
 
@@ -1608,29 +1611,29 @@ Name exactly one of the three: none is exit 2 (it is a forgotten flag far more
 often than it is a review-level ask), and so is more than one. Use `--file
 <path>` or `--file -` for a long reply.
 
-**Every reply opens by replaying what he said, in his own voice.** The rule is
-his, it is surface-independent, and it holds here exactly as it holds in chat:
-on a record thread, on a review-level thread, and on the thread you open to
-answer a `reviewerNote`. Before you answer anything, say back what he said:
+**Every reply opens by replaying what they said, in their own voice.** The rule
+is theirs, it is surface-independent, and it holds here exactly as it holds in
+chat: on a record thread, on a review-level thread, and on the thread you open
+to answer a `reviewerNote`. Before you answer anything, say back what they said:
 
-1. **Open with the literal line** `**This is what I heard you say written in your
-   own voice:**`
-2. **Then a blockquote of bullets** — `> - ` lines — carrying everything he said,
-   written in **his** first person ("I want the tabs sorted…", never "you want"),
-   each bullet opening with a few **bold thesis words** the way every bullet in a
-   record does.
-3. **Fix the dictation silently.** He speaks his comments, so words arrive
+1. **Open with the literal line**
+   `**This is what I heard you say written in your own voice:**`
+2. **Then a blockquote of bullets** — `> - ` lines — carrying everything they
+   said, written in **their** first person ("I want the tabs sorted…", never
+   "you want"), each bullet opening with a few **bold thesis words** the way
+   every bullet in a record does.
+3. **Fix the dictation silently.** They speak their comments, so words arrive
    garbled, sentences restart, a term lands wrong. Repair all of it without a
-   note about having done so; never quote a garble back at him, and never ask him
-   to confirm a meaning that is already plain.
-4. **Replay all of it, not just the part you are answering.** A replay that drops
-   half his comment tells him the other half was not read.
+   note about having done so; never quote a garble back at them, and never ask
+   them to confirm a meaning that is already plain.
+4. **Replay all of it, not just the part you are answering.** A replay that
+   drops half their comment tells them the other half was not read.
 5. **Only then answer**, below the quote, in your own voice.
 
-The replay is what makes your answer checkable: he reads one block and knows
-whether you understood him before he reads a word of the reply. Four replies in
-one round went straight to the answer and cost him a comment to say so — after
-the same miss had been reported twice before.
+The replay is what makes your answer checkable: the human reads one block and
+knows whether you understood them before they read a word of the reply. A reply
+that goes straight to the answer costs a comment to say the replay was
+missing.
 
 ```
 **This is what I heard you say written in your own voice:**
@@ -1648,10 +1651,10 @@ as revision 3.
 
 Then file revision n+1 with `--expect-revision <n+1>` and wait again — **and
 hand it over the same way you handed over the first one**: the new URL, and the
-sentence that he has to press **Finish review** before anything reaches you. It
-is just as true on round three as on round one, and a human who pressed it once
-does not necessarily know he has to press it again. The loop repeats until
-nothing is left to address.
+sentence that they have to press **Finish review** before anything reaches you.
+It is just as true on round three as on round one, and a human who pressed it
+once does not necessarily know they have to press it again. The loop repeats
+until nothing is left to address.
 
 ### If you do not have the draft file — lost, or never yours
 
@@ -1675,20 +1678,19 @@ retroloop revision get --retro <retroId> --json
 
 So the recovery is mechanical **for a record filed in the current shape**: take
 its `content`, put it in the array under `records`, and you are holding that
-record again. Rewrite
-the ones the round asked you to change, leave the rest byte-identical so their
-verdicts carry, and submit. Pass `--revision <n>` to reach an earlier round
-instead of the latest.
+record again. Rewrite the ones the round asked you to change, leave the rest
+byte-identical so their verdicts carry, and submit. Pass `--revision <n>` to
+reach an earlier round instead of the latest.
 
 **Byte-identical means the narrative, not the `defaults`.** Only the narrative
-fields are hashed, so bringing his ruled values forward into `defaults` — which
-step 4 tells you to prefer — cannot disturb a verdict. The two instructions do
-not fight.
+fields are hashed, so bringing their ruled values forward into `defaults` —
+which step 4 tells you to prefer — cannot disturb a verdict. The two
+instructions do not fight.
 
 **`solutions` is narrative, and it is hashed.** Rebuilding a record from its
 `content` gives you the array back exactly as you sent it, which is what keeps
-his pick valid; retyping one of its bullets "to tidy it" is a rewrite of the
-record and takes his verdict with it.
+their pick valid; retyping one of its bullets "to tidy it" is a rewrite of the
+record and takes their verdict with it.
 
 **A record filed before solutions existed comes back in its old shape**, and
 that `content` is **not** a revision file any more. Resubmitting it unchanged is exit 2,
@@ -1709,41 +1711,41 @@ last being the easy one to miss because it is nested — and **one goes in**,
 
 **Which of the two old levels seeds the new one.** An old record has two, and
 they are different things: `content.defaults.solutionLevel` is **your** earlier
-proposal, and the `solutionLevel` on `revision get --feedback-only` is **his**
-ruling. A solution's `level` is a proposal, so it is seeded from yours. His
-ruling is not a number you copy anywhere — it is already recorded, and the bullet
-above says what happens to it.
+proposal, and the `solutionLevel` on `revision get --feedback-only` is
+**their** ruling. A solution's `level` is a proposal, so it is seeded from
+yours. Their ruling is not a number you copy anywhere — it is already recorded,
+and the bullet above says what happens to it.
 
 **Two ways to do the rebuild, and what brought you here decides which.**
 **Rethink** — the deep-dive step of §3 again, proposing the one to three
 solutions the record actually has, from scratch — when the round asked you to
-rethink the record, *or* when you are converting a record he already ruled with a
-level you may not write (step 4, "A ruling is sticky"): that one is going back to
-him whatever you do, so it deserves the real answer rather than a transcription
-of the old one. **Transcribe** only when neither is true — you are here because
-you do not have the draft, the round asked for nothing on this record, and the
-point is to put back what was already there. Then the smallest honest rebuild is
-**one solution**: the old `agreedDirection`
-becomes its `bullets`, the old `footprint` becomes its `footprint`, its `level`
-is the `solutionLevel` the old `defaults` carried, and it is
-`"recommended": true` because it is the only one. Two exceptions:
+rethink the record, *or* when you are converting a record they already ruled
+with a level you may not write (step 4, "A ruling is sticky"): that one is going
+back to them whatever you do, so it deserves the real answer rather than a
+transcription of the old one. **Transcribe** only when neither is true — you are
+here because you do not have the draft, the round asked for nothing on this
+record, and the point is to put back what was already there. Then the smallest
+honest rebuild is **one solution**: the old `agreedDirection` becomes its
+`bullets`, the old `footprint` becomes its `footprint`, its `level` is the
+`solutionLevel` the old `defaults` carried, and it is `"recommended": true`
+because it is the only one. Two exceptions:
 
 - **Your old proposed level is `none`, `upstream` or `undecided`.** Those were
   proposable once, until the human cut the list to `1`–`5`, and there is no
   conversion rule — decide the level yourself, `1`–`5`, the way you would for a
   new record.
-- **He already ruled on it.** His verdict is bound to the old content, so
+- **They already ruled on it.** Their verdict is bound to the old content, so
   rewriting the record into the new shape sends it back to `pending` however
   faithful the rebuild is. There is no way around that and no reason to hide it:
-  say so in a thread on the record, and let him rule on what is now in front of
-  him.
+  say so in a thread on the record, and let them rule on what is now in front of
+  them.
 
-**The retro's name is not in any read you have.** It is on the review page,
-in the header, so the one way to recover it is to **ask the human to read it off
-the page** — give him the URL and ask for the line under the breadcrumb. If he
-would rather not, write a new one by the same rule as any other (§3, "the title
-names the work this retro covers") and say in a review-level comment that you
-renamed it and why, so the rename is his to object to.
+**The retro's name is not in any read you have.** It is on the review page, in
+the header, so the one way to recover it is to **ask the human to read it off
+the page** — give them the URL and ask for the line under the breadcrumb. If
+they would rather not, write a new one by the same rule as any other (§3, "the
+title names the work this retro covers") and say in a review-level comment that
+you renamed it and why, so the rename is their to object to.
 
 **Re-author the `title` — nothing gives it back to you.** The revision's title is
 not in `revision get`'s output, or in any other read, so a draft rebuilt this way
@@ -1826,13 +1828,14 @@ Four keys of that shape are worth a word, because you never author any of them:
   could take.
 
 Each entry in `records` is one record's final state: its `rid` and `num`, the
-whole narrative you authored including every `solutions` entry, the `state` he
-ruled, **his** `severity`, `selectedSolution`, `solutionLevel`, `involvement` and
-`reviewerNote`, and the record's own comment threads. A record filed before
+whole narrative you authored including every `solutions` entry, the `state` they
+ruled, **their** `severity`, `selectedSolution`, `solutionLevel`, `involvement`
+and `reviewerNote`, and the record's own comment threads. A record filed before
 solutions existed carries `agreedDirection` and `footprint` there instead, which
-is why a consumer reading the file has to expect either shape. Declined records are in there too — decline is a state, not a deletion.
-`reviewThreads` carries the threads that hang off no record. Tell the human where
-it landed, and stop. The retrospective is filed.
+is why a consumer reading the file has to expect either shape. Declined records
+are in there too — decline is a state, not a deletion. `reviewThreads` carries
+the threads that hang off no record. Tell the human where it landed, and stop.
+The retrospective is filed.
 
 **After the close, the retrospective is done for good.** It takes no more
 comments (exit 4), no more revisions and no second close. A later
@@ -1845,18 +1848,20 @@ records forever.
 
 - **Never decide a record.** Approve, decline, revise, the reviewer's note, the
   *decided* severity and involvement — all the human's, all UI-only. There is no
-  flag for any of it, and no wording of a comment counts as one. You propose both
-  of those two in `defaults` and you should (step 3); his ruling is what counts.
+  flag for any of it, and no wording of a comment counts as one. You propose
+  both of those two in `defaults` and you should (step 3); their ruling is what
+  counts.
 - **Never choose the solution.** You propose one to three and mark one
-  recommended; **which one is built is his**, and so is the level that comes with
-  it. Recommending is not choosing, a record where only one solution is worth
-  proposing is still his to accept, and no comment saying "we should obviously do
-  Solution 3" makes the choice for him. He may pick the one you did not
-  recommend, and when he does, that is an answer and not a mistake to correct.
-- **Never finish or reopen a review.** `ReviewFinished` comes from his
-  **Finish review** button and nowhere else. Closing a review *is* yours
-  (step 5) and is a different act: it files an outcome he has already given, it
-  decides nothing, and it refuses if he has not given one — which is why the
+  recommended; **which one is built is theirs**, and so is the level that comes
+  with it. Recommending is not choosing, a record where only one solution is
+  worth proposing is still their to accept, and no comment saying "we should
+  obviously do Solution 3" makes the choice for them. They may pick the one you
+  did not recommend, and when they do, that is an answer and not a mistake to
+  correct.
+- **Never finish or reopen a review.** `ReviewFinished` comes from their
+  **Finish review** button and nowhere else. Closing a review *is* yours (step
+  5) and is a different act: it files an outcome they have already given, it
+  decides nothing, and it refuses if they have not given one — which is why the
   retrospective reads `finished` afterwards without you ever having finished a
   review.
 - **Never infer approval from silence.** No answer is not a yes. If the wait
@@ -1865,8 +1870,8 @@ records forever.
 - **Never stand the finish watch down while a review is open.** A watcher killed
   or exited is **re-armed**, on the kill notification itself; a kill is a fact
   about the task system and never a gesture, never a request to stop, and never
-  permission to hand the notification burden back to him. The watch ends at
-  `review close` or on his explicit word, and on nothing else. If you are
+  permission to hand the notification burden back to them. The watch ends at
+  `review close` or on their explicit word, and on nothing else. If you are
   watching with anything less than a certified bridge, the handoff SAYS the
   bridge is interim and names its failure mode — silence must never be
   mistakable for a channel that works (step 3, "The bridge").
@@ -1887,5 +1892,5 @@ records forever.
   The empty array is exit **0** and is the dangerous one: it files a revision
   that replaces the round with nothing to review (step 3). With nothing new to
   say, file no revision at all. And `other` means "the reviewer's note says
-  what", which is his field and not yours — propose the closest real mode and
+  what", which is their field and not yours — propose the closest real mode and
   say what you mean in the recommended solution's bullets.

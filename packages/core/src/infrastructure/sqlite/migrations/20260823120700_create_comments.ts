@@ -1,6 +1,6 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
-/** The messages of a thread — append-only for both actors (D4). */
+/** The messages of a thread — append-only for both actors. */
 export const migration: Migration = {
   version: '20260823120700',
   name: 'create_comments',

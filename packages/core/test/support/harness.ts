@@ -67,7 +67,7 @@ export type Harness = {
    */
   finishRound(retroId: number): Promise<void>
   /**
-   * The end of the loop, both halves: the human finishes his side of the round
+   * The end of the loop, both halves: the human finishes their side of the round
    * and the AI closes the review to export. It takes two acts since
    * `r-one-finish-button` — a finished retrospective is what `ReviewClosed`
    * makes, so a test that wants one runs both rather than pretending the button

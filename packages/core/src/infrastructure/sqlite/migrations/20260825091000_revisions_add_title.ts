@@ -9,7 +9,7 @@ import type { Migration } from '#infrastructure/sqlite/migration'
  *
  * `ADD COLUMN` does not fire the table's append-only triggers and does not
  * rewrite a single row, so the immutability the revisions table enforces
- * (D4) is untouched by this — the column arrives empty and stays empty for every
+ * is untouched by this — the column arrives empty and stays empty for every
  * draft that predates it.
  */
 export const migration: Migration = {

@@ -2,7 +2,7 @@
  * One capture-and-review cycle inside a session. A session has 1..n; exactly one
  * may be non-`finished` at a time.
  *
- * State machine (D3, amended by `r-one-finish-button`):
+ * State machine (amended by `r-one-finish-button`):
  * `open → reviewing → finished`.
  * - `open → reviewing` on the first revision of this retrospective.
  * - `reviewing → reviewing` for any further revision. `ReviewFinished` is an

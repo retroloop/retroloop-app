@@ -9,7 +9,7 @@ export type ValidationIssue = {
 /**
  * Input rejected at the boundary — the zod schemas (shape, enums, required
  * fields) and the cross-revision checks a schema cannot see (rid/num stability).
- * Only the mechanical rules of D5 land here; authoring *style* stays instructed.
+ * Only the mechanical rules land here; authoring *style* stays instructed.
  */
 export class ValidationError extends DomainError {
   override readonly code: DomainErrorCode = 'VALIDATION'

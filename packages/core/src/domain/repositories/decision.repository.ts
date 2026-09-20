@@ -2,8 +2,8 @@ import type { Decision, NewDecision } from '#domain/models/decision.model'
 
 /**
  * Human-authored and append-only: `add` writes a new version, and there is no
- * update or delete anywhere on this type. Item 3 backs the same guarantee with
- * SQLite triggers that reject `UPDATE`/`DELETE` outright.
+ * update or delete anywhere on this type. The append-only SQLite triggers back
+ * the same guarantee by rejecting `UPDATE`/`DELETE` outright.
  */
 export type DecisionRepository = {
   add(decision: NewDecision): Promise<Decision>

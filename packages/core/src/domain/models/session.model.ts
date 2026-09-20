@@ -14,7 +14,7 @@ export type Session = {
   readonly project: string | undefined
   readonly cwd: string
   readonly branch: string | undefined
-  /** Interactive, human-attended session. A session-level fact, never per record (D1). */
+  /** Interactive, human-attended session. A session-level fact, never per record. */
   readonly supervised: boolean
   readonly startedAt: string
 }

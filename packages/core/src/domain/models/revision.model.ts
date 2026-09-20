@@ -3,7 +3,7 @@ import type { RetroRecord } from '#domain/models/record.model'
 /**
  * The AI's immutable numbered draft of a retrospective's records. `n` starts at 1
  * per retrospective. There is no update path anywhere in the system — feedback
- * produces revision n+1, never an edit (data-model.md §Revision, D4).
+ * produces revision n+1, never an edit (data-model.md §Revision).
  */
 export type Revision = {
   readonly id: number

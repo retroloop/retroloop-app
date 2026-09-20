@@ -69,7 +69,7 @@ export function describeThreadResolutionRepositoryContract(
       expect(await store.threadResolutions.findLatest(404)).toBeUndefined()
     })
 
-    /** Reopening is a row, so "resolved at 10:00, reopened at 11:00" stays readable (D4). */
+    /** Reopening is a row, so "resolved at 10:00, reopened at 11:00" stays readable. */
     test('appends versions, and the highest one is what stands', async () => {
       await store.threadResolutions.add(aNewResolution({ version: 1, resolved: true }))
       const reopened = await store.threadResolutions.add(

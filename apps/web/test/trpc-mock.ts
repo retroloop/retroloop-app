@@ -790,7 +790,7 @@ const silentTailer: RecordSeed = {
   impacts: 'human',
   /**
    * `upstream` is the one thing in this fixture no draft could propose today:
-   * it was cut from selection, and retro 1 carries one. It is here so the
+   * it was cut from selection, and older stores carry one. It is here so the
    * scenarios can show what happens to a record that holds a level nothing
    * offers — the radio list has nothing to select, a verdict that says nothing
    * about the level leaves it alone, and the read-only rendering still names

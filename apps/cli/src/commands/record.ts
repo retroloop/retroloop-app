@@ -73,7 +73,7 @@ type RecordArgs = {
 
 /**
  * `record list` — the records of a revision with the state each one is actually
- * in, carry-over included (D2). `carriedOver` and `decidedOnRevision` are what let
+ * in, carry-over included. `carriedOver` and `decidedOnRevision` are what let
  * the AI tell "the human approved this" from "the human approved an earlier
  * version of this", which is the difference that decides whether to touch it.
  *
@@ -310,7 +310,7 @@ export function registerRecordCommand(
                 rid: view.record.rid,
                 /**
                  * The number the human sees on the page and says out loud — so
-                 * the AI reading this list can find the record he means. `num`
+                 * the AI reading this list can find the record they mean. `num`
                  * stays beside it because it is what the draft authored and what
                  * a resubmitted draft must keep saying; `globalId` is minted by
                  * the store and is not part of a draft at all
@@ -610,8 +610,8 @@ const LANE_HELP = `The lane — the work, and the marker on it
                           state, resolvedAt, ref, refs }]
     claim/unclaim      { recordId, retroId, slug, version, claim }
 
-  humanWords are the record's quotes: what he said in the session, context null
-  when a quote has none. ownerWords are his reviewer note and then his review
+  humanWords are the record's quotes: what they said in the session, context null
+  when a quote has none. ownerWords are their reviewer note and then their review
   comments, oldest first. They are different things, and [] under either means
   only that: no quotes, or no note and no comment. workaround is "none" when
   there was none.
@@ -665,7 +665,7 @@ async function readLane(
          * Where the record came from, which a queue row does not carry and a
          * reader of one record always wants: this is the block that says whether
          * the round is closed and when the human put it down, so an agent can
-         * tell "he finished this an hour ago" from "he finished it in April".
+         * tell "they finished this an hour ago" from "they finished it in April".
          */
         retrospective: {
           retroId: row.retroId,
@@ -1018,7 +1018,7 @@ function laneRowJson(row: LaneRecordRow) {
      * The record's quotes — what the human said in the session, as the record
      * was drafted from them. The export's three keys (`ExportHumanWords`), with
      * the one difference that is this function's standing rule: a quote with no
-     * `context` carries `null` rather than losing the key. `[]` means he said
+     * `context` carries `null` rather than losing the key. `[]` means they said
      * nothing quotable, and it is not `ownerWords`, below.
      */
     humanWords: row.humanWords.map((said) => ({
@@ -1029,8 +1029,8 @@ function laneRowJson(row: LaneRecordRow) {
     /** What was done about it at the time — free text, the literal `none` when nothing was. */
     workaround: row.workaround,
     /**
-     * What the human said about this record: the note he wrote with the verdict
-     * first, then his comments, oldest first. It is the field that lets an agent
+     * What the human said about this record: the note they wrote with the verdict
+     * first, then their comments, oldest first. It is the field that lets an agent
      * act on a queue row without opening the review page.
      */
     ownerWords: [...row.ownerWords],
@@ -1099,7 +1099,7 @@ function laneRowLine(row: LaneRecordRow): string {
  * their own names**, because a bare `“…”` line is how `ownerWords` already prints
  * and an unnamed quote leaves a reader unable to tell the two apart.
  *
- * `none` rather than no line when he said nothing: a line that is not there reads
+ * `none` rather than no line when they said nothing: a line that is not there reads
  * as "not printed", which is how `[]` came to read as "lost". They are on `get`
  * and not on the queue's line, which carries no narrative at all — not the
  * problem, not the root cause — because it is one line per record to scan.

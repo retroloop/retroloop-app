@@ -12,7 +12,7 @@ import { toWireDecision } from '#trpc/wire'
 
 /**
  * `decisions.record` — approve or decline (or move back to pending), with the
- * three values and the reviewer's note (D1/D4).
+ * three values and the reviewer's note.
  *
  * **`hold` is not one of them any more** (`r-hold-semantics`). It left the
  * verdict axis to become a lifecycle flag of its own, and `r-remove-hold`

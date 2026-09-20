@@ -60,7 +60,7 @@ export function describeHoldRepositoryContract(label: string, makeStore: StoreFa
       expect(await store.holds.findLatest(retroId, 'r-never-touched')).toBeUndefined()
     })
 
-    /** A release is a row, so the reason it was parked stays readable forever (D4). */
+    /** A release is a row, so the reason it was parked stays readable forever. */
     test('appends versions and keeps every one of them', async () => {
       const parked = await store.holds.add(aNewHold({ version: 1, note: 'The fix looks risky.' }))
       const released = await store.holds.add(aNewHold({ version: 2, held: false }))

@@ -59,7 +59,7 @@ export type RecordTimelineEntry =
   | {
       readonly kind: 'decision'
       readonly at: string
-      /** The revision this verdict was given against (D2). */
+      /** The revision this verdict was given against. */
       readonly revisionN: number
       readonly state: DecisionState
       readonly actor: Actor
@@ -149,7 +149,7 @@ export type GetRecordByIdOutput = {
  *
  * **The global id is the whole reason this exists.** Every other record read in
  * the system is addressed by `(retroId, rid)`, which is what actually identifies
- * a record (A5) — and a pair is not a URL anyone types or pastes. So this one
+ * a record — and a pair is not a URL anyone types or pastes. So this one
  * runs the sequence backwards first (`recordIds.findById`) and then reads
  * exactly what the other record use cases read, against the pair it resolved.
  * A number nothing was minted for is a `NotFoundError`, which is the only shape
@@ -319,7 +319,7 @@ export class GetRecordByIdUseCase {
  * record above and answers "where does this stand"; the timeline answers "how
  * did it get here", and a page that showed only the latest would drop the
  * approval a redraft sent back to pending, which is the single most interesting
- * thing a record's history has to say (D2).
+ * thing a record's history has to say.
  */
 function buildTimeline(
   revisions: readonly Revision[],

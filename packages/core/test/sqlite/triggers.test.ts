@@ -17,11 +17,11 @@ afterAll(removeTempStages)
  * human-authored (`decisions`, `notes`, `annotations`, `comments`), and
  * `holds` joined them with `r-hold-semantics`, `thread_resolutions` with
  * `r-resolvable-comments`, and `finish_messages` with
- * `r-finish-confirm-message`. The other two
- * are immutable by the model rather than by authorship: a revision is a draft that
- * feedback answers with revision n+1 (D4), and a request response is a message
- * that was sent. `notes` is protected for both authors, not only the human's rows —
- * the mutability matrix makes AI notes append-only too.
+ * `r-finish-confirm-message`. The other two are immutable by the model rather
+ * than by authorship: a revision is a draft that feedback answers with revision
+ * n+1, and a request response is a message that was sent. `notes` is protected
+ * for both authors, not only the human's rows — the mutability matrix makes AI
+ * notes append-only too.
  *
  * `record_lifecycle` is the table that shows the two groups were never really
  * about authorship: **both** actors write it, and it is as append-only as the
@@ -243,12 +243,12 @@ describe('append-only triggers', () => {
     { table: 'notes', column: 'text', value: 'rewritten' },
     { table: 'annotations', column: 'text', value: 'rewritten' },
     { table: 'comments', column: 'text', value: 'rewritten' },
-    // The human saying he is done with a thread is human-authored too: reopening
-    // it is a new version, and the moment he marked it is never edited
+    // The human saying they are done with a thread is human-authored too: reopening
+    // it is a new version, and the moment they marked it is never edited
     // (`r-resolvable-comments`).
     { table: 'thread_resolutions', column: 'resolved', value: 0 },
-    // The word he left on a round is human-authored too, and it is the one
-    // thing in the round that is his own prose (`r-finish-confirm-message`).
+    // The word they left on a round is human-authored too, and it is the one
+    // thing in the round that is their own prose (`r-finish-confirm-message`).
     { table: 'finish_messages', column: 'message', value: 'rewritten' },
     /**
      * **The one on this list the AI also writes**, and it is protected exactly

@@ -10,7 +10,7 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * update.
  *
  * The triggers carry that the last step of the way. "Revisions are immutable"
- * (D4) is as hard an invariant as anything the human authors, and the AI is the
+ * is as hard an invariant as anything the human authors, and the AI is the
  * one actor with a reason to want to fix up a draft it already submitted — so the
  * database refuses, whoever asks and however they connect.
  */

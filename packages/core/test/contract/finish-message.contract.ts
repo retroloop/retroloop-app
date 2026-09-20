@@ -36,7 +36,7 @@ export function describeFinishMessageRepositoryContract(
       expect(stored.at).toBe('2026-08-28T10:00:00.000Z')
     })
 
-    test('returns undefined for a round he left no word on', async () => {
+    test('returns undefined for a round they left no word on', async () => {
       await store.finishMessages.add(aNewMessage())
 
       expect(await store.finishMessages.findLatest(retroId, 2)).toBeUndefined()

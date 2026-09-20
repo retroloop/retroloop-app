@@ -90,11 +90,11 @@ export const retroDisplayStateSchema = z.literal([...RETROSPECTIVE_STATES, 'subm
  */
 export const recordLifecycleStateSchema = z.literal([...RECORD_LIFECYCLE_STATES])
 
-/** 1–5, v2 rubric; recurrence folds in, there is no separate field (D1). */
+/** 1–5; recurrence folds in, there is no separate field. */
 export const severitySchema = z.literal([1, 2, 3, 4, 5])
 
 /**
- * A ceiling, not a target (D1) — the **read** shape, all eight values.
+ * A ceiling, not a target — the **read** shape, all eight values.
  *
  * `none`, `upstream` and `undecided` are history: they were cut from what
  * anyone may choose, and stored retrospectives already hold two of them. Human

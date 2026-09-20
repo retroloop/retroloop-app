@@ -39,7 +39,7 @@ export type ListRecordsOutput = {
 /**
  * The records of a revision with the state each one is actually in — a decision
  * carried over from an earlier revision counts as decided, a record whose content
- * changed since it was decided counts as pending (D2).
+ * changed since it was decided counts as pending.
  *
  * **And where each one stands on the axis that outlives the review**
  * (`r-lifecycle-projection-gap`). This projection answered nothing about
@@ -95,7 +95,7 @@ export class ListRecordsUseCase {
      * one: the two projections joining identical rows through identical helpers is
      * what makes them unable to disagree, which is the whole of what
      * `r-lifecycle-projection-gap` asks for, and the store is hundreds of records
-     * for one user (A4).
+     * for one user.
      */
     const lifecycle = lifecycleByRecord(await this.store.recordLifecycle.listLatestForEachRecord())
     /**

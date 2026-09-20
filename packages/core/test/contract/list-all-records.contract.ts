@@ -354,7 +354,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     })
 
     /**
-     * The verdict and the severity are **effective**, not stored (D2): a verdict
+     * The verdict and the severity are **effective**, not stored: a verdict
      * given against an earlier revision carries while the narrative is unchanged
      * and stops binding the moment the AI rewrites the record, and the severity
      * that shows is the human's once they have moved it.

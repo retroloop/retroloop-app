@@ -33,7 +33,7 @@ describe('the AI-config-write toggle', () => {
     expect(await harness.store.settings.findLatest('ai_config_write')).toBeUndefined()
   })
 
-  test('is on once the human turns it on, and off again when he turns it back', async () => {
+  test('is on once the human turns it on, and off again when they turn it back', async () => {
     expect(
       (await harness.app.settings.setAiConfigWrite.execute({ actor: 'human', enabled: true }))
         .aiConfigWrite,

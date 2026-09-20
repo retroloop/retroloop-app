@@ -1,4 +1,4 @@
-# agent worktrees
+# git worktrees
 .claude/worktrees/
 
 node_modules/

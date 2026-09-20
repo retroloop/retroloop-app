@@ -12,7 +12,7 @@ import type { StoreFactory } from './store.contract'
  * is here for the same reason they are. The dashboard's row is assembled from
  * four reads and a fold over their results — an ordinal counted within a
  * session, a name taken from the newest draft, counts derived from verdicts
- * that may or may not still bind (D2). Proving that against the memory store
+ * that may or may not still bind. Proving that against the memory store
  * alone would leave the one thing worth proving unproven: that the store
  * actually used in production answers identically.
  */
@@ -102,7 +102,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
     })
 
     /**
-     * The counts are effective states, not stored ones (D2): a verdict given
+     * The counts are effective states, not stored ones: a verdict given
      * against a revision carries into the next one while the narrative is
      * unchanged, and stops binding the moment the AI rewrites the record.
      */
@@ -157,7 +157,7 @@ export function describeListRetrosContract(label: string, makeStore: StoreFactor
      *
      * All three readings in one walk, because the boundaries are the claim.
      */
-    test('reads submitted between his finish and the AI’s close, and only there', async () => {
+    test('reads submitted between their finish and the AI’s close, and only there', async () => {
       const sessionId = await startSession('uuid-submitted', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       const state = async () => (await list())[0]?.state

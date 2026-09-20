@@ -141,7 +141,7 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
   }
 }
 
-/** A revision draft that satisfies every mechanical rule of the schema (D5). */
+/** A revision draft that satisfies every mechanical rule of the schema. */
 export function aRevisionDraft(
   records: readonly { rid: string; num: number; title?: string; problem?: string }[] = [
     { rid: 'r-stale-lock', num: 1 },

@@ -1,7 +1,7 @@
 import type { NewRevision, Revision } from '#domain/models/revision.model'
 
 /**
- * Revisions are immutable (D4). No update, no delete — the absence of those
+ * Revisions are immutable. No update, no delete — the absence of those
  * methods is the enforcement at this layer.
  */
 export type RevisionRepository = {

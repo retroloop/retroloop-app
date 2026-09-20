@@ -190,7 +190,7 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
      * **Every verdict, not the one in force.** The effective decision on the
      * record says where it stands; the timeline says how it got there — and a
      * record approved against one draft, sent back to pending by a redraft and
-     * approved again is the shape that makes the difference visible (D2). A
+     * approved again is the shape that makes the difference visible. A
      * timeline showing only the latest would drop the first approval entirely,
      * which is the single most interesting thing this record's history has.
      */

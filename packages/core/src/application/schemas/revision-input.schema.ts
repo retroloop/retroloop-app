@@ -12,11 +12,11 @@ import { parseOrThrow } from '#application/schemas/parse'
 /**
  * The contract the AI authors a revision against — `retro schema revision`.
  *
- * **It enforces exactly the mechanical half of D5 and nothing else**: shape,
- * enums in range, required fields present, the verbatim/cleaned quote twin, a
- * five-whys chain of 1–5 links with a root, a workaround that is present (free
- * text or the literal `"none"`), and identity that cannot collide inside one
- * revision.
+ * **It enforces exactly the mechanical half of the contract and nothing
+ * else**: shape, enums in range, required fields present, the verbatim/cleaned
+ * quote twin, a five-whys chain of 1–5 links with a root, a workaround that is
+ * present (free text or the literal `"none"`), and identity that cannot collide
+ * inside one revision.
  *
  * The instructed half stays out on purpose — bold-lead bullet phrasing, the
  * "computable cost" wording, whether a root cause is systemic rather than
@@ -24,7 +24,7 @@ import { parseOrThrow } from '#application/schemas/parse'
  * for those would be theater: it would pass garbage that satisfies a regex and
  * fail good writing that does not.
  *
- * Two mechanical D5 rules are *not* here because a single revision cannot see
+ * Two mechanical rules are *not* here because a single revision cannot see
  * them — no `rid` reuse across revisions, no renumbering, `num` dense per
  * retrospective. They need the retrospective's history, so `CreateRevisionUseCase`
  * checks them and raises the same `ValidationError`.
@@ -34,7 +34,7 @@ const nonEmpty = (what: string) => z.string().trim().min(1, `${what} must not be
 export const humanWordsSchema = z.strictObject({
   /** The human's words as spoken. */
   verbatim: nonEmpty('verbatim'),
-  /** The same words with dictation garbles fixed — both halves required (D5). */
+  /** The same words with dictation garbles fixed — both halves required. */
   cleaned: nonEmpty('cleaned'),
   context: z.string().optional(),
 })
@@ -59,7 +59,7 @@ export const rootCauseSchema = z.strictObject({
  */
 export const solutionSchema = z.strictObject({
   bullets: nonEmpty('bullets'),
-  /** The tagged tree, or the literal `"none"` — its layout is instructed only (D5). */
+  /** The tagged tree, or the literal `"none"` — its layout is instructed only. */
   footprint: nonEmpty('footprint'),
   level: solutionLevelInputSchema,
   recommended: z.boolean(),
@@ -150,7 +150,7 @@ export const recordInputSchema = z.strictObject({
    * assertion and fail a pasted log.
    */
   diagnosticData: nonEmpty('diagnosticData'),
-  /** Free text or the literal `"none"` — never absent (D5). */
+  /** Free text or the literal `"none"` — never absent. */
   workaround: nonEmpty('workaround'),
   solutions: solutionsSchema,
   requester: partySchema,

@@ -35,7 +35,7 @@ export type ExportRetrospectiveOutput = {
  * progress would be a document asserting things that are not true yet. Asking
  * for one is a `ConflictError`, not an empty file.
  *
- * The default carries **all decided records with their states** (D6): an export
+ * The default carries **all decided records with their states**: an export
  * is a handoff of the whole outcome, and hiding declines by default would
  * surprise the import script that reads it.
  */

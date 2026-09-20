@@ -530,10 +530,10 @@ describe('the /retro skill', () => {
   /**
    * The claim the document makes about `--unanswered`, proved rather than
    * asserted: it reads who wrote last and **nothing else**, so a thread the
-   * human settled after his own final message is still listed by it.
+   * human settled after their own final message is still listed by it.
    *
    * That sentence is what stops a drafting AI treating every listed thread as an
-   * open ask and answering one he has already closed. If the filter ever learns
+   * open ask and answering one they have already closed. If the filter ever learns
    * about `resolved`, the document becomes wrong and this fails.
    */
   test('the unanswered filter ignores resolved, exactly as the skill says', async () => {

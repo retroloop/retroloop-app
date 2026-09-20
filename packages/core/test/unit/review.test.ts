@@ -82,7 +82,7 @@ describe('review', () => {
      * field every script that already parses this output keys off: it answers
      * the *stored* terminal state and the fourth word must not have moved it.
      */
-    test('says submitted between his finish and the AI’s close, and finished after', async () => {
+    test('says submitted between their finish and the AI’s close, and finished after', async () => {
       const { retroId } = await harness.revision(session.id, [{ rid: 'r-one', num: 1 }])
       const status = async () =>
         await harness.app.review.status.execute({ actor: 'ai', retro: { retroId } })
@@ -128,7 +128,7 @@ describe('review', () => {
 
   /**
    * `review.listFinished` — every round the human has put down, across the whole
-   * stage, for an AI that was not watching when he pressed the button.
+   * stage, for an AI that was not watching when they pressed the button.
    *
    * `review wait` answers about one retrospective and only about finishes that
    * land while it blocks; an agent that started after the press, or that is
@@ -206,7 +206,7 @@ describe('review', () => {
           sessionId: session.id,
           claudeSession: session.claudeSession,
           finishedAt: secondFinishedAt,
-          // He has finished it and the AI has not closed it — the window
+          // They have finished it and the AI has not closed it — the window
           // `review status` calls `submitted`, and the reason this row exists.
           closed: false,
           revisionN: 1,
@@ -234,7 +234,7 @@ describe('review', () => {
   })
 
   /**
-   * The human's one button (`r-one-finish-button`). It ends *his* side of the
+   * The human's one button (`r-one-finish-button`). It ends *their* side of the
    * round and nothing else: the retrospective stays `reviewing` until the AI
    * closes it, which is the describe below this one.
    */
@@ -269,9 +269,9 @@ describe('review', () => {
 
     /**
      * A `hold` verdict is history (`r-hold-semantics`) and no write path can
-     * produce one — but retro 1 could have, so the gate has to keep treating a
-     * stored one as decided. Written straight to the store, because that is the
-     * only way one exists now.
+     * produce one — but a store written before that change could hold one, so
+     * the gate has to keep treating a stored one as decided. Written straight to
+     * the store, because that is the only way one exists now.
      */
     test('still counts a legacy hold verdict as decided', async () => {
       const { retroId, revision } = await harness.revision(session.id)
@@ -390,7 +390,7 @@ describe('review', () => {
 
     /**
      * The half of `r-finish-confirm-message` that is not the confirm: a valid
-     * finish may carry his final word on the round, and it files with the
+     * finish may carry their final word on the round, and it files with the
      * finish rather than as one more comment — delivered separately from the
      * comments.
      */
@@ -545,7 +545,7 @@ describe('review', () => {
         expect(feedback.threads).toEqual([])
       })
 
-      test('the feedback view says undefined when he left no word', async () => {
+      test('the feedback view says undefined when they left no word', async () => {
         const { retroId } = await aDecidedRound()
         await harness.app.review.finish.execute({ actor: 'human', retro: { retroId } })
 
@@ -636,9 +636,9 @@ describe('review', () => {
     })
 
     /**
-     * He finished round 1 and the AI answered with revision 2. That old
-     * `ReviewFinished` says nothing about the draft now in front of him, and
-     * closing on it would end the review he is in the middle of.
+     * They finished round 1 and the AI answered with revision 2. That old
+     * `ReviewFinished` says nothing about the draft now in front of them, and
+     * closing on it would end the review they are in the middle of.
      */
     test('refuses on a finish that belongs to an earlier revision', async () => {
       const { retroId } = await finishedRound([{ rid: 'r-one', num: 1 }])
@@ -652,7 +652,7 @@ describe('review', () => {
     })
 
     /**
-     * The window between his finish and the AI's close is a window he can still
+     * The window between their finish and the AI's close is a window they can still
      * write in (`finish-lock.service.ts`), so the gate is asked again here.
      */
     test('refuses when a verdict was undone after the finish', async () => {
@@ -669,19 +669,19 @@ describe('review', () => {
 
     /**
      * **The way out of the state the previous test lands in**, and the reason it
-     * is not a trap: the AI has no verdict to give and cannot press his button,
+     * is not a trap: the AI has no verdict to give and cannot press their button,
      * so if the round could only be reopened by a second finish it would wedge.
      *
      * It does not. `ReviewFinished` is an event about a revision, not a latch on
-     * a state — an undo does not retract it — so once he rules on the record
+     * a state — an undo does not retract it — so once they rule on the record
      * again, the *original* finish still opens the door and `close` goes through.
-     * A second press is not needed, and would be absorbed if he made one (the
+     * A second press is not needed, and would be absorbed if they made one (the
      * once-per-round rule, `r-request-changes-multi-press`).
      *
-     * Written because SKILL.md now tells a cold agent exactly this: ask him to
+     * Written because SKILL.md now tells a cold agent exactly this: ask them to
      * rule on the named records, then retry the close.
      */
-    test('closes on the original finish once he rules again, with no second press', async () => {
+    test('closes on the original finish once they rule again, with no second press', async () => {
       const { retroId, revision } = await finishedRound([{}, {}])
       const rid = revision.records[1]?.rid ?? ''
       await harness.decide(retroId, rid, 'pending')

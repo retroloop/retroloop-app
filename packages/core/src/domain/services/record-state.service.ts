@@ -42,7 +42,7 @@ export type EffectiveDecision = {
 }
 
 /**
- * Carry-over, option A (D2): a decision binds to the content it was made against.
+ * Carry-over, option A: a decision binds to the content it was made against.
  * Identical content carries the decision forward; changed content resets the
  * record to `pending` — without writing anything, because pending *is* the absence
  * of a decision for the current content.
@@ -93,7 +93,7 @@ export function effectiveDecision(
 }
 
 /**
- * The finish gate's question (D3): which records of this revision are still
+ * The finish gate's question: which records of this revision are still
  * pending?
  *
  * A verdict is the only thing it asks about, and since `r-remove-hold` it is

@@ -43,7 +43,7 @@ describe('record content hash', () => {
    * **Diagnostic data is out of the fingerprint**, and this is the assertion
    * that says so — the field is supporting evidence the AI gathered, it is on no
    * comment anchor and the human never answers it, so a record re-filed with a
-   * fuller log is the same record he decided. Whatever actually changed his
+   * fuller log is the same record they decided. Whatever actually changed their
    * mind — the cause, the problem, a proposal — is in the narrative, and every
    * one of those is hashed above.
    *
@@ -60,7 +60,7 @@ describe('record content hash', () => {
     expect(hashRecordContent(aRecord())).toBe(bare)
   })
 
-  test('ignores the AI’s proposed defaults — a decision binds to the narrative (D2)', () => {
+  test('ignores the AI’s proposed defaults — a decision binds to the narrative', () => {
     expect(
       hashRecordContent(
         aRecord({
@@ -127,8 +127,8 @@ describe('changed sections', () => {
 
   /**
    * The legacy anchors still answer for the records that have them — that is
-   * what keeps a comment filed on retro 1's "Agreed direction" pointing at
-   * something.
+   * what keeps a comment filed on a legacy record's "Agreed direction" pointing
+   * at something.
    */
   test('names the legacy sections on a record that has them', () => {
     expect(

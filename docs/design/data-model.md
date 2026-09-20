@@ -171,7 +171,7 @@ export stays valid unmodified.
 | `workaround` | string | free text or literal `"none"`; never absent |
 | `solutions` | `Solution[1..3]` | one to three ways to solve it — see below |
 | `requester` | `human \| ai` | who raised it |
-| `impacts` | `human \| ai` | primary impact (v2 semantics) |
+| `impacts` | `human \| ai` | primary impact |
 
 **Solutions — the multi-solution design.** The AI deep-dives and proposes up to
 three solutions; where the fix is quick, one or two is all that makes sense. A
@@ -215,11 +215,11 @@ shape again** — `revision-input.schema.ts` takes `solutions` and rejects the t
 old keys as unrecognized. Narrow the write path, never the read path.
 
 **Proposed defaults** (AI-proposed values for the human decision fields; the
-human's values are what count — v2 rule):
+human's values are what count):
 
 | field | type |
 |---|---|
-| `severity` | 1–5 (v2 rubric; recurrence folds in, no separate field) |
+| `severity` | 1–5 (recurrence folds in, no separate field) |
 | `involvement` | `autonomous \| pull-request \| interactive \| other \| undecided` (default `undecided`) |
 
 **There is no proposed `solutionLevel` on a record that carries solutions.** The
@@ -232,10 +232,9 @@ a copy is deliberate: `revision get`'s `content` is promised to be a revision
 file the AI can resubmit, and a stored key the input schema rejects would break
 that promise.
 
-Enum option labels follow v2's "what — why" convention wherever they surface in
-UI — **solution level and involvement**. The canonical strings, imported verbatim
-from v2's `ticket-schemas.md` (the single schema authority of the capture
-pipeline this model carries forward):
+Enum option labels follow the "what — why" convention wherever they surface in
+UI — **solution level and involvement**. The canonical strings, carried forward
+verbatim from the capture pipeline this model succeeds:
 
 **Severity — 1 is the highest, 5 the lowest.** Normative, and said on the label
 rather than only here, so that a reader learns which end is the highest without
@@ -273,10 +272,10 @@ definition:
 | `5` | Level 5 — open-ended: emergent, autonomous, or not cleanly undoable |
 
 **Read-only historical values.** `none`, `upstream` and `undecided` were in the
-enum until it was narrowed to 1–5; retro 1 still holds two of them
-(r5 `upstream`, r10 `none`). They can no longer be **chosen by a human or
-proposed by a draft** — both write paths take the 1–5 input enum and reject
-them — and they are **never rewritten**, because human data is append-only.
+enum until it was narrowed to 1–5; stores written before that change still hold
+them. They can no longer be **chosen by a human or proposed by a draft** — both
+write paths take the 1–5 input enum and reject them — and they are **never
+rewritten**, because human data is append-only.
 Every read path keeps them: the wire views, `retro.export.v1`, record history,
 the decisions table's own CHECK, and the review page's read-only rendering,
 which shows them under the labels they were chosen with:
@@ -496,8 +495,8 @@ labels and attributes into the export is on the deferred list beside it.
 
 Events: `LabelDefined · LabelRenamed · LabelRetired · LabelUnretired ·
 AttributeDefined · AttributeRenamed · AttributeRetired · AttributeUnretired`
-are **globally scoped** — no session, no
-retrospective — because a definition belongs to none; `RecordLabelApplied ·
+are **globally scoped** — no session, no retrospective — because a definition
+belongs to none; `RecordLabelApplied ·
 RecordLabelRemoved · RecordAttributeSet · RecordAttributeCleared` are scoped
 `(sessionId, retroId, rid)` and carry no `revisionN`, because a label outlives
 every redraft of the record it is on.
@@ -881,8 +880,8 @@ The human never edits narrative — corrections travel as comments and come
 back as revision n+1 authored by the AI. The AI never writes any human field —
 enforced at L3 (use cases) and backstopped at L1 (triggers).
 
-## Dropped from v2
+## Dropped from the earlier model
 
 - `reviewed: human | none` — every finished Retro review passed through the UI by
   construction; the export states it as a constant.
-- v1 `pain`, v2 `solution-kind` — superseded upstream; never existed here.
+- `pain` and `solution-kind` — superseded upstream; never existed here.

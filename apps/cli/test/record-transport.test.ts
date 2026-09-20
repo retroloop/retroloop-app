@@ -13,7 +13,7 @@ afterAll(removeTempStages)
  *
  * The lane gives the AI three new writes: a claim, a release, and the resolve
  * that clears a claim. Each of them touches a record the human decided, in a
- * retrospective he finished, beside tables full of his words — which is exactly
+ * retrospective they finished, beside tables full of their words — which is exactly
  * the shape in which a write that reached one column too far would be
  * invisible. So this runs the CLI over a **real SQLite file**, photographs every
  * human-owned table before, runs the whole lane, and compares the photographs
@@ -118,7 +118,7 @@ beforeEach(async () => {
   retroId = created.retroId
 
   // The human's half, in full: a note on the verdict, a comment on the record,
-  // and a remark about the round — the three shapes of his prose in one store.
+  // and a remark about the round — the three shapes of their prose in one store.
   await app.threads.addComment.execute({
     actor: 'human',
     retro: { retroId },

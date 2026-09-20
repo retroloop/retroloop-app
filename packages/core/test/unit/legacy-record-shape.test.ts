@@ -9,7 +9,7 @@ import { aLegacyRecord } from '../support/fixtures'
  * keeps its decision.
  *
  * The whole of that promise reduces to one number. A decision binds to a
- * canonical-JSON hash of the record's narrative (D2), and a record whose hash
+ * canonical-JSON hash of the record's narrative, and a record whose hash
  * no longer matches goes back to `pending` — so if adding `solutions` to
  * `recordContent()` changed what a legacy record hashes to, every decided
  * record in production would have silently un-decided itself on the first read

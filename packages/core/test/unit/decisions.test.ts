@@ -212,8 +212,8 @@ describe('decisions', () => {
      * to something the human never chose would be worse than leaving it.
      */
     test('leaves a level it can no longer name exactly where it was', async () => {
-      // As the store holds it for retro 1 — written before the cut, by hand,
-      // because no write path can produce one now.
+      // As a store written before the cut holds it — by hand here, because no
+      // write path can produce one now.
       await harness.store.decisions.add({
         retroId: legacyRetroId,
         rid: legacyRid,
@@ -250,8 +250,8 @@ describe('decisions', () => {
    * They cannot: the proposals seed a record with **no decision**, and after
    * that the fallback chain in `record-decision.use-case.ts` reads the previous
    * decision, never the new draft. This is what lets SKILL.md tell a cold agent
-   * to carry his values forward without fear, and — the case that has no other
-   * answer — to put any legal 1–5 in `defaults.solutionLevel` for a record he
+   * to carry their values forward without fear, and — the case that has no other
+   * answer — to put any legal 1–5 in `defaults.solutionLevel` for a record they
    * ruled with a legacy level the input schema can no longer accept.
    */
   test('a later revision’s proposals never overwrite a ruling', async () => {
@@ -283,7 +283,7 @@ describe('decisions', () => {
   })
 
   /**
-   * The same, for the level nothing may write any more: a record he ruled
+   * The same, for the level nothing may write any more: a record they ruled
    * `upstream` keeps it however the next draft is filed.
    */
   test('a legacy level survives whatever the next draft proposes', async () => {
@@ -354,7 +354,7 @@ describe('decisions', () => {
     /**
      * The undo is one more append, not an edit and not a deletion: the verdict
      * that was undone stays exactly where the human left it, which is the whole
-     * of the append-only rule (D4).
+     * of the append-only rule.
      */
     test('undoing appends a `pending` version and keeps the one it undid', async () => {
       await harness.decide(retroId, rid, 'approved')
@@ -396,7 +396,7 @@ describe('decisions', () => {
   test('binds to the revision the reviewer was looking at, not to the newest one', async () => {
     // The rhythm the gate enforces (`r-revision-sneaks-past-review`): the human
     // marks the record for a rewrite and finishes the round, and the AI's next
-    // draft answers it. He can still revisit a verdict afterwards
+    // draft answers it. They can still revisit a verdict afterwards
     // (`r-verdict-revise`), and that is what this test is about — a verdict
     // recorded against revision 1 while revision 2 is the newest.
     await harness.decide(retroId, rid, 'revise')

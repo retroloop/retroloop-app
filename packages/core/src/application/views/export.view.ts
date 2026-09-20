@@ -32,7 +32,7 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  *   document missing a key an import script reads. They are converted, not
  *   passed through.
  * - **A record's state is never `pending`.** The finish gate refuses to finish a
- *   review while any record is undecided (D3), so by the time anything is
+ *   review while any record is undecided, so by the time anything is
  *   exportable every record carries a human verdict. The type says so.
  * - **A thread with no messages is not exported.** `messages` has `minItems: 1`;
  *   an empty thread is an anchor nobody has written under yet, and it is not part
@@ -260,7 +260,7 @@ function isPresent<T>(value: T | undefined): value is T {
  * Builds the export document from what a finished retrospective holds.
  *
  * Content is the **final revision's narrative plus the final human decision
- * fields** (D6). Per-record history stays queryable through `record history` and
+ * fields**. Per-record history stays queryable through `record history` and
  * is deliberately not in the export: the export is the outcome, not the argument
  * that produced it.
  */

@@ -73,7 +73,7 @@ function toRecord(input: RecordInput): RetroRecord {
 }
 
 /**
- * Record identity is minted once per retrospective and never moves (D1, D5).
+ * Record identity is minted once per retrospective and never moves.
  * A single revision cannot see that, so the check lives here, over every earlier
  * revision of the same retrospective:
  *
@@ -141,7 +141,7 @@ function checkIdentityStability(
  *
  * Lifecycle is implicit: the revision joins the session's one non-`finished`
  * retrospective, or starts a new one when the last is finished. The first
- * revision moves the retrospective from `open` to `reviewing` (D3). Everything
+ * revision moves the retrospective from `open` to `reviewing`. Everything
  * — the new retrospective, the revision, the state change and both events —
  * commits as one unit of work, so a rejected draft leaves no orphan
  * retrospective behind.
@@ -195,7 +195,7 @@ export class CreateRevisionUseCase {
        * finished the review must not be allowed — the human should not be spending
        * time on a review while the AI slips a new revision in underneath it. The
        * cost is that a replacement can flip a record the human has already decided
-       * back to `pending` (D2), so review time is spent on a moving target with no
+       * back to `pending`, so review time is spent on a moving target with no
        * signal that it moved.
        *
        * `ReviewFinished` for the latest revision is the whole of the question, and

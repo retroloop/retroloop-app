@@ -9,12 +9,12 @@ import { threadJson } from '#views'
  * `comment list` and `comment add` — the AI's half of a thread.
  *
  * The CLI writes as the AI and only as the AI: human comments are UI-only and
- * immutable (D4), so there is no `--actor` here to get wrong.
+ * immutable, so there is no `--actor` here to get wrong.
  *
- * `--section` takes D8's eight sections, imported from the core enum rather than
- * spelled out again — cli.md's own inline list predates D8 and names sections
- * (`impact`, `chain`, `agreed_direction`) the model does not have. The enum is the
- * authority, and `--help` shows what the model will actually accept.
+ * `--section` takes the record sections the core enum defines, imported rather
+ * than spelled out again — cli.md's own inline list is older and names sections
+ * (`impact`, `chain`, `agreed_direction`) the model does not have. The enum is
+ * the authority, and `--help` shows what the model will actually accept.
  *
  * **Three targets, because the store has three** (`r-cli-review-thread-reply`).
  * `--record --section` was once the only one, so review-level asks had no

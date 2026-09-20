@@ -30,7 +30,7 @@ const retroAndRevision = {
  *
  * Both report the **effective** state — a decision carried over from an earlier
  * revision counts as decided, and a record whose narrative changed since counts
- * as pending again (D2). That distinction is the whole reason the reviewer can
+ * as pending again. That distinction is the whole reason the reviewer can
  * trust the column, so it is on the wire rather than recomputed in the browser.
  *
  * Both used to report a `hold` on its own key and no longer do
@@ -100,7 +100,7 @@ export const recordsRouter = router({
    *
    * `id` is the **global** number, which is the one name a record has that is
    * not a pair. Every other record procedure here takes `(retroId, rid)`,
-   * because that is what actually addresses a record (A5) — and a pair is not
+   * because that is what actually addresses a record — and a pair is not
    * something anyone types, pastes into a message, or bookmarks. So this
    * procedure exists for the URL: the resolver runs the store's own sequence
    * backwards and everything after it is the same read the others make.
@@ -157,7 +157,7 @@ export const recordsRouter = router({
    * asked for and the filters are the page's: the whole store is hundreds of
    * records for one user, so the browser can hold every row, and a filter
    * parameter would be a decision made ahead of the evidence about which filters
-   * matter (A4).
+   * matter.
    *
    * A read, so both actors may call it — only writes are actor-bound.
    */
@@ -245,7 +245,7 @@ export const recordsRouter = router({
    *
    * **Both ends are global ids, and that is the only addressing available.**
    * Every other record procedure here takes `(retroId, rid)`, which is what
-   * identifies a record (A5); a relation identifies two, and a four-field input
+   * identifies a record; a relation identifies two, and a four-field input
    * made of two pairs is an input nobody can read. The number is also what the
    * page is already holding — it is the number in the URL of both records.
    *

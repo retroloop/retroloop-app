@@ -11,7 +11,7 @@ import type { StoreFactory } from './store.contract'
  * A use case rather than a repository, and here for the reason `list-retros.contract.ts`
  * is: the row is a fold over five reads — an ordinal counted within a session, a
  * finish read out of the outbox and matched to the revision it belongs to, counts
- * derived from verdicts that may or may not still bind (D2). The two adapters
+ * derived from verdicts that may or may not still bind. The two adapters
  * have every opportunity to disagree about that and no other suite would notice.
  *
  * The read is what an agent runs when it was not watching: `review wait` answers
@@ -111,7 +111,7 @@ export function describeListFinishedReviewsContract(label: string, makeStore: St
           sessionId: first,
           claudeSession: 'uuid-first',
           finishedAt: submittedAt,
-          // The window between his finish and the AI's close: `closed` is the
+          // The window between their finish and the AI's close: `closed` is the
           // stored terminal state and nothing else writes it.
           closed: false,
           revisionN: 1,

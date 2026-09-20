@@ -54,8 +54,8 @@ describe('check-mock-parity', () => {
   })
 
   test('an extra field nested inside an answer is caught', () => {
-    // The D1 finding's shape: a derived field re-canned deep in the record pane,
-    // where a hand-written top-level key set would never have looked.
+    // The shape this check exists for: a derived field re-canned deep in the
+    // record pane, where a hand-written top-level key set would never have looked.
     const findings = checkMockParity(
       canning('records.get', (answer) => {
         const detail = answer as { record: object }

@@ -466,7 +466,7 @@ describe('the CLI', () => {
         message: expect.stringContaining('is still being reviewed'),
       })
       // The way out, named in the refusal itself: mark the record `revise`, let
-      // him Finish, and the rewrite lands as the next round.
+      // them Finish, and the rewrite lands as the next round.
       expect(result.error().message).toContain('revise')
       expect(result.error().message).toContain('Finish')
     })
@@ -559,7 +559,7 @@ describe('the CLI', () => {
           {
             rid: 'r-one',
             // Both numbers, because they answer different questions: `globalId`
-            // is what the human is looking at when he names a record, `num` is
+            // is what the human is looking at when they name a record, `num` is
             // what the draft authored and what a resubmitted draft must keep
             // saying. The first retrospective of a fresh stage, so they agree
             // here; `record list` on a second one is where they part.
@@ -1584,7 +1584,7 @@ describe('the CLI', () => {
      * The human text is asserted too — it interpolates `state`, so the word
      * reaches a person as well as a parser.
      */
-    test('says submitted in the gap between his finish and the AI’s close', async () => {
+    test('says submitted in the gap between their finish and the AI’s close', async () => {
       const sessionId = await aSession()
       const retroId = await aRevision(sessionId, aRevisionDraft([{ rid: 'r-one', num: 1 }]))
       await finishRound(retroId)
@@ -1694,13 +1694,13 @@ describe('the CLI', () => {
     })
 
     /**
-     * The state a cold agent lands in when he un-decides a record after
+     * The state a cold agent lands in when they un-decides a record after
      * finishing, and the exit from it — SKILL.md §4 tells one to read the
-     * `FINISH_GATE` code, name the records to him, and retry the close on the
-     * finish he already gave. This is that sequence at the surface the skill
+     * `FINISH_GATE` code, name the records to them, and retry the close on the
+     * finish they already gave. This is that sequence at the surface the skill
      * actually calls.
      */
-    test('is exit 4 with FINISH_GATE when a verdict was undone, and closes once he rules again', async () => {
+    test('is exit 4 with FINISH_GATE when a verdict was undone, and closes once they rule again', async () => {
       const retroId = await aFinishedRound()
       const app = asHuman()
       await app.decisions.record.execute({
@@ -2072,7 +2072,7 @@ describe('the CLI', () => {
             reviewerNote: 'we already fixed this upstream',
           },
         ])
-        // Present and null on a round he has not finished — the key never comes
+        // Present and null on a round they have not finished — the key never comes
         // and goes (`views.ts`), and the AI reads its absence as "no final word".
         expect(body.finishMessage).toBeNull()
       })
@@ -2781,7 +2781,7 @@ describe('the CLI', () => {
         expect(result.error().message).toContain('needs --section')
       })
 
-      test('is exit 2 for a section that is not one of D8s', async () => {
+      test('is exit 2 for a section the enum does not have', async () => {
         const result = await cli.run([
           'comment',
           'add',

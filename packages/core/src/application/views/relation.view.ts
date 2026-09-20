@@ -18,11 +18,11 @@ import {
  *
  * **The other record is addressed three ways, and each has a reader.**
  * `globalId` is what a person says out loud and what a URL carries; `(retroId,
- * rid)` is what every read and write in this system is actually addressed by
- * (A5), and that is what makes this block useful: the AI can follow the
- * relation with the same `--retro`/rid arguments every one of its other
- * commands takes, without a second lookup to turn a number back into a pair —
- * which is how it finds past records easily.
+ * rid)` is what every read and write in this system is actually addressed by,
+ * and that is what makes this block useful: the AI can follow the relation with
+ * the same `--retro`/rid arguments every one of its other commands takes,
+ * without a second lookup to turn a number back into a pair — which is how it
+ * finds past records easily.
  */
 export type RecordRelationView = {
   /** The **other** record's number in the whole ledger. */
@@ -56,7 +56,7 @@ export type RecordRelationDetail = RecordRelationView & {
    * rid**, when a later draft withdrew it.
    *
    * The fallback is the one the whole web surface already makes for a record
-   * with no name to show (D5), and it is honest here for a reason of its own: a
+   * with no name to show, and it is honest here for a reason of its own: a
    * rid is a record's name, authored by the AI and stable for the life of the
    * record, and it is the one thing a withdrawn record still has. The relation
    * itself is not hidden — the row was written about a record that existed, and

@@ -736,7 +736,7 @@ Feature: Reviewing a revision
       | SEV5 — nice-to-have               |
 
   # The canonical strings of docs/design/data-model.md §Enum option labels, which
-  # holds v2's wording verbatim. This scenario is what stops a label being
+  # holds the earlier wording verbatim. This scenario is what stops a label being
   # paraphrased, reordered, or quietly shortened — and what stops `none`,
   # `upstream` or `undecided` coming back as something a human can pick.
   Scenario: Every solution level is offered, in order, with its definition intact

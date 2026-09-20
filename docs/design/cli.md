@@ -296,7 +296,7 @@ retroloop review <action>
 
 Actions:
   status                Counts by state for the active revision; where the round stands
-  wait                  Block until the human finishes his side of the round
+  wait                  Block until the human finishes their side of the round
   close                 Close the review to export — the AI's act, after the wait
   list                  Read the stage's rounds; --finished is the only list today
 
@@ -337,15 +337,14 @@ retrospective is in, while `review status` is the command that answers where the
 round stands. The split is deliberate rather than an oversight, and whether one
 field name should carry two answers remains an open question of taste.
 
-**One outcome, and then a decision of your own.**
-`wait` used to end on one of two events, because the page had one button per
-event; the second button is gone, so that what the round asks for is clear from
-the content of the comments rather than from a redundant button that is easy to
-press wrong — so `wait`
-ends on `ReviewFinished` and the AI reads the round to know what it was:
-`review status` counts the `revise` verdicts, `comment list --unanswered` names
-the threads still waiting. Something open means the next revision; nothing open
-means `review close`.
+**One outcome, and then a decision of your own.** `wait` used to end on one of
+two events, because the page had one button per event. The second button is gone
+— what the round asks for is clear from the content of the comments rather than
+from a redundant button that is easy to press wrong — so `wait` ends on
+`ReviewFinished` and the AI reads the round to know what it was: `review status`
+counts the `revise` verdicts, `comment list --unanswered` names the threads still
+waiting. Something open means the next revision; nothing open means
+`review close`.
 
 `close` is the only act the AI has ever had on a review and it decides nothing:
 exit 4 unless the human finished *that* revision, every record is decided, and no
@@ -361,10 +360,11 @@ a round on **any** retrospective of this stage. `list --finished` is the backwar
 one: every round already put down, `closed` saying whether the AI has closed it.
 
 **Finished means the latest revision.** Everywhere in this block: the human
-pressed Finish on the retrospective's newest revision, which he cannot do while a
-record is undecided. A round he finished and the AI answered with a new revision
-is not finished any more — `wait --any` steps over that event and `list
---finished` does not list the retrospective, because it is back with him.
+pressed Finish on the retrospective's newest revision, which they cannot do
+while a record is undecided. A round they finished and the AI answered with a
+new revision is not finished any more — `wait --any` steps over that event and
+`list --finished` does not list the retrospective, because it is back with
+them.
 
 **Only a finish after the command started counts**, and that is why the two are
 separate commands rather than one flag. `wait --retro` starts from the revision
@@ -447,19 +447,19 @@ one row plus `retrospective` for `get`:
   lifecycle { state, resolvedAt, ref, refs, claimedAt } }
 ```
 
-`ownerWords` is the human's reviewer note first and then his comments on the
-record, oldest first — his instructions in one field, so an agent can act on a
-queue row without opening the review page. **`humanWords` is a different thing:**
-the record's own quotes, what he said in the session the record was drafted
-from, copied off the record beside its `workaround` (`"none"` when there was
-none) — so `[]` under `humanWords` means he said nothing quotable, and `[]` under
-`ownerWords` means only that he wrote no note and no comment. `context` is `null`
-on a quote that has none, and `diagnosticData` is `null` on a record filed before
-the field existed. `record get` prints both in its text form, under their own
-names; the one line per record that `queue` and `list --all` print carries no
-narrative at all. `lifecycle.state` is the **lane
-state**: the verdict, the lifecycle and the claim folded into one word
-(`lifecycle.md`). `record relations <#globalId>` prints
+`ownerWords` is the human's reviewer note first and then their comments on the
+record, oldest first — their instructions in one field, so an agent can act on
+a queue row without opening the review page. **`humanWords` is a different
+thing:** the record's own quotes, what they said in the session the record was
+drafted from, copied off the record beside its `workaround` (`"none"` when there
+was none) — so `[]` under `humanWords` means they said nothing quotable, and `[]`
+under `ownerWords` means only that they wrote no note and no comment. `context`
+is `null` on a quote that has none, and `diagnosticData` is `null` on a record
+filed before the field existed. `record get` prints both in its text form, under
+their own names; the one line per record that `queue` and `list --all` print
+carries no narrative at all. `lifecycle.state` is the **lane state**: the
+verdict, the lifecycle and the claim folded into one word (`lifecycle.md`).
+`record relations <#globalId>` prints
 `[{ recordId, retroId, retro, slug, title, kind, direction, state, resolvedAt, ref, refs }]`,
 where those last four are the **far** record's — and a far record a later draft
 withdrew is still listed, with its rid for a title and `null` for its state,
@@ -481,10 +481,9 @@ shape, same order, same answer.
 **`relate` and `unrelate` are addressed by `#globalId`, and that is the whole
 shape of them**: both actors can relate records, each relation carries
 how-they-relate words, and the relation reads from both sides, so that the AI
-can find past records and build holistic solutions. A
-relation names **two** records and `(retro, rid)` is the address of one, so the
-two arguments are the numbers `record list` puts first — list, then relate the
-numbers. `--retro` and `--session` are **refused** on both: a global number needs
+can find past records and build holistic solutions. A relation names **two**
+records and `(retro, rid)` is the address of one, so the two arguments are the
+numbers `record list` puts first — list, then relate the numbers. `--retro` and `--session` are **refused** on both: a global number needs
 no retrospective to be read in, and accepting one would suggest a relation lives
 inside a retrospective when the point is that it crosses them.
 
