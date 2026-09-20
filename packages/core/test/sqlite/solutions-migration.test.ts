@@ -46,7 +46,7 @@ function seededDatabaseBeforeTheMigration(): Database {
     INSERT INTO decisions (id, retro_id, rid, version, state, severity, solution_level,
                            involvement, reviewer_note, revision_n, content_hash, decided_at)
       VALUES (1, 1, 'r-falsifiability-paid', 1, 'approved', 5, '1', 'autonomous',
-              'Your approval makes it law.', 1,
+              'Agreed — make this the standing rule.', 1,
               '7922f606db18f6be6b3b4bc2ba5afe8c2cd30201736621fe5537002e18d0d03b',
               '2026-08-23T20:54:00.000Z'),
              (2, 1, 'r-remove-hold', 1, 'approved', 2, 'upstream', 'pull-request',
@@ -107,7 +107,8 @@ describe('solutions_anchor_and_selection', () => {
     expect(rowsOf(db, 'comments')).toEqual(commentsBefore)
     expect(rowsOf(db, 'thread_resolutions')).toEqual(resolutionsBefore)
     // Decisions gain the one new column and nothing else moves — including the
-    // `upstream` level KC-0021 cut, which no write path could put back.
+    // `upstream` level that later dropped out of the enum, which no write path
+    // could put back.
     expect(rowsOf(db, 'decisions')).toEqual([
       {
         id: 1,
@@ -119,7 +120,7 @@ describe('solutions_anchor_and_selection', () => {
         solution_level: '1',
         selected_solution: null,
         involvement: 'autonomous',
-        reviewer_note: 'Your approval makes it law.',
+        reviewer_note: 'Agreed — make this the standing rule.',
         revision_n: 1,
         content_hash: '7922f606db18f6be6b3b4bc2ba5afe8c2cd30201736621fe5537002e18d0d03b',
         decided_at: '2026-08-23T20:54:00.000Z',
@@ -152,8 +153,9 @@ describe('solutions_anchor_and_selection', () => {
       `INSERT INTO comment_threads (retro_id, rid, section, opened_at)
        VALUES (1, 'r-new', 'solutions', '2026-08-24T09:00:00.000Z')`,
     )
-    // The two the owner's store already anchors threads to: still writable, so a
-    // rebuild that reinserts them cannot fail half-way, and still readable.
+    // The two sections a production store already anchors threads to: still
+    // writable, so a rebuild that reinserts them cannot fail half-way, and
+    // still readable.
     db.run(
       `INSERT INTO comment_threads (retro_id, rid, section, opened_at)
        VALUES (1, 'r-old', 'direction', '2026-08-24T09:01:00.000Z'),

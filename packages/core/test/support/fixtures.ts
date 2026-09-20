@@ -105,12 +105,11 @@ export function someSolutions(overrides: readonly Partial<Solution>[] = []): Sol
  * A record in the shape every revision before the solutions change was written
  * in — `agreedDirection` + `footprint`, no `solutions`.
  *
- * It is **not** a builder over `aRecordInput`: nothing may author this shape any
- * more (the write path takes solutions only), so the only way one exists is as a
- * JSON blob an earlier binary wrote. This is that blob, and its fields are
- * copied verbatim from record 11 of the owner's retro-1 export
- * (`~/.retroloop/retros/_legacy-exports/retro-1.json`, `r-falsifiability-paid`) so the
- * upgrade is tested against a document that actually exists rather than against
+ * It is **not** a builder over `aRecordInput`: nothing may author this shape
+ * any more (the write path takes solutions only), so the only way one exists is
+ * as a JSON blob an earlier binary wrote. This is that blob, modeled on a
+ * record of a legacy export (`r-falsifiability-paid`) so the upgrade is tested
+ * against a document shaped like one that actually existed rather than against
  * a shape a test invented.
  *
  * `defaults` is not in the export — the export carries the human's decided
@@ -125,7 +124,7 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
     title: 'Plant-and-catch found two real bugs that every written test had passed',
     type: 'feature',
     problem:
-      "**Filed as a practice that paid, not a friction.** The falsifiability discipline — every worker plants defects and must watch its own suites catch them before reporting — found two real bugs in finished, fully-green work: item 5's frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and item 7's unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: it lived in spawn specs, not in any doc.",
+      '**Filed as a practice that paid, not a friction.** The falsifiability discipline — deliberately planting defects and watching the suites catch them before reporting a change finished — found two real bugs in finished, fully-green work: a frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and an unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: an unwritten habit, not a documented rule.',
     humanWords: [],
     rootCause: {
       whatHappened:
@@ -134,7 +133,7 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
         'Why did written tests miss them? Both bugs lived in paths the tests never exercised — one masked by an optimization, one dead code.',
         'Why did plants find them? A plant tests the TESTS: it asks whether the net can catch, not whether the fish already in it are dead.',
       ],
-      root: 'Example suites verify anticipated behavior; only falsification probes verify the verification itself — and that step existed only as per-spawn instruction.',
+      root: 'Example suites verify anticipated behavior; only falsification probes verify the verification itself — and that step was never written down as a rule.',
     },
     // No diagnostic data, because no record filed then carried any — the same
     // reason this blob has no `solutions`. Written out rather than left off, so
@@ -142,9 +141,8 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
     diagnosticData: undefined,
     workaround: 'none',
     agreedDirection:
-      '(AI-suggested) Promote plant-and-catch from spawn-spec habit to standing rule: a short paragraph in testing.md §Operational rules (every worker report includes planted defects and what caught them; a check never observed failing is an unverified claim). Your approval makes it law.',
-    footprint:
-      'docs/design/testing.md (§Operational rules) · docs/EXECUTION.md (worker table note)',
+      '(AI-suggested) Promote plant-and-catch from an unwritten habit to a standing rule: a short paragraph in testing.md §Operational rules (every report of finished work includes planted defects and what caught them; a check never observed failing is an unverified claim).',
+    footprint: 'docs/design/testing.md (§Operational rules)',
     requester: 'ai',
     impacts: 'human',
     defaults: { severity: 5, solutionLevel: 1, involvement: 'autonomous' },

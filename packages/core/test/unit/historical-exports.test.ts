@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { loadExportSchema, validate } from '../support/json-schema'
 
 /**
- * The documents the contract exists for: every retrospective the owner has
+ * The documents the contract exists for: every retrospective this machine has
  * actually exported, validated against the schema as it stands now.
  *
  * The point of `export.v1` being `additionalProperties: false` is that a key
@@ -17,7 +17,7 @@ import { loadExportSchema, validate } from '../support/json-schema'
  * built for itself.
  *
  * **Read-only, and skipped rather than failed when the directory is not there.**
- * These are the owner's files and no test writes to them; a machine that has
+ * These are real exports on the machine and no test writes to them; one that has
  * never run Retro has none, and a suite that failed on that would be asserting
  * something about the machine rather than about the contract. The count is
  * asserted where they exist, so an empty directory cannot pass as five.

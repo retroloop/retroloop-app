@@ -75,9 +75,8 @@ describe('decisions', () => {
   })
 
   /**
-   * The owner's design, on the write side: *"a tickmark that indicates what the
-   * human actually selected"*, and *"some indication like a `*` that shows what
-   * is solution recommended by the AI"*. The selection is the human's, the
+   * The write side marks which solution the human actually selected, and
+   * separately which one the AI recommends. The selection is the human's, the
    * recommendation is the AI's, and the fallback between them is the shape the
    * three dials already had — a reviewer who accepts the recommendation says so
    * by leaving it alone and pressing a verdict.
@@ -120,10 +119,10 @@ describe('decisions', () => {
     })
 
     /**
-     * Two ways to set one value is two answers that can disagree, so the record's
-     * shape decides which field is the one that speaks. Refusing loudly rather
-     * than ignoring the other is the same rule as everywhere else: nothing is
-     * inferred from what the human did not mean (KC-0010).
+     * Two ways to set one value is two answers that can disagree, so the
+     * record's shape decides which field is the one that speaks. Refusing
+     * loudly rather than ignoring the other is the same rule as everywhere
+     * else: nothing is inferred from what the human did not mean.
      */
     test('refuses a solution level on a record whose level comes from the pick', async () => {
       const refused = decide({ solutionLevel: 4 })
@@ -166,8 +165,8 @@ describe('decisions', () => {
   })
 
   /**
-   * KC-0021, the owner: *"cut that list of solutions to only L1 to L5"*. The cut
-   * is enforced where a decision is written, not where one is read — a value the
+   * The list of solution levels is cut to only L1 through L5. The cut is
+   * enforced where a decision is written, not where one is read — a value the
    * UI cannot offer must not be reachable by any other caller either, and the
    * refusal has to name the field so a CLI user sees what was wrong.
    */
@@ -334,10 +333,9 @@ describe('decisions', () => {
   })
 
   /**
-   * The third verdict (retro 4 `r-verdict-revise`), and the undo the owner asked
-   * for in the same breath: *"either I'm going to approve either I'm going to
-   * decline or either I'm going to request a revision… if I click it again it
-   * should undo it."*
+   * The third verdict (`r-verdict-revise`), and its undo: approve, decline and
+   * request-a-revision are each one press, and pressing the same one again
+   * undoes it rather than leaving it pressed.
    */
   describe('revise, and undoing a verdict', () => {
     test('moves the record out of pending like the other two', async () => {
@@ -396,9 +394,9 @@ describe('decisions', () => {
   })
 
   test('binds to the revision the reviewer was looking at, not to the newest one', async () => {
-    // The rhythm the gate enforces (#113 `r-revision-sneaks-past-review`): the
-    // human marks the record for a rewrite and finishes the round, and the AI's
-    // next draft answers it. He can still revisit a verdict afterwards
+    // The rhythm the gate enforces (`r-revision-sneaks-past-review`): the human
+    // marks the record for a rewrite and finishes the round, and the AI's next
+    // draft answers it. He can still revisit a verdict afterwards
     // (`r-verdict-revise`), and that is what this test is about — a verdict
     // recorded against revision 1 while revision 2 is the newest.
     await harness.decide(retroId, rid, 'revise')
@@ -421,10 +419,10 @@ describe('decisions', () => {
   })
 
   /**
-   * Retro 3 `r-hold-semantics`, the owner: *"Hold is not something that should
-   * go in review status. It is not a review status of a retro item."* The
-   * narrowing is at the write path, the same shape KC-0021 gave solution level —
-   * so a store that already holds one keeps it, and nothing can make another.
+   * `r-hold-semantics`: hold is not a review status a retro item can be in. The
+   * narrowing is at the write path, the same shape solution level was narrowed
+   * to — so a store that already holds one keeps it, and nothing can make
+   * another.
    */
   describe('hold is no longer a verdict', () => {
     test('refuses `hold` as a state', async () => {

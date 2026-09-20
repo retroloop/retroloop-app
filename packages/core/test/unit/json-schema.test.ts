@@ -95,7 +95,7 @@ describe('the schema validator', () => {
 })
 
 /**
- * Retro 3 `r-validator-silent-keywords`.
+ * `r-validator-silent-keywords`.
  *
  * Every test above proves the validator enforces a rule it knows. None of them
  * could see the other failure mode: a keyword it has *never heard of* is skipped
@@ -137,7 +137,7 @@ describe('the validator’s keyword coverage', () => {
   })
 
   /**
-   * The shipped contract, walked. When the owner adds a keyword to
+   * The shipped contract, walked. When a keyword is added to
    * `export.v1.schema.json`, this fails naming it — and the answer is either to
    * implement it in `validate` or to record it in `IGNORED_KEYWORDS` with the
    * reason it is annotation-only. What it may not be is nothing.

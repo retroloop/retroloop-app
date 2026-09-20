@@ -8,14 +8,14 @@ import type { StoreFactory } from './store.contract'
 /**
  * `records.byId`, against every adapter (testing.md suite 1).
  *
- * Here for the reason `list-all-records.contract.ts` and `list-retros.contract.ts`
- * are: it is a use case rather than a repository, and it is a **fold over six
- * reads** — a number resolved backwards into the pair that addresses a record,
- * an ordinal counted within a session, the verdict in effect against the latest
- * draft, the lifecycle in force, and a timeline stitched out of three tables
- * that each keep their own clock. Proving that against the memory store alone
- * would leave the one thing worth proving unproven: that the store the owner
- * runs answers identically.
+ * Here for the reason `list-all-records.contract.ts` and
+ * `list-retros.contract.ts` are: it is a use case rather than a repository, and
+ * it is a **fold over six reads** — a number resolved backwards into the pair
+ * that addresses a record, an ordinal counted within a session, the verdict in
+ * effect against the latest draft, the lifecycle in force, and a timeline
+ * stitched out of three tables that each keep their own clock. Proving that
+ * against the memory store alone would leave the one thing worth proving
+ * unproven: that the store used in production answers identically.
  *
  * The fixture is deliberately awkward — **two retrospectives that mint the same
  * rid**, a redraft that sends a decided record back to pending, and a record
@@ -69,7 +69,7 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       expect(answer.retroNumber).toBe(1)
       expect(answer.session).toEqual({
         id: sessionId,
-        cwd: '/Users/haider/Developer/retro',
+        cwd: '/Users/sample/Developer/retro',
         startedAt: harness.clock.iso(),
       })
       expect(answer.record.record.rid).toBe('r-stale-lock')
@@ -77,16 +77,16 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       expect(answer.record.globalId).toBe(1)
       expect(answer.record.revisionN).toBe(1)
       // Nobody has decided it and nobody has touched it: both axes read their
-      // untouched position, and neither is a row anybody wrote (KC-0010).
+      // untouched position, and neither is a row anybody wrote.
       expect(answer.record.decision.state).toBe('pending')
       expect(answer.lifecycle.status).toBe('open')
     })
 
     /**
      * **The whole reason a global number exists.** A rid is minted per
-     * retrospective (A5), so `r-stale-lock` names two different records here —
-     * and a resolver that matched on the rid, or on a row's position, would open
-     * one of them under the other's number.
+     * retrospective, so `r-stale-lock` names two different records here — and a
+     * resolver that matched on the rid, or on a row's position, would open one of
+     * them under the other's number.
      */
     test('two retrospectives minting the same rid are two records with two numbers', async () => {
       const sessionId = await startSession('uuid-1')
@@ -105,8 +105,8 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       expect(second.retroId).toBe(there)
       expect(second.record.record.title).toBe('The lock, again')
       expect(second.record.globalId).not.toBe(first.record.globalId)
-      // The second retrospective of the same session, which is what the identity
-      // line prints — and it is a position rather than an id (KC-0011).
+      // The second retrospective of the same session, which is what the
+      // identity line prints — and it is a position rather than an id.
       expect(first.retroNumber).toBe(1)
       expect(second.retroNumber).toBe(2)
     })
@@ -204,7 +204,7 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       await harness.decide(retroId, 'r-record-1', 'approved')
 
       // The record is already approved, so this writes no verdict of its own —
-      // it is the Finish the next draft has to answer (#113).
+      // it is the Finish the next draft has to answer.
       await harness.finishRound(retroId)
       harness.clock.advance(60_000)
       const redraftedAt = harness.clock.iso()
@@ -217,7 +217,7 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
       const answer = await byId(await numberOf(retroId, 'r-record-1'))
 
       // The redraft is not an event on this list: what changed between two
-      // drafts is the record's diff, which is a page of its own (KC-0012).
+      // drafts is the record's diff, which is a page of its own.
       expect(redraftedAt).not.toBe(declinedAt)
       expect(answer.timeline).toEqual([
         { kind: 'created', at: filedAt, revisionN: 1, actor: 'ai' },
@@ -244,8 +244,8 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
 
     /**
      * Every lifecycle act, with what it cited and who took it — the half of the
-     * timeline the owner asked for by name (*"events like status changes"*), and
-     * the reason `record_lifecycle` was append-only from the first line.
+     * timeline that names events like status changes, and the reason
+     * `record_lifecycle` was append-only from the first line.
      *
      * Both actors appear, because this is the one table both of them write: the
      * AI resolves what it fixed and the human takes it back.

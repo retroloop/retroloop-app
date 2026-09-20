@@ -23,11 +23,11 @@ afterAll(removeTempStages)
  * that was sent. `notes` is protected for both authors, not only the human's rows —
  * the mutability matrix makes AI notes append-only too.
  *
- * `record_lifecycle` (session 8) is the table that shows the two groups were
- * never really about authorship: **both** actors write it, and it is as
- * append-only as the rest. `record_relations` (session 11) is the second, and it
- * makes the same point from further away — it is keyed on global ids rather than
- * on a retrospective's record, and it is protected identically.
+ * `record_lifecycle` is the table that shows the two groups were never really
+ * about authorship: **both** actors write it, and it is as append-only as the
+ * rest. `record_relations` is the second, and it makes the same point from
+ * further away — it is keyed on global ids rather than on a retrospective's
+ * record, and it is protected identically.
  */
 describe('append-only triggers', () => {
   let store: SqliteStore
@@ -253,9 +253,9 @@ describe('append-only triggers', () => {
     /**
      * **The one on this list the AI also writes**, and it is protected exactly
      * like the rest. The append-only guarantee is about immutability, not about
-     * authorship: a record marked resolved with a commit sha is a claim somebody
-     * made at a moment, and reopening it is a new version rather than a rewrite
-     * of the claim (the owner's lifecycle ask, session 8).
+     * authorship: a record marked resolved with a commit sha is a claim
+     * somebody made at a moment, and reopening it is a new version rather than
+     * a rewrite of the claim.
      */
     { table: 'record_lifecycle', column: 'status', value: 'reopened' },
     /**
@@ -268,12 +268,12 @@ describe('append-only triggers', () => {
     { table: 'record_labels', column: 'applied', value: 0 },
     { table: 'record_attribute_values', column: 'value', value: 'rewritten' },
     /**
-     * **The second table on this list both actors write** (session 11), and it is
-     * protected on the same terms the lifecycle above is: what somebody said two
-     * records have to do with each other is a claim made at a moment, and taking
-     * the relation off is a new version carrying the words of the one it
-     * supersedes — never a rewrite of the claim, and never a delete of the row
-     * that made it.
+     * **The second table on this list both actors write**, and it is protected
+     * on the same terms the lifecycle above is: what somebody said two records
+     * have to do with each other is a claim made at a moment, and taking the
+     * relation off is a new version carrying the words of the one it supersedes
+     * — never a rewrite of the claim, and never a delete of the row that made
+     * it.
      */
     { table: 'record_relations', column: 'applied', value: 0 },
     /**
@@ -286,11 +286,11 @@ describe('append-only triggers', () => {
      */
     { table: 'record_claims', column: 'claimed', value: 0 },
     /**
-     * The permission switch, and this is the row the guarantee is made of.
-     * OWNER RULING 2 asks that *"the user can be certain that the AI cannot mess
-     * around"* — an AI that could rewrite this row could grant itself the
-     * ability to write configs and leave no trace, so the one connection this
-     * test uses is exactly the one that guarantee is aimed at.
+     * The permission switch, and this is the row the guarantee is made of. The
+     * user needs to be certain the AI cannot touch the configs — an AI that
+     * could rewrite this row could grant itself the ability to write configs
+     * and leave no trace, so the one connection this test uses is exactly the
+     * one that guarantee is aimed at.
      */
     { table: 'settings', column: 'value', value: 'off' },
     { table: 'revisions', column: 'records', value: '[]' },

@@ -6,7 +6,7 @@ import { createHarness } from '../support/harness'
 
 describe('createApp', () => {
   /**
-   * The use-case set, named rather than counted (retro 3 `r-fixture-tripwires`).
+   * The use-case set, named rather than counted (`r-fixture-tripwires`).
    *
    * A count is a tripwire that goes off without saying what tripped it: "expected
    * 29, got 30" is the same message whichever use case arrived, and the reader has
@@ -33,16 +33,15 @@ describe('createApp', () => {
     expect(useCases.map(([name]) => name)).toEqual([
       // The attribute vocabulary and the values records carry from it. Five
       // acts and a read, exactly as labels have — the two primitives are pure
-      // and independent, so neither list is folded into the other
-      // (`labels-attributes-external-lifecycle.md`, OWNER RULING).
+      // and independent, so neither list is folded into the other.
       'attributes.define',
       'attributes.list',
       'attributes.rename',
       'attributes.retire',
       'attributes.set',
-      // Retire's inverse, and the two of them arrived one session apart:
-      // retro-11 `r-retire-burns-a-word` made a mis-press a two-press round
-      // trip rather than a permanently burned word.
+      // Retire's inverse, and the two of them arrived close together:
+      // `r-retire-burns-a-word` made a mis-press a two-press round trip rather
+      // than a permanently burned word.
       'attributes.unretire',
       'decisions.record',
       'events.list',
@@ -80,10 +79,9 @@ describe('createApp', () => {
       'records.list',
       'records.listAll',
       // Two records said to belong together, in the words of whoever relates
-      // them — or the relation taken off (the owner's session-11 ask). One
-      // entry rather than two, because relating and un-relating are on and off
-      // and the boolean widened the input rather than the surface
-      // (`relate-records.use-case.ts`).
+      // them — or the relation taken off. One entry rather than two, because
+      // relating and un-relating are on and off and the boolean widened the
+      // input rather than the surface (`relate-records.use-case.ts`).
       'records.relate',
       'records.setLifecycle',
       'retros.list',
@@ -101,7 +99,7 @@ describe('createApp', () => {
       'sessions.create',
       'sessions.get',
       'sessions.list',
-      // OWNER RULING 2's toggle. `get` is open to both actors — reading a
+      // The AI-config-write toggle. `get` is open to both actors — reading a
       // permission is not exercising it — and `setAiConfigWrite` refuses the AI
       // forever, whatever the switch currently says.
       'settings.get',
@@ -167,7 +165,7 @@ describe('the core loop', () => {
 
     // The human reviews: approves one, and comments on the other. A comment is
     // the whole of their side of this — the ask and the remark travel together
-    // in one thread since retro 4 `r-remove-requests`.
+    // in one thread (`r-remove-requests`).
     await harness.decide(first.retroId, 'r-stale-lock', 'approved')
     await harness.app.threads.addComment.execute({
       actor: 'human',
@@ -176,9 +174,9 @@ describe('the core loop', () => {
       text: 'This understates the cost. Say how long the suite actually takes.',
     })
     // The one button needs every record decided, so the record he wants
-    // rewritten gets the verdict that says so (retro 4 `r-verdict-revise`) —
-    // and then he presses Finish, which is the only terminal action on the page
-    // (retro 4 `r-one-finish-button`).
+    // rewritten gets the verdict that says so (`r-verdict-revise`) — and then
+    // he presses Finish, which is the only terminal action on the page
+    // (`r-one-finish-button`).
     await harness.decide(first.retroId, 'r-slow-tests', 'revise')
     await harness.app.review.finish.execute({ actor: 'human', retro: { retroId: first.retroId } })
 

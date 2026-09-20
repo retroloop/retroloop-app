@@ -6,10 +6,9 @@ import type { Actor } from '#domain/models/actor.model'
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * `RelateRecordsUseCase` — the owner's session-11 ask, verbatim: *"both actors
- * can relate records, each relation carries how-they-relate words, and the
- * relation reads from both sides, so that AI can easily find past records and
- * build holistic solutions."*
+ * `RelateRecordsUseCase` — both actors can relate records, each relation
+ * carries how-they-relate words, and the relation reads from both sides, so
+ * that the AI can easily find past records and build holistic solutions.
  *
  * Four claims run through the whole file, and each has a test that fails without
  * it: **both actors** write, the **words** are part of the act, the relation
@@ -86,10 +85,11 @@ describe('record relations', () => {
     })
 
     /**
-     * **The first clause of the ask.** Every other append-only table in the store
-     * is single-writer; this one and `record_lifecycle` are not, and unlike the
-     * lifecycle there is no per-act exception here — both actors may take both
-     * acts, because he gave them both in one sentence.
+     * **The first clause of the rule.** Every other append-only table in the
+     * store is single-writer; this one and `record_lifecycle` are not, and
+     * unlike the lifecycle there is no per-act exception here — both actors may
+     * take both acts, because relating and un-relating are one capability
+     * rather than two.
      */
     test('both actors may relate, and the row records which', async () => {
       const byAi = await relate({ actor: 'ai', how: 'supersedes' })
@@ -225,7 +225,7 @@ describe('record relations', () => {
       await expect(relate({ fromId: ids[1], toId: ids[0] })).rejects.toBeInstanceOf(NotFoundError)
     })
 
-    /** *"Each relation carries how-they-relate words"* — required, not offered. */
+    /** Each relation carries how-they-relate words — required, not offered. */
     test('a relation with no words, or with empty ones', async () => {
       await expect(
         harness.app.records.relate.execute({
@@ -303,9 +303,10 @@ describe('record relations', () => {
   })
 
   /**
-   * The AI's read-back channel — #103's lesson one table over. A relation is
-   * written through the CLI and checked by listing the records, so a listing
-   * silent about relations reads exactly like a store that refused every write.
+   * The AI's read-back channel — `r-lifecycle-projection-gap`'s lesson one
+   * table over. A relation is written through the CLI and checked by listing
+   * the records, so a listing silent about relations reads exactly like a store
+   * that refused every write.
    */
   describe('the revision listing carries them', () => {
     test('with the far record’s address rather than its title', async () => {

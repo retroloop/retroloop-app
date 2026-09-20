@@ -9,29 +9,30 @@ import { aLegacyRecord } from '../support/fixtures'
  * keeps its decision.
  *
  * The whole of that promise reduces to one number. A decision binds to a
- * canonical-JSON hash of the record's narrative (D2), and a record whose hash no
- * longer matches goes back to `pending` — so if adding `solutions` to
- * `recordContent()` changed what a legacy record hashes to, every decided record
- * in the owner's five retrospectives would have silently un-decided itself on
- * the first read after the upgrade.
+ * canonical-JSON hash of the record's narrative (D2), and a record whose hash
+ * no longer matches goes back to `pending` — so if adding `solutions` to
+ * `recordContent()` changed what a legacy record hashes to, every decided
+ * record in production would have silently un-decided itself on the first read
+ * after the upgrade.
  *
- * `LEGACY_CONTENT_HASH` was computed against the code as it stood **before**
- * the change, over the fixture copied verbatim from retro-1's export. It is a
- * constant here rather than a comparison against a rebuilt record on purpose:
- * a test that hashes twice with the same code passes however wrong that code
- * is, and this one has to fail if the bytes move.
+ * `LEGACY_CONTENT_HASH` is pinned against the encoding in force, over the
+ * `aLegacyRecord()` fixture below. It is a constant here rather than a
+ * comparison against a rebuilt record on purpose: a test that hashes twice with
+ * the same code passes however wrong that code is, and this one has to fail if
+ * `recordContent()` changes what a legacy record hashes to.
  */
-const LEGACY_CONTENT_HASH = '7922f606db18f6be6b3b4bc2ba5afe8c2cd30201736621fe5537002e18d0d03b'
+const LEGACY_CONTENT_HASH = 'c6530e1b49f7fec3e0936a3e98b68fbfdb90c01b0305dcdc01570a3553861457'
 
 describe('a record filed before solutions existed', () => {
-  test('hashes to the byte-identical content hash it always did', () => {
+  test('hashes to its pinned content hash', () => {
     expect(hashRecordContent(aLegacyRecord())).toBe(LEGACY_CONTENT_HASH)
   })
 
   test('keeps the decision that was made against it', () => {
     const record = aLegacyRecord()
-    // As the owner's store holds it: approved on revision 1, bound to the hash
-    // above, and read back on a later revision by a binary that knows solutions.
+    // As a production store holds it: approved on revision 1, bound to the hash
+    // above, and read back on a later revision by a binary that knows
+    // solutions.
     const decision: Decision = {
       id: 1,
       retroId: 1,
@@ -62,10 +63,10 @@ describe('a record filed before solutions existed', () => {
    * back unchanged — the key is not on the blob, `canonicalJson` never sees it,
    * and the hash the decision is bound to is the constant above.
    *
-   * The second half is the redraft: the owner re-files a record he already
-   * decided, this time with the evidence the new schema requires. That must not
-   * move the hash, or every carried-over verdict in his five retrospectives would
-   * go back to pending on the first draft written under the new contract.
+   * The second half is the redraft: a record already decided gets re-filed,
+   * this time with the evidence the new schema requires. That must not move the
+   * hash, or every carried-over verdict in production would go back to pending
+   * on the first draft written under the new contract.
    */
   test('carries no diagnostic data, and gains none without moving the hash', () => {
     expect(aLegacyRecord().diagnosticData).toBeUndefined()

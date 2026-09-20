@@ -20,7 +20,7 @@ const MIGRATION = MIGRATIONS[INDEX]
  * lose them — or lose the triggers that protect them, because `DROP TABLE` takes
  * its triggers with it.
  *
- * The seeded rows are the shape the owner's store actually holds: entries the
+ * The seeded rows are the shape a production store actually holds: entries the
  * AI wrote from the CLI while working a fix queue, with references attached.
  */
 function seededDatabaseBeforeTheMigration(): Database {

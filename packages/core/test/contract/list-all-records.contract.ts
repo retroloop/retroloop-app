@@ -9,13 +9,13 @@ import type { StoreFactory } from './store.contract'
 /**
  * `records.listAll`, against every adapter (testing.md suite 1).
  *
- * Here for the reason `list-retros.contract.ts` is: it is a use case rather than
- * a repository, and it is a **fold over five reads** — an ordinal counted within
- * a session, a verdict that may or may not still bind, a proposed level that
- * depends on which of two shapes the record was filed in, and a lifecycle
+ * Here for the reason `list-retros.contract.ts` is: it is a use case rather
+ * than a repository, and it is a **fold over five reads** — an ordinal counted
+ * within a session, a verdict that may or may not still bind, a proposed level
+ * that depends on which of two shapes the record was filed in, and a lifecycle
  * derived from the entry in force. Proving that against the memory store alone
- * would leave the one thing worth proving unproven: that the store the owner
- * runs answers identically.
+ * would leave the one thing worth proving unproven: that the store used in
+ * production answers identically.
  *
  * The fixture is deliberately awkward — **two sessions, three retrospectives,
  * both record shapes, and every lifecycle state** — because almost every bug
@@ -65,7 +65,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     /**
      * Decides every record and runs both halves of the close, so the session's
      * next revision starts a **new** retrospective rather than joining this one
-     * — a session has exactly one non-finished retrospective (KC-0011).
+     * — a session has exactly one non-finished retrospective.
      */
     const finishRetro = async (retroId: number, rids: readonly string[]): Promise<void> => {
       for (const rid of rids) await harness.decide(retroId, rid, 'approved')
@@ -118,21 +118,21 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /**
      * Newest first is retro id descending; the ordinal is the retrospective's
-     * position **within its session** (KC-0011), so the newest row here is "#1"
-     * of the second session while an older one is "#2" of the first — exactly
-     * the distinction the identity line exists to draw.
+     * position **within its session**, so the newest row here is "#1" of the
+     * second session while an older one is "#2" of the first — exactly the
+     * distinction the identity line exists to draw.
      *
      * Within a retrospective the order is `num` ascending: the order the
      * reviewer read them in. Both directions in one assertion, because getting
      * one right and the other backwards is the likeliest way to be wrong.
      */
     test('lists every record of every retrospective, newest retro first, records in reading order', async () => {
-      const alpha = await startSession('uuid-alpha', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-alpha', '/Users/sample/Developer/retro')
       const first = await fileRevision(alpha, [{}, {}])
       await finishRetro(first, ['r-record-1', 'r-record-2'])
       const second = await fileRevision(alpha, [{}, {}, {}])
 
-      const beta = await startSession('uuid-beta', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-beta', '/Users/sample/Developer/hangar')
       const elsewhere = await fileRevision(beta, [{}])
 
       const rows = await list()
@@ -148,15 +148,15 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
       expect(rows.map((row) => row.retroNumber)).toEqual([1, 2, 2, 2, 1, 1])
       expect(rows.map((row) => row.session.id)).toEqual([beta, alpha, alpha, alpha, alpha, alpha])
       expect(rows.map((row) => row.session.cwd)).toEqual([
-        '/Users/haider/Developer/harbor',
-        ...Array<string>(5).fill('/Users/haider/Developer/retro'),
+        '/Users/sample/Developer/hangar',
+        ...Array<string>(5).fill('/Users/sample/Developer/retro'),
       ])
     })
 
     /**
-     * The owner's ask, on the page it was asked about: *"in each retro record ids
-     * start from #1 which is weird … obviously I will like the global sequence
-     * rather than this retro prefix."*
+     * Numbering records per retrospective would have every retrospective's
+     * first record start over at #1, which reads as duplicate ids across the
+     * listing; a single global sequence avoids that.
      *
      * Three retrospectives across two sessions, every one of them holding a
      * record whose `num` is 1 — and one sequence over all of them. The assertion
@@ -166,13 +166,13 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * `[6, 1]` and `[7, 2]` are rows whose two numbers **disagree**.
      */
     test('numbers every record of every retrospective in one sequence', async () => {
-      const alpha = await startSession('uuid-seq-a', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-seq-a', '/Users/sample/Developer/retro')
       const first = await fileRevision(alpha, [{}, {}, {}])
       await finishRetro(first, ['r-record-1', 'r-record-2', 'r-record-3'])
       const second = await fileRevision(alpha, [{}, {}])
       await finishRetro(second, ['r-record-1', 'r-record-2'])
 
-      const beta = await startSession('uuid-seq-b', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-seq-b', '/Users/sample/Developer/hangar')
       const elsewhere = await fileRevision(beta, [{}, {}])
 
       // Newest retro first, so the sequence reads downwards rather than upwards.
@@ -204,13 +204,13 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * shape where a page that printed `num` cannot pass by accident.
      */
     test('mints a record filed later at the end of the sequence, not beside its neighbours', async () => {
-      const alpha = await startSession('uuid-later-a', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-later-a', '/Users/sample/Developer/retro')
       const here = await fileRevision(alpha, [{}, {}])
-      const beta = await startSession('uuid-later-b', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-later-b', '/Users/sample/Developer/hangar')
       await fileRevision(beta, [{}])
 
       // The AI redrafts the first retrospective with one more record, once the
-      // human has put the round down (#113 `r-revision-sneaks-past-review`).
+      // human has put the round down.
       await harness.finishRound(here)
       await fileRevision(alpha, [{}, {}, {}])
 
@@ -225,14 +225,14 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     })
 
     /**
-     * The rid is minted per retrospective (A5), so the same one names two
-     * records — and the number this page shows is what tells them apart out
-     * loud. A sequence keyed on the rid alone would hand both the same one.
+     * The rid is minted per retrospective, so the same one names two records —
+     * and the number this page shows is what tells them apart out loud. A
+     * sequence keyed on the rid alone would hand both the same one.
      */
     test('gives two retrospectives’ records of the same rid different numbers', async () => {
-      const alpha = await startSession('uuid-dup-a', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-dup-a', '/Users/sample/Developer/retro')
       const here = await fileRevision(alpha, [{ rid: 'r-flaky-test' }])
-      const beta = await startSession('uuid-dup-b', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-dup-b', '/Users/sample/Developer/hangar')
       const there = await fileRevision(beta, [{ rid: 'r-flaky-test' }])
 
       expect((await list()).map((row) => [row.retroId, row.rid, row.num, row.globalId])).toEqual([
@@ -243,7 +243,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /** The whole row, once, so an added field has to be written down here before it ships. */
     test('carries the identity line, the record and both axes of state', async () => {
-      const sessionId = await startSession('uuid-whole', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-whole', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       await resolve(retroId, 'r-record-1', ['a1b2c3d'])
       // Labelled as well as resolved, so the **populated** half of `labels` is
@@ -258,7 +258,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
           retroNumber: 1,
           session: {
             id: sessionId,
-            cwd: '/Users/haider/Developer/retro',
+            cwd: '/Users/sample/Developer/retro',
             startedAt: harness.clock.iso(),
           },
           rid: 'r-record-1',
@@ -301,14 +301,14 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /**
      * **A rid is minted per retrospective, so a label on one is not a label on
-     * the other** (A5). Both retrospectives here hold an `r-flaky-test`, and
-     * only one of them is labelled — a listing keyed on the rid alone puts the
-     * tag on both rows, which is the shape of bug this whole fixture exists for.
+     * the other**. Both retrospectives here hold an `r-flaky-test`, and only one
+     * of them is labelled — a listing keyed on the rid alone puts the tag on both
+     * rows, which is the shape of bug this whole fixture exists for.
      */
     test('gives a label to the record that wears it and not to its namesake', async () => {
-      const alpha = await startSession('uuid-label-a', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-label-a', '/Users/sample/Developer/retro')
       const here = await fileRevision(alpha, [{ rid: 'r-flaky-test' }])
-      const beta = await startSession('uuid-label-b', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-label-b', '/Users/sample/Developer/hangar')
       const there = await fileRevision(beta, [{ rid: 'r-flaky-test' }])
 
       await label(there, 'r-flaky-test', 'migrated')
@@ -327,7 +327,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * something nobody can add any more (`definition.view.ts`).
      */
     test('keeps a retired label on the records that wear it, and says it is retired', async () => {
-      const sessionId = await startSession('uuid-retired', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-retired', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       const migrated = await label(retroId, 'r-record-1', 'migrated')
 
@@ -338,7 +338,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /** A label taken off is a row, and the row is what stops the tag rendering. */
     test('drops a label the human removed', async () => {
-      const sessionId = await startSession('uuid-removed', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-removed', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}])
       await label(retroId, 'r-record-1', 'migrated')
 
@@ -360,7 +360,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * that shows is the human's once they have moved it.
      */
     test('reports the verdict and severity in effect, carry-over included', async () => {
-      const sessionId = await startSession('uuid-verdict', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-verdict', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}, {}])
 
       expect((await list()).map((row) => [row.state, row.severity])).toEqual([
@@ -380,7 +380,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
       ])
 
       // The finish gate wants a verdict on the second record too, and the round
-      // has to be put down before the next draft may answer it (#113).
+      // has to be put down before the next draft may answer it.
       await harness.finishRound(retroId)
       expect((await list()).map((row) => [row.state, row.severity])).toEqual([
         ['approved', 5],
@@ -401,14 +401,15 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     })
 
     /**
-     * **Both record shapes, in one listing.** A legacy record's proposed level is
-     * the field its draft authored; a solutions record has no such field and the
-     * level is the recommended solution's. `proposedLevel()` answers both, and a
-     * page that reached for `defaults.solutionLevel` directly would read
-     * `undefined` on every record filed since the owner's multi-solution design.
+     * **Both record shapes, in one listing.** A legacy record's proposed level
+     * is the field its draft authored; a solutions record has no such field and
+     * the level is the recommended solution's. `proposedLevel()` answers both,
+     * and a page that reached for `defaults.solutionLevel` directly would read
+     * `undefined` on every record filed since solutions carried their own
+     * levels.
      */
     test('reads the proposed level of both record shapes', async () => {
-      const sessionId = await startSession('uuid-shapes', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-shapes', '/Users/sample/Developer/retro')
       await fileRevision(sessionId, [{}])
       const legacy = await harness.legacyRevision(sessionId)
 
@@ -430,7 +431,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * them, and the reopened one is open again because somebody said so.
      */
     test('derives the lifecycle from the entry in force, and defaults to open', async () => {
-      const sessionId = await startSession('uuid-lifecycle', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-lifecycle', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}, {}, {}])
 
       await resolve(retroId, 'r-record-1', ['a1b2c3d', 'https://github.com/o/r/pull/42'], 'human')
@@ -483,9 +484,9 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * resolution on the other's row.
      */
     test('never shows one retrospective’s resolution on another’s record of the same rid', async () => {
-      const alpha = await startSession('uuid-same-a', '/Users/haider/Developer/retro')
+      const alpha = await startSession('uuid-same-a', '/Users/sample/Developer/retro')
       const here = await fileRevision(alpha, [{ rid: 'r-flaky-test' }])
-      const beta = await startSession('uuid-same-b', '/Users/haider/Developer/harbor')
+      const beta = await startSession('uuid-same-b', '/Users/sample/Developer/hangar')
       const there = await fileRevision(beta, [{ rid: 'r-flaky-test' }])
 
       await resolve(here, 'r-flaky-test', ['a1b2c3d'])
@@ -502,7 +503,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /** The latest draft is the retrospective: a record it withdrew is not an item here. */
     test('lists the latest revision’s records, and not those a later draft withdrew', async () => {
-      const sessionId = await startSession('uuid-withdrawn', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-withdrawn', '/Users/sample/Developer/retro')
       const retroId = await fileRevision(sessionId, [{}, {}, {}])
       expect((await list()).map((row) => row.rid)).toEqual([
         'r-record-1',
@@ -535,7 +536,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
      * ordinal be observed.
      */
     test('skips a retrospective that has no revision, and still counts it in the numbering', async () => {
-      const sessionId = await startSession('uuid-bare', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-bare', '/Users/sample/Developer/retro')
       await store.retrospectives.add({
         sessionId,
         state: 'finished',
@@ -551,7 +552,7 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /** Reads are open to both actors; only writes are actor-bound. */
     test('answers the human and the AI identically', async () => {
-      const sessionId = await startSession('uuid-actors', '/Users/haider/Developer/retro')
+      const sessionId = await startSession('uuid-actors', '/Users/sample/Developer/retro')
       await fileRevision(sessionId, [{}])
 
       expect(await harness.app.records.listAll.execute({ actor: 'human' })).toEqual(

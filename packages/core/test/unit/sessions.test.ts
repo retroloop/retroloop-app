@@ -16,7 +16,7 @@ describe('sessions', () => {
         actor: 'ai',
         claudeSession: 'uuid-1',
         project: 'retro',
-        cwd: '/Users/haider/Developer/retro',
+        cwd: '/Users/sample/Developer/retro',
         branch: 'main',
         supervised: true,
       })
@@ -42,8 +42,8 @@ describe('sessions', () => {
     })
 
     /**
-     * KC-0020 took the project construct off the critical path: one project
-     * routinely holds several software packages, so it was the wrong unit. The
+     * The project construct is off the critical path: one project routinely
+     * holds several software packages, so it was the wrong unit. The
      * registration still has to succeed and still has to announce itself — the
      * session's identity is its uuid and its cwd, and neither of those moved.
      */
@@ -51,12 +51,12 @@ describe('sessions', () => {
       const { session, created } = await harness.app.sessions.create.execute({
         actor: 'ai',
         claudeSession: 'uuid-1',
-        cwd: '/Users/haider/Developer/retro',
+        cwd: '/Users/sample/Developer/retro',
       })
 
       expect(created).toBe(true)
       expect(session.project).toBeUndefined()
-      expect(session.cwd).toBe('/Users/haider/Developer/retro')
+      expect(session.cwd).toBe('/Users/sample/Developer/retro')
       expect(await harness.eventNames()).toEqual(['SessionCreated'])
     })
 

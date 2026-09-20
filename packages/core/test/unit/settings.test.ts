@@ -4,18 +4,15 @@ import { AiConfigWriteDisabledError } from '#domain/services/config-write.servic
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * **OWNER RULING 2, and the tests that make it a guarantee rather than a
- * convention.** His words:
+ * **A config page toggle the user can enable to let the AI update the configs —
+ * disabled, the user can be certain the AI will not touch them — and the tests
+ * that make that a guarantee rather than a convention.**
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
- *
- * *"The user can be certain"* is what this file is about. Everything below is
- * asserted **through the App**, below every adapter, because that is where the
+ * Being certain is what this file is about. Everything below is asserted
+ * **through the App**, below every adapter, because that is where the
  * enforcement lives: a page could be bypassed, a tRPC call could be
- * hand-rolled, and the AI runs in its own process against the same SQLite file
- * (KC-0004). Nothing here goes near a transport.
+ * hand-rolled, and the AI runs in its own process against the same SQLite file.
+ * Nothing here goes near a transport.
  */
 describe('the AI-config-write toggle', () => {
   let harness: Harness
@@ -49,10 +46,10 @@ describe('the AI-config-write toggle', () => {
 
   /**
    * **The history is the feature here**, which is why this is a versioned table
-   * rather than a column. "It is off now" is a weaker answer to *"the user can
-   * be certain"* than "it has been off since the 27th, and here is every time it
-   * moved" — and a column would have thrown the second one away on the first
-   * change.
+   * rather than a column. "It is off now" is a weaker answer to the certainty
+   * this switch promises than "it has been off since the 27th, and here is
+   * every time it moved" — and a column would have thrown the second one away
+   * on the first change.
    *
    * Re-asserting what already stands still writes a row, unlike almost every
    * other act in this product: the human reaffirming a permission is a thing
@@ -115,11 +112,11 @@ describe('the AI-config-write toggle', () => {
   /**
    * **The whole point of the switch, from the AI's side.** Eight definition
    * writes, every one of them refused while it is off and accepted while it is
-   * on — the six of session 10 plus the un-retire pair that closed retro-11
-   * `r-retire-burns-a-word`. An act that the AI could take while the switch was
-   * off would be a hole in *"the user can be certain that the AI cannot mess
-   * around"*, and un-retire puts a word back into the vocabulary, which is
-   * exactly the kind of change he was talking about.
+   * on — the base six plus the un-retire pair (`r-retire-burns-a-word`). An act
+   * that the AI could take while the switch was off would be a hole in the
+   * guarantee that the AI cannot touch configs while it is disabled, and
+   * un-retire puts a word back into the vocabulary, which is exactly that kind
+   * of change.
    *
    * The refusal is typed — `AiConfigWriteDisabledError`, carrying the
    * `FORBIDDEN_ACTOR` code — so it arrives as FORBIDDEN over tRPC and as exit 5
@@ -267,8 +264,8 @@ describe('the AI-config-write toggle', () => {
   /**
    * **The switch governs the configuration and nothing else.** Applying a label
    * and setting a value are human-only *whatever it says* — that write side is
-   * deferred to a later session by the lead default the owner did not object to,
-   * and the toggle is about *"the ability to update the configs"*.
+   * left for a later change by design, and the toggle is only about the ability
+   * to update the configs.
    */
   test('does not open the record write side to the AI, in either position', async () => {
     const session = await harness.session()

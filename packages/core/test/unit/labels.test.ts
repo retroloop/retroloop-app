@@ -6,10 +6,8 @@ import { ValidationError } from '#domain/errors/validation.error'
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * Labels — the primitive the owner ruled into its purest possible shape:
- *
- * > *"I don't like the idea of label + notes; that is not a standard practice.
- * > Usually labels are just labels."*
+ * Labels — the primitive pared down to its purest possible shape: a label is
+ * just a label, a standard practice rather than a label paired with notes.
  *
  * So there is nothing in this file about a payload, a colour, a description or a
  * pairing with an attribute. What there is: a vocabulary somebody creates, a
@@ -28,10 +26,10 @@ describe('labels', () => {
 
   describe('the vocabulary', () => {
     /**
-     * **The product ships none.** *"To keep it flexible we will not hardcode any
-     * labels or attributes"* — so an untouched store answers with an empty list,
-     * and `migrated` is not there, because it is the example he used rather than
-     * a value this product knows about.
+     * **The product ships none.** No labels or attributes are hardcoded, so
+     * that the vocabulary stays flexible — an untouched store answers with an
+     * empty list, and `migrated` is not there, because it is only an example
+     * rather than a value this product knows about.
      */
     test('is empty until somebody creates one, and `migrated` is not special', async () => {
       expect(await names()).toEqual([])
@@ -180,10 +178,10 @@ describe('labels', () => {
     })
 
     /**
-     * **Retire is reversible, and that is the whole of retro-11
-     * `r-retire-burns-a-word`** — his selected solution 2: *"a retired
-     * definition can be brought back to offerable by the human — same row, same
-     * one-press shape, no history rewritten, the name never freed either way."*
+     * **Retire is reversible, and that is the whole of
+     * `r-retire-burns-a-word`** — a retired definition can be brought back to
+     * offerable by the human: same row, same one-press shape, no history
+     * rewritten, the name never freed either way.
      *
      * The round trip is asserted as a return to the *same row*, not merely to an
      * offerable one: a store that answered by minting a fresh definition would
@@ -331,9 +329,9 @@ describe('labels', () => {
     })
 
     /**
-     * **Human-only this session**, whatever the AI-config-write toggle says: the
-     * toggle governs the definitions, and whether the AI may mark up its own
-     * draft records is one of the opens the owner's ruling did not reach
+     * **Human-only this session**, whatever the AI-config-write toggle says:
+     * the toggle governs the definitions, and whether the AI may mark up its
+     * own draft records is a question the design deliberately leaves open
      * (`settings.test.ts` asserts both positions of the switch).
      */
     test('is refused to the AI', async () => {

@@ -75,9 +75,9 @@ describe('the solution a lane row shows', () => {
 
   /**
    * A record filed before solutions existed has one direction and one footprint
-   * for the whole record, and the lane shows that rather than an empty block: the
-   * owner's store is full of them, and a queue that skipped them would be a queue
-   * that skipped his first five retrospectives.
+   * for the whole record, and the lane shows that rather than an empty block:
+   * production stores are full of them, and a queue that skipped them would
+   * skip every early retrospective.
    */
   test('reads a legacy record’s direction as solution 1', () => {
     const record = aLegacyRecord({

@@ -5,9 +5,9 @@ import type { Store } from '#application/ports/store.port'
  * The repository contract suites (testing.md suite 1).
  *
  * Each suite is a function so **the same tests run against every adapter**: the
- * memory store here, `bun:sqlite` in BACKLOG item 3. Types alone cannot say "a
- * miss returns `undefined`" or "a failed unit of work leaves nothing behind" —
- * these do, once, for every implementation.
+ * memory store here, the `bun:sqlite`-backed one alongside it. Types alone
+ * cannot say "a miss returns `undefined`" or "a failed unit of work leaves
+ * nothing behind" — these do, once, for every implementation.
  */
 export type StoreFactory = () => Promise<Store>
 
@@ -24,7 +24,7 @@ export async function seedSession(store: Store, claudeSession = 'uuid-parent'): 
   const session = await store.sessions.add({
     claudeSession,
     project: 'retro',
-    cwd: '/Users/haider/Developer/retro',
+    cwd: '/Users/sample/Developer/retro',
     branch: 'main',
     supervised: true,
     startedAt: '2026-08-23T09:00:00.000Z',

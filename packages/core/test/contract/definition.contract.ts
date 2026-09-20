@@ -7,7 +7,7 @@ import type { StoreFactory } from './store.contract'
  * The two definition repositories, against every adapter (testing.md suite 1).
  *
  * **One file for both, and that is not the two primitives being coupled.** The
- * owner's ruling is about semantics — labels classify, attributes carry data,
+ * design decision is about semantics — labels classify, attributes carry data,
  * and the system enforces no pairing between them — and nothing here pairs
  * anything: the two suites below never touch the same table. What they share is
  * a *shape*, because a definition is a definition, and the shape is the thing
@@ -25,7 +25,7 @@ import type { StoreFactory } from './store.contract'
  * two stores clear the column two different ways — SQLite writes `NULL` and the
  * memory adapter writes `undefined` — and "still offered" has to read identical
  * out of both or `isOfferable` means one thing in a suite and another in
- * production (retro-11 `r-retire-burns-a-word`).
+ * production.
  *
  * **The tables' own constraints are not asserted here.** A UNIQUE name and a
  * CHECKed type are L1 backstops that only SQLite has — the memory adapter is
@@ -238,7 +238,7 @@ export function describeDefinitionRepositoryContract(label: string, makeStore: S
 
     /**
      * The two vocabularies are separate tables, so the same name in each is two
-     * definitions — the ruling that the primitives are independent, at L1.
+     * definitions — the rule that the primitives are independent, at L1.
      */
     test('does not collide with a label of the same name', async () => {
       await store.labelDefinitions.add({

@@ -113,7 +113,7 @@ export function describeRecordMarkupRepositoryContract(
     })
 
     /**
-     * **A rid is minted per retrospective** (A5), so the same rid in two
+     * **A rid is minted per retrospective**, so the same rid in two
      * retrospectives is two records — and the cross-retro read is the one place
      * an adapter keying on the rid alone would show one record's labels on the
      * other's row.

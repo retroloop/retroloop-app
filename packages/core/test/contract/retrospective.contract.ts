@@ -45,10 +45,10 @@ export function describeRetrospectiveRepositoryContract(
     })
 
     /**
-     * The dashboard's flat list crosses sessions (KC-0020), so `listAll` is the
-     * one read here that does not take a session id — and it has to keep the
-     * same oldest-first order `listBySession` promises, because that order is
-     * what makes "Retro #n within its session" countable in one pass.
+     * The dashboard's flat list crosses sessions, so `listAll` is the one read
+     * here that does not take a session id — and it has to keep the same
+     * oldest-first order `listBySession` promises, because that order is what
+     * makes "Retro #n within its session" countable in one pass.
      */
     test('lists every session’s retrospectives together, oldest first', async () => {
       const otherSessionId = await seedSession(store, 'uuid-other')

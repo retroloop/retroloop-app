@@ -6,17 +6,15 @@ import { ValidationError } from '#domain/errors/validation.error'
 import { createHarness, type Harness } from '../support/harness'
 
 /**
- * Attributes — the queryable primitive, and the owner's own case for it:
- *
- * > *"they could create an attribute that says 'Jira ticket', or maybe just
- * > 'external ticket ID' or whatever, and then they can say it's always going to
- * > be a number. Then it will be easier for them to query."*
+ * Attributes — the queryable primitive: a vocabulary somebody creates that
+ * names a value and fixes its type, for example "Jira ticket" typed as a
+ * number, so that records carrying it can be queried on it.
  *
  * The vocabulary half of this file is the label file's twin and is kept short
- * for that reason (`labels.test.ts` carries the arguments). What is here that is
- * not there is the type: four of them, validated exactly as far as each one's
- * name promises, because he asked for *"very fixed types and not … too many
- * configs, so that we don't have to put in a lot of validations."*
+ * for that reason (`labels.test.ts` carries the arguments). What is here that
+ * is not there is the type: four of them, validated exactly as far as each
+ * one's name promises, with fixed types rather than a general validation config
+ * so there is no configuration surface to get wrong.
  */
 describe('attributes', () => {
   let harness: Harness
@@ -56,10 +54,10 @@ describe('attributes', () => {
 
     /**
      * **The two vocabularies do not collide with each other**, and that is the
-     * ruling rather than an oversight: labels and attributes are pure and
+     * design rather than an oversight: labels and attributes are pure and
      * independent, so a label called `migrated` and an attribute called
      * `migrated` are two different things and refusing the pair would be the
-     * system enforcing a relationship the owner ruled out.
+     * system enforcing a relationship that does not exist.
      */
     test('may share a name with a label', async () => {
       await harness.app.labels.define.execute({ actor: 'human', name: 'migrated' })
@@ -130,8 +128,8 @@ describe('attributes', () => {
         'rename',
         'retire',
         'set',
-        // Retire's inverse (retro-11 `r-retire-burns-a-word`) — and still no
-        // `retype`, which is the absence this assertion exists for.
+        // Retire's inverse (`r-retire-burns-a-word`) — and still no `retype`,
+        // which is the absence this assertion exists for.
         'unretire',
       ])
     })
@@ -140,8 +138,7 @@ describe('attributes', () => {
      * **Retire is reversible here too**, and the type is what makes it safe: an
      * attribute comes back offering the type it always had, so every value
      * stored under it stays as true as it was and there is still no path that
-     * changes one (his selected solution names both kinds — *"un-retire for
-     * BOTH definition kinds"*).
+     * changes one (the chosen solution covers both definition kinds).
      */
     test('un-retires the same row, keeping its type, and refuses a second un-retire', async () => {
       const defined = await harness.app.attributes.define.execute({
