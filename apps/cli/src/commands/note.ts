@@ -3,7 +3,7 @@ import { readTextInput, sessionRef } from '#args'
 import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 
 /**
- * `note add` — the AI's friction note, filed as it happens (KC-0015).
+ * `note add` — the AI's friction note, filed as it happens.
  * `note list` — the session's notes back, and with `--with-human` the human's too.
  *
  * The one-way glass is caller protocol, not a mechanism: `--with-human` is for the

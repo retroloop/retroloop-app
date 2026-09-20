@@ -6,7 +6,7 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 
 /**
  * `export` — writes `retro.export.v1`, the public contract user import scripts
- * read (KC-0007).
+ * read.
  *
  * **`--json` means two different things depending on `--out`, and it has to.**
  * cli.md says `--json` prints a receipt `{path, records, bytes}` "instead of the

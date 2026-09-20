@@ -160,7 +160,7 @@ describe('review wait', () => {
 })
 
 /**
- * `review wait --follow` — the subscribing form (retro 10 `r-monitor-not-realtime`).
+ * `review wait --follow` — the subscribing form (`r-monitor-not-realtime`).
  *
  * The record's direction: the CLI receives events **the way the pages do**, over
  * the server's `events.onRetro` stream, and degrades to the store-polling wait
@@ -484,8 +484,8 @@ describe('review wait --follow', () => {
   /**
    * The human-readable line says which channel answered, because a person
    * watching a press land is the reader this record exists for: a silent
-   * degradation to polling would put the ambiguity back exactly where #112
-   * found it.
+   * degradation to polling would put the ambiguity back exactly where it
+   * started.
    */
   test('names the channel in the human line too', async () => {
     serverEmitting([CONNECTED, finished(9)])
@@ -655,7 +655,7 @@ describe('review wait --any', () => {
    * `--follow` is accepted and says what it did. The server offers one stream
    * per retrospective and there is no stream for the whole stage, so this form
    * polls — and reports `store`, because a wait that quietly degraded is the bug
-   * retro 10 `r-monitor-not-realtime` was filed about.
+   * `r-monitor-not-realtime` was filed about.
    */
   test('polls the store under --follow, and says so', async () => {
     const waiting = cli.run(['review', 'wait', '--any', '--follow', '--json'])

@@ -11,7 +11,7 @@ afterAll(removeTempStages)
  * Every command's `--json` shape, locked (testing.md suite 3).
  *
  * These assertions are the CLI's public contract: the plugin shells out and reads
- * exactly these keys, so breaking one is a major version (KC-0003). `toEqual` on
+ * exactly these keys, so breaking one is a major version. `toEqual` on
  * the whole object rather than a few properties is deliberate — an extra key is a
  * change to the contract too, and it should have to be written down here before
  * it ships.
@@ -32,7 +32,7 @@ describe('the CLI', () => {
       '--project',
       'retro',
       '--cwd',
-      '/Users/haider/Developer/retro',
+      '/Users/sample/Developer/retro',
       '--branch',
       'main',
       '--supervised',
@@ -59,10 +59,10 @@ describe('the CLI', () => {
    * The human's half of one round: decide whatever is still pending, then press
    * Finish.
    *
-   * Since #113 `r-revision-sneaks-past-review` a revision may only answer a
+   * Since `r-revision-sneaks-past-review` a revision may only answer a
    * finished round, so a test that wants a second one runs the rhythm. It goes
    * through the App rather than the CLI because finishing is human-only and has
-   * no command — that is the point of it (KC-0010).
+   * no command — that is the point of it.
    */
   async function finishRound(retroId: number): Promise<void> {
     const app = createApp(cli.store, { clock: cli.clock })
@@ -98,7 +98,7 @@ describe('the CLI', () => {
     })
 
     /**
-     * KC-0020: `--project` is optional and dormant. Registering without it is
+     * `--project` is optional and dormant. Registering without it is
      * the ordinary path now, and it returns the same shape as any other — a
      * session that had to name a project to exist would still be a project
      * construct on the critical path.
@@ -344,8 +344,8 @@ describe('the CLI', () => {
     })
 
     /**
-     * The retro's name is authored in the payload, not passed as a flag
-     * (KC-0020): it is part of the draft, so it travels with it and changes the
+     * The retro's name is authored in the payload, not passed as a flag:
+     * it is part of the draft, so it travels with it and changes the
      * only way anything in a draft changes — by redrafting. The CLI's job is to
      * hand the file to the core without touching what is in it.
      */
@@ -437,11 +437,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * **#113 `r-revision-sneaks-past-review`, at the transport the AI actually
-     * uses.** The owner, mid-review of the round that filed this: *"You were able
-     * to send a revision while I had not finished the review — that shouldn't be
-     * allowed. … We don't want the human spending time on a review while the AI
-     * sneaks in and sends a new revision."*
+     * **`r-revision-sneaks-past-review`, at the transport the AI actually
+     * uses.** Sending a revision while the human has not finished the review is
+     * not allowed: the human must not spend time on a review while the AI
+     * sneaks in and sends a new revision.
      *
      * The exit code is the half a script reads and the message is the half an
      * agent reads, so both are asserted: exit 4 is `CONFLICT` (cli.md §Exit
@@ -577,8 +576,8 @@ describe('the CLI', () => {
             carriedOver: false,
             decidedOnRevision: null,
             // Where it stands on the axis that outlives the review. `open` on a
-            // record nobody has touched — and present, which is the whole of
-            // #103: this list used to answer nothing at all here while the flat
+            // record nobody has touched — and present, which is the whole
+            // point: this list used to answer nothing at all here while the flat
             // page answered correctly.
             lifecycle: {
               status: 'open',
@@ -588,7 +587,7 @@ describe('the CLI', () => {
               at: null,
             },
             // And what it was said to have to do with other records — empty on a
-            // record nobody has related, and present for #103's reason: the
+            // record nobody has related, and present for the same reason: the
             // populated half is asserted in the `record relate` block below,
             // read back through this same command.
             relations: [],
@@ -620,7 +619,7 @@ describe('the CLI', () => {
     })
 
     /**
-     * **The dogfood scenario that filed #103, end to end** — resolve through the
+     * **The dogfood scenario that filed the projection gap, end to end** — resolve through the
      * CLI, then read the list back through the CLI. That is the AI's own
      * verification loop after a batch resolve, and it reported nothing about the
      * writes it had just made.
@@ -747,7 +746,7 @@ describe('the CLI', () => {
      * The line a person reads carries the verdict and nothing beside it.
      *
      * It carried a `[held]` marker for one session, which is what this test was
-     * written for; retro 4 `r-remove-hold` took the feature out, so the marker
+     * written for; `r-remove-hold` took the feature out, so the marker
      * is asserted absent instead — with the verdict asserted present in the same
      * line, because a check that only looked for a missing word would pass on a
      * command that printed nothing at all.
@@ -772,8 +771,8 @@ describe('the CLI', () => {
     })
 
     /**
-     * The number does not restart with each retrospective — the owner's *"in
-     * each retro record ids start from #1 which is weird."*
+     * The number does not restart with each retrospective: record ids that
+     * started from #1 inside every retro read oddly.
      *
      * The second retrospective's only record is `num` 1 and `#3`, which is the
      * one shape where the two numbers disagree, and therefore the only one in
@@ -834,10 +833,9 @@ describe('the CLI', () => {
   })
 
   /**
-   * `record resolve` / `record reopen` — the AI's half of the lifecycle axis
-   * (the owner, session 8: *"once the AI fixes those issues, we should have a
-   * way to … show that this issue was resolved, we should be able to specify a
-   * commit id or github issue or something as reference"*).
+   * `record resolve` / `record reopen` — the AI's half of the lifecycle axis:
+   * once the AI has fixed an issue there has to be a way to show that the issue
+   * was resolved, and to name a commit id or a GitHub issue as the reference.
    *
    * The human's half is `records.setLifecycle` over tRPC. Both reach the same
    * use case, and the row records which actor wrote it — every command here
@@ -997,11 +995,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * **The archive pair is the human's** (the owner, session 9: *"the user
-     * should be able to unarchive … if a user wants, they can just archive
-     * it"*), and the CLI writes as `ai` and nothing else — so both acts are
-     * offered here and both are refused, by the use case rather than by the
-     * argument parser.
+     * **The archive pair is the human's** — archiving and unarchiving a record
+     * are the user's to perform — and the CLI writes as `ai` and nothing else,
+     * so both acts are offered here and both are refused, by the use case
+     * rather than by the argument parser.
      *
      * Offered rather than hidden on purpose: they sit on the same command and
      * the same rid as `resolve`, which the AI uses constantly, so the refusal is
@@ -1031,7 +1028,7 @@ describe('the CLI', () => {
       expect(await cli.store.recordLifecycle.findLatest(retroId, 'r-stale-lock')).toBeUndefined()
     })
 
-    /** Nothing to take back is a refusal, not a quiet success (KC-0010). */
+    /** Nothing to take back is a refusal, not a quiet success. */
     test('is exit 4 reopening a record that was never resolved', async () => {
       const sessionId = await aSession()
       const retroId = await aRevision(sessionId)
@@ -1097,8 +1094,8 @@ describe('the CLI', () => {
 
     /**
      * **The point of the whole feature.** Every other write the CLI makes against
-     * a retrospective refuses once the review has closed; this one is what the
-     * owner asked for *because* it has closed.
+     * a retrospective refuses once the review has closed; this one exists
+     * *because* it has closed.
      */
     test('still works after the review is closed', async () => {
       const sessionId = await aSession()
@@ -1150,16 +1147,15 @@ describe('the CLI', () => {
 
   /**
    * **`record relate` / `record unrelate` — the AI's transport for the feature's
-   * own purpose** (the owner, session 11: *"both actors can relate records, each
-   * relation carries how-they-relate words, and the relation reads from both
-   * sides, so that AI can easily find past records and build holistic
-   * solutions."*)
+   * own purpose**: both actors can relate records, each relation carries
+   * how-they-relate words, and the relation reads from both sides, so that the
+   * AI can easily find past records and build holistic solutions.
    *
    * The scenario asserted here is the one that sentence describes: the AI files
    * a record, finds the one it is a repeat of in a retrospective that closed,
    * relates them by the numbers `record list` gave it, and reads the relation
-   * back through the same command. The read-back is the half #103
-   * `r-lifecycle-projection-gap` was filed about one table over — the AI checks
+   * back through the same command. The read-back is the half
+   * `r-lifecycle-projection-gap` records one table over — the AI checks
    * its own writes by listing, and a listing silent about them reads exactly
    * like a store that refused every one.
    */
@@ -1539,12 +1535,12 @@ describe('the CLI', () => {
     /**
      * The one place the counts are read by a person rather than parsed. It ended
      * with "; N held" for one session — the lifecycle axis stated apart from the
-     * verdicts — and retro 4 `r-remove-hold` removed the feature, so the line is
+     * verdicts — and `r-remove-hold` removed the feature, so the line is
      * the live verdicts and stops. The trailing clause is asserted gone as well
      * as the counts asserted present: an assertion that only checked the prefix
      * would pass on a line that still had it.
      *
-     * `revise` joined the line with the verdict (retro 4 `r-verdict-revise`);
+     * `revise` joined the line with the verdict (`r-verdict-revise`);
      * the frozen `hold` bucket stays off it, which is the difference between a
      * count that can still change and one that never will again.
      */
@@ -1574,12 +1570,12 @@ describe('the CLI', () => {
     })
 
     /**
-     * The owner's session-11 add, in the field the AI parses: *"There should be
-     * a status in between that indicates that the human has submitted but AI
-     * hasn't closed"*. This command is what the AI runs in exactly that window —
-     * `review wait` returns on his press and this is the next thing it asks —
-     * and until now the answer was `reviewing`, the same word it gives while he
-     * has not touched the round at all.
+     * A status in between, in the field the AI parses: one that says the human
+     * has submitted but the AI has not closed. This command is what the AI runs
+     * in exactly that window — `review wait` returns on the human's press and
+     * this is the next thing it asks — and until now the answer was
+     * `reviewing`, the same word it gives while the round has not been touched
+     * at all.
      *
      * `finished` is asserted beside `state` at both points because the two say
      * different things now and a reader has to be able to tell which is which:
@@ -1629,7 +1625,7 @@ describe('the CLI', () => {
   })
 
   /**
-   * The AI's end of the loop (retro 4 `r-one-finish-button`): the human presses
+   * The AI's end of the loop (`r-one-finish-button`): the human presses
    * one button, the AI reads the round, and when there is nothing left to
    * address it runs this. Every refusal below is the CLI's contract with the
    * skill — the exit code is what an AI following instructions actually sees.
@@ -1846,8 +1842,8 @@ describe('the CLI', () => {
 
     test('does not offer the deferred selectors at all', async () => {
       // `--project` and `--session --all` would each produce N retrospectives,
-      // which the v1 envelope cannot hold. They are deferred to an owner decision
-      // on the public contract, and the honest way to say "not here" is for the
+      // which the v1 envelope cannot hold. They are deferred until the public
+      // contract settles, and the honest way to say "not here" is for the
       // option not to exist: strict mode rejects it as unknown. This test exists
       // so a later stub that accepts the flag and explains itself fails loudly —
       // such a stub would quietly promise a shape nothing implements.
@@ -1865,8 +1861,8 @@ describe('the CLI', () => {
    * The reading half of the loop (cli.md `note list`, `revision get`,
    * `comment list`) and the AI's one write back into a review (`comment add`).
    *
-   * There were two of each until retro 4 `r-remove-requests` — `request list`
-   * and `request respond` went with the ask channel the owner removed, and a
+   * There were two of each until `r-remove-requests` — `request list`
+   * and `request respond` went with the ask channel that was removed, and a
    * comment is the whole of it now.
    *
    * Everything the human writes here has to be written *as* the human, which no
@@ -2030,8 +2026,8 @@ describe('the CLI', () => {
             ],
           },
         ])
-        // The `requests` key went with the surface that wrote it (retro 4
-        // `r-remove-requests`), and this is the contract test that says so: an
+        // The `requests` key went with the surface that wrote it
+        // (`r-remove-requests`), and this is the contract test that says so: an
         // asserted-absent key on the shape a caller parses. `toEqual` on the
         // whole records object above already rules out `held`/`holdNote`.
         expect(body).not.toHaveProperty('requests')
@@ -2083,11 +2079,11 @@ describe('the CLI', () => {
       })
 
       /**
-       * `r-finish-confirm-message`: the word he left finishing the round reaches
-       * the drafting step here, on the same read as the verdicts and separately
-       * from the comments, which is exactly what he asked for.
+       * `r-finish-confirm-message`: the word the human left finishing the round
+       * reaches the drafting step here, on the same read as the verdicts and
+       * separately from the comments, which is what it is for.
        */
-      test('--feedback-only carries the final message he left on the round', async () => {
+      test('--feedback-only carries the final message left on the round', async () => {
         const sessionId = await aSession()
         const retroId = await aRevision(sessionId)
         const app = asHuman()
@@ -2192,8 +2188,8 @@ describe('the CLI', () => {
     })
 
     /**
-     * The recovery SKILL.md promises when the draft file is gone (the doc gate's
-     * B7): each record's `content` is one record of a revision file, with nothing
+     * The recovery SKILL.md promises when the draft file is gone: each
+     * record's `content` is one record of a revision file, with nothing
      * to strip and nothing to rename, so `{records: [...contents]}` submits.
      *
      * It holds because `content` is the stored record itself. That is easy to
@@ -2359,10 +2355,9 @@ describe('the CLI', () => {
       })
 
       /**
-       * The revision each message belongs to — the owner's *"comment show the
-       * rev number they are associated with but the comment show accross all
-       * revisions"*. One thread, two revisions, and the thread is still one
-       * thread.
+       * The revision each message belongs to: a comment shows the rev number it
+       * is associated with, while the thread still shows across all revisions.
+       * One thread, two revisions, and the thread is still one thread.
        */
       test('stamps each message with the revision it was written against', async () => {
         const sessionId = await aSession()
@@ -2413,8 +2408,8 @@ describe('the CLI', () => {
       })
 
       /**
-       * The threads the owner opens on the review itself come back through the
-       * same list, with nothing to anchor them (retro 4 `r-cli-review-thread-reply`):
+       * The threads the human opens on the review itself come back through the
+       * same list, with nothing to anchor them (`r-cli-review-thread-reply`):
        * `threadId` is the only handle on one, which is why `comment add --thread`
        * exists.
        */
@@ -2549,12 +2544,12 @@ describe('the CLI', () => {
       })
 
       /**
-       * The AI's side of a review-level ask (retro 4 `r-cli-review-thread-reply`).
+       * The AI's side of a review-level ask (`r-cli-review-thread-reply`).
        *
-       * The owner opened five of these in retro 4 and the CLI could not answer one:
+       * A human can open review-level threads that the CLI once could not answer:
        * `--record` was required, so the reply went through chat instead — off the
        * durable review record, which is the smuggling review-level threads exist to
-       * end. The store has taken all three targets since lane B; these lock the two
+       * end. The store takes all three targets; these lock the two
        * the CLI was missing.
        */
       test('--thread answers the review-level thread the human opened', async () => {
@@ -2745,7 +2740,7 @@ describe('the CLI', () => {
        * Naming no target is exit 2, not a review-level thread by default: a bare
        * `comment add` is a forgotten `--record` far more often than it is a
        * deliberate review-level ask, and inferring the second would open a thread
-       * nobody asked for (retro 4 `r-cli-review-thread-reply`).
+       * nobody asked for (`r-cli-review-thread-reply`).
        */
       test('is exit 2 naming no target, and names all three', async () => {
         const sessionId = await aSession()
@@ -2816,8 +2811,8 @@ describe('the CLI', () => {
           decision: { state: 'approved' },
         })
         await app.review.finish.execute({ actor: 'human', retro: { retroId } })
-        // What closes a retrospective is the AI's close, not his finish (retro 4
-        // `r-one-finish-button`) — and this is the command that does it.
+        // What closes a retrospective is the AI's close, not the human's finish
+        // (`r-one-finish-button`) — and this is the command that does it.
         expect(
           (await cli.run(['review', 'close', '--retro', String(retroId), '--json'])).code,
         ).toBe(EXIT.ok)

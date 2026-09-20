@@ -8,7 +8,7 @@ import { UsageError } from '#errors'
  * promised "auto LAN"; a tool that quietly puts a review server on the network
  * because you did not name an address is not being helpful, it is deciding
  * something for you. `--bind` is how you ask, and `--help` is the authoritative
- * statement of what happens when you do not (KC-0021). A `--bind` binds the one
+ * statement of what happens when you do not. A `--bind` binds the one
  * start it was typed for: nothing carries it over into the next one.
  */
 export const DEFAULT_BIND = '127.0.0.1'
@@ -110,7 +110,7 @@ export function localOriginFor(bind: string, port: number): string {
  * Same rule as `localOriginFor`, spelled for a browser: a loopback or wildcard
  * server answers on `localhost`; a server bound to one named interface answers
  * only there, so `localhost` would be a link to an address nothing listens on
- * (record #207). `lanUrlFor` stays the other device's link.
+ * at all. `lanUrlFor` stays the other device's link.
  *
  * This **describes** a bind and never chooses one. It is handed the address a
  * listening server already took — off its lock, or off the socket just opened —

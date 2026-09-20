@@ -55,9 +55,9 @@ export function exitCodeFor(error: unknown): number {
         return EXIT.usage
       /**
        * The finish gate is a refusal to act on the state as it stands — a
-       * conflict. `review close` reaches it (retro 4 `r-one-finish-button`): the
-       * reviewer can undo a verdict after finishing, and the AI must not close a
-       * review over a record that went back to pending.
+       * conflict. `review close` reaches it: the reviewer can undo a verdict
+       * after finishing, and the AI must not close a review over a record that
+       * went back to pending.
        */
       case 'FINISH_GATE':
         return EXIT.conflict

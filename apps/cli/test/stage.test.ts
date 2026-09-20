@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { DEFAULT_HOME, resolveDataDir, resolveHome, resolveStage } from '#stage'
 
 /**
- * One root folder (RL-49): `~/.retroloop` is the root, and everything Retroloop
+ * One root folder: `~/.retroloop` is the root, and everything Retroloop
  * owns hangs off it — `data/` the stage, `backups/db/` the pre-migration
  * snapshots, `retros/` the exports. `--home` and `RETROLOOP_HOME` both name the
  * **root**, never the data directory. `RETRO_HOME` is retired: a name that once

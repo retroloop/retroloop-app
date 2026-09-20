@@ -87,10 +87,10 @@ export async function run(
   registerRevisionCommand(parser, runtime)
   registerRecordCommand(parser, runtime)
   registerCommentCommand(parser, runtime)
-  // The AI's transport for the two vocabularies, and the surface OWNER RULING
-  // 2's switch actually governs. There is no command for putting a label on a
-  // record or setting a value: those writes are human-only this session
-  // (`commands/label.ts`).
+  // The AI's transport for the two vocabularies, and the surface the
+  // configuration-write switch actually governs. There is no command for
+  // putting a label on a record or setting a value: those writes are
+  // human-only (`commands/label.ts`).
   registerLabelCommand(parser, runtime)
   registerAttributeCommand(parser, runtime)
   registerReviewCommand(parser, runtime)

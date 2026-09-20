@@ -30,8 +30,8 @@ function waitForShutdown(): Promise<void> {
  * it is up. The order below is the contract — **take the lock first**, so a second
  * `serve` on the same stage fails before it has migrated anything or bound a port.
  *
- * What item 5 changes is one line: the handler. The lock, the stage, the store and
- * the shutdown path stay exactly as they are.
+ * Changing what is served is one line: the handler. The lock, the stage, the
+ * store and the shutdown path stay exactly as they are.
  */
 export function registerServeCommand(
   cli: Argv<GlobalOptions>,
@@ -74,7 +74,7 @@ export function registerServeCommand(
       })
 
       // Opening the stage is what applies pending migrations, under the write
-      // lock (KC-0006). No user-facing migrate command exists, by design.
+      // lock. No user-facing migrate command exists, by design.
       const store = runtime.openStore(stage)
       // A second handle on the same file for the tailer to watch: `data_version`
       // does not move for a connection's own commits, so a tailer sharing the

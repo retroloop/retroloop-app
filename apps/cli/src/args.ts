@@ -17,9 +17,9 @@ export function sessionRef(value: string): SessionRef {
  * `--retro <id>` is the primary address; `--session` means its active retrospective.
  *
  * `known` is the retrospective a `#globalId` positional has already named —
- * `record resolve 194` (retro 20 `r-brief-record-resolve-line`). Then neither
- * flag is required: a `--retro` is accepted when it agrees and refused when it
- * does not, and a `--session` is refused outright. A rid is minted per
+ * `record resolve 194`. Then neither flag is required: a `--retro` is accepted
+ * when it agrees and refused when it does not, and a `--session` is refused
+ * outright. A rid is minted per
  * retrospective and is not unique across them, so a flag naming a different
  * retrospective than the number does is the caller holding two records in mind,
  * and passing it through could land the act on a same-named record elsewhere.
