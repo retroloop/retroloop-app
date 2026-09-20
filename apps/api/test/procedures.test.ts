@@ -139,9 +139,9 @@ describe('the tRPC surface', () => {
 
     /**
      * The round that counts is the **latest** one. A retro the human finished
-     * and the AI answered with a new draft is theirs again, and a derivation reading "any
-     * finished round" rather than "the current one" would leave it reading
-     * SUBMITTED for the rest of its life.
+     * and the AI answered with a new draft is theirs again, and a derivation
+     * reading "any finished round" rather than "the current one" would leave
+     * it reading SUBMITTED for the rest of its life.
      */
     test('goes back to reviewing when the AI answers the round with a new revision', async () => {
       await api.finishRound(retroId)
@@ -1622,10 +1622,10 @@ describe('the tRPC surface', () => {
    * shapes cross correctly, the error map answers each refusal with the right
    * code, and the browser is the human. What it deliberately does not try to
    * prove is the guarantee: while the switch is disabled the user can be certain
-   * that the AI cannot mess around, which is enforced below every adapter and is asserted
-   * there, in `packages/core/test/unit/settings.test.ts`, because the context
-   * here pins `human` unconditionally and there is no payload a browser can send
-   * that would reach the guard at all (`context.ts`).
+   * that the AI cannot mess around, which is enforced below every adapter and is
+   * asserted there, in `packages/core/test/unit/settings.test.ts`, because the
+   * context here pins `human` unconditionally and there is no payload a browser
+   * can send that would reach the guard at all (`context.ts`).
    *
    * **No id is a literal anywhere below.** The harness runs on the memory store,
    * whose `IdGen` is one counter across every table, where SQLite gives each

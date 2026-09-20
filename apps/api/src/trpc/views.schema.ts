@@ -76,8 +76,8 @@ export const retroSchema = z.strictObject({
   retroNumber: z.int().positive(),
   /**
    * The state a reader is shown, which is not the state a row is stored in:
-   * `submitted` — the human's round is down and the AI has not closed it — is derived
-   * from the `ReviewFinished` events on the way out and written nowhere
+   * `submitted` — the human's round is down and the AI has not closed it — is
+   * derived from the `ReviewFinished` events on the way out and written nowhere
    * (`retro.view.ts`). The other three are the retrospective's own.
    */
   state: retroDisplayStateSchema,
@@ -424,11 +424,11 @@ export const recordListSchema = z.strictObject({
  * cwd.
  *
  * Deliberately narrow, like every row on this wire: the identity line
- * (`retroNumber` + `session`), enough of the record to read and filter
- * it, and where each of its two axes stands. The narrative is not here — a row
- * links to the record's own page and `records.byId` answers for that (it was
- * the review page's anchor until then, A6/A7) — and neither is the
- * retro's title, because the identity line is
+ * (`retroNumber` + `session`), enough of the record to read and filter it, and
+ * where each of its two axes stands. The narrative is not here — a row links
+ * to the record's own page and `records.byId` answers for that (the narrative
+ * was the review page's anchor until that page existed, A6/A7) — and neither
+ * is the retro's title, because the identity line is
  * "Session S · Retro #n · cwd" and a field nothing renders is a field the mock
  * has to produce for nothing.
  */
@@ -587,9 +587,9 @@ export const recordDetailSchema = z.strictObject({
      * says so with nulls rather than absent keys (see this file's header).
      *
      * `agreedDirection` and `footprint` are the record's one direction and one
-     * tree of files — every record filed before the multi-solution
-     * design existed. Null on a record that has
-     * `solutions`, and the page renders the other branch.
+     * tree of files — every record filed before the multi-solution design
+     * existed. Null on a record that has `solutions`, and the page renders the
+     * other branch.
      */
     agreedDirection: z.string().nullable(),
     footprint: z.string().nullable(),

@@ -101,13 +101,13 @@ import { createCallerFactory, router } from '#trpc/trpc'
  * **`records.relate` is the second, and it is the AI's more than the human's**:
  * both actors can relate records, each relation carries how-they-relate words,
  * and the relation reads from both sides, so that the AI can easily find past
- * records and build holistic solutions. It is one procedure
- * for two acts, on the standing `records.setLifecycle` pattern — the input
- * widens here and the procedure count does not move — with a boolean rather than a
- * status word, because relating and un-relating are on and off and no third
- * position exists for a relation to be in. Nothing already here could carry it:
- * every other record write is addressed by `(retroId, rid)`, and this is the one
- * that names **two** records, by the global number, across two retrospectives.
+ * records and build holistic solutions. It is one procedure for two acts, on
+ * the standing `records.setLifecycle` pattern — the input widens here and the
+ * procedure count does not move — with a boolean rather than a status word,
+ * because relating and un-relating are on and off and no third position exists
+ * for a relation to be in. Nothing already here could carry it: every other
+ * record write is addressed by `(retroId, rid)`, and this is the one that
+ * names **two** records, by the global number, across two retrospectives.
  *
  * **`holds.set/clear` is gone** (`r-remove-hold`). Hold left the verdict
  * axis earlier and got two procedures of its own; seen live, the toggle was
