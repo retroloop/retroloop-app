@@ -10,7 +10,7 @@ import { NotFoundError } from '#domain/errors/not-found.error'
 import type { DomainEvent } from '#domain/events/domain-event.model'
 import type { Actor } from '#domain/models/actor.model'
 import type { CommentThread } from '#domain/models/comment-thread.model'
-import type { RecordType, RootCause } from '#domain/models/record.model'
+import type { HumanWords, RecordType, RootCause } from '#domain/models/record.model'
 import {
   claimsByRecord,
   type EffectiveClaim,
@@ -68,6 +68,24 @@ export type LaneRecordRow = {
    */
   readonly diagnosticData: string | undefined
   /**
+   * **What the human said in the session, as the record quotes him** — the
+   * quote twins the record was drafted from (`record.model.ts`): what he
+   * actually said, the same sentence cleaned up, and what was going on around it.
+   *
+   * Copied off the record as it stands, like `problem` and `rootCause`. An empty
+   * list means he said nothing quotable about this friction, and nothing else:
+   * the row used to carry no quotes at all, and a team that read `ownerWords: []`
+   * on a record with seven of them reported the store had lost his words (#214
+   * `r-lane-row-omits-human-words`).
+   */
+  readonly humanWords: readonly HumanWords[]
+  /**
+   * **What was done about it at the time** — free text, and the literal `none`
+   * when nothing was; never absent (`record.model.ts`). Whoever takes the record
+   * off the queue should know what is already holding the friction back.
+   */
+  readonly workaround: string
+  /**
    * **What the human said about this record, in his words** — the reviewer's
    * note on the verdict first, then every comment he wrote on the record's
    * threads, oldest first.
@@ -77,6 +95,10 @@ export type LaneRecordRow = {
    * the verdict, which is the sentence most likely to change how the work is
    * done. The AI's own replies are not here — an agent re-reading what an agent
    * said is noise, and the thread is where a conversation is read.
+   *
+   * **Not the record's quotes** — those are `humanWords`, above. This is what he
+   * wrote at review time, so an empty list means no note and no comment; it never
+   * means he said nothing.
    */
   readonly ownerWords: readonly string[]
   /** The fix in effect, with its files (`lane.view.ts`). */
@@ -283,6 +305,8 @@ export class ListLaneRecordsUseCase {
           problem: record.problem,
           rootCause: record.rootCause,
           diagnosticData: record.diagnosticData,
+          humanWords: record.humanWords,
+          workaround: record.workaround,
           ownerWords: ownerWordsOf(decision, words.get(record.rid)),
           selectedSolution: laneSolution(record, decision),
           decision,

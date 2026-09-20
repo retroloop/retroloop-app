@@ -600,6 +600,7 @@ const LANE_HELP = `The lane — the work, and the marker on it
     queue, list --all  a bare array of rows; get, one row plus "retrospective"
     row                { recordId, retroId, retro, sessionId, title, slug, problem,
                          rootCause { whatHappened, whys, root }, diagnosticData,
+                         humanWords [{ verbatim, cleaned, context }], workaround,
                          ownerWords,
                          selectedSolution { index, level, title, body, footprint },
                          involvement, relations [{ recordId, kind, direction }],
@@ -609,6 +610,12 @@ const LANE_HELP = `The lane — the work, and the marker on it
     relations          [{ recordId, retroId, retro, slug, title, kind, direction,
                           state, resolvedAt, ref, refs }]
     claim/unclaim      { recordId, retroId, slug, version, claim }
+
+  humanWords are the record's quotes: what he said in the session, context null
+  when a quote has none. ownerWords are his reviewer note and then his review
+  comments, oldest first. They are different things, and [] under either means
+  only that: no quotes, or no note and no comment. workaround is "none" when
+  there was none.
 
   Exit codes: 0 ok · 2 usage · 3 no such record · 4 conflict (already claimed,
   not claimed, or not open) · 5 forbidden actor · 7 server.`
@@ -675,6 +682,7 @@ async function readLane(
         [
           laneRowLine(row),
           `    Solution ${row.selectedSolution.index} — ${row.selectedSolution.title}`,
+          ...quotesAndWorkaroundLines(row),
           ...row.ownerWords.map((words) => `    “${words}”`),
         ].join('\n'),
     )
@@ -1008,6 +1016,20 @@ function laneRowJson(row: LaneRecordRow) {
      */
     diagnosticData: row.diagnosticData ?? null,
     /**
+     * The record's quotes — what the human said in the session, as the record
+     * was drafted from them. The export's three keys (`ExportHumanWords`), with
+     * the one difference that is this function's standing rule: a quote with no
+     * `context` carries `null` rather than losing the key. `[]` means he said
+     * nothing quotable, and it is not `ownerWords`, below (#214).
+     */
+    humanWords: row.humanWords.map((said) => ({
+      verbatim: said.verbatim,
+      cleaned: said.cleaned,
+      context: said.context ?? null,
+    })),
+    /** What was done about it at the time — free text, the literal `none` when nothing was. */
+    workaround: row.workaround,
+    /**
      * What the human said about this record: the note he wrote with the verdict
      * first, then his comments, oldest first. It is the field that lets an agent
      * act on a queue row without opening the review page.
@@ -1071,6 +1093,33 @@ function laneRowLine(row: LaneRecordRow): string {
     ` · L${row.selectedSolution.level} · ${row.decision.involvement}` +
     ` · retro ${row.retroId} (#${row.retroNumber} of session ${row.sessionId})`
   )
+}
+
+/**
+ * The record's quotes and its workaround, as `record get` prints them — **under
+ * their own names**, because a bare `“…”` line is how `ownerWords` already prints
+ * and an unnamed quote is the ambiguity #214 was filed about.
+ *
+ * `none` rather than no line when he said nothing: a line that is not there reads
+ * as "not printed", which is how `[]` came to read as "lost". They are on `get`
+ * and not on the queue's line, which carries no narrative at all — not the
+ * problem, not the root cause — because it is one line per record to scan.
+ */
+function quotesAndWorkaroundLines(row: LaneRecordRow): string[] {
+  const said =
+    row.humanWords.length === 0
+      ? ['    humanWords: none']
+      : row.humanWords.map(
+          (words) =>
+            `    humanWords: “${hanging(words.verbatim)}”` +
+            (words.context === undefined ? '' : ` — ${hanging(words.context)}`),
+        )
+  return [...said, `    workaround: ${hanging(row.workaround)}`]
+}
+
+/** Authored text runs to several lines; the ones after the first hang under the name. */
+function hanging(text: string): string {
+  return text.split('\n').join('\n      ')
 }
 
 /** Only rows something has happened to say anything — a column that reads "open" everywhere earns nothing. */
