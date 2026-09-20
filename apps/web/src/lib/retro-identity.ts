@@ -1,6 +1,6 @@
 /**
  * How a retrospective says what it is, in the two places one is shown: a
- * dashboard row and the review page's header (shortlist N1/N3).
+ * dashboard row and the review page's header.
  *
  * Both read the same two functions rather than each formatting the line, because
  * the point of an identity line is that it is the *same* line — a reader who
@@ -54,7 +54,7 @@ export type RetroIdentity = RetroPlace & {
  *
  * **The fallback used to print `retroNumber`, and that was the bug.** The
  * diary view needed retros to show their global ids rather than a
- * session's internal sequence number, and the rule (D5) settled on it
+ * session's internal sequence number, and the rule settled on it
  * directly: untitled retros show the global id as fallback.
  * `retroNumber` counts **within a session** — several
  * retrospectives across sessions are "#1" and more are "#2" — so on any list that shows more

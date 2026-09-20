@@ -3,7 +3,7 @@ Feature: Revisions arriving under a reviewer
   The AI files revisions while a human is reading one. The page announces them
   and does not move, because a verdict has to bind to the content the
   reviewer actually read — and when they do move, a decision follows the content
-  it was given for (D2 carry-over).
+  it was given for.
 
   Scenario: A new revision is announced, and nothing on the page moves
     Given the reviewer opens retro 1

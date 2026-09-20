@@ -72,7 +72,7 @@ function RecordsPage() {
    * retrospective and keeps itself current from that retrospective's event
    * stream; this page is scoped to all of them, `events.onRetro` is per-retro,
    * and a flat cross-retro page therefore has nothing single to subscribe to
-   * (F1's finding; A9 is the ruling that no cross-retro scope gets
+   * (the finding; the rule is that no cross-retro scope gets
    * invented for v1). So the two signals it does have are the ones it uses: it
    * invalidates after its own writes, and it asks again when the reader comes
    * back to the tab — which is exactly when the AI, working in its own process,

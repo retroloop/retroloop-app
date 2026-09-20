@@ -34,7 +34,7 @@ Feature: The dashboard
     And there is no band for retrospectives in flight
     And the browser reported no console errors
 
-  # ── direction 6: the exclusive surface for a round in flight ───────────────
+  # ── the exclusive surface for a round in flight ───────────────────────────
   #
   # "Exclusively" has two halves and both are asserted: the band is *there* with
   # the round that is in flight, and it is *absent* the moment nothing is. The
@@ -191,7 +191,7 @@ Feature: The dashboard
     And the dashboard counts 2 still open
     And the dashboard counts 1 at high severity
 
-  # ── the chart, and D6's orientation ruling ────────────────────────────────
+  # ── the chart, and its orientation rule ───────────────────────────────────
   #
   # Four axes, and every one of them draws horizontally —
   # Requester and Type used to be vertical columns. Asserted off the renderer's
@@ -245,7 +245,7 @@ Feature: The dashboard
     When the reviewer opens readings row 1
     Then the record page shows record 1
 
-  # ── direction 4: the diary ────────────────────────────────────────────────
+  # ── the diary ─────────────────────────────────────────────────────────────
   #
   # Sittings, not a flat list — grouped by the session that produced them, newest
   # sitting first, and the retrospectives inside a sitting in the order they
@@ -259,7 +259,7 @@ Feature: The dashboard
     And the diary lists 3 retrospectives
     And the browser reported no console errors
 
-  # The global id, which is the whole of the second half of direction 4:
+  # The global id, which is the whole of the second half of the diary's rule:
   # `retroNumber` counts per session and repeats, so on a list spanning two
   # sessions it cannot identify the row it is printed on. Retro 2 is session 1's
   # second and retro 3 is session 2's first — both "#1" or "#2" under the old
@@ -275,7 +275,7 @@ Feature: The dashboard
     Given the reviewer opens the dashboard
     Then the sitting for session 1 is stamped "2026-08-24T09:00:00.000Z"
 
-  # D5: never a bare number. A retro whose latest draft proposed no name reads
+  # Never a bare number. A retro whose latest draft proposed no name reads
   # as its GLOBAL id plus the directory it happened in.
   Scenario: A retro whose latest draft proposed no name reads as its global id
     Given the reviewer opens retro 1

@@ -8,7 +8,7 @@ Feature: Reviewing a revision
     Given the reviewer opens retro 1
 
   # The click-through has to land somewhere the reader recognises: the name and
-  # the identity line are the dashboard row's, restated (N1, N3).
+  # the identity line are the dashboard row's, restated.
   Scenario: The page opens by saying which retrospective this is and where it happened
     Then the review header names the retro "The lock, the arrows and the silent tailer"
     And the review header identifies it as "Session 1 · Retro #1 · /Users/sample/Developer/retro"
@@ -917,7 +917,7 @@ Feature: Reviewing a revision
 
   # The undo is an append, not an erasure: the verdict that was undone is still
   # in the record's history, which is the only place it could be after the page
-  # has moved on (D4). Asserted through the page, on the count it changed.
+  # has moved on. Asserted through the page, on the count it changed.
   Scenario: Undoing and deciding again lands where the last press says
     When the reviewer asks for a revision of record "r-silent-tailer"
     And the reviewer presses the chosen verdict of record "r-silent-tailer" again
@@ -1240,7 +1240,7 @@ Feature: Reviewing a revision
     Then the review shows a comment panel and no requests panel
     And the review offers nothing that asks for something outside a comment
 
-  # A finished review is terminal (D3), and the server refuses a comment on one.
+  # A finished review is terminal, and the server refuses a comment on one.
   # The page has to agree with it rather than offer a control whose only outcome
   # is an error.
   Scenario: A finished review takes no more comments
@@ -1923,7 +1923,7 @@ Feature: Reviewing a revision
     And the reviewer loads the announced revision
     Then finishing is offered again
 
-  # G5: the review workflow — filter to pending, and as each
+  # The review workflow — filter to pending, and as each
   # record is decided it falls out of the filter. Whole records only: a record
   # that is on screen is still on screen entire.
 

@@ -78,9 +78,8 @@ Given('the reviewer opens the records page of a fresh install', async ({ page })
 })
 
 /**
- * The row is the way to the record, and the record is now on a page
- * of its own, each record having its own dedicated page.
- * It used to land on the record's review page instead (A6/A7), which was
+ * The row is the way to the record, and the record is on a page of its own.
+ * It used to land on the record's review page instead, which was
  * read as a bug.
  *
  * The wait is on the record's heading being in the document and nothing more:

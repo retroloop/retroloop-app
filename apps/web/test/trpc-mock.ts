@@ -214,7 +214,7 @@ type AttributeType = AttributeDefinition['type']
 type TrackedEvent = StreamItem<'events.onRetro'>
 type WireEvent = TrackedEvent['data']
 
-/** A decision as the store keeps it: one row per version, never edited (D4). */
+/** A decision as the store keeps it: one row per version, never edited. */
 type DecisionRow = {
   /** Its retrospective, because a rid is minted per retrospective and repeats across them. */
   readonly retroId: number
@@ -421,7 +421,7 @@ type Revision = {
    * The name the AI proposed with this draft, or null when it proposed none.
    * Per revision rather than per retrospective because that is where the server
    * keeps it: a title rides on the revision payload, and the **latest**
-   * revision's title is the retrospective's name (N3).
+   * revision's title is the retrospective's name.
    */
   readonly title: string | null
   readonly records: readonly RecordSeed[]
@@ -461,9 +461,9 @@ type Retrospective = {
 const RETRO_ID = 1
 const SESSION_ID = 1
 const PROJECT = 'retro'
-/** The session's immutable working directory — the identity anchor (N1). */
+/** The session's immutable working directory — the identity anchor. */
 const CWD = '/Users/sample/Developer/retro'
-/** The name the first two drafts gave the retrospective (N3). */
+/** The name the first two drafts gave the retrospective. */
 const TITLE = 'The lock, the arrows and the silent tailer'
 const FIXED_TIME = '2026-08-24T09:00:00.000Z'
 const SECOND_REVISION_TIME = '2026-08-24T11:30:00.000Z'
@@ -803,7 +803,7 @@ const silentTailer: RecordSeed = {
  * Each revision rewrites exactly one record's problem statement, which is what
  * makes carry-over visible: the records that did not change keep whatever
  * verdict they were given and say which revision gave it, and the one that
- * changed goes back to pending (D2).
+ * changed goes back to pending.
  */
 const bulletResponsesRewritten: RecordSeed = {
   ...bulletResponses,

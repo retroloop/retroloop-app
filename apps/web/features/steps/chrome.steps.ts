@@ -67,8 +67,8 @@ When('the reviewer opens the app menu', async ({ page }) => {
  * accident of ordering is one nobody would notice losing. What is provable is the
  * *budget* — that this walk survives a renderer running fifty times slower — and
  * that is what `chrome.feature` §the app menu opens, closes and arrives asserts,
- * red with every budget in it cut to a healthy page's 300ms — the controlled
- * run: 10 green, 10 red with the wait cut, 10 green again.
+ * red with every budget in it cut to a healthy page's 300ms — 10 green, 10
+ * red with the budgets cut, 10 green again.
  */
 export async function followAppMenuItem(page: Page, label: string): Promise<void> {
   const item = page.getByTestId(`app-menu-${label.toLowerCase()}`)
@@ -195,8 +195,7 @@ Then('the top menu carries no theme control', async ({ page }) => {
  * A position assertion is shown to fail before it is trusted
  * (`r-uncontrolled-assertions`): a browser lays a flex row out left to right for
  * free, and an assertion that merely found the trigger somewhere in the header
- * would ship green on a menu sitting beside the brand. Its plant is tested
- * for this record.
+ * would ship green on a menu sitting beside the brand.
  *
  * Two halves, because "top right" is two claims: the trigger is past the brand
  * (right of what the header opens with), and its right edge is flush with the

@@ -2,7 +2,7 @@
  * A moment, as a reader reads it — **relative while it is still recent, absolute
  * once it is not.**
  *
- * The rule for the diary view (direction 4): dates are relative when they
+ * The rule for the diary view: dates are relative when they
  * are not too far off. The two halves of that rule
  * are both instructions. "Relative" is the near case, because the reading the
  * diary is arranged for is "what was I doing in the last few days" and

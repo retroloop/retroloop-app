@@ -204,7 +204,7 @@ Given('the reviewer has asked for reduced motion', async ({ page }) => {
  * review's own.
  *
  * Arranged rather than performed, because it cannot be performed: threads are
- * append-only (D4), so nothing a reviewer can do empties them. This runs before
+ * append-only, so nothing a reviewer can do empties them. This runs before
  * the app boots and the mock's
  * own fixture reads it once (`bareReview` in `test/trpc-mock.ts`); it is starting
  * state, not a step reaching past the tRPC client. Every scenario that does not
@@ -952,7 +952,7 @@ Then('the review comments sit beside the records rather than above them', async 
  * The chips are independent toggles, so pressing one is a different act from
  * pressing it again — and each step asserts the chip it just pressed is in the
  * state its name claims, because a filter the reviewer cannot see the state of
- * is a filter they cannot trust (G5).
+ * is a filter they cannot trust.
  */
 When('the reviewer filters to {string}', async ({ page }, state: string) => {
   const chip = page.getByTestId(`filter-${state}`)
@@ -1086,7 +1086,7 @@ When('the AI replies {string} in the review thread', async ({ page }, text: stri
  *
  * It names the retrospective, like the resolve step in `records.steps.ts` and for
  * that step's reason: an agent works a queue that spans retrospectives, and a rid
- * on its own does not name a record (A5). Nothing about this goes through the
+ * on its own does not name a record. Nothing about this goes through the
  * page, because nothing can — there is no procedure to claim with, by design.
  */
 When(
@@ -1784,9 +1784,9 @@ Then(
  * Polled, because this is the step a key press is read through and the press is
  * answered asynchronously: the arrow moves focus, the strip's own handler sets
  * the value, and React commits on a later tick. A single read taken the moment
- * the press returned caught the tab that *was* open about one run in five — the
- * flake found in CI on main, reproduced here at 7 in 36 before this
- * changed. Instrumenting it settled the question: the strip reached the right
+ * the press returned caught the tab that *was* open about one run in five — a
+ * flake reproduced here at 7 in 36 before this changed. Instrumenting it
+ * settled the question: the strip reached the right
  * tab **5ms** after the failing read, so the key was never lost and nothing was
  * unready — the step was simply reading a state machine mid-step.
  *
@@ -2940,7 +2940,7 @@ Then('the review shows no comment panel and no requests panel', async ({ page })
 /**
  * The other half of the same rule, and the one that stops it being over-applied:
  * what a review *does* carry stays readable once it is finished. A thread is
- * history (D4), so a finished review that was commented on still shows it,
+ * history, so a finished review that was commented on still shows it,
  * read-only, rather than hiding it along with the controls.
  */
 Then('the review still shows the comments it already had', async ({ page }) => {
@@ -3452,8 +3452,8 @@ const REST_BUDGET_FRAMES = 600
 /**
  * Wait until the page has stopped scrolling.
  *
- * The measured account (the traces are recorded with the suite's own
- * evidence). The landing itself was never wrong: on every one of 25 traced
+ * The measured account (`r-flaky-landing-test`). The landing itself was never
+ * wrong: on every one of 25 traced
  * runs under contention the record came to rest at 112px, exactly where it
  * belongs, and the document height never moved. What varied was *when* — a
  * healthy run settles about 900ms after the click and a starved one had not
@@ -3965,8 +3965,8 @@ Then('there is no revision banner', async ({ page }) => {
 /* ── the retrospective's own identity ─────────────────────────────────────── */
 
 /**
- * The same two strings a dashboard row carries, on the page the row leads to
- * (N1, N3). Asserted with `toHaveText` rather than `toContainText` because the
+ * The same two strings a dashboard row carries, on the page the row leads to.
+ * Asserted with `toHaveText` rather than `toContainText` because the
  * identity line is a format, not a set of facts that happen to be present.
  */
 Then('the review header names the retro {string}', async ({ page }, name: string) => {
@@ -3977,7 +3977,7 @@ Then('the review header identifies it as {string}', async ({ page }, identity: s
   await expect(page.getByTestId('retro-identity')).toHaveText(identity)
 })
 
-/** The retrospective's own state, in the dashboard row's word (G1). */
+/** The retrospective's own state, in the dashboard row's word. */
 Then('the review header says the retro is {string}', async ({ page }, state: string) => {
   await expect(page.getByTestId('retro-state')).toHaveText(state)
 })

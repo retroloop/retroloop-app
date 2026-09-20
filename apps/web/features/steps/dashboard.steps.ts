@@ -88,7 +88,7 @@ Then('the dashboard says {string}', async ({ page }, line: string) => {
   await expect(page.getByTestId('dashboard-empty')).toHaveText(line)
 })
 
-/* ── direction 6: the band ────────────────────────────────────────────────── */
+/* ── the band ─────────────────────────────────────────────────────────────── */
 
 /**
  * The count is read off the band's own heading, which carries it in brackets past
@@ -243,7 +243,7 @@ Then(
  * A position assertion, so it is shown to fail rather than trusted
  * (`r-uncontrolled-assertions`) — a column lays itself out top-to-bottom for
  * free, which is exactly how an assertion like this ships green while proving
- * nothing. Its plant is tested. Fully above, not merely higher: the
+ * nothing. Fully above, not merely higher: the
  * number's bottom edge clears the label's top, which a two-pixel drift could
  * satisfy the weaker way.
  */
@@ -285,7 +285,7 @@ Then('the chart does not offer the axis {string}', async ({ page }, axis: string
 })
 
 /**
- * D6's ruling, one press at a time. Read off the renderer's published
+ * The orientation, one press at a time. Read off the renderer's published
  * `data-orientation` rather than off tick coordinates — a coordinate comparison
  * here would be asserting recharts' layout maths, which the browser does half of
  * for free and which would go green for the wrong reason the day it changes.
@@ -322,7 +322,7 @@ Then('the readings table lists {int} row(s)', async ({ page }, count: number) =>
   await expect(page.getByTestId('readings-table').getByTestId(/^readings-row-/)).toHaveCount(count)
 })
 
-/* ── direction 4: the diary ───────────────────────────────────────────────── */
+/* ── the diary ────────────────────────────────────────────────────────────── */
 
 Then('the diary holds {int} sitting(s)', async ({ page }, count: number) => {
   await expect(page.getByTestId('diary').getByTestId(/^session-card-/)).toHaveCount(count)
@@ -348,7 +348,7 @@ Then('the diary lists {int} retrospective(s)', async ({ page }, count: number) =
 })
 
 /**
- * The global ids the rows print, in draw order. This is direction 4's second half
+ * The global ids the rows print, in draw order. This is the diary's second half
  * and the fixture is what gives it teeth: across two sessions the per-session
  * numbers repeat, so a row that had gone back to `retroNumber` reads "Retro 1,
  * Retro 2, Retro 1" and fails here.
@@ -468,7 +468,7 @@ Then('the page does not scroll sideways', async ({ page }) => {
  * These three belong to `chrome.feature` and live here because the dashboard is
  * the page it opens them on. They survived the dashboard's recomposition
  * unchanged: nothing in that redesign went near the header, which is
- * direction 7 and separate work.
+ * separate work.
  */
 Then('the top menu names the app {string}', async ({ page }, name: string) => {
   await expect(page.getByTestId('app-brand')).toHaveText(name)
@@ -486,8 +486,7 @@ Then('the page carries no trail', async ({ page }) => {
 /**
  * A position assertion, so it is shown to fail rather than trusted: the browser
  * lays out a document top-to-bottom for free, which is exactly how an assertion
- * like this ships green while proving nothing (`r-uncontrolled-assertions`). Its
- * plant is tested.
+ * like this ships green while proving nothing (`r-uncontrolled-assertions`).
  */
 Then('the trail sits below the top menu', async ({ page }) => {
   const menu = await page.getByTestId('app-brand').boundingBox()

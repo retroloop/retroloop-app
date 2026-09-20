@@ -12,7 +12,7 @@ Feature: The records page
   proves: it is the only shape in which a row can be caught carrying the wrong
   retrospective's identity, linking to the wrong review, or resolving the wrong
   record — and two of those retrospectives mint the same rid on purpose, because
-  a rid is minted per retrospective and (retroId, rid) is the identity (A5).
+  a rid is minted per retrospective and (retroId, rid) is the identity.
 
   Background:
     Given the stage holds the retrospectives of two sessions
@@ -167,7 +167,7 @@ Feature: The records page
       | https://github.com/example-user/retro/pull/118 |
     And record "r-flaky-landing" of retro 2 notes "Sampled at rest; the poll moved down onto the sampling."
 
-  # A2: references are free text, so the page asks the one question that has an
+  # References are free text, so the page asks the one question that has an
   # unambiguous answer. A commit id has nowhere to point and stays a commit id.
   Scenario: A reference that is a web address is a link, and one that is not is not
     Given the reviewer opens the records page
@@ -316,7 +316,7 @@ Feature: The records page
   # On what a row used to do: clicking a record used to take the reviewer to
   # the retro page, but each record now has its own dedicated page. So a
   # row's one link is that page, and the way to the retrospective lives on
-  # it — which reverses rulings A6/A7.
+  # it — which reverses what a row used to do.
   Scenario: A row is one click to that record's own page
     Given the reviewer opens the records page
     When the reviewer opens record "r-bullet-responses" of retro 1 from the records page
@@ -729,7 +729,7 @@ Feature: The records page
       | HUMAN | Reopened                   |
 
   # The references the resolve cited, on the line that cited them — and the same
-  # one question the records page asks of a reference (A2).
+  # one question the records page asks of a reference.
   Scenario: A resolve on the timeline carries what it cited, linked only when it is a link
     Given the reviewer opens record 4 directly
     Then the timeline cites:
@@ -758,7 +758,7 @@ Feature: The records page
       | HUMAN | Declined against revision 2 |
 
   # The page catches up with what the AI did in its own process, on the one
-  # signal it has (A9): coming back to the tab.
+  # signal it has: coming back to the tab.
   Scenario: The record page catches up with what the AI did while the reviewer was away
     Given the reviewer opens record 3 directly
     Then the record page is "open"

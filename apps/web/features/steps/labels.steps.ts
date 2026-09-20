@@ -146,7 +146,7 @@ Then('the settings sections read:', async ({ page }, table: DataTable) => {
  * **This is a position assertion, so it is hand-run with the behaviour deleted**
  * (`r-uncontrolled-assertions`) — flexbox stacks children for free in more than
  * one configuration, which is exactly how a toothless layout assertion ships
- * green. The plant is hand-run with that behaviour deleted.
+ * green.
  */
 Then('the settings nav is vertical', async ({ page }) => {
   await expect(page.getByTestId('settings-nav')).toHaveAttribute('aria-orientation', 'vertical')
