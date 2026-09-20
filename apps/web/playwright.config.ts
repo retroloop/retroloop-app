@@ -114,16 +114,16 @@ export default defineConfig({
      * inside the bulk's first seconds, so naming it here would buy no quiet and
      * would widen what a failure elsewhere can take down with it — a dependency
      * project that fails takes its dependents' tests with it as skips, which is the
-     * price of the ordering and is stated in `docs/design/testing.md` so that a
-     * merger reading `2 did not run` under a red bulk knows what it means.
+     * price of the ordering and is stated in `docs/design/testing.md` so that
+     * anyone reading `2 did not run` under a red bulk knows what it means.
      *
      * **Debugging these does not need the bulk's 348.** `--no-deps` ignores the
      * dependency, so the whole project is reachable on its own:
      *
      * That number is hand-maintained and nothing checks it — it read 331 when the
      * bulk was 330, was corrected once, and had gone stale again by five
-     * before this line was next read. Two workers adding
-     * scenarios at once is all it takes. `bunx playwright test --list` is the authority;
+     * before this line was next read. Two changes landing at once is all it
+     * takes. `bunx playwright test --list` is the authority;
      * this is a reader's sense of scale and should be treated as one:
      *
      *   cd apps/web && bun run test --project=starved --no-deps

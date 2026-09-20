@@ -18,22 +18,21 @@ Feature: Reviewing a revision
   # bottom to find out that nothing they did up there would count. The word is
   # the dashboard row's word, so the two screens agree.
   #
-  # Three words now, because the middle one is his session-11 add: "There should
-  # be a status in between that indicates that the human has submitted but AI
-  # hasn't closed". The walk is one scenario rather than three because the claim
-  # is about the BOUNDARIES — a tag that changed one press early or one press
-  # late still reads correctly at two of these three points.
+  # Three words now, because the middle one indicates the human has submitted
+  # but the AI hasn't closed. The walk is one scenario rather than three
+  # because the claim is about the BOUNDARIES — a tag that changed one press
+  # early or one press late still reads correctly at two of these three
+  # points.
   Scenario: The header says what state the review is in, through the press and the close
     Then the review header says the retro is "reviewing"
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
     And the reviewer approves record "r-silent-tailer"
     And the reviewer finishes the review
-    # His press ends his side of the round and nothing more: the retrospective is
-    # still `reviewing` in the store until the AI closes it (retro 4
-    # r-one-finish-button). SUBMITTED is the reading of that unchanged row, and
-    # it lands without a reload — the finish invalidates retros.get and the
-    # header re-reads it.
+    # The human's press ends their side of the round and nothing more: the
+    # retrospective is still `reviewing` in the store until the AI closes it.
+    # SUBMITTED is the reading of that unchanged row, and it lands without a
+    # reload — the finish invalidates retros.get and the header re-reads it.
     Then the review header says the retro is "submitted"
     When the AI closes the review
     Then the review is finished
@@ -1128,7 +1127,7 @@ Feature: Reviewing a revision
   # small comment glyph inline beside the heading text.
   #
   # The affordance rendered after the section's content — after the problem
-  # bullets, after the human-words block — so on a session-9-sized section it was
+  # bullets, after the human-words block — so on a large section it was
   # a screen below the heading that named it and read as belonging to whatever
   # came last. Two ways for that to be wrong and both are asserted: it has to be
   # beside the heading, and it has to have left the bottom.

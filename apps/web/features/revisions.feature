@@ -66,7 +66,7 @@ Feature: Revisions arriving under a reviewer
 
   # A pinned older revision is history, and read-only means read-only: there is
   # no control on the card that a pinned revision still takes. The hold control
-  # was the one exception for a session, and retro 4 `r-remove-hold` removed it.
+  # was the one exception for a session, and removing the hold feature removed it.
   Scenario: An older revision is pinned by URL and is read-only
     Given the reviewer opens retro 1 pinned to revision 1
     Then the breadcrumb reads "Retroloop › retro › Session 1 › Retro #1 · Rev 1"
@@ -74,8 +74,8 @@ Feature: Revisions arriving under a reviewer
     And record "r-bullet-responses" offers no decision buttons
     And the review is read-only
 
-  # The other end of the same address, and the second witness of retro-13
-  # r-validatesearch-narrows-not-polices: `?rev=abc` is not a revision, and the
+  # The other end of the same address, and the second witness of
+  # `r-validatesearch-narrows-not-polices`: `?rev=abc` is not a revision, and the
   # validator omitting the key is NOT what decides that. TanStack Router's
   # `validateSearch` narrows the type and hands the raw search back, so until the
   # guard moved to the point of use this address pinned the review to the string

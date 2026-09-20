@@ -17,8 +17,8 @@
  * An extra field canned into an answer compiles clean, and no amount of care
  * here changes that: TypeScript infers an arrow handler's return type from its
  * literal and then checks the whole function type for assignability, so
- * excess-property checking never fires on what a handler returns (retro 6
- * `r-mock-extra-field-blind`, proven by repro). That fourth direction belongs to
+ * excess-property checking never fires on what a handler returns
+ * (`r-mock-extra-field-blind`, proven by repro). That fourth direction belongs to
  * `scripts/check-mock-parity.ts`, which runs every procedure below against this
  * world and validates each answer with the schema the real router validates it
  * with. `test/procedure-set.spec.ts` checks the same set at runtime, and
@@ -539,8 +539,8 @@ const staleLock: RecordSeed = {
     whys: [
       // The one why written the way a real one is — "**Why did X?** because Y",
       // a full line of prose rather than a clause. The gutter label beside it is
-      // the only thing on this page a long line can squeeze (retro 4
-      // `r-whys-labels`): with a short why there is no shrink pressure at all,
+      // the only thing on this page a long line can squeeze
+      // (`r-whys-labels`): with a short why there is no shrink pressure at all,
       // and the control for "one line each" passes without observing anything.
       '**Why did the start refuse?** A lock file was sitting in the stage directory, and ' +
         'the guard reads the file itself as proof that something is already serving it.',
@@ -730,8 +730,8 @@ const silentTailer: RecordSeed = {
     'receiving events. Nothing logs, and the pages look merely quiet.',
   /**
    * The quote carries a newline and a pair of asterisks, because human words are
-   * the one field nothing may reinterpret: the line breaks are his and so are
-   * the asterisks, and both have to reach the page unchanged (the amendment to
+   * the one field nothing may reinterpret: the line breaks are the human's and
+   * so are the asterisks, and both have to reach the page unchanged (the amendment to
    * r-prose-renders-raw). The cleaned half is a restatement of the same words
    * and is read the same way.
    */
@@ -1627,7 +1627,7 @@ const LEGACY_HOLD_DECISION: DecisionRow = {
   solutionLevel: 2,
   // Null the way every decision row written before solutions existed is: nobody
   // asked this reviewer which one, so the effective view falls back to the
-  // recommendation, which is what he was in fact shown.
+  // recommendation, which is what the reviewer was in fact shown.
   selectedSolution: null,
   involvement: 'pull-request',
   reviewerNote: 'Parked, under a model that has since been replaced.',

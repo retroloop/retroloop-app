@@ -135,7 +135,7 @@ Then(
  * The absence of both figures, counted rather than asserted invisible — the same
  * call `there is no band` makes, and for the same reason: a `<dl>` rendered at
  * zero height is invisible and still there, and what the band promises is that a
- * round nobody owes him anything on carries no numbers at all.
+ * round nobody owes the reviewer anything on carries no numbers at all.
  *
  * Both testids, because the pair is rendered together and dropping one of them
  * would be a half-fix this step has to see.
@@ -147,10 +147,10 @@ Then("the band's row for retro {int} shows no figures", async ({ page }, retroId
 })
 
 /**
- * What the row's one control invites him to do. "Review it" is the call to act
- * and "Open it" is the way in to a round that is not his — the word changes with
- * the state, so a row whose tag moved and whose button did not would be sending
- * him back to a review he has already finished.
+ * What the row's one control invites the reviewer to do. "Review it" is the call
+ * to act and "Open it" is the way in to a round that is not theirs — the word
+ * changes with the state, so a row whose tag moved and whose button did not
+ * would be sending them back to a review they have already finished.
  */
 Then(
   "the band's row for retro {int} offers {string}",
@@ -211,8 +211,8 @@ Then(
 /**
  * **The pair as a document**, which is the half a picture cannot show: a
  * definition list means term then description, and this tile used to write them
- * the other way round to get its value-first look (session-11 §7q — flagged
- * pre-existing, non-conforming and load-bearing for that look).
+ * the other way round to get its value-first look (flagged pre-existing,
+ * non-conforming and load-bearing for that look).
  *
  * Read off the tag names in the order the DOM holds them, one group at a time,
  * because that order IS the claim. A count is also checked to be inside the tile
@@ -243,8 +243,7 @@ Then(
  * A position assertion, so it is shown to fail rather than trusted
  * (`r-uncontrolled-assertions`) — a column lays itself out top-to-bottom for
  * free, which is exactly how an assertion like this ships green while proving
- * nothing. Its plant is tested and recorded with the suite's own evidence.
- * Fully above, not merely higher: the
+ * nothing. Its plant is tested. Fully above, not merely higher: the
  * number's bottom edge clears the label's top, which a two-pixel drift could
  * satisfy the weaker way.
  */
@@ -383,9 +382,9 @@ Then(
 
 /**
  * The pending count gone, not zero. The diary hides it off the same reading the
- * band hides its figures off — a round he has put down is not a round he owes
- * anything on — and "0 pending" beside a tag that says SUBMITTED would be the
- * page arguing with itself.
+ * band hides its figures off — a round that has been put down is not a round
+ * anything is owed on — and "0 pending" beside a tag that says SUBMITTED would
+ * be the page arguing with itself.
  */
 Then(
   "the diary's row for retro {int} counts nothing pending",
@@ -488,7 +487,7 @@ Then('the page carries no trail', async ({ page }) => {
  * A position assertion, so it is shown to fail rather than trusted: the browser
  * lays out a document top-to-bottom for free, which is exactly how an assertion
  * like this ships green while proving nothing (`r-uncontrolled-assertions`). Its
- * plant is tested and recorded with the suite's own evidence.
+ * plant is tested.
  */
 Then('the trail sits below the top menu', async ({ page }) => {
   const menu = await page.getByTestId('app-brand').boundingBox()

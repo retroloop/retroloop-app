@@ -174,7 +174,7 @@ When('the page is reloaded', async ({ page }) => {
  */
 When('the reviewer leaves the review and comes back', async ({ page }) => {
   await page.getByTestId('breadcrumb').getByRole('link', { name: 'Retro' }).click()
-  // The dashboard's landmark since the session-12 recomposition: `retro-list` was
+  // The dashboard's landmark since its recomposition: `retro-list` was
   // the flat list of retrospectives that led the page before the corpus block, and
   // both are gone. The stat row is what says the dashboard has finished loading.
   await expect(page.getByTestId('dashboard-stats')).toBeVisible()
@@ -652,8 +652,8 @@ When('the reviewer scrolls to record {string}', async ({ page }, rid: string) =>
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`), and it has to be: taking a comment surface out
  * of the reading column is exactly the kind of change a browser will half-do for
- * free. Hand-run with the comments mounted back above the records — the panel he
- * was shown — and the failure output is recorded with the suite's own evidence.
+ * free. Hand-run with the comments mounted back above the records — the panel
+ * that was shown.
  */
 Then('the reviewer is still on record {string}', async ({ page }, rid: string) => {
   const where = await place(page, rid)
@@ -690,8 +690,7 @@ When('the reviewer turns the iPad to {int} by {int}', async ({ page }, width, he
  * The card is the column: `RecordSlot` is a full-width grid cell inside it.
  *
  * A controlled assertion (testing.md §Operational rules,
- * `r-uncontrolled-assertions`), hand-run with the width fix deleted; the failure
- * output is recorded with the suite's own evidence.
+ * `r-uncontrolled-assertions`), hand-run with the width fix deleted.
  */
 const READING_COLUMN = { narrowest: 704, widest: 768 }
 
@@ -756,7 +755,7 @@ Then('the reading column keeps its measure', async ({ page }) => {
  *
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`), hand-run with the page's width coupled back to
- * the rail; the failure output is recorded with the suite's own evidence.
+ * the rail.
  */
 Then('the reading column starts {int} pixels from the left', async ({ page }, left: number) => {
   const box = await card(page, 'r-stale-lock').boundingBox()
@@ -881,8 +880,7 @@ Then('the comments sheet is {int} pixels wide', async ({ page }, expected: numbe
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`): a width that is nearly right leaves a strip that
  * is nearly right, and the point of a fixed reveal is the pixel it is fixed at.
- * Re-proven against the prior proportional 85vw; the failure output is
- * recorded with the suite's own evidence.
+ * Re-proven against the prior proportional 85vw.
  */
 Then(
   'the comments sheet leaves {int} pixels of the page uncovered',
@@ -906,8 +904,7 @@ Then(
  * Measured off the Post button, which is the composer's bottom edge, against the
  * panel's own bottom. A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`) — a flex column will put a lone child wherever it
- * likes for free — hand-run with the empty thread area deleted; the failure
- * output is recorded with the suite's own evidence.
+ * likes for free — hand-run with the empty thread area deleted.
  */
 const COMPOSER_FOOT = 8
 
@@ -931,8 +928,7 @@ Then('the composer sits at the bottom of the panel', async ({ page }) => {
  * means and what the panel above the records was not.
  *
  * A controlled assertion (`r-uncontrolled-assertions`), hand-run with the
- * comments mounted back above the records; the failure output is
- * recorded with the suite's own evidence.
+ * comments mounted back above the records.
  */
 Then('the review comments sit beside the records rather than above them', async ({ page }) => {
   const rail = await page.getByTestId('review-comment-rail').boundingBox()
@@ -1026,8 +1022,8 @@ When('the reviewer confirms the finish', async ({ page }) => {
 })
 
 /**
- * A second press of the one terminal action (retro 4
- * `r-request-changes-multi-press`). Forced, because the button is disabled by
+ * A second press of the one terminal action
+ * (`r-request-changes-multi-press`). Forced, because the button is disabled by
  * then and a disabled button is exactly what this is checking: the click is
  * dispatched at it and the page swallows it, which is why the event count on
  * the other side of the step is the assertion that matters.
@@ -1121,8 +1117,8 @@ Then('record {string} is {string}', async ({ page }, rid: string, state: string)
 })
 
 /**
- * The absence of the hold surface, counted rather than named (retro 4
- * `r-remove-hold`).
+ * The absence of the hold surface, counted rather than named
+ * (`r-remove-hold`).
  *
  * There were four testids on the control and its tag — `hold`, `release`,
  * `hold-note`, `record-held` — and checking for the four somebody remembers is
@@ -1619,7 +1615,7 @@ Then(
  * A controlled assertion (testing.md §Operational rules, `r-uncontrolled-assertions`):
  * hand-run with `.gutter-label`'s width and `nowrap` deleted — the gutter
  * shrinking against the prose beside it until "WHY" and its number were
- * on different lines — and the failure output is recorded with the suite's own evidence. Asserted on
+ * on different lines. Asserted on
  * the iPad in portrait, the screen the review is read on and the width
  * where a text-relative gutter has least room to stay on one line.
  */
@@ -1642,7 +1638,7 @@ Then(
  * what keeps `w-20` from being a number nobody ever re-measures.
  *
  * A controlled assertion: hand-run with the shared width deleted, and again with
- * it shrunk below INCIDENT; both failure outputs are recorded with the suite's own evidence.
+ * it shrunk below INCIDENT.
  */
 Then(
   'the root-cause labels of record {string} are all the same width',
@@ -1666,7 +1662,7 @@ Then(
 )
 
 /**
- * `r-incident-line-overflow` (retro 5): the prose half of a gutter row is a flex
+ * `r-incident-line-overflow`: the prose half of a gutter row is a flex
  * item, so its automatic minimum size is its own min-content — the longest thing
  * in it that cannot be broken — and a cell whose min-content beats the row lays
  * out at that min-content and hangs off the end of it.
@@ -1868,7 +1864,7 @@ Then('record {string} shows no AI mark on any solution tab', async ({ page }, ri
 
 /**
  * The single-solution shape, swept by counting rather than by naming what is
- * gone (`r-single-solution-no-tabs`, and the session-6 renamed-panel lesson: a
+ * gone (`r-single-solution-no-tabs`, and the renamed-panel lesson: a
  * sweep that names the elements it expects to be absent passes the day one of
  * them is renamed).
  *
@@ -2049,11 +2045,9 @@ Then(
  * drawing is. Neither can the page scroll sideways: a record's slot clips for
  * the departure animation, which is the same reason the root-cause scenario
  * leaves that check out. With `overflow-x-auto` deleted, both stayed green while
- * the wide line was silently cut — hand-run, and recorded with the suite's
- * own evidence.
+ * the wide line was silently cut — hand-run.
  *
- * A controlled assertion; the failure output with `overflow-x-auto` deleted is
- * recorded with the suite's own evidence.
+ * A controlled assertion, with `overflow-x-auto` deleted.
  */
 Then(
   'the footprint of solution {int} of record {string} scrolls inside its own box',
@@ -2184,8 +2178,7 @@ Then(
  * order — which is what makes it one press rather than three.
  *
  * A controlled assertion (`r-uncontrolled-assertions`): hand-run against the
- * strip rebuilt from plain buttons, and the failure output is recorded
- * with the suite's own evidence.
+ * strip rebuilt from plain buttons.
  */
 Then(
   'the solution strip of record {string} is one stop in the tab order',
@@ -2237,7 +2230,7 @@ Then(
  * themes (`r-theme-blind-assertions`). Three channels, because the fill, the ink
  * and the border are three separate rules and a dark override that suppresses
  * one leaves the other two standing — which is how a chosen-verdict styling
- * shipped green in retro 5 with only its font weight surviving.
+ * once shipped green with only its font weight surviving.
  *
  * The closed tabs are also asserted to agree with each other, so a strip whose
  * tabs all looked different could not pass by accident.
@@ -2812,7 +2805,7 @@ Then(
  * The visible half: a settled thread must not render like the ones still open.
  *
  * Read off the rendered page rather than off a class name, and **channel by
- * channel** (testing.md §Operational rules, retro 5
+ * channel** (testing.md §Operational rules,
  * `r-assertion-value-distinctiveness` / `r-theme-blind-assertions`): "differs
  * somehow" is not the claim. The treatment promises two things — the card fades
  * and its ink goes muted — and a joined-string comparison would pass on a state
@@ -2896,7 +2889,7 @@ Then('the composer is aimed at the review', async ({ page }) => {
  * A controlled assertion (`r-uncontrolled-assertions`), and it has to be: a
  * browser moves focus on a click for free, and the click here is on the *card*,
  * three columns away from the box being claimed. Hand-run with the composer's
- * focus effect deleted; the failure output is recorded with the suite's own evidence.
+ * focus effect deleted.
  */
 Then('the keyboard is in the panel composer', async ({ page }) => {
   await expect.poll(() => focusedTestId(page)).toBe('open-thread-submit-text')
@@ -3122,8 +3115,8 @@ Then('no filter chip is active', async ({ page }) => {
 /**
  * Which chips the bar offers, as an exact ordered list.
  *
- * `hold` is on it only where a store carries that verdict (retro 4
- * `r-remove-hold`), so this is the step that holds both halves of the rule: it
+ * `hold` is on it only where a store carries that verdict
+ * (`r-remove-hold`), so this is the step that holds both halves of the rule: it
  * fails on a `hold` chip that came back to a clean store, and on a missing one
  * where a hold verdict exists. Read off the testids rather than the labels,
  * because the testid is what the rest of these steps address a chip by.
@@ -3437,7 +3430,7 @@ const LANDED = 'landed at the top of the reading area'
  * unchanged in before the page counts as having come to rest.
  *
  * Frames rather than milliseconds, and that is the whole fix
- * (`r-flaky-landing-test`, retro 6). A smooth scroll advances once per frame, so
+ * (`r-flaky-landing-test`). A smooth scroll advances once per frame, so
  * two identical frames already mean it is over; three is what the frame the
  * click landed in costs, before the browser has scheduled the first step of the
  * animation. Counting frames is also what tells a *finished* scroll apart from a
@@ -3689,7 +3682,7 @@ const HEADER = 56
  * `r-uncontrolled-assertions`) and it has to be: a bar near the top of a page is
  * near the top of the page for free until something scrolls, so this asserts the
  * page really moved *first* and then asks where the bar is. Hand-run with the
- * `sticky top-14` deleted; the failure output is recorded with the suite's own evidence.
+ * `sticky top-14` deleted.
  */
 Then('the decision bar is stuck under the header', async ({ page }) => {
   const scrolled = await page.evaluate(() => window.scrollY)
@@ -3804,7 +3797,7 @@ Then('the review is no longer refused', async ({ page }) => {
  * is the component's own (`review-actions.tsx`) and this is what checks it.
  *
  * A controlled assertion (`r-uncontrolled-assertions`), hand-run with that
- * `onCloseAutoFocus` deleted; the failure output is recorded with the suite's own evidence.
+ * `onCloseAutoFocus` deleted.
  */
 Then('the keyboard is on the finish button', async ({ page }) => {
   await expect.poll(() => focusedTestId(page)).toBe('finish-review')
@@ -3829,8 +3822,8 @@ Then('the review is read-only', async ({ page }) => {
 /**
  * The other side of it, and an absence assertion on purpose: a review that is
  * editable says nothing about being editable — what it does is not carry the
- * marker. It exists for the address a human typed wrong (retro-13
- * `r-validatesearch-narrows-not-polices`), where a junk `?rev=` used to pin the
+ * marker. It exists for the address a human typed wrong
+ * (`r-validatesearch-narrows-not-polices`), where a junk `?rev=` used to pin the
  * page to a revision that does not exist and take every control away.
  */
 Then('the review is not read-only', async ({ page }) => {
@@ -3954,8 +3947,8 @@ Then('the round carries no final message', async ({ page }) => {
 
 /**
  * What the review's own actions offer, counted and named rather than checked
- * for the absence of the one button somebody remembers (retro 4
- * `r-one-finish-button`). Request changes left from here.
+ * for the absence of the one button somebody remembers
+ * (`r-one-finish-button`). Request changes left from here.
  */
 Then('the review actions offer the buttons {string}', async ({ page }, buttons: string) => {
   await expect(page.getByTestId('review-actions').getByRole('button')).toHaveText(listed(buttons))
@@ -4088,7 +4081,7 @@ Then('the record index is closed', async ({ page }) => {
  * that says which side, and it is the half a browser will half-do for free: an
  * `inset-y-0` sheet is full height and near the top whichever edge it is pinned
  * to. A controlled assertion (`r-uncontrolled-assertions`), hand-run with the
- * sheet moved to `right-0`; the failure output is recorded with the suite's own evidence.
+ * sheet moved to `right-0`.
  */
 Then('the record index opens from the left', async ({ page }) => {
   const sheet = await page.getByTestId('record-index-sheet').boundingBox()
@@ -4123,7 +4116,7 @@ Then('the record index sheet is {int} pixels wide', async ({ page }, expected: n
  * its left one.
  *
  * A controlled assertion (`r-uncontrolled-assertions`), re-proven against main's
- * proportional 85vw; the failure output is recorded with the suite's own evidence.
+ * proportional 85vw.
  */
 Then(
   'the record index sheet leaves {int} pixels of the page uncovered',

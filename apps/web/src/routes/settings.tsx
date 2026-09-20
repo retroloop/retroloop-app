@@ -27,8 +27,8 @@ export const Route = createFileRoute('/settings')({ component: SettingsPage })
  * it.
  *
  * **The counted chip row it replaces was an earlier design's
- * mechanism, retired in the same redesign** — several variations staked
- * different shapes and this is the one that was settled on. The chips are
+ * mechanism, retired in the same redesign** — other shapes were tried and
+ * this is the one that shipped. The chips are
  * gone rather than kept as a narrow
  * fallback: two mechanisms for choosing the same four panels would be one too
  * many, and a responsive layout that changes mechanism is a page that has to be

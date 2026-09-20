@@ -171,8 +171,7 @@
    * (`scripts/validate_palette.js` of the `dataviz` discipline: OKLab ΔE ×100
    * under Machado-Oliveira-Fernandes protanopia/deuteranopia at severity 1.0,
    * plus the lightness/chroma/contrast checks). The evidence for this palette
-   * is recorded with the validator's own output; what follows is why there
-   * are three families.
+   * is the check described above; what follows is why there are three families.
    *
    * 1. `--series-*` — **status.** Lifecycle is a reserved scale with fixed
    *    meaning, and these are the app's own `--tone-*` values so a stacked

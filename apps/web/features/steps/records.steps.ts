@@ -521,7 +521,7 @@ type ChipLook = {
  *
  * Three channels, because the fill, the ink and the border are three separate
  * rules and a dark override that suppresses one leaves the other two standing —
- * which is how a chosen-verdict styling shipped green in retro 5 with only its
+ * which is how a chosen-verdict styling once shipped green with only its
  * font weight surviving. Transitions are killed before measuring, so what is
  * sampled is where the colours ended rather than where they were passing
  * through.
@@ -891,8 +891,8 @@ Then("the record page's relations read:", async ({ page }, table: DataTable) => 
  * The block with no lines on it — asserted by the list's absence, because there
  * is no empty-state branch to assert instead: a relations list is `[]` until
  * somebody writes one, and a message saying so would be a rendered branch the
- * page can reach and no scenario would ever check (retro 3
- * `r-untested-rendered-branch`).
+ * page can reach and no scenario would ever check
+ * (`r-untested-rendered-branch`).
  */
 Then('the record page relates to nothing', async ({ page }) => {
   await expect(page.getByTestId('record-relations')).toBeVisible()

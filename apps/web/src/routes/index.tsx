@@ -21,18 +21,16 @@ export const Route = createFileRoute('/')({ component: Dashboard })
 /**
  * **The composed dashboard.**
  *
- * An earlier design bake-off found nothing worth keeping whole. A direction
- * round ran instead — three variations on one throwaway endpoint,
- * charts chosen against real data rather than against fixtures — and this is
- * the composition that was settled on: primarily "The Control Room", with
- * two pieces borrowed from the other two variations and two of the Control
- * Room's own blocks removed.
+ * Several compositions were tried, with charts chosen against real data
+ * rather than against fixtures; this is the one that shipped: primarily
+ * "The Control Room", with two pieces borrowed from the alternatives and
+ * two of the Control Room's own blocks removed.
  *
  * **The order, top to bottom:**
  *
  * 1. **The menu**, which is now the shell's own and holds nothing of this page's:
- *    direction 7 collapsed the two loose links this route used to hang in the
- *    header — Records and Settings — into the one dropdown every page carries
+ *    the two loose links this route used to hang in the header — Records and
+ *    Settings — collapsed into the one dropdown every page carries
  *    (`chrome/app-menu.tsx`), so the dashboard renders no navigation at all.
  * 2. **The live band** — the Debt Front's RETRO IN FLIGHT row. Conditional: it
  *    renders nothing when no retrospective is open, and one entry per round when
@@ -42,7 +40,7 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  * 4. **The corpus by any axis** — the Control Room's switchable chart, with the
  *    Retrospective tab dropped.
  * 5. **The readings table** — the rows behind the numbers.
- * 6. **The diary** — the Work Diary's session cards, with direction 4's relative
+ * 6. **The diary** — the Work Diary's session cards, with relative
  *    dates and global retro ids.
  *
  * **Removed, entirely:** "What The Open Queue Costs" (the
@@ -52,7 +50,7 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  *
  * **What this replaced.** The previous dashboard led with a records block whose
  * own docstrings argued from "132 records" and "twelve retrospectives" —
- * a count that went stale within a week (the store is 154 and 14). Those
+ * a count that went stale within a week. Those
  * numbers are gone with the block, and nothing here restates a count in prose: a
  * figure that lives in a comment is a figure that goes stale silently, and this
  * page is now read by four components that all count the same rows through
@@ -76,7 +74,7 @@ function Dashboard() {
    * would be a wire widening — a two-package change, `r-wire-widening-two-package`
    * — and nothing here needs one: the diary places a retrospective by its
    * session's `startedAt`, which `retros.list` has carried since the schema
-   * existed and which nothing rendered until direction 4.
+   * existed and which nothing rendered before now.
    */
   const retros = useQuery(trpc.retros.list.queryOptions({}))
   const records = useQuery(trpc.records.listAll.queryOptions({}))

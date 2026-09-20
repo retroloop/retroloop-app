@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url'
  * is gone rather than scheduled around, bar the one time in eighty that
  * eighty ports hands the same number to both.
  *
- * The range sits clear of every port brief-001 §Ports allocates by hand — the
+ * The range sits clear of every port this project allocates by hand — the
  * server, the dev server, the reference build, the old preview port, and the
  * review round. A stale worktree still previewing on 24302 is the collision most
  * likely to actually happen, so it is ruled out rather than merely made unlikely.
@@ -60,7 +60,7 @@ export function derivePort(checkout: string, pid: number): number {
 }
 
 /**
- * The ports nothing derived may land on: brief-001 §Ports hands each of these to
+ * The ports nothing derived may land on: each of these is handed to
  * something by name — 24100 the server, 24300 `dev`, 24301 the reference build,
  * 24302 the preview port this replaces, 24310 the review round.
  */

@@ -146,7 +146,7 @@ Then('the settings sections read:', async ({ page }, table: DataTable) => {
  * **This is a position assertion, so it is hand-run with the behaviour deleted**
  * (`r-uncontrolled-assertions`) — flexbox stacks children for free in more than
  * one configuration, which is exactly how a toothless layout assertion ships
- * green. The plant and its failure output are recorded with the suite's own evidence.
+ * green. The plant is hand-run with that behaviour deleted.
  */
 Then('the settings nav is vertical', async ({ page }) => {
   await expect(page.getByTestId('settings-nav')).toHaveAttribute('aria-orientation', 'vertical')
@@ -231,8 +231,8 @@ Then('the label {string} offers a way to retire it', async ({ page }, name: stri
 })
 
 /**
- * The two controls are one slot with two occupants (retro-11
- * `r-retire-burns-a-word`), so both directions are asserted by **presence and
+ * The two controls are one slot with two occupants
+ * (`r-retire-burns-a-word`), so both directions are asserted by **presence and
  * absence**: an offerable row must not offer Un-retire, and a retired one must.
  * `toHaveCount(0)` rather than invisibility, for the reason the panel steps give
  * — a hidden control is still in the accessibility tree and still pressable by
@@ -330,7 +330,7 @@ Then('the settings page says {string}', async ({ page }, sentence: string) => {
 
 /**
  * **The selected section, against every unselected one, channel by channel**
- * (`r-theme-blind-assertions`) — the highlight is what his reference shows and
+ * (`r-theme-blind-assertions`) — the highlight is what the design shows and
  * what "selected item highlighted" means in pixels.
  *
  * Three channels tell them apart in `ui/tabs.tsx` — fill, ink and border — and
@@ -409,8 +409,8 @@ Then('the selected settings section stands out from the others', async ({ page }
  * text**, which is the thing a reader sees, rather than off the provider's state
  * or `localStorage`. A control that had drifted from the theme actually applied
  * would satisfy an assertion made against the state behind it and fail this one,
- * which is the direction that matters: the whole of his ask is that the setting
- * be visible in one named place.
+ * which is the direction that matters: the whole of the rule is that the
+ * setting be visible in one named place.
  */
 Then('the dark mode setting reads {string}', async ({ page }, option: string) => {
   await expect(page.getByTestId('settings-theme')).toHaveText(option)

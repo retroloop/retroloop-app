@@ -29,7 +29,7 @@ const EXPECTED_PATHS = [
   'attributes.rename',
   'attributes.retire',
   'attributes.set',
-  // The un-retire pair, session 12 (retro-11 `r-retire-burns-a-word`).
+  // The un-retire pair.
   'attributes.unretire',
   'decisions.record',
   'events.onRetro',
@@ -43,7 +43,7 @@ const EXPECTED_PATHS = [
   'records.get',
   'records.list',
   'records.listAll',
-  // Session 11's relation (session 13). One procedure for relate and un-relate,
+  // The relation pair. One procedure for relate and un-relate,
   // on `records.setLifecycle`'s own standing.
   'records.relate',
   'records.setLifecycle',

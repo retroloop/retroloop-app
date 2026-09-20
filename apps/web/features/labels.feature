@@ -434,10 +434,10 @@ Feature: Labels, attributes and the settings page
 
   # ── the label filter ──────────────────────────────────────────────────────
 
-  # "They can filter on the label" — his whole argument for why a label beats a
-  # comment carrying the same words. It is behind the filter icon rather than on
-  # the bar because the vocabulary is unbounded: a store with fifteen labels
-  # would wrap the bar to four lines.
+  # Being able to filter on the label is the whole argument for why a label
+  # beats a comment carrying the same words. It is behind the filter icon
+  # rather than on the bar because the vocabulary is unbounded: a store with
+  # fifteen labels would wrap the bar to four lines.
   Scenario: The label filter counts what the page holds, and narrows to it
     Given the reviewer opens the records page
     Then the filters count:
@@ -479,7 +479,7 @@ Feature: Labels, attributes and the settings page
 
   # ux-brief 04's standing limit, on the two screens this product is read on. The
   # settings page carries the widest thing it has — a full attribute name beside
-  # a type and two controls — on the layout lane's own measure.
+  # a type and two controls — on the layout's own measure.
   Scenario Outline: The settings page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens the settings page

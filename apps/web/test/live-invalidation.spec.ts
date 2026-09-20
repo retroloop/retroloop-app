@@ -29,7 +29,7 @@ test('a comment reaches the panel whichever surface it was written from', () => 
 })
 
 /**
- * Session 7's bug. Both of these fell to the everything-else branch and
+ * A real bug. Both of these fell to the everything-else branch and
  * invalidated `records.*` alone, which stopped being where a record's threads
  * live when the comments panel became the one comments surface — so a thread
  * settled in one browser never settled in a second one watching the same
@@ -42,7 +42,7 @@ test('settling a thread reaches a second browser, and so does reopening it', () 
 
 /**
  * `retros` on both is what carries the intermediate status to a page nobody
- * reloaded (session 13). The retrospective's state is a *reading* of these two
+ * reloaded. The retrospective's state is a *reading* of these two
  * events now — REVIEWING to SUBMITTED on the finish, SUBMITTED to FINISHED on
  * the close — so an event that stopped invalidating `retros` would leave the
  * review page's header showing the state before the act, with nothing else on
@@ -73,7 +73,7 @@ test('a record picked up or given back makes the records stale, and only them', 
 
 /**
  * The names that survive only so a store written before their feature was
- * removed still parses (retro 4 `r-remove-requests`). They must map to something
+ * removed still parses. They must map to something
  * harmless rather than to a crash or a special case.
  */
 test('an event nothing raises any more still parses, and changes only the records', () => {

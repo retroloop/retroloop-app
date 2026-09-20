@@ -773,7 +773,7 @@ Feature: The records page
 
   # ux-brief 04's standing limit, on the two screens this product is read on. A
   # record page carries the widest content there is — an author-aligned footprint
-  # and a pull-request URL — and it is born on the layout lane's own measure.
+  # and a pull-request URL — and it is born on the layout's own measure.
   Scenario Outline: The record page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens record 4 directly

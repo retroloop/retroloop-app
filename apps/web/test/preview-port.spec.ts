@@ -16,7 +16,7 @@ import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '
  * down before any of it reaches an assertion.
  */
 
-/** Where the lanes of one session actually live, plus the checkout they came from. */
+/** Where the worktrees of one checkout actually live, plus the checkout they came from. */
 const CHECKOUTS = [
   '/Users/sample/Developer/retro',
   '/Users/sample/Developer/retro/.claude/worktrees/fix-a',
@@ -40,7 +40,8 @@ const PIDS = Array.from({ length: 80 }, (_, step) => 1000 + step)
  * nudging it: 80 consecutive pids land on 58 of the 80 ports, which is what a
  * hash does and 1 is what dropping the pid does. Two runs still share a port
  * about one time in eighty — that is the trade against sharing one every time,
- * and it is bounded by the range brief-001 leaves free rather than by this file.
+ * and it is bounded by the range this project leaves free rather than by this
+ * file.
  */
 test('gives two runs in one worktree their own ports', () => {
   const ports = PIDS.map((pid) => derivePort(CHECKOUT, pid))
@@ -57,7 +58,7 @@ test('gives two runs in one worktree their own ports', () => {
 
 /**
  * The claim, which the pid must not have cost: the checkout is still in
- * the hash, so the lanes of one session do not contend.
+ * the hash, so two worktrees of one checkout do not contend.
  *
  * Counted over the same pids rather than asserted at one of them, because seven
  * paths in eighty ports collide for about a quarter of pids however good the
@@ -92,7 +93,7 @@ test('answers the same port for the same run, every time', () => {
 })
 
 /**
- * The ports brief-001 §Ports hands to something by name, the old 24302 among
+ * The ports that are handed to something by name, the old 24302 among
  * them. A stale worktree still previewing there is the collision most likely to
  * actually happen, so the range is chosen to leave those alone rather than to be
  * merely unlikely to hit them.

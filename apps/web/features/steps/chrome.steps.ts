@@ -60,7 +60,7 @@ When('the reviewer opens the app menu', async ({ page }) => {
  * completed at t=2040ms and the first reading that could be taken after it landed
  * at t=2181ms. Forcing a press past Playwright's own actionability rescue does not
  * change it — a starved page serves the harness's presses out of the same windows
- * it runs its own commits in. Every attempt was tried and measured.
+ * it runs its own commits in.
  *
  * **So why the wait is still here, and what does certify it.** Both conditions stay:
  * which of the two comes last is Radix's to change, and a wait that holds only by
@@ -127,8 +127,7 @@ When('the renderer runs {int} times slower', async ({ page }, rate: number) => {
  * it is not written. What carries the scenario instead is the budget every wait it
  * walks through has to survive, and the plant is those budgets cut to a healthy
  * page's — the stall-edge defect: pass or fail is decided by where a stall's
- * edge falls relative to the deadline. The plant table is recorded with the
- * suite's own test evidence.
+ * edge falls relative to the deadline.
  */
 Then('the reviewer has arrived at the records page', async ({ page }) => {
   await expect(page).toHaveURL(/\/records$/)
@@ -163,7 +162,7 @@ Then('the app menu points at:', async ({ page }, table: DataTable) => {
  *
  * A pair of `toHaveCount(0)` assertions against `records-link` and `settings-link`
  * would pass on a header that had grown three new links under different names,
- * which is the failure this record exists to prevent: what he asked for is that
+ * which is the failure this record exists to prevent: what is required is that
  * the top menu carries *no loose items*, not that two particular ones were
  * renamed. So the sweep counts what a reader would count, and the only anchor
  * left in the chrome is the brand — the way home, which was never a menu item.
@@ -197,7 +196,7 @@ Then('the top menu carries no theme control', async ({ page }) => {
  * (`r-uncontrolled-assertions`): a browser lays a flex row out left to right for
  * free, and an assertion that merely found the trigger somewhere in the header
  * would ship green on a menu sitting beside the brand. Its plant is tested
- * and recorded with the suite's own evidence.
+ * for this record.
  *
  * Two halves, because "top right" is two claims: the trigger is past the brand
  * (right of what the header opens with), and its right edge is flush with the
