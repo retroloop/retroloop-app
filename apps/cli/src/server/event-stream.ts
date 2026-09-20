@@ -98,7 +98,7 @@ function wasAborted(signal: AbortSignal | undefined): boolean {
 /**
  * The server's `events.onRetro` stream, as an async iterable of events —
  * **the same channel, at the same ~300 ms cadence, that updates every open
- * review page** (realtime.md).
+ * review page** (realtime.md; `r-monitor-not-realtime`).
  *
  * Three endings, and the difference between them is the whole contract with
  * `review wait --follow`:

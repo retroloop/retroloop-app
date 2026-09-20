@@ -529,9 +529,9 @@ export function registerReviewCommand(
         })
 
         // `via` only on the form that has two channels to choose between: the
-        // blocking and `--timeout 0` forms have always answered in cli.md's four
-        // keys, and a fifth appearing under them would widen a contract
-        // every monitor script already parses.
+        // blocking and `--timeout 0` forms answer in cli.md's four keys, and a
+        // fifth appearing under them would widen a contract every monitor
+        // script already parses.
         context.output.result(
           { ...outcome, ...(follow ? { via } : {}) },
           () =>

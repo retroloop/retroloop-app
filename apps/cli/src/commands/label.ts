@@ -37,12 +37,12 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * the same comparison that refuses a duplicate, so `label retire Migrated` finds
  * the label the settings page created as `migrated` (`definition.service.ts`).
  *
- * **`unretire` is here because the product has it**, not because an agent
- * wanted a fourth act: the rule
- * this file follows is that the CLI offers exactly what the settings page
- * offers, and the page grew an un-retire on retired rows. It is a definition
- * write like the other three, so the same switch governs it and an exit 5 while
- * that switch is off is the same real answer.
+ * **`unretire` is here because the product has it** (`r-retire-burns-a-word`),
+ * not because an agent wanted a fourth act: the rule this file follows is that
+ * the CLI offers exactly what the settings page offers, and the page grew an
+ * un-retire on retired rows. It is a definition write like the other three, so
+ * the same switch governs it and an exit 5 while that switch is off is the same
+ * real answer.
  */
 export function registerLabelCommand(
   cli: Argv<GlobalOptions>,
@@ -169,7 +169,7 @@ export function registerLabelCommand(
           { id: label.id, name: label.name, retiredAt: label.retiredAt ?? null },
           () =>
             // Not a delete, and the line says so: the records that wear it go on
-            // wearing it. Reversible, and
+            // wearing it. Reversible (`r-retire-burns-a-word`), and
             // the line says that too — a reader who has just mis-pressed this is
             // exactly the reader who needs to know.
             `Retired "${label.name}"; it is no longer offered, the records wearing it keep it, and \`label unretire "${label.name}"\` brings it back`,

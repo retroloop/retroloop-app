@@ -32,7 +32,7 @@ const BIN = join(import.meta.dir, '../src/bin.ts')
 const PROSE = join(ROOT, 'apps/web/src/components/review/prose.tsx')
 
 /**
- * The `/retro` skill against the binary it drives (D7).
+ * The `/retro` skill against the binary it drives.
  *
  * A skill is instructions for a process that cannot ask questions: if it names a
  * command that does not exist, the AI following it gets exit 2 mid-retro and has
@@ -495,7 +495,7 @@ describe('the /retro skill', () => {
    * The document is the only shape a drafting AI has: it never sees the source,
    * so a key the CLI emits and the document omits is a field nobody knows to
    * read — which is how `resolved` and `revision` came to be missing from it
-   * after the comments lane shipped them. Scoped to the `comment list` block, so
+   * when resolvable comments shipped. Scoped to the `comment list` block, so
    * the key names cannot be satisfied by a mention somewhere else in the file.
    */
   test('prints the thread shape the CLI actually writes', () => {

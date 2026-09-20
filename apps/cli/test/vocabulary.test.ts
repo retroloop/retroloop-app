@@ -54,10 +54,9 @@ describe('the vocabularies, from the CLI', () => {
         ['label', 'rename', 'migrated', '--to', 'moved'],
         ['label', 'retire', 'migrated'],
         // Un-retire is a definition write like the other three, so the switch
-        // governs it identically (`r-retire-burns-a-word`). An act
-        // that could put a word back into the vocabulary while the switch was
-        // off would be a hole in *"the user can be certain that the AI cannot
-        // mess around"*.
+        // governs it identically (`r-retire-burns-a-word`). An act that could
+        // put a word back into the vocabulary while the switch was off would be
+        // a hole in the certainty that the AI cannot change the configuration.
         ['label', 'unretire', 'migrated'],
         ['attribute', 'create', 'ticket', '--type', 'number'],
         ['attribute', 'rename', 'ticket', '--to', 'issue'],
@@ -84,8 +83,8 @@ describe('the vocabularies, from the CLI', () => {
      * names above answer to nothing and it does not matter: the guard is the
      * first act inside the transaction, so a rename of a label that does not
      * exist is refused by the switch rather than by a NotFound wearing its
-     * clothes. It is also what makes "the AI cannot mess around" mean the AI
-     * cannot *learn* anything by trying.
+     * clothes. It is also what makes the guarantee mean the AI cannot *learn*
+     * anything by trying.
      */
     test('nothing was written on the way to being refused', async () => {
       await cli.run(['label', 'create', 'migrated', '--json'])
