@@ -20,7 +20,7 @@ import { loadExportSchema, validate } from '../support/json-schema'
  * resolved relative to this file so the suite runs the same on every machine.
  * They are sanitized copies: structure, keys, types, enum values, numbers,
  * booleans, timestamps and array lengths exactly as exported, with the free text
- * replaced by neutral filler of the same length. The set is the smallest that
+ * replaced by neutral filler of the same length. The set is a small one that
  * covers every shape the format has had —
  *
  *   - `agreedDirection` + `footprint` records, with no retrospective `title`
