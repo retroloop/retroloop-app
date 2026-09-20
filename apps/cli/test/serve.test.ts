@@ -1,9 +1,10 @@
 import { afterAll, describe, expect, test } from 'bun:test'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { EXIT, ServerError } from '#errors'
 import {
   DEFAULT_BIND,
+  humanUrlFor,
   isLoopbackBind,
   isWildcardBind,
   lanUrlFor,
@@ -11,6 +12,7 @@ import {
 } from '#server/address'
 import { acquireLock, type LockInfo, readLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
+import { resolveStage } from '#stage'
 import { type Cli, createCli, removeTempStages, TEST_HOST_ADDRESSES } from './support/harness'
 
 afterAll(removeTempStages)
@@ -165,6 +167,59 @@ describe('a wildcard address', () => {
   })
 })
 
+describe('the URL a person is handed', () => {
+  test('is localhost for every spelling of loopback', () => {
+    for (const bind of ['127.0.0.1', '127.0.1.1', 'localhost', '::1', '[::1]']) {
+      expect(humanUrlFor(bind, 24100), bind).toBe('http://localhost:24100')
+    }
+  })
+
+  test('is the address itself when one interface was named, because only that answers', () => {
+    expect(humanUrlFor('192.168.1.9', 24100)).toBe('http://192.168.1.9:24100')
+    expect(humanUrlFor('fe80::1', 24100)).toBe('http://[fe80::1]:24100')
+  })
+
+  test('is localhost for a wildcard an older server bound, which answers on loopback too', () => {
+    for (const bind of ['0.0.0.0', '::', '[::]']) {
+      expect(humanUrlFor(bind, 24100), bind).toBe('http://localhost:24100')
+    }
+  })
+})
+
+describe('the link a command prints', () => {
+  // `revision create` and `session create` print `stage.urlForRetro` and
+  // `stage.urlForSession`; the stage is where their host is decided.
+  const stageOf = (cli: Cli) => {
+    const home = dirname(cli.dataDir)
+    return resolveStage({ env: { RETROLOOP_HOME: home }, cwd: home })
+  }
+
+  test('is localhost when no server is running', () => {
+    const stage = stageOf(createCli())
+
+    expect(stage.url).toBe('http://localhost:24100')
+    expect(stage.urlForRetro(20, 1)).toBe('http://localhost:24100/retros/20?rev=1')
+  })
+
+  test('is localhost when the running server is on loopback', () => {
+    const cli = createCli()
+    writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
+
+    expect(stageOf(cli).urlForRetro(20, 1)).toBe('http://localhost:24242/retros/20?rev=1')
+  })
+
+  test('is the named interface when that is the only place the running server answers', () => {
+    const cli = createCli()
+    writeLock(cli, { port: 24242, bind: '192.168.1.9' })
+    const stage = stageOf(cli)
+
+    expect(stage.url).toBe('http://192.168.1.9:24242')
+    expect(stage.urlForRetro(20, 1)).toBe('http://192.168.1.9:24242/retros/20?rev=1')
+    expect(stage.urlForRetro(20)).toBe('http://192.168.1.9:24242/retros/20')
+    expect(stage.urlForSession(3)).toBe('http://192.168.1.9:24242/sessions/3')
+  })
+})
+
 describe('up', () => {
   test('does nothing when the server is already running', async () => {
     let spawned = 0
@@ -254,11 +309,40 @@ describe('up', () => {
     const lan = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
     expect(loopback.json()).not.toHaveProperty('lanUrl')
+    expect(loopback.json()).toMatchObject({ url: 'http://localhost:24100' })
+    // A server on one named interface does not answer on loopback, so `url` — the
+    // link that gets handed over — is the address that does (record #207).
     expect(lan.json()).toMatchObject({
-      url: 'http://localhost:24100',
+      url: 'http://192.168.1.9:24100',
       lanUrl: 'http://192.168.1.9:24100',
       started: true,
     })
+  })
+
+  test('hands over the address a running server answers on, not localhost', async () => {
+    // The server was started earlier with `--bind 192.168.1.9`; this `up` is bare.
+    // It starts nothing and binds nothing — it reads what is serving and says so.
+    let spawned = 0
+    const cli = createCli({
+      spawnServe: async () => {
+        spawned += 1
+      },
+    })
+    writeLock(cli, { port: 24242, bind: '192.168.1.9' })
+
+    const json = await cli.run(['up', '--json'])
+    const line = await cli.run(['up'])
+
+    expect(json.json()).toEqual({
+      url: 'http://192.168.1.9:24242',
+      port: 24242,
+      pid: process.pid,
+      bind: '192.168.1.9',
+      started: false,
+      lanUrl: 'http://192.168.1.9:24242',
+    })
+    expect(line.stdout.join('\n')).toContain('Already running — http://192.168.1.9:24242 ')
+    expect(spawned).toBe(0)
   })
 
   test('does not claim a LAN URL the running server cannot serve', async () => {

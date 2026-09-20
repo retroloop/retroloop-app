@@ -95,12 +95,30 @@ export function lanUrlFor(
  * The mirror of `lanUrlFor`, which answers the other question — where someone
  * else's iPad should look. Loopback and wildcard both answer on `127.0.0.1`; a
  * server bound to one named interface answers only there, so that is what a
- * local client has to ask. Built from the lock rather than from `stage.url`,
- * whose `localhost` is right for a link to paste and wrong for a socket to open
- * against a LAN-only bind.
+ * local client has to ask. A socket wants the literal `127.0.0.1`; the link a
+ * person is handed says `localhost` instead, which is `humanUrlFor`'s business.
  */
 export function localOriginFor(bind: string, port: number): string {
   if (isLoopbackBind(bind) || isWildcardBind(bind)) return `http://127.0.0.1:${port}`
+  return `http://${hostForUrl(bind)}:${port}`
+}
+
+/**
+ * The link to hand the person at **this machine**, given the address the server
+ * took — the `url` every command prints.
+ *
+ * Same rule as `localOriginFor`, spelled for a browser: a loopback or wildcard
+ * server answers on `localhost`; a server bound to one named interface answers
+ * only there, so `localhost` would be a link to an address nothing listens on
+ * (record #207). `lanUrlFor` stays the other device's link.
+ *
+ * This **describes** a bind and never chooses one. It is handed the address a
+ * listening server already took — off its lock, or off the socket just opened —
+ * and nothing reads its answer back to decide where a server binds. What a start
+ * binds is `--bind`, else `DEFAULT_BIND`, and that is decided nowhere near here.
+ */
+export function humanUrlFor(bind: string, port: number): string {
+  if (isLoopbackBind(bind) || isWildcardBind(bind)) return `http://localhost:${port}`
   return `http://${hostForUrl(bind)}:${port}`
 }
 

@@ -5,6 +5,7 @@ import type { CliRuntime, GlobalOptions } from '#runtime'
 import {
   boundToSuffix,
   DEFAULT_BIND,
+  humanUrlFor,
   lanUrlFor,
   lanUrlMember,
   lanUrlSuffix,
@@ -79,7 +80,10 @@ export function registerUpCommand(
       const already = readLock(stage.lockFile)
 
       if (already !== undefined) {
-        const url = `http://localhost:${already.port}`
+        // `url` is the link that gets handed over, so it is the address the
+        // running server answers on. Reading its bind here describes that server;
+        // it is not carried into any start (`bind` above is the flag or loopback).
+        const url = humanUrlFor(already.bind, already.port)
         // The address that matters here is the one the running server took, not
         // the one this invocation asked for: `up` started nothing, so `--bind`
         // has not been applied and must not be reported as though it had. That
@@ -115,7 +119,7 @@ export function registerUpCommand(
 
       // The address comes off the lock the server itself wrote, not off the flag:
       // what gets reported is what a listening socket actually took.
-      const url = `http://localhost:${lock.port}`
+      const url = humanUrlFor(lock.bind, lock.port)
       const lanUrl = lanUrlFor(lock.bind, lock.port, runtime.hostAddresses)
       output.result(
         {
