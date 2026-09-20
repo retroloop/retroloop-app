@@ -8,19 +8,19 @@ import { SEVERITIES } from '@/lib/enum-labels'
 /**
  * **Every number the three dashboard variations draw, derived in one place.**
  *
- * This is the direction round's spine. The three variations disagree about what a
- * dashboard is *for* — a debt ledger, a work diary, an instrument panel — and
- * they draw different charts to argue it. What they must not disagree about is
- * the arithmetic: if variation A says 88 records are open and variation C says
- * 87, the owner is comparing two bugs rather than two designs, and the round is
- * wasted. So the counting happens here, once, and the variations only choose
- * which of these readings to show and how.
+ * This is the spine the three dashboard variations share. They disagree about
+ * what a dashboard is *for* — a debt ledger, a work diary, an instrument panel —
+ * and they draw different charts to argue it. What they must not disagree about
+ * is the arithmetic: if variation A says 88 records are open and variation C says
+ * 87, the reader is comparing two bugs rather than two designs, and the
+ * comparison is wasted. So the counting happens here, once, and the variations
+ * only choose which of these readings to show and how.
  *
  * **No new wire.** Every figure below is a pass over the rows `records.listAll`
  * and `retros.list` already serve — the same constraint the shipped dashboard
  * works under (`components/dashboard/corpus.tsx`), and for the same reason: a
  * per-retro or per-session count on the server is a wire widening, which is a
- * two-package change and a different lane's work (`r-wire-widening-two-package`).
+ * two-package change and a piece of work of its own (`r-wire-widening-two-package`).
  * The flat records page already holds every row for one user by design, which is
  * what makes counting them in the browser affordable.
  *
@@ -106,8 +106,8 @@ export function bySeverity(rows: readonly RecordListRow[]): readonly Bucket[] {
  * level 2" is a different sentence from "39 open at SEV3".
  *
  * **The three cut levels are folded into one bucket, not five.** `none`,
- * `upstream` and `undecided` are the levels KC-0021 took out of what anyone may
- * choose; two records in the store still carry one, human data being
+ * `upstream` and `undecided` are the levels that were taken out of what anyone
+ * may choose; two records in the store still carry one, human data being
  * append-only. Five rungs plus three legacy words would be an eight-category axis
  * where three categories can only ever draw two records between them. So the
  * five rungs are the scale and the legacy values land in one honest bucket
@@ -201,13 +201,13 @@ function nominal<TValue extends string>(
 /**
  * The axes the corpus chart can be switched between.
  *
- * **`retro` is gone by the owner's ruling** (D4, his words: *"it is useless"*).
- * It was the direction round's most striking chart — 14 columns showing the debt
- * trapped in the oldest retrospectives — and it is out anyway, because a
- * retrospective is not a dimension a reader acts on: knowing which round filed a
- * record does not tell you anything you can do about it, and the diary at the
- * foot of the page already says which round filed what. The finding it drew was
- * worth having once; a permanent control is a different bar.
+ * **`retro` is gone.** It was the design exploration's most striking chart — 14
+ * columns showing the debt trapped in the oldest retrospectives — and it is out
+ * anyway, because a retrospective is not a dimension a reader acts on: knowing
+ * which round filed a record does not tell you anything you can do about it,
+ * and the diary at the foot of the page already says which round filed what.
+ * The finding it drew was worth having once; a permanent control is a different
+ * bar.
  */
 export const DIMENSIONS = ['severity', 'level', 'requester', 'type'] as const
 export type Dimension = (typeof DIMENSIONS)[number]
@@ -264,7 +264,7 @@ export const STACK_ORDER: readonly LifecycleState[] = LIFECYCLE_STATES
  * into two tiles would spend two of four columns on a distinction the reader
  * makes after they have decided to look.
  *
- * Measured on the owner's store the day this shipped: 18 — two SEV1 and sixteen
+ * Measured on a real store the day this shipped: 18 — two SEV1 and sixteen
  * SEV2, none of the SEV1s resolved. That is a number worth a tile; a tile that
  * could only ever read zero would not be.
  */
@@ -273,43 +273,40 @@ export function highSeverityOpen(rows: readonly RecordListRow[]): number {
 }
 
 /**
- * **"Require human"** — the open records that need him, split by which kind of
- * needing it is.
+ * **"Require human"** — the open records that need the human, split by which kind
+ * of needing it is.
  *
- * The owner ruled this one after the tradeoffs were put to him (D6, his words:
- * *"just check if something is open and the human had involvement option is
- * interactive or whatever it is named"*). What he was told before he chose:
+ * The predicate is narrow on purpose: a record is open, and its `involvement` is
+ * `interactive` or `pull-request`. The tradeoffs behind that:
  *
  * - `involvement` was **not on this row**, so counting it meant widening the
- *   wire — core read model, wire schema and the typed mock, done whole in this
- *   lane per `r-wire-widening-two-package`. It is done.
+ *   wire — core read model, wire schema and the typed mock, done whole in one
+ *   change per `r-wire-widening-two-package`. It is done.
  * - Two of the five values cannot be read as needs-the-human — `other` is *"the
  *   note says what"* and `undecided` is the field's **default**, so a broader
- *   predicate would have merged "needs him" with "nobody has said".
- * - The tile reads **3** on his store, because 149 of 154 records are
- *   `autonomous`. He accepted that as the honest number rather than widening the
+ *   predicate would have merged "needs the human" with "nobody has said".
+ * - The tile reads **3** on a real store, because 149 of 154 records are
+ *   `autonomous`. That is the honest number, preferred over widening the
  *   predicate to make the tile look busier.
  *
- * **Two counts, not one merged number** (D7, his words: *"another number in it
- * that covers open issues that require pull-requests"*). D6 had named
- * `interactive` alone; he then added `pull-request` beside it rather than inside
- * it, which is the better shape and for the reason the merge would have been
- * wrong: the two describe genuinely different demands on him. `interactive` means
- * he works the fix live — his whole attention, scheduled. `pull-request` means he
- * reads a diff after the fact. A single total would have said "N things need you"
- * while hiding which kind of need, and those two kinds are not substitutable.
+ * **Two counts, not one merged number.** `pull-request` sits beside
+ * `interactive` rather than inside it, which is the better shape and for the
+ * reason the merge would have been wrong: the two describe genuinely different
+ * demands on the human. `interactive` means they work the fix live — their whole
+ * attention, scheduled. `pull-request` means they read a diff after the fact. A
+ * single total would have said "N things need you" while hiding which kind of
+ * need, and those two kinds are not substitutable.
  *
  * The other three values stay out, and `undecided` is the one worth naming: it is
  * the field's default, so counting it would have swept in every record nobody has
  * ruled on and reported "nobody has decided" as "needs you".
  *
- * **`pullRequest` reads 0 on his store and that is rendered, not hidden** — his
- * explicit instruction. It is the one place on this page where a zero is drawn
- * rather than suppressed: the page's standing rule is that the honest rendering of
- * nothing is nothing, and he overrode it here because the *pair* is the reading.
- * "3 · 0" says the queue is all live-session work and none of it is diff review,
- * which is a fact about how he will spend the week; "3" alone says only the first
- * half of it.
+ * **`pullRequest` can read 0, and that is rendered, not hidden.** It is the one
+ * place on this page where a zero is drawn rather than suppressed: the page's
+ * standing rule is that the honest rendering of nothing is nothing, and that rule
+ * is overridden here because the *pair* is the reading. "3 · 0" says the queue
+ * is all live-session work and none of it is diff review, which is a fact about
+ * how the week will be spent; "3" alone says only the first half of it.
  */
 export type HumanInTheLoop = {
   /** Open, and the human works the fix live. */
@@ -321,7 +318,7 @@ export type HumanInTheLoop = {
 /**
  * **The membership test, exported so the tile and the table share one predicate.**
  *
- * D9 gave the readings table a "Require human" tab listing the records the third
+ * The readings table has a "Require human" tab listing the records the third
  * tile counts. Two places asking the same question is two places to get it wrong —
  * and the failure would be quiet, because a tab whose rows disagreed with the
  * number above it still renders perfectly. So there is one predicate: the tile

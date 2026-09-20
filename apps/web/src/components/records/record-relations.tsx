@@ -12,10 +12,10 @@ import { useTRPC } from '@/lib/trpc'
 export type RecordRelation = AppRouterOutputs['records']['byId']['relations'][number]
 
 /**
- * What somebody said this record has to do with other records — the owner's
- * session-11 ask, verbatim: *"both actors can relate records, each relation
- * carries how-they-relate words, and the relation reads from both sides, so that
- * AI can easily find past records and build holistic solutions."*
+ * What somebody said this record has to do with other records. Both actors can
+ * relate records, each relation carries how-they-relate words, and the relation
+ * reads from both sides, so that the AI can find past records easily and build
+ * holistic solutions.
  *
  * **Both directions in one list, and the line is a sentence.** The stored row is
  * directed as authored and is never mirrored, so the two records' pages read the
@@ -42,8 +42,8 @@ export type RecordRelation = AppRouterOutputs['records']['byId']['relations'][nu
  * **The timeline says nothing about relations**, deliberately. Its contract is
  * three kinds and no fourth (`record-timeline.tsx`), the record's history is
  * about what happened *to* it, and a relation is a statement about two records
- * that a reader of either one can already see here. A retro adds it back if he
- * wants it.
+ * that a reader of either one can already see here. A retrospective can add it
+ * back if it turns out to be wanted.
  */
 export function RecordRelations({
   globalId,
@@ -83,7 +83,7 @@ export function RecordRelations({
  * **The author is on the line**, which nothing else on this page does for a
  * one-line row. It earns it here: this and the lifecycle are the only two things
  * in the product either actor writes, so "the AI spotted a repeat of this" and
- * "he grouped these two" are different facts and neither is derivable from
+ * "the human grouped these two" are different facts and neither is derivable from
  * anything else on screen (`record-relation.model.ts`).
  */
 function RelationRow({ globalId, relation }: { globalId: number; relation: RecordRelation }) {
@@ -263,7 +263,7 @@ function Relate({ globalId }: { globalId: number }) {
            * on nothing else. Whether *that* number names a record is the store's
            * question, and the answer comes back as a sentence the reader can
            * read — a page that guessed would be guessing about a store it has
-           * one record of (retro 3 `r-untested-rendered-branch`).
+           * one record of (`r-untested-rendered-branch`).
            */}
           <Button
             size="sm"

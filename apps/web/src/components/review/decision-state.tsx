@@ -37,9 +37,9 @@ export const DECISION_TAG: Record<DecisionState, TagLook & { ink: string }> = {
     icon: CircleMinusIcon,
   },
   /**
-   * The third verdict (retro 4 `r-verdict-revise`): the record goes back to the
-   * AI to be rewritten. Its arrow points the way the record travels, because
-   * this is the one state that says something has to happen next.
+   * The third verdict (`r-verdict-revise`): the record goes back to the AI to
+   * be rewritten. Its arrow points the way the record travels, because this is
+   * the one state that says something has to happen next.
    */
   revise: {
     fill: 'bg-tone-blue-soft text-tone-blue',

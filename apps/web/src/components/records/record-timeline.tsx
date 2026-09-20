@@ -15,9 +15,9 @@ type LifecycleAct = Extract<Entry, { kind: 'lifecycle' }>['status']
  * `pending` is on the list because a reviewer can put a record back to pending
  * by pressing the verdict it already wears, and that press appends a version
  * like any other (`decision.model.ts`) — so it is a thing somebody did and it
- * belongs on the list of things somebody did. `hold` is on it because a store
- * written before retro 3 carries rows in that state and every reader of a
- * verdict has to go on answering for one (`r-hold-semantics`).
+ * belongs on the list of things somebody did. `hold` is on it because an early
+ * store carries rows in that state and every reader of a verdict has to go on
+ * answering for one (`r-hold-semantics`).
  *
  * `Record<DecisionState, …>` refuses to compile with a state missing, so a
  * verdict added to the wire enum has to be given a word before this list can
@@ -45,9 +45,8 @@ const ACT_TAKEN: Record<LifecycleAct, string> = {
 }
 
 /**
- * How a record got to where it is — the owner's *"We can have a timeline at the
- * bottom that shows how the record evolved. timeline can have events like
- * status changes"*.
+ * How a record got to where it is — a timeline at the bottom of the page showing
+ * how the record evolved, with events like status changes.
  *
  * **A plain chronological list and nothing else.** One line per event, reading
  * who · what · when, in the order it happened. No grouping by kind, no filters,
@@ -56,14 +55,13 @@ const ACT_TAKEN: Record<LifecycleAct, string> = {
  * evidence uses — and a history that needed a legend would be a second visual
  * language for the least surprising thing on the page.
  *
- * **Comments are not on it**, by the owner's later word: *"let's leave out the
- * comments for now."* A record's conversation is on its review page, where it is
- * written.
+ * **Comments are not on it**, deliberately. A record's conversation is on its
+ * review page, where it is written.
  *
  * **It never renders empty.** Every record has at least the draft it was filed
  * in, so the one branch a list like this usually needs — the empty state — is
  * unreachable through the product, and an empty-state message here would be a
- * branch no scenario could reach (retro 3 `r-untested-rendered-branch`).
+ * branch no scenario could reach (`r-untested-rendered-branch`).
  */
 export function RecordTimeline({ timeline }: { timeline: Timeline }) {
   return (
@@ -98,7 +96,7 @@ export function RecordTimeline({ timeline }: { timeline: Timeline }) {
                   <li key={ref}>
                     {/* Linked when it names a web address and printed as typed
                         when it does not — the same one question the records
-                        page asks of a reference (A2). */}
+                        page asks of a reference. */}
                     <Reference reference={ref} />
                   </li>
                 ))}
@@ -121,10 +119,10 @@ export function RecordTimeline({ timeline }: { timeline: Timeline }) {
 
 /**
  * The line itself. Each kind says the one thing that distinguishes it: which
- * draft a record arrived in, which draft a verdict was given against (D2 — a
- * verdict binds to the content it was given for, so which content matters), and
- * nothing beside a lifecycle act, because an act is taken against the record
- * rather than against a draft of it.
+ * draft a record arrived in, which draft a verdict was given against (a verdict
+ * binds to the content it was given for, so which content matters), and nothing
+ * beside a lifecycle act, because an act is taken against the record rather
+ * than against a draft of it.
  */
 function what(entry: Entry): string {
   switch (entry.kind) {

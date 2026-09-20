@@ -18,11 +18,11 @@ export type LifecycleState = RecordListRow['lifecycle']['status']
  * What everything below needs of a record: the pair that addresses it, and where
  * it stands.
  *
- * Narrower than `RecordListRow` on purpose, since session 9. These controls were
- * born on a row of the flat page and now serve two surfaces — that row, and the
- * record's own page, which reads `records.byId` and has no row shape anywhere
- * near it. Taking the pair and the lifecycle is what they always actually used;
- * taking a whole row was them being written where the whole row happened to be.
+ * Narrower than `RecordListRow` on purpose. These controls were born on a row
+ * of the flat page and now serve two surfaces — that row, and the record's own
+ * page, which reads `records.byId` and has no row shape anywhere near it.
+ * Taking the pair and the lifecycle is what they always actually used; taking a
+ * whole row was them being written where the whole row happened to be.
  *
  * `RecordListRow` satisfies this structurally, so nothing at the row's call site
  * changed. **Their testids moved with them** — `record-lifecycle`,
@@ -33,23 +33,22 @@ export type LifecycleState = RecordListRow['lifecycle']['status']
  * those are still a row's.
  */
 export type LifecycleTarget = {
-  /** Its own retrospective, never the page's — a rid is minted per retrospective (A5). */
+  /** Its own retrospective, never the page's — a rid is minted per retrospective. */
   readonly retroId: number
   readonly rid: string
   readonly lifecycle: RecordListRow['lifecycle']
 }
 
 /**
- * What the owner asked this page to be able to say — *"once the AI fixes those
- * issues, we should have a way to add labels, tags or have native status that
- * shows that this issue was resolved"*, and *"maybe we can have a type called
- * archived"* — in the tag idiom every status in this product wears
+ * What this page has to be able to say: once the AI has fixed an issue there is a
+ * native status showing the record was resolved, and an archived position beside
+ * it — in the tag idiom every status in this product wears
  * (`components/ui/tag.tsx`).
  *
  * **No position is green**, and that is a decision rather than a palette
  * accident. `approved` is green, and an approved record that has since been
  * fixed is the single most common row on this page: two green pills side by side
- * saying two different things is exactly the "which of these is which" retro 4
+ * saying two different things is exactly the "which of these is which"
  * `r-remove-hold` was filed over. Resolved takes blue, the tone this app already
  * gives to *something happened about this*; open takes the neutral tone every
  * not-yet state wears.
@@ -93,7 +92,7 @@ export function LifecycleTag({ status }: { status: LifecycleState }) {
 
 /**
  * **Somebody has picked this record up** — the in-progress marker, in the same
- * tag idiom every status here wears (RL-50).
+ * tag idiom every status here wears.
  *
  * **It is not a position on either axis**, which is why it is a look of its own
  * rather than a fourth entry in `LIFECYCLE_TAG` above. A claimed record is still
@@ -110,7 +109,7 @@ export function LifecycleTag({ status }: { status: LifecycleState }) {
  * - **green is out.** `approved` is green and an approved record is by far the
  *   most common thing this badge appears beside — the queue an agent claims out
  *   of holds nothing else. Two green pills saying two different things is the
- *   confusion retro 4 `r-remove-hold` was filed over.
+ *   confusion `r-remove-hold` was filed over.
  * - **blue is out, twice over.** `resolved` is blue, and "in progress" next to
  *   "resolved" in one hue is the single pair a reader most needs to tell apart;
  *   `ai` is blue too, and the requester tag is right beside this one.
@@ -145,12 +144,11 @@ export function ClaimTag() {
  * The evidence behind a resolved record: who said so, what they cited, and
  * whatever they wanted to add.
  *
- * The references are the reason the feature exists — *"we should be able to
- * specify a commit id or github issue or something as reference so that it is
- * easy to see"* — so they are the body of this block rather than a detail behind
- * a disclosure. It is framed with the hairline every block on the review page is
- * drawn with, so it reads as the record's evidence rather than as more of the
- * row's own metadata.
+ * The references are the reason the feature exists — a resolve can cite a commit
+ * id or a GitHub issue so the evidence is easy to see — so they are the body of
+ * this block rather than a detail behind a disclosure. It is framed with the
+ * hairline every block on the review page is drawn with, so it reads as the
+ * record's evidence rather than as more of the row's own metadata.
  *
  * It renders **only** on a resolved record. An open one has nothing here by
  * construction: a reopen supersedes the resolve that came before it and carries
@@ -195,10 +193,10 @@ export function ResolvedEvidence({ lifecycle }: { lifecycle: LifecycleTarget['li
 /**
  * One reference, linked when it is one.
  *
- * A reference is free text by design (A2: *"a commit id or github issue or
- * something"*), so this asks the only question that has an unambiguous answer —
- * does it name a web address? — and answers the rest by printing what was typed.
- * A commit SHA renders as the SHA: there is nowhere for this page to send a
+ * A reference is free text by design — a commit id, a GitHub issue, or anything
+ * else — so this asks the only question that has an unambiguous answer — does
+ * it name a web address? — and answers the rest by printing what was typed. A
+ * commit SHA renders as the SHA: there is nowhere for this page to send a
  * reader with one, and a link that guessed at a host would be a link that
  * eventually guesses wrong. No GitHub integration is implied by any of this and
  * none is coming in round one (the deferred list).
@@ -236,14 +234,14 @@ export function Reference({ reference }: { reference: string }) {
  *
  * **Explicit only, and never inferred.** Nothing here reads a verdict, a
  * revision or the passage of time as evidence that a record was fixed — the
- * owner presses a control, or the record stays where it is (CLAUDE.md: nothing
+ * human presses a control, or the record stays where it is (CLAUDE.md: nothing
  * is ever inferred from silence). A **declined** record shows Unarchive without
  * anyone having archived it, and that is not an exception: the page is reading
- * the verdict he gave, which is the one thing that put the record there.
+ * the verdict that was given, which is the one thing that put the record there.
  *
- * **It works on a closed retrospective**, which is the whole ask: *"even after a
- * retro has been closed, we should be able to attach metadata to issues so that
- * we can manage their life cycle."* So there is no `readOnly` here and no
+ * **It works on a closed retrospective**, which is the whole point: even after a
+ * retrospective has been closed, metadata can be attached to a record so that
+ * its lifecycle can be managed. So there is no `readOnly` here and no
  * finished-review branch — the server deliberately does not refuse this write
  * either, and a page that greyed the control out would be inventing a rule the
  * domain does not have.
@@ -287,7 +285,7 @@ export function LifecycleControl({ row }: { row: LifecycleTarget }) {
  * the same guard `ComposerBox` puts on Post, and it is deliberately the *only*
  * place this refusal is expressed on screen: the server refuses a resolve with
  * no references and the page simply never sends one, so there is no error branch
- * here for a scenario to be unable to reach (retro 3 `r-untested-rendered-branch`).
+ * here for a scenario to be unable to reach (`r-untested-rendered-branch`).
  */
 function Resolve({ row }: { row: LifecycleTarget }) {
   const trpc = useTRPC()
@@ -303,8 +301,8 @@ function Resolve({ row }: { row: LifecycleTarget }) {
         setRefs('')
         setNote('')
         /**
-         * The page's own write is the one thing it is certain went stale
-         * (A9): `events.onRetro` is scoped to a single retrospective and a flat
+         * The page's own write is the one thing it is certain went stale:
+         * `events.onRetro` is scoped to a single retrospective and a flat
          * cross-retro page has nothing single to subscribe to, so there is no
          * live scope here to lean on and none was invented. What the page does
          * instead is ask again after acting, and again when the reader comes
@@ -359,9 +357,9 @@ function Resolve({ row }: { row: LifecycleTarget }) {
                 /**
                  * The row's own retrospective, never the page's — a rid is
                  * minted per retrospective, so `(retroId, rid)` is the identity
-                 * everywhere (A5, resolved by scout-core). This page is the only
-                 * surface in the product holding rows from several retros at
-                 * once, which makes it the only one that can get this wrong.
+                 * everywhere. This page is the only surface in the product
+                 * holding rows from several retros at once, which makes it the
+                 * only one that can get this wrong.
                  */
                 retroId: row.retroId,
                 rid: row.rid,
@@ -397,10 +395,10 @@ function Resolve({ row }: { row: LifecycleTarget }) {
  *
  * There is no confirm on any of them, because none is terminal the way finishing
  * a review is: every act appends a version, the history keeps all of them, and a
- * mis-press costs one more press. Archiving in particular is not a delete —
- * *"we still want to maintain its discussion"* — which is why it needs no more
- * ceremony than a reopen. `decline is a state, not a deletion` is the same idea
- * one table over.
+ * mis-press costs one more press. Archiving in particular is not a delete — an
+ * archived record keeps its discussion — which is why it needs no more ceremony
+ * than a reopen. `decline is a state, not a deletion` is the same idea one table
+ * over.
  *
  * One component rather than three, at the third caller: the repo's own rule for
  * lifting markup is that two copies are a coincidence and three are a rule
@@ -433,7 +431,7 @@ function OnePress({
       data-testid={testId}
       disabled={act.isPending}
       // The row's own retrospective, never the page's — a rid is minted per
-      // retrospective, so `(retroId, rid)` is the identity everywhere (A5).
+      // retrospective, so `(retroId, rid)` is the identity everywhere.
       onClick={() => act.mutate({ retroId: row.retroId, rid: row.rid, status })}
     >
       {label}

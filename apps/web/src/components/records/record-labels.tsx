@@ -79,9 +79,9 @@ export function RecordLabelTags({
  * should not be on screen (`record-lifecycle.tsx` says the same about the
  * lifecycle acts).
  *
- * **It works on a finished retrospective**, which is the whole point: the
- * owner's second archetype labels records *after* the review closes, so there is
- * no read-only branch here and the server deliberately does not refuse the write
+ * **It works on a finished retrospective**, which is the whole point: the second
+ * archetype of use labels records *after* the review closes, so there is no
+ * read-only branch here and the server deliberately does not refuse the write
  * either.
  */
 export function RecordLabelControl({
@@ -150,7 +150,7 @@ export function RecordLabelControl({
                     set.mutate({
                       // The record's own retrospective, never the page's — a rid
                       // is minted per retrospective, so `(retroId, rid)` is the
-                      // identity everywhere (A5).
+                      // identity everywhere.
                       retroId,
                       rid,
                       labelId: definition.id,

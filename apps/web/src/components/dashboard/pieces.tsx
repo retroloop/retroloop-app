@@ -6,10 +6,11 @@ import { cn } from '@/lib/utils'
 /**
  * The two containers and the one figure all three variations are assembled from.
  *
- * They are shared for the same reason the arithmetic is: the round is asking the
- * owner to choose between three *arguments*, and three sets of slightly different
- * card padding would put a fourth variable in the comparison. What each variation
- * chooses is which panels exist, what goes in them, and what order they come in.
+ * They are shared for the same reason the arithmetic is: the choice being made
+ * is between three *arguments*, and three sets of slightly different card
+ * padding would put a fourth variable in the comparison. What each variation
+ * chooses is which panels exist, what goes in them, and what order they come
+ * in.
  */
 
 /**
@@ -87,8 +88,8 @@ export function Surface({
  * period: the corpus's time axis is the sitting, sittings are irregular, and "+12.5%
  * vs last month" over five days of work would be a number invented to fill a
  * shape. So the chip slot is spent on something the data does have — a `note`, a
- * short true clause — and the round asks the owner whether he wants it back as a
- * real delta once there is a period to measure against.
+ * short true clause — and the slot can become a real delta once there is a period
+ * to measure against.
  *
  * The value uses **proportional figures, not tabular**: `tabular-nums` gives every
  * digit the width of a zero, which at display size makes `154` look gappy. Tabular
@@ -131,13 +132,12 @@ export function StatTile({
   tone?: 'plain' | 'lead'
   /**
    * Two or more labelled counts **instead of** one figure, for a tile whose
-   * reading is a split rather than a total (the Human-in-the-Loop box, D7).
+   * reading is a split rather than a total (the Human-in-the-Loop box).
    *
    * They are rendered side by side at a smaller size than a lone `value`, because
    * the comparison between them is the point and two display-size numbers in one
-   * card compete instead of pairing. A zero is drawn like any other count here —
-   * the owner asked for it, and on a pair the absent half is the louder half of
-   * the sentence.
+   * card compete instead of pairing. A zero is drawn like any other count here,
+   * because on a pair the absent half is the louder half of the sentence.
    */
   pair?: readonly { readonly label: string; readonly value: number }[]
 }) {
@@ -165,12 +165,11 @@ export function StatTile({
              * **Term first in the document, number first on the screen.**
              *
              * A definition list means `<dt>` then `<dd>`, and this rendered them
-             * the other way round — flagged in session 11 as pre-existing,
-             * non-conforming, and *load-bearing*, because the reading the tile
-             * is for is the figure with its name under it. Both are true at
-             * once: the DOM says what the markup means and `flex-col-reverse`
-             * says what it looks like, which is the half a stylesheet is
-             * allowed to decide.
+             * the other way round — pre-existing, non-conforming, and
+             * *load-bearing*, because the reading the tile is for is the figure
+             * with its name under it. Both are true at once: the DOM says what
+             * the markup means and `flex-col-reverse` says what it looks like,
+             * which is the half a stylesheet is allowed to decide.
              *
              * The two entries are identical in structure, so the `items-baseline`
              * on the list above still aligns them with each other — what the

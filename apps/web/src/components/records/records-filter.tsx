@@ -17,32 +17,32 @@ import type { TagLook } from '@/components/ui/tag'
 import { cn } from '@/lib/utils'
 
 /**
- * The four questions this page can be narrowed by, and no more (A6: no free-text
- * search in round one, and the deferred list stays deferred).
+ * The four questions this page can be narrowed by, and no more (no free-text
+ * search for now, and the deferred list stays deferred).
  *
  * They are **independent toggles that compose**, like the review page's chips:
- * any combination is a question the owner might have — *"this is going to be for
- * the use cases like to see what issues have been resolved"* is one of them, and
- * "the AI's issues that are still open" is another — and none of them on is the
- * whole list, which is the page a reader who presses nothing keeps.
+ * any combination is a question a reader might have — "which issues have been
+ * resolved" is one of them, and "the AI's issues that are still open" is
+ * another — and none of them on is the whole list, which is the page a reader
+ * who presses nothing keeps.
  *
- * **Label is the fourth, and it is the one the owner asked for by name**: *"they
- * can filter on the label"* was his whole argument for why labels beat a comment
- * carrying the same words. It joins the popover rather than the bar because the
- * vocabulary is unbounded — a store with fifteen labels would wrap the bar to
- * four lines, and lifecycle is what this page is *for*
- * (`r-additional-filters` made the same call for verdict and requester).
+ * **Label is the fourth, and it is what labels are for**: being able to filter on
+ * a label is the whole argument for why a label beats a comment carrying the
+ * same words. It joins the popover rather than the bar because the vocabulary
+ * is unbounded — a store with fifteen labels would wrap the bar to four lines,
+ * and lifecycle is what this page is *for* (`r-additional-filters` made the
+ * same call for verdict and requester).
  *
  * **Attribute filters are deferred**, and deliberately: a value filter is a
  * different control entirely — a name, an operator and a value — and no
- * evidence yet says which of the four types wants one. FOR HIS REVIEW.
+ * evidence yet says which of the four types wants one.
  *
  * **The counts are over every record, always**, on all four dimensions, and
- * they do not move when a filter narrows the list. That is the owner's own
- * ruling on the review bar's chips — *"should the count be the total or should
- * it only show what is the number? I guess it should show total"* — and the same
- * reason applies here: the chips answer "how much is there", not "how much is on
- * screen", and a number that changed as you filtered could not be aimed at.
+ * they do not move when a filter narrows the list. That is the same rule the
+ * review bar's chips follow — a chip shows the total, not the number currently
+ * on screen — and the same reason applies here: the chips answer "how much is
+ * there", not "how much is on screen", and a number that changed as you
+ * filtered could not be aimed at.
  */
 export type RecordsFilter = {
   readonly lifecycle: ReadonlySet<LifecycleState>
@@ -113,8 +113,8 @@ function tally<T extends string>(
  * The lifecycle the filter opens on — the one the URL named, and only if it is
  * one this product has.
  *
- * **The router does not police what it narrows** (retro-13
- * `r-validatesearch-narrows-not-polices`, measured on two independently written
+ * **The router does not police what it narrows**
+ * (`r-validatesearch-narrows-not-polices`, measured on two independently written
  * surfaces): `/records`'s validator returns `{}` for `?lifecycle=nonsense`, and
  * `useSearch()` still answers `nonsense`. Seeded straight into the filter, that
  * junk becomes a predicate no row satisfies — 0 of 132 records, with no chip
@@ -275,10 +275,10 @@ export function useRecordsFilter(
  * The bar: the page's own question on the left, everything else behind the icon.
  *
  * **Lifecycle is the one dimension that gets chips**, because it is what the
- * page is for — *"to see what issues have been resolved"*. Verdict and requester
- * go behind the filter icon for the reason `r-additional-filters` gives on the
+ * page is for: seeing which issues have been resolved. Verdict and requester go
+ * behind the filter icon for the reason `r-additional-filters` gives on the
  * review page: two more chip families would wrap this bar to three lines at the
- * width the owner reviews on, and a bar that wraps is a bar that stops being
+ * width this page is read on, and a bar that wraps is a bar that stops being
  * worth sticking to the top.
  *
  * `top-14` is the app header's own height, so it comes to rest against it with
@@ -368,19 +368,19 @@ function FilterChip({
  *
  * Every verdict a review can reach keeps its row at zero — "nothing is declined"
  * is itself an answer. `hold` is the one exception and only when it is empty:
- * it stopped being a verdict anyone can give in retro 3 `r-hold-semantics`, so
- * on every store the owner actually has it is a control that can only ever read
- * zero and filter to nothing. A store that *does* carry one still gets it,
- * because human data is append-only and a verdict somebody once chose stays
- * findable. The review bar decides it the same way, for the same reasons.
+ * it stopped being a verdict anyone can give in `r-hold-semantics`, so on any
+ * store written since then it is a control that can only ever read zero and
+ * filter to nothing. A store that *does* carry one still gets it, because human
+ * data is append-only and a verdict somebody once chose stays findable. The
+ * review bar decides it the same way, for the same reasons.
  */
 function verdictBelongs(state: DecisionState, count: number): boolean {
   return state !== 'hold' || count > 0
 }
 
 /**
- * The three slices the bar could not afford inline, behind the icon the owner
- * asked for on the review page and gets here in the same shape.
+ * The three slices the bar could not afford inline, behind the same filter icon
+ * the review page uses and in the same shape.
  *
  * **Label is the third, and it is the one that could never have gone on the
  * bar.** Verdict and requester are closed vocabularies — five values and two —
@@ -391,11 +391,11 @@ function verdictBelongs(state: DecisionState, count: number): boolean {
  * scrolls.
  *
  * The applied state is readable **without opening it**, which is the other half
- * of what he asked for — *"we will have to show some indication that extra
- * filters are applied"*. Two marks, answering different questions: the badge
- * says *something* is filtering, from anywhere on the bar; the chip beside it
- * says *what*, and carries the only way to undo them, because that is where the
- * reader is looking when they wonder.
+ * of the requirement: there has to be some indication that extra filters are
+ * applied. Two marks, answering different questions: the badge says *something*
+ * is filtering, from anywhere on the bar; the chip beside it says *what*, and
+ * carries the only way to undo them, because that is where the reader is
+ * looking when they wonder.
  */
 function ExtraFilters({ filter }: { filter: RecordsFilter }) {
   return (
@@ -448,7 +448,7 @@ function ExtraFilters({ filter }: { filter: RecordsFilter }) {
            * list is a control that has earned nothing — the same call
            * `verdictBelongs` makes about the verdict nobody can give any more.
            * On a store with no labels at all the panel is exactly what it was
-           * before session 10.
+           * before labels existed.
            */}
           {filter.labelCounts.length === 0 ? null : (
             <FilterGroup
@@ -574,13 +574,12 @@ function FilterGroup<T extends string>({
 
 /**
  * What the page says when the filters have hidden everything
- * (`r-empty-filter-message`, owner-approved on the review page and the same
- * sentence here).
+ * (`r-empty-filter-message`, settled on the review page and the same sentence
+ * here).
  *
- * The owner, at the end of a round: *"it doesn't show me a nice and sweet
- * message that says hey there are no more items that match the selected
- * criteria … otherwise it looks like a bug that all of a sudden everything
- * vanished when actually the filtered items really don't have anything left."*
+ * Without it, a filter that matches nothing looks like a bug: everything
+ * vanishes at once, when in fact nothing is left that matches the selected
+ * criteria. So the page says so plainly.
  *
  * It names the **state**, not the chips that produced it: any combination of the
  * three dimensions can arrive here, and a sentence that recited them would be a

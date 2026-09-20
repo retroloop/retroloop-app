@@ -7,40 +7,39 @@ import { relativeWhen } from '@/lib/relative-when'
 import { retroName } from '@/lib/retro-identity'
 
 /**
- * **The exclusive surface for retrospectives that are still going on** — the
- * owner's session-12 direction 6: *"if there is an open / ongoing retro, it
- * should be shown somewhere exclusively."*
+ * **The exclusive surface for retrospectives that are still going on**: an open
+ * or ongoing retrospective is shown somewhere exclusively.
  *
  * "Exclusively" is the whole specification and it has two halves. A live
  * retrospective gets a surface **no finished retrospective can appear on**, which
  * is what makes it findable without reading: if the band is there, something
- * wants him; if it is not, nothing does. And it gets that surface **only while it
+ * wants the human; if it is not, nothing does. And it gets that surface **only while it
  * is live** — the band is absent on a cold store rather than present and empty,
  * because a permanent strip reading "no open retrospective" is a control that has
  * earned nothing and, worse, teaches the reader to stop looking at the one place
  * the page reserved for urgency.
  *
- * **It renders one row per live retrospective, not just the newest.** The owner's
- * ruling was explicit — *one OR MORE active retros* — and the plural is not
- * hypothetical padding: a session opens a retrospective at a time today, but
- * `retros.list` can carry two the moment two sessions overlap, and a band that
- * silently showed one of them would hide a round he had not answered. So the
- * surface is a list with one entry each, newest first, and the heading counts
- * them when there is more than one.
+ * **It renders one row per live retrospective, not just the newest** — one *or
+ * more* active retrospectives — and the plural is not hypothetical padding: a
+ * session opens a retrospective at a time today, but `retros.list` can carry
+ * two the moment two sessions overlap, and a band that silently showed one of
+ * them would hide a round nobody had answered. So the surface is a list with
+ * one entry each, newest first, and the heading counts them when there is more
+ * than one.
  *
- * **What the direction round had here and this does not: the preview toggle.**
+ * **What the design exploration had here and this does not: the preview toggle.**
  * That control existed so the band could be reviewed on a store whose every
- * retrospective was `finished`. It was round scaffolding and the owner said so;
- * it does not ship, and neither does the synthetic retrospective it injected.
+ * retrospective was `finished`. It was scaffolding; it does not ship, and
+ * neither does the synthetic retrospective it injected.
  *
  * **Which retrospectives count.** Everything that is not `finished` — `open`,
  * `reviewing` and `submitted` alike. An `open` retro is one the AI is still
- * drafting, a `reviewing` one is waiting on him, and a `submitted` one is the
- * window he asked for: his round is down and the AI has not closed it. Only the
- * middle one is urgent, but all three are rounds in flight, and a dashboard that
- * only lit up at the handover would go dark for exactly the stretches where he
- * might want to know something was moving. The state tag says which, in the
- * review page's own words.
+ * drafting, a `reviewing` one is waiting on the human, and a `submitted` one is
+ * the window in between: the human has put the round down and the AI has not
+ * closed it. Only the middle one is urgent, but all three are rounds in flight,
+ * and a dashboard that only lit up at the handover would go dark for exactly
+ * the stretches where a reader might want to know something was moving. The
+ * state tag says which, in the review page's own words.
  */
 
 /**
@@ -84,7 +83,7 @@ export function LiveBand({ retros }: { retros: readonly RetroListRow[] }) {
           <span className="absolute inline-flex size-2 animate-ping rounded-full bg-tone-amber opacity-75" />
           <span className="relative inline-flex size-2 rounded-full bg-tone-amber" />
         </span>
-        {/* Counted in brackets when there is more than one, per direction 3's rule
+        {/* Counted in brackets when there is more than one, the standing rule
             for every counted item — and absent at one, because "(1)" beside a
             single row is a number the reader has to read to learn nothing. */}
         <h2 className="section-label text-foreground" data-testid="live-heading">
@@ -110,9 +109,9 @@ export function LiveBand({ retros }: { retros: readonly RetroListRow[] }) {
 function LiveRow({ retro }: { retro: RetroListRow }) {
   const when = relativeWhen(retro.session.startedAt, new Date())
   /**
-   * Whether this round is **his** — the one live state that owes him something.
-   * `submitted` is deliberately not one: he has put the round down, and the row
-   * that says so must not also count what it would owe him if he had not.
+   * Whether this round is **the human's** — the one live state that owes them
+   * something. `submitted` is deliberately not one: the round has been put down,
+   * and the row that says so must not also count what it would owe if it had not.
    */
   const waiting = retro.state === 'reviewing'
 
@@ -131,8 +130,8 @@ function LiveRow({ retro }: { retro: RetroListRow }) {
           </span>
           <RetroStateTag state={retro.state} />
         </div>
-        {/* The global id, per direction 4 and D5 — `retroId`, never
-            `retroNumber`, which counts per session and repeats across the store. */}
+        {/* The global id — `retroId`, never `retroNumber`, which counts per
+            session and repeats across the store. */}
         <span data-testid="live-identity" className="meta-mono break-words">
           Retro {retro.retroId} · session {retro.session.id} · opened{' '}
           <time dateTime={retro.session.startedAt}>{when.text}</time>
@@ -142,18 +141,18 @@ function LiveRow({ retro }: { retro: RetroListRow }) {
       <div className="flex shrink-0 flex-wrap items-center gap-4">
         {/**
          * What the round is waiting on, and only while it is waiting. A round
-         * the AI is still drafting owes him nothing yet, and a round he has
-         * already submitted owes him nothing any more; "0 pending" on either
-         * would be a number to read and dismiss — the same call the diary's rows
-         * make.
+         * the AI is still drafting owes the human nothing yet, and a round they
+         * have already submitted owes them nothing any more; "0 pending" on
+         * either would be a number to read and dismiss — the same call the
+         * diary's rows make.
          *
          * The one edge, stated because it is reachable rather than because it is
-         * likely: the window after a finish is not read-only, so he can take a
-         * verdict back and leave a `submitted` round with a pending record in
-         * it. The figures stay away then too. A count under a tag that says he
-         * is done is two claims about the same round, and the one that matters —
-         * that the AI cannot close it — is the one the AI is already told, by
-         * the gate that refuses the close and by `review status`.
+         * likely: the window after a finish is not read-only, so a verdict can be
+         * taken back and leave a `submitted` round with a pending record in it.
+         * The figures stay away then too. A count under a tag that says the
+         * human is done is two claims about the same round, and the one that
+         * matters — that the AI cannot close it — is the one the AI is already
+         * told, by the gate that refuses the close and by `review status`.
          *
          * Term first in the document, number first on the screen — the same
          * conforming pair the stat tiles draw, and argued at `pieces.tsx`

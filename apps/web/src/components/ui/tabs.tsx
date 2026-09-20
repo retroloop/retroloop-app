@@ -13,15 +13,14 @@ import { cn } from '@/lib/utils'
  * file was wrong — the two reasons are both about where the open-tab styling
  * lives.
  *
- * **The vertical orientation is back, because it has a caller** (retro-13
- * `r-settings-vertical-tabs`, the owner: *"shadcn comes with vertical tabs, use
- * that to implement something like this"*). It was trimmed at first on
- * KC-0014's rule — a variant nobody asked for is a second look nobody approved —
- * and the settings page is now the one asking. It is Radix's own
- * `orientation="vertical"`: the arrow keys become up/down and every part gets
- * `data-orientation="vertical"`, which is what the classes below key off, so
- * this is one prop rather than a second component. The `line` variant still has
- * no caller and is still not here.
+ * **The vertical orientation is back, because it has a caller**
+ * (`r-settings-vertical-tabs`): shadcn ships vertical tabs and the settings page
+ * is built on them. It was trimmed at first on the rule that a variant nobody
+ * asked for is a second look nobody approved — and the settings page is now the
+ * one asking. It is Radix's own `orientation="vertical"`: the arrow keys become
+ * up/down and every part gets `data-orientation="vertical"`, which is what the
+ * classes below key off, so this is one prop rather than a second component.
+ * The `line` variant still has no caller and is still not here.
  *
  * **The two orientations' layout classes are two disjoint sets, and that is the
  * `PRESSED` lesson again rather than tidiness.** tailwind-merge only drops a
@@ -59,8 +58,8 @@ function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
       data-slot="tabs"
       className={cn(
         'flex',
-        // Horizontal: the strip above its panel — what every caller before
-        // session 12 gets, unchanged.
+        // Horizontal: the strip above its panel — what every horizontal caller
+        // gets, unchanged.
         'data-horizontal:flex-col data-horizontal:gap-3',
         // Vertical: the nav beside the panel, and `items-start` so a short nav
         // does not stretch to the height of a long panel.

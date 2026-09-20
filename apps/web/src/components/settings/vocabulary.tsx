@@ -17,11 +17,10 @@ import { useTRPC } from '@/lib/trpc'
 /**
  * The settings page's body — the two vocabularies and the one switch.
  *
- * **The page exists because the definitions are global.** The owner: *"adding
- * those will require setting up a settings page, because each label or attribute
- * is going to be a global thing."* Nothing here is scoped to a retrospective, a
- * session or a working directory, which is why it is a route of its own rather
- * than a panel inside a review.
+ * **The page exists because the definitions are global.** Labels and attributes
+ * need a settings page precisely because each definition is a global thing.
+ * Nothing here is scoped to a retrospective, a session or a working directory,
+ * which is why it is a route of its own rather than a panel inside a review.
  *
  * **One file for both vocabularies and the switch**, because a settings page is
  * one thing a reader reads top to bottom, and three files of forty lines each
@@ -32,12 +31,12 @@ import { useTRPC } from '@/lib/trpc'
  * **Every element earns its place**, and the list is short on purpose: create,
  * rename, retire, un-retire, plus the switch. There is no colour picker, no
  * description, no usage count, no reordering and no delete. Each of those is a
- * thing a retro can add once he has used this; a delete in particular is a thing
- * this product does not do at all — retiring keeps the name readable on every
- * record that already wears it (`label.model.ts`).
+ * thing a retrospective can add once somebody has used this; a delete in
+ * particular is a thing this product does not do at all — retiring keeps the
+ * name readable on every record that already wears it (`label.model.ts`).
  *
- * **Un-retire is the one control a retro did add** (retro-11
- * `r-retire-burns-a-word`), and it is on retired rows only — see `DefinitionRow`
+ * **Un-retire is the one control a retrospective did add**
+ * (`r-retire-burns-a-word`), and it is on retired rows only — see `DefinitionRow`
  * for why that is the whole of its footprint.
  */
 type LabelDefinition = AppRouterOutputs['labels']['list'][number]
@@ -45,16 +44,16 @@ type AttributeDefinition = AppRouterOutputs['attributes']['list'][number]
 type AttributeType = AttributeDefinition['type']
 
 /**
- * OWNER RULING 2, as a control: *"in the config page add a toggle that the user
- * can enable to give the AI the ability to update the configs. Otherwise, if it
- * is disabled, the user can be certain that the AI cannot mess around."*
+ * The AI-writes promise, as a control: a toggle the human can enable to give the
+ * AI the ability to update the configuration. While it is disabled, the human
+ * can be certain the AI cannot touch it.
  *
  * **The switch does not enforce anything, and the sentence under it says what
  * does.** The guarantee is read in core, inside the unit of work that would do
  * the writing, so it holds against a bypassed UI, a hand-rolled call and the
  * AI's own process against the same file (`config-write.service.ts`). A page
  * that lied about this state would change nothing about what the AI can do,
- * which is exactly the property he asked for.
+ * which is exactly the property the promise needs.
  *
  * It is first on the page because it is the only thing here that is a *promise*
  * rather than a list — and because a reader who has come to find out what the AI
@@ -119,10 +118,10 @@ export function LabelVocabulary() {
     <Vocabulary
       kind="label"
       /**
-       * The owner's own framing, and it is here rather than in a tooltip because
-       * the difference between the two primitives is the thing a first-time
-       * reader of this page has to be told once: *"usually labels are just
-       * labels"*, and an attribute is what carries the detail beside one.
+       * A plain framing, and it is here rather than in a tooltip because the
+       * difference between the two primitives is the thing a first-time reader
+       * of this page has to be told once: a label is usually just a label, and
+       * an attribute is what carries the detail beside one.
        */
       blurb="A name a record wears, or does not. Nothing else travels with it."
       definitions={labels.data}
@@ -241,8 +240,8 @@ function Vocabulary({
        * is already carrying the word "Labels" or "Attributes" a few pixels to
        * the left, and an `<h2>` repeating it would be the page naming the same
        * thing twice in one glance. The blurb stays, because it is the part a
-       * first-time reader actually needs — the owner's own framing of what
-       * separates the two primitives.
+       * first-time reader actually needs — a plain framing of what separates the
+       * two primitives.
        */}
       <p className="text-muted-foreground text-sm">{blurb}</p>
 
@@ -271,10 +270,10 @@ function Vocabulary({
       {definitions === undefined ? null : definitions.length === 0 ? (
         /**
          * **What a fresh install says**, and it is the first thing anybody ever
-         * sees of this feature: the product ships no labels and no attributes
-         * (*"we will not hardcode any labels or attributes"*), so empty is the
-         * normal state rather than an error. It says the one true thing and
-         * stops, exactly as the empty dashboard and the empty records page do.
+         * sees of this feature: the product ships no labels and no attributes —
+         * none are hardcoded — so empty is the normal state rather than an
+         * error. It says the one true thing and stops, exactly as the empty
+         * dashboard and the empty records page do.
          */
         <p className="text-muted-foreground text-sm" data-testid={`settings-${kind}s-empty`}>
           None yet. The ones you create here are offered on every record.
@@ -309,11 +308,11 @@ function Vocabulary({
  * typo in a retired label is as worth fixing as one in an offerable one.
  *
  * **Retire and Un-retire are the same slot, and exactly one of them is ever
- * there** (retro-11 `r-retire-burns-a-word`, the owner's selected solution):
- * *"a retired definition can be brought back to offerable by the human — same
- * row, same one-press shape."* An offerable row offers Retire; a retired row
- * offers Un-retire; neither is ever shown disabled, because a control with
- * nothing left to do is a control that has earned nothing.
+ * there** (`r-retire-burns-a-word`): a retired definition can be brought back to
+ * offerable by the human — same row, same one-press shape. An offerable row
+ * offers Retire; a retired row offers Un-retire; neither is ever shown
+ * disabled, because a control with nothing left to do is a control that has
+ * earned nothing.
  *
  * **That symmetry is the whole fix, and it is why there is still no confirm
  * dialog.** Retiring used to be one press with no way back, against a store that

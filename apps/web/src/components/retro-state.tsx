@@ -11,19 +11,18 @@ export type RetroState = AppRouterOutputs['retros']['get']['state']
  * mark in both, so a reader who clicks a row that said REVIEWING lands on a page
  * that agrees with it.
  *
- * `submitted` is the owner's session-11 add — *"There should be a status in
- * between that indicates that the human has submitted but AI hasn't closed"*.
- * It is a reading of the wire, not a state anything stores (`retro.view.ts`),
- * and it gets a look here rather than a panel anywhere: the fact he was missing
- * is one word, and this is the component that already says the word in both
- * places he would look for it.
+ * `submitted` is the state in between: the human has submitted but the AI has
+ * not closed. It is a reading of the wire, not a state anything stores
+ * (`retro.view.ts`), and it gets a look here rather than a panel anywhere: the
+ * missing fact is one word, and this is the component that already says the
+ * word in both places a reader would look for it.
  *
  * Blue between amber and green, and the send glyph the review bar's own Sent
  * mark carries. The colour is doing the same work it does on the lifecycle
- * chips — amber is the state that wants him, blue is the state that is moving
- * without him, green is done — and the glyph is the tie: the mark beside the
- * Finish button and the tag at the top of the page are now the same picture of
- * the same fact, which is what he could not find before.
+ * chips — amber is the state that wants the human, blue is the state that is
+ * moving without them, green is done — and the glyph is the tie: the mark
+ * beside the Finish button and the tag at the top of the page are now the same
+ * picture of the same fact, which is what was not findable before.
  *
  * Because this is a `Record<RetroState, …>` and `RetroState` is read off the
  * router, a fourth state on the wire made this file fail to compile until the

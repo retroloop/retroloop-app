@@ -6,9 +6,9 @@ import { Tag, type TagLook } from '@/components/ui/tag'
 export type Party = AppRouterOutputs['records']['get']['record']['requester']
 
 /**
- * Which of the two writes in this product, as one word and one mark — the owner,
- * after retro 3: *"right now there is no distinction if the retro item is
- * reported / requested by the human or the ai."*
+ * Which of the two writes in this product, as one word and one mark. Without it
+ * there is no distinction on screen between a record the human reported and one
+ * the AI requested.
  *
  * `requester` had been on every record since the first schema and nothing ever
  * rendered it, so a reviewer could not tell their own complaint from one the AI

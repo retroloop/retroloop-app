@@ -12,9 +12,9 @@ import { optionFor, SEVERITIES } from '@/lib/enum-labels'
 import { retroIdentityLine } from '@/lib/retro-identity'
 
 /**
- * One record, wherever it came from — the row behind the owner's *"page that
- * shows all the retro items flat … irrespective of the session or retro or cwd
- * in one place list."*
+ * One record, wherever it came from — the row behind the page that lists every
+ * record flat, in one place, irrespective of the session, the retrospective or
+ * the working directory.
  *
  * It is deliberately not a small review card. What a reader does here is find a
  * record and see where it stands, and the record itself is one click away on its
@@ -23,13 +23,13 @@ import { retroIdentityLine } from '@/lib/retro-identity'
  * problem statement, the solutions, the reviewer's note and the comments are all
  * one navigation away and none of them is here.
  *
- * **That click used to land on the review page** (A6/A7: no per-record detail
- * page, the review's `?record=` anchor was it), and the owner read the result as
- * a bug the first time he used it — *"when I go to the records page and click on
- * a record, it takes me to the retro page. each record should have it's own
- * dedicated page."* So the link is `/records/:globalId` now, and the way to the
- * retrospective is on that page, where he asked for it. The anchor did not go
- * away: it is what the record page's own link to its review carries.
+ * **That click used to land on the review page** (there was no per-record detail
+ * page, so the review's `?record=` anchor was it), and it read as a bug: clicking
+ * a record on the records page took the reader to the retrospective page, when
+ * each record should have its own dedicated page. So the link is
+ * `/records/:globalId` now, and the way to the retrospective is on that page.
+ * The anchor did not go away: it is what the record page's own link to its
+ * review carries.
  *
  * **One link, and the number in it.** The row shows `#globalId` and the URL is
  * that same number, which is what makes a row something a reader can cite — and
@@ -44,8 +44,8 @@ export function RecordsRow({ row }: { row: RecordListRow }) {
   return (
     <article
       // Keyed by the pair, everywhere, because a rid is minted per
-      // retrospective and two retros can mint the same one (A5). This is the
-      // only page in the product that can hold both at once.
+      // retrospective and two retros can mint the same one. This is the only
+      // page in the product that can hold both at once.
       data-testid={`records-row-${row.retroId}-${row.rid}`}
       className="flex flex-col gap-2.5 rounded-xl border border-hairline bg-card px-4 py-3.5"
     >
@@ -55,8 +55,8 @@ export function RecordsRow({ row }: { row: RecordListRow }) {
        * not a thing anyone would click.
        *
        * The number is the record's place in the **whole ledger**, not in its own
-       * retrospective — the owner: *"in each retro record ids start from #1 which
-       * is weird."* This page is where he saw it: seven rows from three
+       * retrospective, because per-retrospective ids all start from #1 and repeat
+       * across the store. This page is where that shows: seven rows from three
        * retrospectives, three of them opening with "#1". The link still goes by
        * `(retroId, rid)`, which is what actually addresses a record.
        */}
@@ -107,8 +107,8 @@ export function RecordsRow({ row }: { row: RecordListRow }) {
 }
 
 /**
- * How bad it is, in the one word the owner addresses it by — he says "sev 4",
- * not the rubric line behind it.
+ * How bad it is, in the one word a reader addresses it by — "sev 4", not the
+ * rubric line behind it.
  *
  * The short form is the tab strip's own precedent (`Solution 2 · L2`): a compact
  * marker in a list, with the canonical label whole one click away on the review
