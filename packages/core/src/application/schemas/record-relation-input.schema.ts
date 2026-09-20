@@ -3,8 +3,8 @@ import { parseOrThrow } from '#application/schemas/parse'
 import { nonEmptyTextSchema } from '#application/schemas/text.schema'
 
 /**
- * What a relation write says. Each relation carries how-they-relate words, made
- * a rule of the shape rather than a convention.
+ * What a relation write says. **Every relation carries how-they-relate words**,
+ * and that is a rule of the shape rather than a convention.
  *
  * **`related` is required and has no default**, for the reason `status` and
  * `state` are on their inputs: nothing in this product is inferred from silence.

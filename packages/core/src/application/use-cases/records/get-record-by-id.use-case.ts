@@ -35,9 +35,9 @@ import {
  * carries a timeline at the bottom showing how the record evolved, with events
  * like status changes.
  *
- * Three kinds, and no fourth. **Comments are deliberately out** — so nothing
- * here reads a thread, and a record's conversation stays on the review page
- * where it is written.
+ * Three kinds, and no fourth. **Comments are deliberately out**, so nothing here
+ * reads a thread, and a record's conversation stays on the review page where it
+ * is written.
  *
  * Every one of them carries an `actor`, and two of the three get theirs from the
  * domain rather than from a column. A revision is the AI's — `CreateRevisionUseCase`

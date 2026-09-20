@@ -53,8 +53,8 @@ export type RecordListAllRow = {
   readonly rid: string
   /**
    * The number this page shows — the record's place in the whole ledger
-   * (`record-id.model.ts`). It is what the global number exists for, and this
-   * page is where the reason is plainest: three retrospectives' records in one
+   * (`record-id.model.ts`). This page is what the global number exists for, and
+   * it is where the reason is plainest: three retrospectives' records in one
    * list, and every one of them used to open with a "#1".
    */
   readonly globalId: number

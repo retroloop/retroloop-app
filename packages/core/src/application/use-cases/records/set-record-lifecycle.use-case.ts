@@ -80,11 +80,11 @@ export type SetRecordLifecycleOutput = {
  *    The export is not endangered by it, because lifecycle is not exported
  *    (A8): a document taken from a finished retrospective still cannot change
  *    behind its reader.
- * 3. **Nothing is inferred, and nothing is written at close.** Every
- *    row here is this call, made by a named actor; no commit message, no merge,
- *    no review close writes one. A declined record reads as `archived` with no
- *    row at all — that is `effectiveLifecycle` reading a verdict the human gave,
- *    not this use case writing an act nobody took.
+ * 3. **Nothing is inferred, and nothing is written at close.** Every row here is
+ *    this call, made by a named actor; no commit message, no merge, no review
+ *    close writes one. A declined record reads as `archived` with no row at all
+ *    — that is `effectiveLifecycle` reading a verdict the human gave, not this
+ *    use case writing an act nobody took.
  * 4. **No update and no delete.** Every act appends a version, so "resolved on
  *    the 29th citing abc123, archived on the 30th" is readable forever — the
  *    same shape a declined record has, where decline is a state rather than a

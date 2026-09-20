@@ -160,8 +160,8 @@ export type ListLaneRecordsOutput = {
  *
  * - **the human finished the round.** Finishing is the human's one button
  *   (`r-one-finish-button`) and the gate behind it guarantees every record was
- *   decided, so a finished round is the point at which an approval means
- *   "go" rather than "they have not got to it yet". It is read from the
+ *   decided, so a finished round is the point at which an approval means "go"
+ *   rather than "they have not got to it yet". It is read from the
  *   `ReviewFinished` events rather than from `retrospective.state`, because that
  *   state only moves on the AI's own close — a round finished an hour ago is
  *   work, closed or not.

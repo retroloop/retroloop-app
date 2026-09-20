@@ -76,8 +76,8 @@ export type RelateRecordsOutput = {
  * **It works on a finished retrospective, and that is the point of the feature.**
  * A relation is written *after* the review closes by construction — the AI
  * relating the record it just filed to the one from three retrospectives ago is
- * the whole of finding past records and building holistic solutions — so this joins
- * `records.setLifecycle`, `labels.apply` and `attributes.set` as a write
+ * the whole of finding past records and building holistic solutions — so this
+ * joins `records.setLifecycle`, `labels.apply` and `attributes.set` as a write
  * `refuseWhenFinished` deliberately does not guard, and it is the **fourth**
  * exception in that list. It is safe for the same reason the other three are:
  * **relations are not in the export** (`export.view.ts` carries none), so a

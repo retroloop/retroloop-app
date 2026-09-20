@@ -44,9 +44,10 @@ export type CloseReviewOutput = {
  *   the latest revision is the only thing that opens this door, so the AI can
  *   never close a review the human has not put down. Nothing is inferred from
  *   silence, from an empty comment list, or from time passing.
- * - **The finish gate must still hold.** The human can undo a verdict after finishing
- *   (`r-verdict-revise`), and a record back in `pending` means the export would
- *   be ambiguous — so the gate is asked again here, not just at the finish.
+ * - **The finish gate must still hold.** The human can undo a verdict after
+ *   finishing (`r-verdict-revise`), and a record back in `pending` means the
+ *   export would be ambiguous — so the gate is asked again here, not just at
+ *   the finish.
  * - **No record may still ask to be rewritten.** A `revise` verdict is
  *   must-address-in-the-next-revision by the record's own direction; closing
  *   over one would file the human's ask as an outcome. The refusal names them.

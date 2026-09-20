@@ -30,18 +30,16 @@ export type SetAiConfigWriteOutput = {
 
 /**
  * The human decides whether the AI may write label and attribute definitions:
+ * the config page carries a toggle the user can enable to give the AI the
+ * ability to update the configs, and while it is disabled the user can be
+ * certain that the AI cannot change them.
  *
- * > The config page carries a toggle the user can enable to give the AI the
- * > ability to update the configs. While it is disabled, the user can be certain
- * > that the AI cannot change them.
- *
- * **An append, not an edit.** "The user can be certain" is a claim about the
- * past as much as the present: the store keeps every version, so "it has been
- * off since the 27th" is readable rather than inferable. Setting it to what it
- * already says still writes a row, unlike almost every other act in this
- * product, and that is deliberate for the same reason — the human reaffirming a
- * permission is a thing that happened, and this is the one table where the
- * history *is* the feature.
+ * **An append, not an edit.** That certainty is a claim about the past as much
+ * as the present: the store keeps every version, so "it has been off since the
+ * 27th" is readable rather than inferable. Setting it to what it already says
+ * still writes a row, unlike almost every other act in this product, and that is
+ * deliberate for the same reason — the human reaffirming a permission is a thing
+ * that happened, and this is the one table where the history *is* the feature.
  *
  * **The guard is the first statement**, above the transaction, exactly as
  * `ResolveThreadUseCase` opens with one: an actor who may not do a thing is told
