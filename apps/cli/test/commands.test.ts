@@ -58,10 +58,10 @@ describe('the CLI', () => {
    * The human's half of one round: decide whatever is still pending, then press
    * Finish.
    *
-   * Since `r-revision-sneaks-past-review` a revision may only answer a
-   * finished round, so a test that wants a second one runs the rhythm. It goes
-   * through the App rather than the CLI because finishing is human-only and has
-   * no command — that is the point of it.
+   * Since `r-revision-sneaks-past-review` a revision may only answer a finished
+   * round, so a test that wants a second one runs the rhythm. It goes through
+   * the App rather than the CLI because finishing is human-only and has no
+   * command — that is the point of it.
    */
   async function finishRound(retroId: number): Promise<void> {
     const app = createApp(cli.store, { clock: cli.clock })
@@ -575,9 +575,9 @@ describe('the CLI', () => {
             carriedOver: false,
             decidedOnRevision: null,
             // Where it stands on the axis that outlives the review. `open` on a
-            // record nobody has touched — and present, which is the whole
-            // point: this list used to answer nothing at all here while the flat
-            // page answered correctly.
+            // record nobody has touched — and present, which is the whole point:
+            // this list used to answer nothing at all here while the flat page
+            // answered correctly.
             lifecycle: {
               status: 'open',
               refs: [],
@@ -618,10 +618,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * **The dogfood scenario that filed the projection gap, end to end** — resolve
-     * through the CLI, then read the list back through the CLI. That is the AI's
-     * own verification loop after a batch resolve, and it reported nothing about
-     * the writes it had just made.
+     * **The scenario that filed the projection gap, end to end** — resolve through
+     * the CLI, then read the list back through the CLI. That is the AI's own
+     * verification loop after a batch resolve, and it reported nothing about the
+     * writes it had just made.
      */
     test('shows a resolved record’s lifecycle, refs and all, right after resolving it', async () => {
       const sessionId = await aSession()
@@ -744,7 +744,7 @@ describe('the CLI', () => {
     /**
      * The line a person reads carries the verdict and nothing beside it.
      *
-     * It carried a `[held]` marker for one session, which is what this test was
+     * It carried a `[held]` marker for a time, which is what this test was
      * written for; `r-remove-hold` took the feature out, so the marker is
      * asserted absent instead — with the verdict asserted present in the same
      * line, because a check that only looked for a missing word would pass on a
@@ -1154,9 +1154,9 @@ describe('the CLI', () => {
    * a record, finds the one it is a repeat of in a retrospective that closed,
    * relates them by the numbers `record list` gave it, and reads the relation
    * back through the same command. The read-back is the half
-   * `r-lifecycle-projection-gap` records one table over — the AI checks
-   * its own writes by listing, and a listing silent about them reads exactly
-   * like a store that refused every one.
+   * `r-lifecycle-projection-gap` records one table over — the AI checks its own
+   * writes by listing, and a listing silent about them reads exactly like a
+   * store that refused every one.
    */
   describe('record relate / unrelate', () => {
     /** A closed retrospective and an open one, and the two numbers that name a record in each. */
@@ -1533,10 +1533,10 @@ describe('the CLI', () => {
 
     /**
      * The one place the counts are read by a person rather than parsed. It ended
-     * with "; N held" for one session — the lifecycle axis stated apart from the
-     * verdicts — and `r-remove-hold` removed the feature, so the line is
-     * the live verdicts and stops. The trailing clause is asserted gone as well
-     * as the counts asserted present: an assertion that only checked the prefix
+     * with "; N held" for a time — the lifecycle axis stated apart from the
+     * verdicts — and `r-remove-hold` removed the feature, so the line is the
+     * live verdicts and stops. The trailing clause is asserted gone as well as
+     * the counts asserted present: an assertion that only checked the prefix
      * would pass on a line that still had it.
      *
      * `revise` joined the line with the verdict (`r-verdict-revise`); the
@@ -1624,10 +1624,10 @@ describe('the CLI', () => {
   })
 
   /**
-   * The AI's end of the loop (`r-one-finish-button`): the human presses
-   * one button, the AI reads the round, and when there is nothing left to
-   * address it runs this. Every refusal below is the CLI's contract with the
-   * skill — the exit code is what an AI following instructions actually sees.
+   * The AI's end of the loop (`r-one-finish-button`): the human presses one
+   * button, the AI reads the round, and when there is nothing left to address
+   * it runs this. Every refusal below is the CLI's contract with the skill —
+   * the exit code is what an AI following instructions actually sees.
    */
   describe('review close', () => {
     /**
@@ -1842,10 +1842,10 @@ describe('the CLI', () => {
     test('does not offer the deferred selectors at all', async () => {
       // `--project` and `--session --all` would each produce N retrospectives,
       // which the v1 envelope cannot hold. They are deferred until the public
-      // contract settles, and the honest way to say "not here" is for the
-      // option not to exist: strict mode rejects it as unknown. This test exists
-      // so a later stub that accepts the flag and explains itself fails loudly —
-      // such a stub would quietly promise a shape nothing implements.
+      // contract settles, and the honest way to say "not here" is for the option
+      // not to exist: strict mode rejects it as unknown. This test exists so a
+      // later stub that accepts the flag and explains itself fails loudly — such
+      // a stub would quietly promise a shape nothing implements.
       const byProject = await cli.run(['export', '--project', 'retro', '--json'])
       expect(byProject.code).toBe(EXIT.usage)
       expect(byProject.error().message).toContain('Unknown argument: project')
@@ -1860,8 +1860,8 @@ describe('the CLI', () => {
    * The reading half of the loop (cli.md `note list`, `revision get`,
    * `comment list`) and the AI's one write back into a review (`comment add`).
    *
-   * There were two of each until `r-remove-requests` — `request list`
-   * and `request respond` went with the ask channel that was removed, and a
+   * There were two of each until `r-remove-requests` — `request list` and
+   * `request respond` went with the ask channel that was removed, and a
    * comment is the whole of it now.
    *
    * Everything the human writes here has to be written *as* the human, which no

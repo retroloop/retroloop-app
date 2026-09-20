@@ -11,12 +11,12 @@ afterAll(removeTempStages)
  * history it searches, and the marker it puts up while it works.
  *
  * These assertions are the public contract: the plugin shells out and reads
- * exactly these keys, so breaking one is a major version. `toEqual` on
- * whole objects rather than a few properties is deliberate — an extra key is a
- * change to the contract too, and it should have to be written down here before
- * it ships. Each shape also has a **sorted key lock** beside it, because
- * `toEqual` on one fixture leaves the shape free to move on a row the fixture
- * does not happen to reach.
+ * exactly these keys, so breaking one is a major version. `toEqual` on whole
+ * objects rather than a few properties is deliberate — an extra key is a change
+ * to the contract too, and it should have to be written down here before it
+ * ships. Each shape also has a **sorted key lock** beside it, because `toEqual`
+ * on one fixture leaves the shape free to move on a row the fixture does not
+ * happen to reach.
  */
 describe('the record lane', () => {
   let cli: Cli
@@ -482,10 +482,10 @@ describe('the record lane', () => {
    * quotes and no comment saw `ownerWords: []` and reported the quotes lost.
    *
    * Every expectation here is read off **the draft the record was filed from**
-   * rather than off a literal copied in. `r-lifecycle-projection-gap`
-   * pinned one projection against another; what nothing pinned was the
-   * projection against the record, which is how a field missing from all three
-   * commands at once stayed invisible.
+   * rather than off a literal copied in. `r-lifecycle-projection-gap` pinned
+   * one projection against another; what nothing pinned was the projection
+   * against the record, which is how a field missing from all three commands
+   * at once stayed invisible.
    */
   describe('the words the record was filed with', () => {
     type Filed = {
@@ -887,14 +887,14 @@ describe('the record lane', () => {
   })
 
   /**
-   * **The lifecycle acts take the number too**
-   * (`r-brief-record-resolve-line`). The queue and `record get` hand out
-   * `#globalId`s, and until this a caller holding one had to read the record a
-   * second time, for its rid and its retrospective, before it could resolve it —
-   * `resolve` was the one act in the brief's block addressed differently from
-   * its neighbours. A rid can never be all digits (`ridSchema`), so the two
-   * forms cannot be confused, and the number form needs no `--retro`: the number
-   * names its retrospective on its own.
+   * **The lifecycle acts take the number too** (`r-brief-record-resolve-line`).
+   * The queue and `record get` hand out `#globalId`s, and until this a caller
+   * holding one had to read the record a second time, for its rid and its
+   * retrospective, before it could resolve it — `resolve` was the one act in the
+   * brief's block addressed differently from its neighbours. A rid can never be
+   * all digits (`ridSchema`), so the two forms cannot be confused, and the
+   * number form needs no `--retro`: the number names its retrospective on its
+   * own.
    */
   describe('record resolve / reopen by #globalId', () => {
     test('resolve takes the number, needs no --retro, and clears the claim in the same breath', async () => {

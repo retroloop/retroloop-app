@@ -243,9 +243,9 @@ describe('the /retro skill', () => {
   })
 
   test('drives the whole content check, not just the record states', () => {
-    // The branch every round now lands in (`r-one-finish-button`): the
-    // wait returns one event and the *content* says what to do next, so a skill
-    // that could only see which records are pending would have to guess. Every
+    // The branch every round now lands in (`r-one-finish-button`): the wait
+    // returns one event and the *content* says what to do next, so a skill that
+    // could only see which records are pending would have to guess. Every
     // command that reads the human's words back is required to be in here by
     // name, with the flag that makes it useful — and `review close`, because
     // without it the loop has no way to end.
@@ -262,8 +262,8 @@ describe('the /retro skill', () => {
       ['revision', 'get', '--feedback-only'],
       ['comment', 'list', '--unanswered'],
       ['comment', 'add', undefined],
-      // Where a review-level ask gets answered (`r-cli-review-thread-reply`).
-      // A skill that only showed `--record --section` would send the AI back to
+      // Where a review-level ask gets answered (`r-cli-review-thread-reply`). A
+      // skill that only showed `--record --section` would send the AI back to
       // chat for the threads that hang off no record.
       ['comment', 'add', '--thread'],
       ['comment', 'add', '--review'],
@@ -285,18 +285,18 @@ describe('the /retro skill', () => {
   })
 
   test('says that a revise verdict has to be addressed, not just noticed', () => {
-    // The third verdict is an instruction (`r-verdict-revise`), and the
-    // one place an AI reads instructions is this file. `review close` refuses
-    // over one, so a skill that did not say so would send it into an exit 4 it
+    // The third verdict is an instruction (`r-verdict-revise`), and the one
+    // place an AI reads instructions is this file. `review close` refuses over
+    // one, so a skill that did not say so would send it into an exit 4 it
     // could not explain.
     expect(markdown).toContain('must-address')
   })
 
   test('says where an ask arrives, now that there is one channel for it', () => {
-    // The other half of `r-remove-requests`: an AI that read the old
-    // skill went looking for `request list` for the human's asks. There is one
-    // place they land now and the skill has to name it, because nothing about
-    // an empty `requests` array says where to look instead.
+    // The other half of `r-remove-requests`: an AI that read the old skill
+    // went looking for `request list` for the human's asks. There is one place
+    // they land now and the skill has to name it, because nothing about an
+    // empty `requests` array says where to look instead.
     expect(markdown).toContain('every ask now arrives as a comment')
   })
 
@@ -368,8 +368,8 @@ describe('the /retro skill', () => {
    * The rebuild path in §4 tells the reader a record's `content` is "the same
    * thirteen keys as the table in step 3" — a spelled-out count, which is a fact
    * that rots the moment a field is added and which a reader will use to check
-   * their own work. It was caught wrong once; this is why it cannot go
-   * wrong quietly again.
+   * their own work. It was caught wrong once; this is why it cannot go wrong
+   * quietly again.
    */
   test('counts the record’s fields the way the schema does', () => {
     const fields = Object.keys(recordInputSchema.shape)
@@ -429,11 +429,11 @@ describe('the /retro skill', () => {
   })
 
   /**
-   * The refusal a cold agent is most likely to hit and least able to
-   * interpret: the human undid a verdict after finishing, `review close`
-   * refuses, and no re-reading of the round changes it. SKILL.md quotes the
-   * error document so the reader recognises it on sight — which makes the quote
-   * a copy of a string the core owns, checked here against the source.
+   * The refusal a cold agent is most likely to hit and least able to interpret:
+   * the human undid a verdict after finishing, `review close` refuses, and no
+   * re-reading of the round changes it. SKILL.md quotes the error document so
+   * the reader recognises it on sight — which makes the quote a copy of a
+   * string the core owns, checked here against the source.
    */
   test('quotes the finish-gate refusal exactly as the CLI prints it', () => {
     const refusal = new FinishGateError(34, ['r-slow-tests'])
@@ -579,12 +579,12 @@ describe('the /retro skill', () => {
    * check neither side had (`r-subset-renderer-drift`).
    *
    * A wrong marker planted in the documented subset as a routine
-   * plant-and-catch failed to fail: seventeen skill tests assert
-   * SKILL.md's structure and wording, every web test asserts `prose.tsx`'s
-   * behaviour, and no test read both artifacts. So "the review page renders
-   * exactly that subset" could silently lie, and a record authored to a
-   * documented marker the renderer rejects would render as literal text with no
-   * red anywhere — exported to every repository the skill ships to.
+   * plant-and-catch failed to fail: seventeen skill tests assert SKILL.md's
+   * structure and wording, every web test asserts `prose.tsx`'s behaviour, and
+   * no test read both artifacts. So "the review page renders exactly that
+   * subset" could silently lie, and a record authored to a documented marker
+   * the renderer rejects would render as literal text with no red anywhere —
+   * exported to every repository the skill ships to.
    *
    * Two directions, because either alone leaves half the drift uncovered: a
    * marker the renderer reads and the skill never documents is a construct
@@ -624,9 +624,9 @@ describe('the /retro skill', () => {
   })
 
   test('names an in-repo invocation that exists', () => {
-    // `retro` resolves nowhere in a fresh checkout
-    // (`r-retro-bin-not-on-path`), so the skill names a fallback — and a fallback
-    // is only worth naming while the script behind it is still there.
+    // `retro` resolves nowhere in a fresh checkout (`r-retro-bin-not-on-path`),
+    // so the skill names a fallback — and a fallback is only worth naming while
+    // the script behind it is still there.
     const rootPackage = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as {
       scripts: Record<string, string>
     }

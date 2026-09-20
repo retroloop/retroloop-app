@@ -8,8 +8,8 @@ import { UsageError } from '#errors'
  * promised "auto LAN"; a tool that quietly puts a review server on the network
  * because you did not name an address is not being helpful, it is deciding
  * something for you. `--bind` is how you ask, and `--help` is the authoritative
- * statement of what happens when you do not. A `--bind` binds the one
- * start it was typed for: nothing carries it over into the next one.
+ * statement of what happens when you do not. A `--bind` binds the one start it
+ * was typed for: nothing carries it over into the next one.
  */
 export const DEFAULT_BIND = '127.0.0.1'
 

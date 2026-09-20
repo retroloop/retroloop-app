@@ -4,12 +4,12 @@ import { join } from 'node:path'
 import { DEFAULT_HOME, resolveDataDir, resolveHome, resolveStage } from '#stage'
 
 /**
- * One root folder: `~/.retroloop` is the root, and everything Retroloop
- * owns hangs off it — `data/` the stage, `backups/db/` the pre-migration
- * snapshots, `retros/` the exports. `--home` and `RETROLOOP_HOME` both name the
- * **root**, never the data directory. `RETRO_HOME` is retired: a name that once
- * meant the data directory would now silently mean a root, so it is ignored
- * rather than reinterpreted.
+ * One root folder: `~/.retroloop` is the root, and everything Retroloop owns
+ * hangs off it — `data/` the stage, `backups/db/` the pre-migration snapshots,
+ * `retros/` the exports. `--home` and `RETROLOOP_HOME` both name the **root**,
+ * never the data directory. `RETRO_HOME` is retired: a name that once meant the
+ * data directory would now silently mean a root, so it is ignored rather than
+ * reinterpreted.
  */
 describe('the root folder', () => {
   test('defaults to ~/.retroloop, with the stage under it', () => {

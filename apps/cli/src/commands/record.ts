@@ -132,8 +132,8 @@ type RecordArgs = {
  * thread resolution has no revision.
  *
  * The two that work keep working after the review has closed, which is the point
- * — the lifecycle axis exists *because* the retro is finished by the time
- * anyone fixes anything.
+ * — the lifecycle axis exists *because* the retro is finished by the time anyone
+ * fixes anything.
  *
  * `record relate` and `record unrelate` — **the feature's stated purpose, and
  * the AI is the actor it was asked for**: both actors can relate records, each
@@ -151,9 +151,9 @@ type RecordArgs = {
  * inside a retrospective when the whole point is that it does not.
  *
  * `--how` is required on `relate` and refused on `unrelate`. The words are half
- * the act — each relation carries how-they-relate words — and the removal
- * row carries forward the words of the relation it takes off, so there is
- * nothing for a second set to be about.
+ * the act — each relation carries how-they-relate words — and the removal row
+ * carries forward the words of the relation it takes off, so there is nothing
+ * for a second set to be about.
  *
  * Like the lifecycle pair they take no `--revision`: a relation is not bound to
  * a draft of either record, and it outlives every redraft of both. They keep
@@ -354,9 +354,9 @@ export function registerRecordCommand(
                  * both directions.
                  *
                  * **This is the read-back the feature exists for.** Letting the
-                 * AI easily find past records is answered here or nowhere: the
-                 * AI relates a batch through `record relate` and then lists to
-                 * check the writes landed — and a listing silent about them reads
+                 * AI easily find past records is answered here or nowhere: the AI
+                 * relates a batch through `record relate` and then lists to check
+                 * the writes landed — and a listing silent about them reads
                  * exactly like a store that refused every one, the same gap
                  * `r-lifecycle-projection-gap` records one table over.
                  *
