@@ -33,9 +33,9 @@ const retroAndRevision = {
  * as pending again (D2). That distinction is the whole reason the reviewer can
  * trust the column, so it is on the wire rather than recomputed in the browser.
  *
- * Both reported a `hold` on its own key for one session and no longer do
- * (`r-remove-hold`): the lifecycle flag was removed on first contact, and
- * "not to be done without me" is `involvement`, which rides on the decision.
+ * Both used to report a `hold` on its own key and no longer do
+ * (`r-remove-hold`): the lifecycle flag was removed on first contact, and "not
+ * to be done without me" is `involvement`, which rides on the decision.
  */
 export const recordsRouter = router({
   list: procedure
@@ -66,13 +66,13 @@ export const recordsRouter = router({
           carriedOver: view.decision.carriedOver,
           contentChangedSince: view.decision.contentChangedSince ?? null,
           // The use case has always returned this; the summary simply did not
-          // pass it on. Same shape `records.listAll` sends, through the
-          // same converter, so a record reads the same on both lists.
+          // pass it on. Same shape `records.listAll` sends, through the same
+          // converter, so a record reads the same on both lists.
           lifecycle: toWireLifecycle(view.lifecycle),
           // Who has picked it up, if anybody — the card's "in progress" badge.
-          // There is no procedure to write one: the claim is the
-          // solving side's and it is taken through the CLI, in the AI's own
-          // process, so this wire carries the reading and nothing else.
+          // There is no procedure to write one: the claim is the solving side's
+          // and it is taken through the CLI, in the AI's own process, so this
+          // wire carries the reading and nothing else.
           claim: toWireClaim(view.claim),
         })),
       }
@@ -177,9 +177,9 @@ export const recordsRouter = router({
    * all four write a version of the same thing, and the four *names* that do
    * exist live in the outbox, where a consumer needs to tell them apart without
    * unpacking a payload. `threads.resolve` made the same call with a boolean;
-   * this takes the status word instead, because a third position was a
-   * plausible next ask when this was written and turned out to be two — the
-   * input widened here and the procedure count did not move.
+   * this takes the status word instead, because a third position was a plausible
+   * next ask when this was written and turned out to be two — the input widened
+   * here and the procedure count did not move.
    *
    * `refs` and `note` are transport-optional here and the **domain** decides
    * which pairings are legal, who may take which act, and from which state.
@@ -193,11 +193,10 @@ export const recordsRouter = router({
    * The actor is the context's, which is `human` unconditionally and has nothing
    * to negotiate (`context.ts`). The AI writes these rows too — resolving is the
    * reason the feature exists — but it does it in its own process through the
-   * CLI, which is where every AI write in this system happens. So
-   * there is no actor argument here, and no way for a browser to claim to be the
-   * AI — which also means this transport can never be refused by the human-only
-   * rule, and the rule is in the use case precisely so that is not what enforces
-   * it.
+   * CLI, which is where every AI write in this system happens. So there is no
+   * actor argument here, and no way for a browser to claim to be the AI — which
+   * also means this transport can never be refused by the human-only rule, and
+   * the rule is in the use case precisely so that is not what enforces it.
    */
   setLifecycle: procedure
     .input(
@@ -237,8 +236,8 @@ export const recordsRouter = router({
    *
    * **One procedure carrying both acts**, on the standing `records.setLifecycle`
    * pattern two procedures up: the input widens here and the procedure count
-   * does not move. The input it widens with is `labels.set`'s boolean rather than
-   * that one's status word, and the difference is the difference those two
+   * does not move. The input it widens with is `labels.set`'s boolean rather
+   * than that one's status word, and the difference is the difference those two
    * argued: a lifecycle position turned out to be a scale that grew from two to
    * four inside a session, and relating is on and off with no third position for
    * a relation to occupy. Either way the alternative here was a second procedure
@@ -257,10 +256,10 @@ export const recordsRouter = router({
    * `ValidationError`, `NotFoundError` or `ConflictError` and the middleware maps
    * each one.
    *
-   * The actor is the context's, which is `human` unconditionally
-   * (`context.ts`). The AI writes these rows too — both actors can relate
-   * records — but it does it in its own process
-   * through the CLI, which is where every AI write in this system happens.
+   * The actor is the context's, which is `human` unconditionally (`context.ts`).
+   * The AI writes these rows too — both actors can relate records — but it does
+   * it in its own process through the CLI, which is where every AI write in this
+   * system happens.
    */
   relate: procedure
     .input(

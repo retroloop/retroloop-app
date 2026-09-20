@@ -176,11 +176,11 @@ describe('events.onRetro', () => {
   })
 
   /**
-   * **The records page's live updates.** A lifecycle write is
-   * scoped to its retrospective like any other, so it reaches a page watching
-   * that retro through the machinery already here — which is what lets the flat
-   * records list invalidate itself when the AI resolves something in another
-   * process while the human is reading.
+   * **The records page's live updates.** A lifecycle write is scoped to its
+   * retrospective like any other, so it reaches a page watching that retro
+   * through the machinery already here — which is what lets the flat records
+   * list invalidate itself when the AI resolves something in another process
+   * while the human is reading.
    *
    * Both names, because the invalidation map keys off `name` and a map that
    * knew only the resolve would leave a reopened record showing as resolved

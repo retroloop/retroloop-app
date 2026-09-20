@@ -3,11 +3,10 @@ import { procedure, router } from '#trpc/trpc'
 import { settingsSchema } from '#trpc/views.schema'
 
 /**
- * The global settings — one key today, and it carries a standing guarantee:
- *
- * > The config page has a toggle the user can enable to give the AI the ability
- * > to update the configs. Otherwise, while it is disabled, the user can be
- * > certain that the AI cannot mess around.
+ * The global settings — one key today, and it carries a standing guarantee: the
+ * config page has a toggle the user can enable to give the AI the ability to
+ * update the configs. Otherwise, while it is disabled, the user can be certain
+ * that the AI cannot mess around.
  *
  * **This router renders the switch; it does not enforce it.** The enforcement is
  * `assertAiMayWriteDefinitions`, read in core inside the unit of work that would
@@ -40,14 +39,14 @@ export const settingsRouter = router({
    * **The one procedure whose whole job is a promise about another actor.**
    *
    * `enabled` is required and has no default, for the reason `decisions.record`
-   * requires a state: nothing in this product is inferred from silence,
-   * and a permission that could be granted by an omitted field would
-   * be the worst possible place to start.
+   * requires a state: nothing in this product is inferred from silence, and a
+   * permission that could be granted by an omitted field would be the worst
+   * possible place to start.
    *
-   * The write appends a version rather than editing one, so the answer to *"has
-   * it ever been on?"* survives every later change — which is what the
-   * certainty guarantee asks for about the past as well as the present. The
-   * version is not on the wire: nothing on the page renders one.
+   * The write appends a version rather than editing one, so the answer to "has
+   * it ever been on?" survives every later change — which is what the certainty
+   * guarantee asks for about the past as well as the present. The version is not
+   * on the wire: nothing on the page renders one.
    */
   setAiConfigWrite: procedure
     .input(z.strictObject({ enabled: z.boolean() }))

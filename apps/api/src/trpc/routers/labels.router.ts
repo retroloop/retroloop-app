@@ -9,8 +9,8 @@ import { toWireLabelDefinition, toWireRecordLabel } from '#trpc/wire'
  *
  * **Five definition procedures and one write on a record**, and the split is a
  * standing rule rather than an arrangement: the definitions are global — each
- * label or attribute is a global thing — and are what the settings
- * page manages, while `set` is a mark a human puts on one record.
+ * label or attribute is a global thing — and are what the settings page manages,
+ * while `set` is a mark a human puts on one record.
  *
  * **The record write is `set` and not `apply`, and that is tRPC rather than
  * taste.** `createRouterFactory` refuses three keys outright —
@@ -40,13 +40,13 @@ import { toWireLabelDefinition, toWireRecordLabel } from '#trpc/wire'
  *   CLI, in its own process, where the gate actually bites.
  *
  * **`unretire` is the fourth act, and a retrospective asked for it**
- * (`r-retire-burns-a-word`, selected solution 2). Retiring used to be one
- * press with no confirmation and no way back, which made a mis-press a
- * permanently burned word — the store never frees a retired name. Un-retire
- * makes that a two-press round trip, which is the same reversibility rule the
- * rest of this product lives by; a confirm dialog was the alternative and was
- * dropped, because it taxes every legitimate retire forever to guard against the
- * rare slip.
+ * (`r-retire-burns-a-word`, selected solution 2). Retiring used to be one press
+ * with no confirmation and no way back, which made a mis-press a permanently
+ * burned word — the store never frees a retired name. Un-retire makes that a
+ * two-press round trip, which is the same reversibility rule the rest of this
+ * product lives by; a confirm dialog was the alternative and was dropped,
+ * because it taxes every legitimate retire forever to guard against the rare
+ * slip.
  */
 export const labelsRouter = router({
   /**

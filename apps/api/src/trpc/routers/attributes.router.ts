@@ -11,10 +11,10 @@ import { toWireAttributeDefinition, toWireRecordAttribute } from '#trpc/wire'
  * story is).
  *
  * **A second namespace rather than a shared `definitions` one**, and that is a
- * standing rule made structural: labels and attributes are pure and
- * independent, and composition is the user's own convention and never a system
- * mechanism. A single namespace would be the first place a reader looked for
- * the pairing the system does not have.
+ * standing rule made structural: labels and attributes are pure and independent,
+ * and composition is the user's own convention and never a system mechanism. A
+ * single namespace would be the first place a reader looked for the pairing the
+ * system does not have.
  *
  * Two differences from the label side, both of them the type:
  *

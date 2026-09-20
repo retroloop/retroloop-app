@@ -27,20 +27,20 @@ describe('the tRPC surface', () => {
   })
 
   /**
-   * The procedure set is the contract item 6's typed mock mirrors key for key
-   * (R-MOCK-LOCK). A thirtieth procedure is a thirtieth thing to
-   * mock, so adding one has to mean editing this list on purpose.
+   * The procedure set is the contract `apps/web`'s typed mock mirrors key for
+   * key (R-MOCK-LOCK). A thirtieth procedure is a thirtieth thing to mock, so
+   * adding one has to mean editing this list on purpose.
    *
-   * Two removals are asserted here by absence, and this list is where
-   * they are asserted: `requests.*`, the ask channel that duplicated the
-   * review's comment threads (`r-remove-requests`), and `holds.*`, the lifecycle
-   * flag `involvement` already expressed (`r-remove-hold`). A procedure that
-   * came back would fail here by name.
+   * Two removals are asserted here by absence, and this list is where they are
+   * asserted: `requests.*`, the ask channel that duplicated the review's comment
+   * threads (`r-remove-requests`), and `holds.*`, the lifecycle flag
+   * `involvement` already expressed (`r-remove-hold`). A procedure that came
+   * back would fail here by name.
    *
    * **`records.setLifecycle` is not `holds.*` coming back.** A hold was a
-   * position on the verdict axis and was removed because `involvement`
-   * already said that; this is a second axis entirely, written after the verdict
-   * is settled and the review is closed.
+   * position on the verdict axis and was removed because `involvement` already
+   * said that; this is a second axis entirely, written after the verdict is
+   * settled and the review is closed.
    */
   test('is the record and review procedures, the vocabularies and settings, the un-retire pair, and records.relate', () => {
     expect(Object.keys(appRouter._def.procedures).sort()).toEqual([
@@ -49,8 +49,8 @@ describe('the tRPC surface', () => {
       'attributes.rename',
       'attributes.retire',
       'attributes.set',
-      // The pair that closed `r-retire-burns-a-word`: retiring was one
-      // press with no way back, and the store never frees a retired name.
+      // The pair that closed `r-retire-burns-a-word`: retiring was one press
+      // with no way back, and the store never frees a retired name.
       'attributes.unretire',
       'decisions.record',
       'events.onRetro',
@@ -64,10 +64,10 @@ describe('the tRPC surface', () => {
       'records.get',
       'records.list',
       'records.listAll',
-      // The relation: one procedure for both
-      // acts, and the only record write here that names *two* records — by the
-      // global number, because a relation crosses retrospectives and the pair
-      // that addresses one record is not a handle for two.
+      // The relation: one procedure for both acts, and the only record write
+      // here that names *two* records — by the global number, because a relation
+      // crosses retrospectives and the pair that addresses one record is not a
+      // handle for two.
       'records.relate',
       'records.setLifecycle',
       'retros.get',
@@ -108,11 +108,10 @@ describe('the tRPC surface', () => {
 
     /**
      * The fourth display state, on the wire: there is a status in between that
-     * indicates the human has submitted but the AI has not
-     * closed. Three readings of the same unchanged column, walked in one
-     * test because the point of the fourth word is the *boundaries* — a
-     * derivation that fired one press early or one press late would still pass
-     * two of these three.
+     * indicates the human has submitted but the AI has not closed. Three
+     * readings of the same unchanged column, walked in one test because the
+     * point of the fourth word is the *boundaries* — a derivation that fired one
+     * press early or one press late would still pass two of these three.
      *
      * The store is read at the same three moments. `submitted` must not have
      * become a row: if it ever does, this is where a migration nobody asked for
@@ -127,8 +126,8 @@ describe('the tRPC surface', () => {
 
       await api.finishRound(retroId)
       expect(await wireState()).toBe('submitted')
-      // The whole of the gap: the retrospective has not moved, and the round
-      // it is waiting on is the one the human just put down.
+      // The whole of the gap: the retrospective has not moved, and the round it
+      // is waiting on is the one the human just put down.
       expect(await storedState()).toBe('reviewing')
       expect((await api.caller.retros.get({ retroId })).revisions.at(-1)?.finishedAt).not.toBeNull()
 
@@ -140,8 +139,8 @@ describe('the tRPC surface', () => {
     /**
      * The round that counts is the **latest** one. A retro the human finished
      * and the AI answered with a new draft is theirs again, and a derivation
-     * reading "any finished round" rather than "the current one" would leave
-     * it reading SUBMITTED for the rest of its life.
+     * reading "any finished round" rather than "the current one" would leave it
+     * reading SUBMITTED for the rest of its life.
      */
     test('goes back to reviewing when the AI answers the round with a new revision', async () => {
       await api.finishRound(retroId)
@@ -157,10 +156,10 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The retro's name is the **latest** revision's title. A title
-     * rides on a draft, so redrafting is how it changes — and a page reading an
-     * older revision's name after the AI renamed the retro would be showing a
-     * name nobody chose.
+     * The retro's name is the **latest** revision's title. A title rides on a
+     * draft, so redrafting is how it changes — and a page reading an older
+     * revision's name after the AI renamed the retro would be showing a name
+     * nobody chose.
      */
     test('carries the latest revision’s title, and null when that revision has none', async () => {
       expect((await api.caller.retros.get({ retroId })).title).toBeNull()
@@ -272,8 +271,8 @@ describe('the tRPC surface', () => {
 
     /**
      * The ordinal is per session and the id is global, which is the whole reason
-     * both are on the row: the newest retrospective here is "#2", and a newer one
-     * in another session would still be "#1".
+     * both are on the row: the newest retrospective here is "#2", and a newer
+     * one in another session would still be "#1".
      */
     test('numbers each retrospective within its own session', async () => {
       for (const rid of ['r-record-1', 'r-record-2']) {
@@ -482,10 +481,10 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The evidence reaches the page, and reaches it as null rather than
-     * as a missing key on a record that has none — the same convention every
-     * other absent narrative half on this wire obeys, so the browser branches on
-     * a value instead of on whether a key is there.
+     * The evidence reaches the page, and reaches it as null rather than as a
+     * missing key on a record that has none — the same convention every other
+     * absent narrative half on this wire obeys, so the browser branches on a
+     * value instead of on whether a key is there.
      */
     test('carries the diagnostic data, and nulls it on a record filed without any', async () => {
       const detail = await api.caller.records.get({ retroId, rid: 'r-record-1' })
@@ -505,8 +504,8 @@ describe('the tRPC surface', () => {
      * And **not** the record's comments. They rode here until the side panel
      * became the one comments surface — the inline comments in the retro body
      * were replaced by comments in the panel, so the human sees all comments in
-     * one place — and a second procedure still answering for
-     * them is a second answer to keep in agreement with `threads.list`.
+     * one place — and a second procedure still answering for them is a second
+     * answer to keep in agreement with `threads.list`.
      *
      * Asserted as the absence of the key rather than as an empty array: an empty
      * `threads: []` would be the field still on the wire, saying nothing. The
@@ -800,9 +799,8 @@ describe('the tRPC surface', () => {
 
     /**
      * The identity line is the record's own retrospective's, counted within its
-     * own session — the same shape `retros.list` and `records.listAll`
-     * carry, so the page states the line a dashboard row and a records row
-     * already state.
+     * own session — the same shape `retros.list` and `records.listAll` carry, so
+     * the page states the line a dashboard row and a records row already state.
      */
     test('carries the identity line of the retrospective the record belongs to', async () => {
       await api.caller.decisions.record({
@@ -866,8 +864,8 @@ describe('the tRPC surface', () => {
    *
    * There is no procedure here to claim with, and that is the design rather than
    * a gap: the claim is the solving side's and it is written through the CLI, in
-   * the AI's own process, like every other AI write. What the wire owes
-   * is the *reading* — so the acts below go through the App and the assertions go
+   * the AI's own process, like every other AI write. What the wire owes is the
+   * *reading* — so the acts below go through the App and the assertions go
    * through the router, which is the only arrangement that proves the two agree.
    *
    * The resolve is the second half and not a second test: the core clears a
@@ -1134,10 +1132,9 @@ describe('the tRPC surface', () => {
 
     /**
      * **Still reachable on a finished retrospective**, and it is the only write
-     * on this router that is. It is deliberate rather than an oversight:
-     * marking a record fixed happens after the retrospective is closed.
-     * `review.test.ts` in core names it beside the enumeration of every
-     * write that refuses.
+     * on this router that is. It is deliberate rather than an oversight: marking
+     * a record fixed happens after the retrospective is closed. `review.test.ts`
+     * in core names it beside the enumeration of every write that refuses.
      */
     test('is not closed by the review closing', async () => {
       for (const rid of ['r-record-1', 'r-record-2']) {
@@ -1396,10 +1393,10 @@ describe('the tRPC surface', () => {
   })
 
   /**
-   * **`records.relate`** — the one write on this
-   * wire that names **two** records, and it names them by the global number
-   * because a relation crosses retrospectives and the pair that addresses one
-   * record is not a handle for two.
+   * **`records.relate`** — the one write on this wire that names **two**
+   * records, and it names them by the global number because a relation crosses
+   * retrospectives and the pair that addresses one record is not a handle for
+   * two.
    *
    * What a transport suite can prove is what a transport does: the numbers and
    * the words cross, both records' pages answer from the one stored row, and
@@ -1615,8 +1612,8 @@ describe('the tRPC surface', () => {
   })
 
   /**
-   * **The labels, the attributes and the toggle** — the twelve
-   * procedures the two primitives and the permission switch bought.
+   * **The labels, the attributes and the toggle** — the twelve procedures the
+   * two primitives and the permission switch bought.
    *
    * What this file can prove about them is what a *transport* can prove: the
    * shapes cross correctly, the error map answers each refusal with the right
@@ -1648,8 +1645,8 @@ describe('the tRPC surface', () => {
       /**
        * **A fresh store ships none**, deliberately: no labels or attributes are
        * hardcoded, so the vocabulary stays flexible — the first thing this
-       * surface says about itself is that it says nothing, and `migrated` is
-       * not there.
+       * surface says about itself is that it says nothing, and `migrated` is not
+       * there.
        */
       test('are empty until somebody creates one', async () => {
         expect(await api.caller.labels.list({})).toEqual([])
@@ -1744,10 +1741,10 @@ describe('the tRPC surface', () => {
       })
 
       /**
-       * **Un-retire, over the wire** — `r-retire-burns-a-word`, and the
-       * solution it selected: retiring was one press with no confirmation and no
-       * way back, and the store never frees a retired name, so a mis-press
-       * burned a word out of the vocabulary permanently.
+       * **Un-retire, over the wire** — `r-retire-burns-a-word`, and the solution
+       * it selected: retiring was one press with no confirmation and no way
+       * back, and the store never frees a retired name, so a mis-press burned a
+       * word out of the vocabulary permanently.
        *
        * The answer is the *same row* rather than merely an offerable one — the
        * id the browser is holding is the id every record wears — and the
@@ -1925,9 +1922,9 @@ describe('the tRPC surface', () => {
 
       /**
        * **Still reachable on a finished retrospective**, which is a deliberate
-       * usage archetype rather than an oversight: the migrate story
-       * happens after the close. It joins `records.setLifecycle` as one of the
-       * writes on this router the finish lock deliberately does not guard.
+       * usage archetype rather than an oversight: the migrate story happens
+       * after the close. It joins `records.setLifecycle` as one of the writes on
+       * this router the finish lock deliberately does not guard.
        */
       test('is not closed by the review closing', async () => {
         for (const rid of ['r-record-1', 'r-record-2']) {
@@ -2136,10 +2133,10 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The input enum is five values; the output enum is still eight,
-     * because a decision made before the cut is human data and is never
-     * rewritten. Both halves are asserted here because they are the same
-     * sentence read from either end.
+     * The input enum is five values; the output enum is still eight, because a
+     * decision made before the cut is human data and is never rewritten. Both
+     * halves are asserted here because they are the same sentence read from
+     * either end.
      */
     test('is BAD_REQUEST for a solution level nothing offers any more', async () => {
       for (const cut of ['none', 'upstream', 'undecided']) {
@@ -2193,9 +2190,9 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The tickmark that indicates what the human actually selected,
-     * on the wire. The level follows the pick, so the two travel together and a
-     * page never has to compute one from the other.
+     * The tickmark that indicates what the human actually selected, on the wire.
+     * The level follows the pick, so the two travel together and a page never
+     * has to compute one from the other.
      */
     test('records which solution the human selected, and takes its level', async () => {
       const result = await api.caller.decisions.record({
@@ -2258,10 +2255,10 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * `r-hold-semantics`. The input enum is three values; the output
-     * enum is still four, because a record decided `hold` before the split is
-     * human data and is never rewritten. Both halves are asserted here because
-     * they are the same sentence read from either end.
+     * `r-hold-semantics`. The input enum is three values; the output enum is
+     * still four, because a record decided `hold` before the split is human data
+     * and is never rewritten. Both halves are asserted here because they are the
+     * same sentence read from either end.
      */
     test('is BAD_REQUEST for `hold`, which is no longer a verdict', async () => {
       expect(
@@ -2382,11 +2379,11 @@ describe('the tRPC surface', () => {
 
     /**
      * **Every thread, record-level and review-level alike.** The record thread
-     * opened alongside is the whole test: it filtered to review-level threads
-     * at first, and the opposite is what the panel needs — the inline comments
-     * in the retro body were replaced by comments in the side panel, so the
-     * human sees all comments in one place. A panel missing the record
-     * comments would fail here rather than in a browser.
+     * opened alongside is the whole test: it filtered to review-level threads at
+     * first, and the opposite is what the panel needs — the inline comments in
+     * the retro body were replaced by comments in the side panel, so the human
+     * sees all comments in one place. A panel missing the record comments would
+     * fail here rather than in a browser.
      */
     test('list returns every thread of the retrospective, record-level included', async () => {
       const record = await api.caller.threads.open({
@@ -2423,9 +2420,9 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * A comment shows the revision number it is associated with. A
-     * revision is announced and never swapped in, so the page sends
-     * the revision it is showing and the server stores that — not the newest.
+     * A comment shows the revision number it is associated with. A revision is
+     * announced and never swapped in, so the page sends the revision it is
+     * showing and the server stores that — not the newest.
      */
     test('stores the revision the page was showing, and the latest when it sends none', async () => {
       await api.finishRound(retroId)
@@ -2518,10 +2515,10 @@ describe('the tRPC surface', () => {
 
   describe('review', () => {
     /**
-     * The page's one terminal action (`r-one-finish-button`), and what
-     * it does *not* do: the retrospective is still `reviewing` afterwards.
-     * Closing it to export is the AI's act, through the CLI — there is no
-     * procedure for it, which the procedure list above is what guards.
+     * The page's one terminal action (`r-one-finish-button`), and what it does
+     * *not* do: the retrospective is still `reviewing` afterwards. Closing it to
+     * export is the AI's act, through the CLI — there is no procedure for it,
+     * which the procedure list above is what guards.
      *
      * The wire says `submitted` and the store still says `reviewing`, and both
      * halves are asserted because that gap is the whole feature: the fourth

@@ -35,16 +35,17 @@ export type ApiHarness = {
    * Finish.
    *
    * A second revision may only answer a finished round
-   * (`r-revision-sneaks-past-review`), so a test that wants two revisions runs the
-   * rhythm. It approves what is pending because the finish gate wants an answer
-   * on every record and these tests' subject is the wire, not the verdicts.
+   * (`r-revision-sneaks-past-review`), so a test that wants two revisions runs
+   * the rhythm. It approves what is pending because the finish gate wants an
+   * answer on every record and these tests' subject is the wire, not the
+   * verdicts.
    */
   finishRound(retroId: number): Promise<void>
   /**
    * The end of the loop, both halves. The human's Finish closes their side of
    * the round and the AI's close is what finishes a retrospective
-   * (`r-one-finish-button`), so a test that needs a finished one runs both —
-   * the second through the App, because there is no procedure for it.
+   * (`r-one-finish-button`), so a test that needs a finished one runs both — the
+   * second through the App, because there is no procedure for it.
    */
   closeReview(retroId: number): Promise<void>
 }
