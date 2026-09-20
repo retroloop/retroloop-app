@@ -43,11 +43,11 @@ export type ListRecordsOutput = {
  *
  * **And where each one stands on the axis that outlives the review**
  * (`r-lifecycle-projection-gap`). This projection answered nothing about
- * lifecycle for a whole session while the flat one answered correctly, which was
- * found the worst way: after resolving every record of a retrospective, the
- * natural check — `record list --retro <n>` — read as if none of the writes had
- * landed. It is the AI's own read-back channel, so a gap here does not merely
- * look wrong, it invites the conclusion that the store is broken.
+ * lifecycle while the flat one answered correctly, which was found the worst way:
+ * after resolving every record of a retrospective, the natural check — `record
+ * list --retro <n>` — read as if none of the writes had landed. It is the AI's
+ * own read-back channel, so a gap here does not merely look wrong, it invites the
+ * conclusion that the store is broken.
  *
  * **The lifecycle is not scoped to the revision, and that is deliberate.** A fix
  * landed against the *record*, not against a draft of it, so `--revision 1` shows

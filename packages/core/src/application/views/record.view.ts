@@ -17,11 +17,11 @@ import { type EffectiveDecision, effectiveDecision } from '#domain/services/reco
  * and where the human's decision stands against *that* content (D2).
  *
  * **There is no `hold` beside the decision any more** (`r-remove-hold`). A
- * lifecycle flag rode here for one session and was removed on first contact:
- * marking an item as only to be done with the human in the loop achieves the
- * same thing, so the hold is unnecessary. Whether the solving side may touch an
- * item without the human is `involvement`, which is already on the decision.
- * The `holds` table keeps every row that was written.
+ * lifecycle flag rode here for a time and was removed on first contact: marking
+ * an item as only to be done with the human in the loop achieves the same thing,
+ * so the hold is unnecessary. Whether the solving side may touch an item without
+ * the human is `involvement`, which is already on the decision. The `holds` table
+ * keeps every row that was written.
  *
  * Read models live here rather than inside one use case because several use cases
  * return the same shape — record list, record get, revision get — and adapters

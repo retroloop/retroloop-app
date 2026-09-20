@@ -14,7 +14,7 @@ import { effectiveDecision } from '#domain/services/record-state.service'
  * zero there forever. It stays because a stored value is never rewritten and
  * the sum has to keep adding up: pending + approved + declined + hold = total.
  *
- * There was a `held` count beside them for one session, over the lifecycle flag
+ * There was a `held` count beside them for a time, over the lifecycle flag
  * `r-hold-semantics` introduced. `r-remove-hold` removed the feature and this
  * count with it, and the verdict buckets are the whole answer again.
  */
