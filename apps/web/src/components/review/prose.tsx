@@ -2,12 +2,12 @@ import { Fragment, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * The one renderer for authored prose (retro 3, `r-prose-renders-raw`).
+ * The one renderer for authored prose (`r-prose-renders-raw`).
  *
  * Every prose field on a record — and every comment — is *written* as markdown
  * and was being shown as its own source: `**bold**` put its asterisks on the
- * page, single newlines collapsed, and a list was a run-on line. The owner reads
- * a record by skimming its bold leads, and for three retrospectives that method
+ * page, single newlines collapsed, and a list was a run-on line. A record is
+ * read by skimming its bold leads, and for three retrospectives that method
  * had nothing to skim.
  *
  * **The subset is the whole contract**, and it is small because a reviewer is
@@ -32,20 +32,20 @@ import { cn } from '@/lib/utils'
  * here: it opens no HTML path, and what is inside one is read by this same
  * function, so a quote can hold exactly what a document can and nothing else.
  *
- * **A newline inside a block is a soft wrap, not a boundary** (retro 7
- * `r-hard-wrap-breaks-prose`). Every newline used to be structural, so a line
+ * **A newline inside a block is a soft wrap, not a boundary**
+ * (`r-hard-wrap-breaks-prose`). Every newline used to be structural, so a line
  * that did not open with a marker was a new block: a bullet wrapped at 72
  * columns — which is the house habit for every other text surface — shattered
  * into a bullet followed by bare paragraphs, and a `**` that opened on one line
- * and closed on the next put its asterisks on the page. Both are one bug, and
- * the owner saw it on the first thread reply he read: *"the text seems to be
- * broken."* So a line that opens no block marker continues the block above it,
+ * and closed on the next put its asterisks on the page. Both are one bug, and it
+ * showed on the very first thread reply: the text simply read as broken.
+ * So a line that opens no block marker continues the block above it,
  * which is CommonMark's soft break and is what makes a wrapped bullet one
  * bullet and lets an inline mark cross an authored line break. A blank line is
  * still the paragraph boundary, and a real bullet still starts with `- `, so
  * nothing an author meant as a break was taken from them.
  *
- * **Two things never reach this renderer at all**, both by the owner's word:
+ * **Two things never reach this renderer at all**, both deliberately:
  *
  * - **The footprint** is a drawing rather than prose — an author-aligned file
  *   tree whose columns are made of runs of spaces — so `record-card.tsx` shows
@@ -59,7 +59,7 @@ import { cn } from '@/lib/utils'
 /**
  * Every marker this grammar reads, written the way an author types it.
  *
- * **The twin of SKILL.md's subset list** (retro 7 `r-subset-renderer-drift`).
+ * **The twin of SKILL.md's subset list** (`r-subset-renderer-drift`).
  * The skill is the authoring contract every record is written against and this
  * file is the implementation of it — two copies of one contract, and until this
  * enumeration existed nothing held them together: a deliberate plant that
@@ -103,7 +103,7 @@ const FENCE_OPEN = /^```/
 const FENCE_CLOSE = /^```+$/
 /** A tab is four columns, so an indent can be counted in one unit. */
 const TAB_COLUMNS = 4
-/** What it takes to be a sub-point of the item above, per the retro-3 amendment. */
+/** What it takes to be a sub-point of the item above. */
 const NESTING_INDENT = 2
 
 /** The two inline marks, taking their characters from the enumeration above. */
@@ -138,8 +138,8 @@ type Fence = { readonly key: string; readonly kind: 'fence'; readonly code: stri
  * A quote, holding whatever the subset makes of the lines inside it.
  *
  * It holds *blocks* rather than lines because the thing it exists for is a
- * quoted list: the reply convention the owner asked for is the comment he wrote,
- * replayed as cleaned bullets with bold leads, inside the quote
+ * quoted list: the reply convention replays the comment being answered as
+ * cleaned bullets with bold leads, inside the quote
  * (`r-reply-replay-convention`). A quote that could only hold a paragraph would
  * put the dashes of those bullets on the page.
  */

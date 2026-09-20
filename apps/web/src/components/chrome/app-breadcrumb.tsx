@@ -34,10 +34,9 @@ export type Crumb = {
 }
 
 /**
- * `Retro › Project › Session › Retro #n · Rev k`, truncated to what applies
- * (ux-brief 03).
+ * `Retro › Project › Session › Retro #n · Rev k`, truncated to what applies.
  *
- * **It is a trail and nothing else since session 11.** The mark and the app name
+ * **It is a trail and nothing else.** The mark and the app name
  * used to ride on the first crumb, because the trail was the header; now the
  * header has a brand of its own (`app-brand.tsx`) and this renders one line below
  * it, inside the page. So the first crumb lost the glyph and the bold — it is an

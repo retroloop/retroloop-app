@@ -2,7 +2,7 @@ import { ArrowRightIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 /**
- * **Announce, don't swap** (KC-0005). The AI has filed a newer revision while the
+ * **Announce, don't swap.** The AI has filed a newer revision while the
  * reviewer was reading this one. The page says so and stays exactly where it
  * was: content that moved on its own would mean a verdict could land on a
  * paragraph the reviewer never saw, which is the one thing the carry-over rule

@@ -4,10 +4,10 @@ import { AppShell } from '@/components/chrome/app-shell'
 import { APP_NAME } from '@/lib/app-name'
 
 /**
- * The routes that exist so the contract's URLs resolve (ux-brief 03). They
+ * The routes that exist so the contract's URLs resolve. They
  * render the breadcrumb, the page title and one line saying what will be here.
  * Nothing on them is interactive — a control here would be a control nobody
- * asked for (KC-0016).
+ * asked for.
  */
 export function PlaceholderPage({
   crumbs,
@@ -39,7 +39,7 @@ export function PlaceholderPage({
   )
 }
 
-/** An id nothing answers to. Kept deliberately plain (ux-brief 03). */
+/** An id nothing answers to. Kept deliberately plain. */
 export function NotFoundPage({ what, id }: { what: string; id: string }) {
   return (
     <AppShell crumbs={[{ label: APP_NAME, to: '/' }, { label: 'Not found' }]}>

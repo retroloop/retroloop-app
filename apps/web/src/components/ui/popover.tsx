@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
  * shadcn's popover, added with `shadcn add popover` and trimmed to the parts this
  * app uses: the root, an anchor, a trigger, and the content. The generated file
  * also ships header/title/description helpers, which would be exports nothing
- * imports (KC-0014).
+ * imports.
  *
  * The trigger came back with `r-additional-filters`. It was cut while the only
  * popover here opened from a mutation's refusal rather than from a press — an

@@ -7,19 +7,18 @@ import { type Sitting, sittings } from '@/lib/session-ledger'
 import { cn } from '@/lib/utils'
 
 /**
- * **The diary view, refined** — session-12 direction 4: the session-card view
- * survives, and takes two corrections.
+ * **The diary view, refined**: the session-card view survives, and takes two
+ * corrections.
  *
- * The arrangement is ported from `lane/s11-var-b` @55b15c0, which is the grouping
- * the owner *"somewhat"* liked: retrospectives gathered into the sittings that
- * produced them, sittings newest first, retrospectives inside a sitting in the
- * order they happened. Why the session is the unit and why the two orders run
- * opposite ways is argued where the grouping lives (`lib/session-ledger.ts`); it
- * came across unchanged, because the part he liked is the part that should not
- * move.
+ * The arrangement is the grouping that worked: retrospectives gathered into the
+ * sittings that produced them, sittings newest first, retrospectives inside a
+ * sitting in the order they happened. Why the session is the unit and why the two
+ * orders run opposite ways is argued where the grouping lives
+ * (`lib/session-ledger.ts`); it came across unchanged, because the part that
+ * worked is the part that should not move.
  *
- * **Correction one — the dates.** *"the dates should be relative when they are not
- * too far off."* The card led with `Aug 27, 2026, 6:57 AM`, which is the right
+ * **Correction one — the dates.** They should be relative when they are not too
+ * far off. The card led with `Aug 27, 2026, 6:57 AM`, which is the right
  * string for a timeline and the wrong one for a diary: the reading a diary is
  * arranged for is "what was I doing lately", and every absolute stamp makes the
  * reader do a subtraction to get there. So the header now says "2 hours ago" or
@@ -28,16 +27,16 @@ import { cn } from '@/lib/utils'
  * the `<time dateTime>` attribute, which is where the machine-readable half
  * belongs and the half anything asserting against this reads.
  *
- * **Correction two — the ids.** *"the [retros] need to have their global ids
- * displayed rather than session's internal [sequence] number."* The row said
+ * **Correction two — the ids.** A retrospective needs its global id displayed
+ * rather than the session's internal sequence number. The row said
  * `#1`, which is `retroNumber` — a retrospective's position *within its session*.
- * Three of his fourteen retrospectives are "#1" and two more are "#2", so the
- * number he was shown could not identify the thing it was printed on, and the
- * link it sat inside went to a different number entirely. The row now says
+ * In a real store three of fourteen retrospectives are "#1" and two more are
+ * "#2", so the number shown could not identify the thing it was printed on, and
+ * the link it sat inside went to a different number entirely. The row now says
  * `Retro 13`, which is `retroId`: minted once, unique across the store, and the
  * number every URL, breadcrumb and record page already uses.
  *
- * **And the *name* follows the same rule since D5.** An untitled retrospective
+ * **And the *name* follows the same rule.** An untitled retrospective
  * used to fall back to `Retro #1 — retro`, so a row could print the global id in
  * one column and the per-session number as the name three characters away. The
  * fallback now reads `Retro 2 — retro`, fixed once in
@@ -47,14 +46,14 @@ import { cn } from '@/lib/utils'
  * The absolute date has not gone anywhere on the far side of the boundary, and
  * `retroNumber` has not gone anywhere either — it is still what the review page's
  * identity line says, because "Session 10 · Retro #1" is a true sentence about
- * where a retrospective sits and is the line KC-0020 settled. What changed is
+ * where a retrospective sits, and that line is settled. What changed is
  * which of the two numbers a *list* prints, and the answer is the one that is
  * unique.
  */
 
 /**
  * How much room the diary gets. The three variations disagree about this and it
- * is one of the round's real questions: on a page whose subject is a corpus, is
+ * is one of the real questions: on a page whose subject is a corpus, is
  * the history of the work the body of the page or the provenance at the foot of
  * it?
  *
@@ -82,8 +81,8 @@ export function SessionLedger({
     /**
      * Only ever true on a fresh install: a retrospective is what this product
      * makes, and nothing deletes one. So it says the one true thing and stops —
-     * an onboarding panel here is a panel the owner sees once and every later
-     * reader never sees at all.
+     * an onboarding panel here is a panel the first reader sees once and every
+     * later reader never sees at all.
      */
     return (
       <p className="text-muted-foreground text-sm" data-testid="ledger-empty">
@@ -214,7 +213,7 @@ function RetroLine({ retro, compact }: { retro: RetroListRow; compact?: boolean 
           compact ? 'py-2' : 'py-3',
         )}
       >
-        {/* The global id — direction 4. `Retro 13`, not `#1`: the word is not
+        {/* The global id. `Retro 13`, not `#1`: the word is not
             repeated down the card because the number is already unique without
             it, and the two characters it costs buy an id a reader can act on. */}
         <span
@@ -245,7 +244,7 @@ function RetroLine({ retro, compact }: { retro: RetroListRow; compact?: boolean 
             </span>
           ) : null}
 
-          {/* Only while the round is his. `submitted` is not: the finish gate
+          {/* Only while the round is the human's. `submitted` is not: the finish gate
               means it is normally zero anyway, and in the one window where it is
               not — a verdict taken back after the press, which this page does not
               forbid — a count beside a SUBMITTED tag would contradict it

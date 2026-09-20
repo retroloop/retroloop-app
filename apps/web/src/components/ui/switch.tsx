@@ -4,9 +4,8 @@ import type * as React from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * shadcn's switch — the one control on the settings page the owner asked for by
- * name: *"in the config page add a toggle that the user can enable to give the
- * AI the ability to update the configs."*
+ * shadcn's switch — the one control on the settings page: a toggle the human
+ * can enable to give the AI the ability to update the configuration.
  *
  * Radix rather than a `<button aria-pressed>`, which is what the filter chips
  * are: a chip is a filter the reader turns on and off and `pressed` says so; a

@@ -11,15 +11,15 @@ import type { RecordListRow } from '@/components/records/record-lifecycle'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 /**
- * **The corpus, by any axis** — the dashboard's one chart, and the control the
- * owner's ruling kept.
+ * **The corpus, by any axis** — the dashboard's one chart, and the one control
+ * that survived the cut.
  *
  * `shadcn-dashboard-01.png` puts a **date range** in this corner — *Last 3 months
  * / Last 30 days / Last 7 days* — and that is the one thing this data cannot
  * fill: the store is five days old across ten irregular sittings, so three
  * presets would show the same records three times. The switch changes the
  * **dimension** instead, which is the substitution that made this the variation
- * he picked: four axes the corpus genuinely varies along, one chart, and the
+ * chosen: four axes the corpus genuinely varies along, one chart, and the
  * reader chooses the question.
  *
  * **The colour language stays put while the axis moves.** Every position draws
@@ -28,17 +28,16 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
  * instead would put four colour languages behind one control, and the switch would
  * stop being a switch and become four charts.
  *
- * **`Retrospective` is gone by his ruling** (*"it is useless"*). The reasoning is
- * at `DIMENSIONS` in `corpus-stats.ts`.
+ * **`Retrospective` is gone**, as a dimension nobody can act on. The reasoning
+ * is at `DIMENSIONS` in `corpus-stats.ts`.
  *
- * **Every tab draws horizontally**, which is the owner's ruling (D6): *"every
- * tab draws horizontally; Requester and Type flip to the Severity/Solution-level
- * style."*
+ * **Every tab draws horizontally**: Requester and Type use the same style as
+ * Severity and Solution level.
  *
- * The round had it split — ordinal axes horizontal, nominal axes as vertical
- * columns — on the argument that a rung's name carries a clause a tick cannot
- * hold sideways while "AI" and "human" fit either way. He was right that the
- * split was the wrong call, and the reason is one the round missed: the
+ * An earlier design had it split — ordinal axes horizontal, nominal axes as
+ * vertical columns — on the argument that a rung's name carries a clause a tick
+ * cannot hold sideways while "AI" and "human" fit either way. The split was the
+ * wrong call, and the reason that design missed: the
  * orientation was doing *no work for the reader* and a lot of work against them.
  * Four tabs behind one control are meant to be the same chart with the subject
  * changed; two of them re-laying-out on press made the control feel like it was

@@ -14,11 +14,10 @@ import { useTRPC } from '@/lib/trpc'
  * what a comment looks like — the fork between the rail and the sheet is
  * presentation and nothing else.
  *
- * Since session 7 there is exactly one caller. A record's comments used to be
+ * There is exactly one caller. A record's comments used to be
  * rendered under the section they answered, by a `CommentThreads` component that
- * lived here; the owner replaced that with the panel — *"Replace inline comments
- * in retro body with comments in the side panel (look at the old UI how it was
- * done there) - This enables human to see all comments in one place"* — so a
+ * lived here; the side panel replaced that, so the human sees every comment in
+ * one place rather than scattered through the retrospective body — so a
  * record thread and a review thread are now the same card in the same column,
  * and the record thread carries a line saying where it hangs.
  */
@@ -47,9 +46,9 @@ export type ThreadAnchor = {
  * One thread: its opening message, its replies behind a count, and what the
  * human may do to it.
  *
- * **Collapsed by default, one level deep.** The owner: *"Should be one level
- * nested and it should only show top level comments, with reply count, one can
- * click to view the reply."* A panel that showed every message of every thread
+ * **Collapsed by default, one level deep.** The panel nests one level and shows
+ * only top-level comments with a reply count; a click opens the replies.
+ * A panel that showed every message of every thread
  * is the reading column's problem moved sideways — the point of a column of
  * threads is that you can see how many conversations are open, which a wall of
  * messages hides. There is no third level to worry about: the model has threads
@@ -76,13 +75,13 @@ export function ThreadCard({
   const [opener, ...replies] = thread.messages
 
   /**
-   * A settled thread is one dimmed line — the owner: *"Resolved comments should
-   * appear collapsed"*. Dimmed **and** marked: the fade says "dealt with" at a
+   * A settled thread is one dimmed line: resolved comments appear
+   * collapsed. Dimmed **and** marked: the fade says "dealt with" at a
    * glance and the word says it to anyone being read to, because a state told
    * only by opacity is a state a screen reader cannot report.
    *
    * It opens on a click like any other collapsed thing here, which is what keeps
-   * "resolved" from meaning "gone": a thread is history (D4) and settling one is
+   * "resolved" from meaning "gone": a thread is history and settling one is
    * a note about it, not a deletion.
    */
   if (thread.resolved && !showSettled) {
@@ -121,7 +120,7 @@ export function ThreadCard({
     <div
       // `min-w-0`: the anchor line's title does not wrap, and a flex item that
       // will not shrink below its content is a rail that pushes the page
-      // sideways (ux-brief 04: nothing scrolls sideways).
+      // sideways: nothing on this page scrolls sideways.
       className="flex min-w-0 flex-col gap-2 rounded-lg border border-hairline bg-surface px-3 py-2.5"
       data-testid="thread"
     >
@@ -189,16 +188,16 @@ export function ThreadCard({
  * Where a record thread hangs, and the way back to it — the panel's answer to
  * the question the section heading used to answer for free.
  *
- * **One pattern, in his order** (retro 7 `r-thread-header-format`): *"#16, then
- * a separator, then the section, then a separator, then the title."* It used to
+ * **One pattern, in one order** (`r-thread-header-format`): the number, then
+ * a separator, then the section, then a separator, then the title. It used to
  * be two fixed lines — the number and title on one, the section under them — and
- * he reorganised it on sight the first time he read a list of section threads.
+ * that shape did not survive the first read of a list of section threads.
  * The section is the discriminator between threads on the same record, so it
  * belongs beside the number and before the title; the title is the part that
  * varies in length, so it is last and it is the part that gives way.
  *
- * **Two lines and no more, cut only when it would need a third** — the budget he
- * named. `line-clamp-2` is exactly that and nothing else: a header that fits on
+ * **Two lines and no more, cut only when it would need a third.**
+ * `line-clamp-2` is exactly that and nothing else: a header that fits on
  * one line is one line, one that needs two takes two, and one that would run past
  * two ends in an ellipsis. Unclamped, a long title pushes every thread below it
  * down the panel; fully truncated, the reader loses the scent of which record
@@ -226,8 +225,8 @@ function AnchorLine({ anchor, onJump }: { anchor: ThreadAnchor; onJump: (rid: st
 /**
  * One message: who wrote it, which revision it belongs to, and what it says.
  *
- * The revision is the owner's second ask — *"comments should show the rev number
- * they are associated with, but the comments show across all revisions"* — and
+ * A comment shows the revision number it is associated with, while the comments
+ * themselves show across all revisions — and
  * both halves are here: the panel never filters by revision, and every message
  * says which one it was written against, so a thread that ran across two rounds
  * reads as one conversation with its history legible.
@@ -236,10 +235,10 @@ function AnchorLine({ anchor, onJump }: { anchor: ThreadAnchor; onJump: (rid: st
  * revision timestamps for messages older than the column (`thread.view.ts`), so
  * this line never has a hole in it.
  *
- * **No relative time, deliberately.** v2's meta line read `Haider · rev 1 · 1d`
- * and the third field is not carried over: nothing on this page shows a
- * timestamp, minimalism holds it back until he asks for it, and "1d" is the kind
- * of thing that has to be recomputed on a tick to stay true.
+ * **No relative time, deliberately.** An earlier meta line read
+ * `human · rev 1 · 1d` and the third field is not carried over: nothing on this
+ * page shows a timestamp, minimalism holds it back until something asks for it,
+ * and "1d" is the kind of thing that has to be recomputed on a tick to stay true.
  */
 function ThreadMessage({ message }: { message: Message }) {
   return (

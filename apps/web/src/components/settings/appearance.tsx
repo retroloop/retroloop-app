@@ -9,31 +9,28 @@ import {
 } from '@/components/ui/select'
 
 /**
- * Settings › Appearance › Dark Mode — the owner's word, in his order (retro-13
- * `r-theme-under-settings`):
- *
- * > *"Also, move the dark-mode setting under Settings › Appearance › Dark Mode.
- * > By default it should use System mode."*
+ * Settings › Appearance › Dark Mode (`r-theme-under-settings`): the dark-mode
+ * setting lives here, and it defaults to System mode.
  *
  * **The default was already System and is not invented here.** `ThemeProvider`
- * has read `system` as its starting value since session 2 — the OS decides, and
- * it keeps deciding, so a machine that flips at sunset flips this page. What his
- * ruling changes is *where the control lives*: a theme is a set-and-forget
+ * has always read `system` as its starting value — the OS decides, and
+ * it keeps deciding, so a machine that flips at sunset flips this page. What
+ * changed is *where the control lives*: a theme is a set-and-forget
  * preference, not a per-page affordance, so it belongs on the one page that is
  * about the product rather than in the chrome of every page in it.
  *
  * **The header toggle is gone, and nothing here had to change when it went.**
- * Removing it was retro-13 record 7 — the top menu collapsing into one dropdown
+ * It went when the top menu collapsed into one dropdown
  * (`chrome/app-menu.tsx`), which is explicit that the theme moves *under
  * Settings* rather than into the menu. Both controls only ever read and wrote
  * the same `ThemeProvider` state, so the removal took a duplicate away and left
- * the setting where he asked for it: this is now the only place in the product
+ * the setting here: this is now the only place in the product
  * that changes the theme, which is also why every scenario that needs a theme
  * comes through here.
  *
  * **A `Select` rather than three radio buttons or a switch.** A switch cannot
- * express three states, and the third state is the one he asked to be the
- * default; three radios would spend three rows of a section that has one
+ * express three states, and the third state is the default;
+ * three radios would spend three rows of a section that has one
  * setting in it. The trigger says which of the three is chosen, which is the
  * whole of what this control has to answer.
  */

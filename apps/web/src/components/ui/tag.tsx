@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
- * Harbor's status idiom, in one place: a soft fill, a readable ink, an icon and
+ * The app's status idiom, in one place: a soft fill, a readable ink, an icon and
  * a word. State is never carried by colour alone — every tag ships the word, so
  * it is legible in a screenshot, to a screen reader, and to someone who cannot
  * tell the amber from the green.

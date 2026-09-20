@@ -26,13 +26,13 @@ type Tab = 'open' | 'human' | 'severe' | 'closed'
  * The four cuts worth a tab, in the order their tiles read across the row above.
  *
  * Each is a question the numbers above raise and the reader will want the rows
- * for: *what is still owed*, *what needs him personally*, *what is worst and still
- * owed*, *what actually got done*. Three of them now answer to a tile by the same
- * name, which is what D9 asked the table and the boxes to become — one system
+ * for: *what is still owed*, *what needs the human personally*, *what is worst and
+ * still owed*, *what actually got done*. Three of them now answer to a tile by the
+ * same name, which is what the table and the boxes are meant to be — one system
  * rather than two vocabularies over one corpus.
  *
- * The count rides in brackets, per direction 3's rule for every counted item —
- * *"Labels (1)" instead of "Labels 1"*.
+ * The count rides in brackets, the standing rule for every counted item —
+ * "Labels (1)" instead of "Labels 1".
  */
 const TABS: readonly {
   key: Tab
@@ -45,8 +45,8 @@ const TABS: readonly {
     pick: (rows) => rows.filter((row) => row.lifecycle.status === 'open'),
   },
   /**
-   * D9, his words: *"in 'The rows behind the readings' let's also introduce
-   * Require Human tab so that it matches the tabs above."* It lists exactly what
+   * The Require Human tab exists so that the rows behind the readings match the
+   * tabs above. It lists exactly what
    * the third stat tile counts — through `needsHuman`, the tile's own predicate,
    * so the rows here and the numbers up there cannot come to disagree.
    *
@@ -63,9 +63,8 @@ const TABS: readonly {
   /**
    * **Renamed from "Severe and open" to match its tile.** It is the identical set
    * — open, SEV1 or SEV2 — and it was carrying a second name for it. Two names for
-   * one reading is the thing this page argues against everywhere else, and D9 asked
-   * for the table and the boxes to read as one system. Flagged in the lane report
-   * as a rename he did not name, since it changes a label he has already seen.
+   * one reading is the thing this page argues against everywhere else, and the
+   * table and the boxes are meant to read as one system.
    */
   {
     key: 'severe',
@@ -190,8 +189,8 @@ function ReadingRow({ row }: { row: RecordListRow }) {
       <span className="min-w-0 flex-1 truncate text-sm group-hover:text-primary">{row.title}</span>
       {/**
        * `Retro {retroId} · session {id}` rather than the shared identity line.
-       * That line prints `Retro #n`, the per-session number direction 4 rules
-       * against on a list, and the working directory — which on this store is the
+       * That line prints `Retro #n`, the per-session number a list must not
+       * use, and the working directory — which on this store is the
        * same string on all 154 rows and had to be truncated to fit. A column that
        * says the same thing on every row, illegibly, has earned nothing.
        */}

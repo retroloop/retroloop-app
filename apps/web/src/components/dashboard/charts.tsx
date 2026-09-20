@@ -12,18 +12,18 @@ import { cn } from '@/lib/utils'
 /**
  * **The one chart form the dashboard draws, and no others.**
  *
- * The direction round carried six — a cumulative filed-against-resolved pair, a
- * donut of what the open queue costs, a radar of which severity band is being
- * neglected, and a proportion meter besides. The owner's ruling kept the stack
- * and the nominal bars and removed the rest: *"What The Open Queue Costs"* and
- * *"Which End Is Being Neglected"* by name, and the other three with the
+ * An earlier design exploration carried six — a cumulative filed-against-resolved
+ * pair, a donut of what the open queue costs, a radar of which severity band is
+ * being neglected, and a proportion meter besides. Only the stack and the nominal
+ * bars survived: the donut ("What The Open Queue Costs") and the radar ("Which
+ * End Is Being Neglected") were cut by name, and the other three went with the
  * variations that housed them. They are deleted rather than left behind a flag —
  * an unreachable chart is code that has to keep compiling for nobody.
  *
  * What survives is the one form the one surviving chart panel needs: a **stack**,
  * for "how much of this bucket is still owed". The one-hue nominal bars went too,
- * when the owner ruled that every tab draws horizontally (D6) — that ruling left
- * them with no caller, and the orientation split was their only reason to exist.
+ * once every tab was settled as drawing horizontally — that left them with no
+ * caller, and the orientation split was their only reason to exist.
  * The stack keeps both orientations because `vertical` is still the right reading
  * for a sequence, and a component that supports one orientation today is one
  * rewrite away from supporting the other.
@@ -194,9 +194,10 @@ export function LifecycleStack({
   return (
     /**
      * `data-orientation` is published on the wrapper so the suite can assert
-     * *which way the chart is drawn* without measuring pixels. The owner's D6
-     * ruling is about orientation, and the honest way to check a ruling about
-     * orientation is a probe the renderer states — not a comparison of tick
+     * *which way the chart is drawn* without measuring pixels. The rule that
+     * every tab draws horizontally is about orientation, and the honest way to
+     * check a rule about orientation is a probe the renderer states — not a
+     * comparison of tick
      * coordinates, which is a position assertion the browser does half of for
      * free and which would go green for the wrong reason the day recharts changes
      * its layout maths.
@@ -225,8 +226,8 @@ export function LifecycleStack({
                * **64px, sized off the longest tick this chart can hold.**
                *
                * It was 44 while only the ordinal axes drew horizontally — `SEV1`
-               * and `L1` fit that comfortably. D6 flipped Requester and Type into
-               * the same orientation, which brought `Feature` into a gutter built
+               * and `L1` fit that comfortably. Flipping Requester and Type into
+               * the same orientation brought `Feature` into a gutter built
                * for four characters, and the axis cropped it to `eature`: text
                * clipped by its own mark, which is the one thing a label must
                * never be.

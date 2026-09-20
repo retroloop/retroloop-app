@@ -22,19 +22,19 @@ type RecordSummary = AppRouterOutputs['records']['list']['records'][number]
  * two mounts it takes depending on how much room the page has.
  *
  * It began as the review's own threads, anchored to no record at all — the
- * answer to `r-review-actions-pinned`: *"when I'm actually going item by item
- * and I have a comment, I have to scroll up all the way to add a comment and
- * then find where I was."* Nine round trips in one round, plus 120–240px of the
- * fold spent on a panel he was not reading — *"if you pin that thing on the top
- * it will consume a lot of vertical real estate"* on the iPad. So the comments
+ * answer to `r-review-actions-pinned`: going record by record and wanting to
+ * comment meant scrolling all the way up to the composer and then finding the
+ * way back. Nine round trips in one round, plus 120–240px of the
+ * fold spent on a panel nobody was reading: pinning it to the top consumes a lot
+ * of vertical space on a tablet. So the comments
  * left the reading column: a rail beside it where there is room for a third
  * column, one glyph in the chrome where there is not.
  *
- * Session 7 gave it the rest of the comments. Record threads used to render
+ * It then took the rest of the comments. Record threads used to render
  * inside the section they answered, which meant a reviewer had to walk the whole
- * page to find out what had been said — *"Replace inline comments in retro body
- * with comments in the side panel (look at the old UI how it was done there) -
- * This enables human to see all comments in one place."* So `threads.list`
+ * page to find out what had been said, so inline comments in the retrospective
+ * body were replaced by comments in the side panel and the human sees all of
+ * them in one place. So `threads.list`
  * returns every thread, the record body renders none of them, and a record
  * thread carries a line saying which record and which section it hangs on, one
  * click from getting there.
@@ -124,15 +124,15 @@ export function useReviewComments(retroId: number): ReviewComments {
  * offer — so a rail would be an empty column and the affordance a glyph that
  * opens onto nothing. That is not an edge case: **every retrospective filed
  * before review-level comments has no review thread**, so it is the state of
- * every closed review the owner revisits.
+ * every closed review a reader revisits.
  *
- * It reads *every* thread since session 7, which is the honest question now that
+ * It reads *every* thread, which is the honest question now that
  * the panel is the one comments surface: a closed review with a comment on one
  * of its records has something to show, and used to be told it had nothing.
  *
  * Only when read-only. On a live review the composer *is* the affordance — being
- * able to type from where he is standing is the whole record — so an empty one
- * still shows.
+ * able to type from wherever the reviewer is standing is the whole point — so an
+ * empty one still shows.
  */
 function silent(comments: ReviewComments, readOnly: boolean): boolean {
   return readOnly && comments.threads.length === 0
@@ -142,15 +142,15 @@ function silent(comments: ReviewComments, readOnly: boolean): boolean {
  * Whether the comment rail is on the page: there is room for a third column and
  * there is something for it to hold.
  *
- * **This used to decide the page's width as well**, and the coupling is gone
- * (session 7). The page was widened to 80rem unconditionally once while the rail
+ * **This used to decide the page's width as well**, and the coupling is gone.
+ * The page was widened to 80rem unconditionally once while the rail
  * hid itself on a read-only review with no thread of its own, and the reading
  * column — `flex-1` with no cap — took the empty column's room: 992px of prose
  * against the 736px it had before any of this. The fix at the time was to widen
  * the page only while the rail was there, which made the page's measure a
- * function of a query's answer and left the dashboard narrower than the review
- * (the owner: *"The width of the home page is not consistent with the width of
- * the retro page"*). The cap now lives on the reading column itself
+ * function of a query's answer and left the dashboard narrower than the review,
+ * so the width of the home page and the width of the retrospective page no
+ * longer agreed. The cap now lives on the reading column itself
  * (`retros.$retroId.tsx`), so this predicate is the rail's own business again.
  */
 function commentRailMounts(comments: ReviewComments, readOnly: boolean): boolean {
@@ -175,9 +175,9 @@ type PanelProps = {
  * the page. The reading column never reflows when a comment is written here,
  * because nothing that happens in this column is in that one's flow.
  *
- * `w-92` — 368px, up from 288 in session 10 and 240 before that: *"I want to
- * expand the width to make the comments and side rail width more"*, then *"all of
- * it should go to the left index panel and the right comments panel"*
+ * `w-92` — 368px, up from 288 and 240 before that: the page was widened to give
+ * the comments and the side rail more room, and all of the gain went to the left
+ * index panel and the right comments panel
  * (`r-wider-page-for-panels`). It is the wider of the two rails because a thread
  * is a conversation and an index entry is a line, and it is why the split of the
  * page's new 128px was weighted here: 80 of them, against the index's 48.
@@ -211,7 +211,8 @@ export function ReviewCommentRail(props: PanelProps) {
  * number that only ever goes up says nothing about that: once a retrospective has
  * accumulated history a badge stuck at 12 is an archive size rather than a
  * to-do. Counting what is unsettled makes it a number that can reach zero, and
- * reaching zero is exactly the moment the affordance has stopped needing him.
+ * reaching zero is exactly the moment the affordance has stopped needing the
+ * reviewer.
  *
  * Nothing is hidden by that — the resolved threads are one tap away in the sheet,
  * which shows every thread the retrospective has. Only the summary changed.
@@ -264,18 +265,17 @@ export function ReviewCommentsAffordance(props: PanelProps) {
             sheet takes the width it wants and stops 64px short of covering the
             page, whichever of those two comes first.
 
-            The strip is **fixed** rather than the proportional 85vw it replaces,
-            which is the owner's own sketch of the rule: *"the flyouts should
-            have a rule that makes them leave X pixels uncovered, rest should all
-            be covered."* A proportion gives the phone a 59px strip it cannot
+            The strip is **fixed** rather than the proportional 85vw it replaces:
+            a flyout leaves a constant number of pixels uncovered and covers the
+            rest. A proportion gives the phone a 59px strip it cannot
             spare and the iPad a 125px one it does not need; a constant gives
             both the same margin to tap back through, and hands every pixel it
             saves on the wider screen to the comments.
 
-            48rem — 768px, up from 26rem: *"for iPad the flyouts need to be wider
-            to take more space."* On a 390px phone the cap never binds and the
-            sheet is 326px, which is the 332 it was: *"on phone what we have
-            right now is just enough."* */}
+            48rem — 768px, up from 26rem, because on a tablet the flyouts need to
+            be wider to take more space. On a 390px phone the cap never binds and
+            the sheet is 326px, which is the 332 it was: on a phone the earlier
+            width was already enough. */}
         <Dialog.Content
           aria-describedby={undefined}
           data-testid="review-comments-sheet"
@@ -321,8 +321,8 @@ function unresolvedLabel(count: number): string {
  *
  * The threads scroll and the composer does not. A rail that scrolled as one
  * would put the composer below the fold on a review with a few threads on it,
- * and a composer you have to scroll to is the panel he had to scroll up to,
- * moved sideways.
+ * and a composer you have to scroll to is the panel the reviewer had to scroll
+ * up to, moved sideways.
  *
  * The thread area is rendered **even when it is empty**, which is the whole of
  * `r-sheet-composer-jump`: the composer used to be the first child of an empty
@@ -460,7 +460,7 @@ function ReviewComposer({
         >
           {/* The thread header's pattern, because the chip is a header too: the
               same `#num · Section · title` in the same two-line budget
-              (`comment-threads.tsx`, retro 7 `r-thread-header-format`). Two
+              (`comment-threads.tsx`, `r-thread-header-format`). Two
               copies of one line is how the panel and its composer drift, so
               neither changes without the other. */}
           <span className="meta-mono line-clamp-2 min-w-0" data-testid="anchor-line">
@@ -503,11 +503,11 @@ function ReviewComposer({
 
 /**
  * Every comment on the page is `threads.list` now, so there is one query to make
- * stale — the record queries carried a record's threads until session 7 and
- * carry none of them since (`views.schema.ts` §recordDetailSchema).
+ * stale — the record queries used to carry a record's threads and
+ * carry none of them now (`views.schema.ts` §recordDetailSchema).
  *
  * The mutation's own result is not written into the cache: the refetched query
- * is the truth (KC-0005), which is also what makes the AI's replies and the
+ * is the truth, which is also what makes the AI's replies and the
  * human's arrive by the same path.
  */
 function useReviewThreadInvalidation(): Invalidate {

@@ -49,7 +49,7 @@ const TYPES: readonly { readonly value: RecordType; readonly label: string }[] =
 ]
 
 /**
- * The owner's review workflow (KC-0021, G5): filter to pending, and as each
+ * The reviewer's workflow: filter to pending, and as each
  * record is decided it falls out of the filter and the page follows to the next
  * one still waiting. It reverses v0's no-filters principle for whole records —
  * and only for whole records. Nothing here ever hides part of one.
@@ -58,14 +58,14 @@ const TYPES: readonly { readonly value: RecordType; readonly label: string }[] =
  * rather than like the page losing its place:
  *
  *   - a decided record *departs* rather than blinking out, so the reviewer sees
- *     which record left and why (ledger v2 #63);
+ *     which record left and why;
  *   - the viewport lands on the record that is next in the filter, or on the
- *     review's own actions when nothing is left (#95) — and the keyboard lands
- *     with it (retro 3 `r-departure-keyboard-focus`), because the card the
+ *     review's own actions when nothing is left — and the keyboard lands
+ *     with it (`r-departure-keyboard-focus`), because the card the
  *     reviewer was working in leaves the document and focus falls to `<body>`
  *     otherwise: a full tab-walk from the top of the page, per verdict;
  *   - the chips carry live counts, so the pending count is visible from the top
- *     of the page and not only from the bottom of it (#24).
+ *     of the page and not only from the bottom of it.
  *
  * The state lives here and nowhere else: no URL parameter, because a filter is
  * where the reviewer is up to, not what the page is showing.
@@ -87,9 +87,8 @@ export type RecordFilter = {
   readonly active: ReadonlySet<DecisionState>
   /**
    * A tally over **every** record, and it stays that way when the extra filters
-   * narrow the list — the owner's own lean: *"should the count be the total or
-   * should it only show what is the number? I guess it should show total."* The
-   * chips answer "how much is there", not "how much is on screen".
+   * narrow the list: a chip shows the total, not the number currently on screen.
+   * The chips answer "how much is there", not "how much is on screen".
    */
   readonly counts: Readonly<Record<DecisionState, number>>
   readonly toggle: (state: DecisionState) => void
@@ -124,7 +123,7 @@ export type RecordFilter = {
   /**
    * Put the reviewer down on a record, wherever they are. It is the same act
    * whether the page decided to move (a record departed), the reviewer asked for
-   * it (the index rail, G2) or a link from the records page arrived pointing at
+   * it (the index rail) or a link from the records page arrived pointing at
    * one — so it is one implementation: two would be two chances for a landing to
    * end up somewhere the other one would not. It answers whether there was a
    * record to land on, which is how a caller can tell "not there" from "arrived".
@@ -198,8 +197,8 @@ function prefersReducedMotion(): boolean {
  *
  * `interpolate-size: allow-keywords` would animate `height: auto` with no
  * measurement at all and was rejected on purpose: Chrome has it and Safari does
- * not, and the owner reviews on an iPad — a fix that animates in the test and
- * jumps on his screen is the defect with better test coverage.
+ * not, and this page is reviewed on an iPad — a fix that animates in the test
+ * and jumps on the real screen is the defect with better test coverage.
  */
 function collapse(element: HTMLElement | null): void {
   if (element === null || prefersReducedMotion()) return
@@ -284,8 +283,8 @@ export function useRecordFilter(records: readonly RecordSummary[] = NO_RECORDS):
   )
 
   /**
-   * The owner: *"it looks like a bug that all of a sudden everything vanished
-   * when actually the the filtered items really don't have anything left"*. The
+   * Without a message, a filter that empties the column looks like a bug:
+   * everything vanishes at once when in fact nothing is left that matches. The
    * count is of the records that are **decided** and hidden, because that is
    * what the sentence beside it claims — counting every hidden record under that
    * word would make the page say something untrue on a filter that hid only
@@ -432,7 +431,7 @@ export function useRecordFilter(records: readonly RecordSummary[] = NO_RECORDS):
       return
     }
     // Nothing matches any more, so the only thing left to do is the review's own
-    // one act — and since session 7 that act is in the sticky bar, which never
+    // one act — and that act is in the sticky bar, which never
     // left the screen. The landing is a focus move and nothing else: it used to
     // scroll the page to its own end, which is where the actions used to be.
     focusWithoutScrolling(actions.current)
@@ -555,12 +554,12 @@ export function RecordSlot({
  * **Every state a review can reach keeps its chip at zero.** "No records are
  * declined" is itself an answer, and a bar whose length changed with the counts
  * would be harder to aim at — so `pending`, `approved`, `declined` and `revise`
- * (retro 4 `r-verdict-revise`) are always there.
+ * (`r-verdict-revise`) are always there.
  *
- * **`hold` is the one exception, and only when it is empty** (retro 4
- * `r-remove-hold`). It is not a state this product can reach any more: `hold`
- * stopped being a verdict in retro 3 `r-hold-semantics`, and nothing has written
- * one since. On every store the owner actually has, the chip is a control that
+ * **`hold` is the one exception, and only when it is empty**
+ * (`r-remove-hold`). It is not a state this product can reach any more: `hold`
+ * stopped being a verdict in `r-hold-semantics`, and nothing has written
+ * one since. On any store written since then, the chip is a control that
  * can only ever read zero and filter to nothing — permanently dead chrome, and
  * every element earns its place (CLAUDE.md).
  *
@@ -576,11 +575,10 @@ function chipBelongs(state: DecisionState, count: number): boolean {
 
 /**
  * The decision bar: what the reviewer is looking for on the left, the one thing
- * they can do about it on the right — and it **stays** (owner, session 7:
- * *"When I scroll the filter (pending, approved and declined etc) they scroll
- * away; I want them to stick to the top. Also I want the box at the bottom … I
- * want it removed and just add a button next to the filters (filters on the
- * left, finish button on the right)."*).
+ * they can do about it on the right — and it **stays**. Filter chips that scroll
+ * away are chips that have to be scrolled back to, so they stick to the top, and
+ * the review's one action sits on the same strip: filters on the left, the
+ * Finish button on the right.
  *
  * `top-14` is the app header's own height, so the bar comes to rest against it
  * with nothing showing between the two, and `z-20` puts it under the header and
@@ -660,18 +658,17 @@ function RecordFilterChips({ filter }: { filter: RecordFilter }) {
 }
 
 /**
- * The two slices the bar could not afford inline, behind the icon the owner
- * asked for (`r-additional-filters`).
+ * The two slices the bar could not afford inline, behind a filter icon
+ * (`r-additional-filters`).
  *
- * He priced the alternative himself before proposing this: *"maybe we can keep
- * what we have and then we can add a icon with filter … so when you click it
- * show a pop-up and there you can select the additional filters"*. Two more chip
- * families would wrap this bar to three lines at the width he reviews on, and
- * the bar's whole point is that it stays.
+ * The alternative was priced before this was chosen: keep the bar as it is and
+ * add a filter icon that opens a popover holding the additional filters. Two
+ * more chip families would wrap this bar to three lines at the width it is read
+ * on, and the bar's whole point is that it stays.
  *
  * The applied state is readable **without opening it**, which is the other half
- * of what he asked for — *"we will have to show some indication that extra
- * filters are applied"*. Two marks rather than one, and they answer different
+ * of the requirement: there has to be some indication that extra filters are
+ * applied. Two marks rather than one, and they answer different
  * questions: the badge says *something* is filtering, from anywhere on the bar;
  * the chip beside it says *what*, so a short list is never a mystery. The chip
  * carries the only way to undo them, because that is where the reviewer is
@@ -759,9 +756,9 @@ function appliedLabel(filter: RecordFilter): string {
 /**
  * One slice, with its per-value counts.
  *
- * The counts here are the ones that answer *his* question — *"the user can also
- * see the count of like how many issues AI issues? How many issues are human
- * issues?"* — and they are counted over every record, like the chips', so
+ * The counts here answer the reader's question — how many records the AI raised
+ * and how many the human did — and they are counted over every record, like the
+ * chips', so
  * opening the popover never changes the numbers inside it.
  */
 function ExtraFilterGroup<T extends string>({
@@ -818,13 +815,11 @@ function ExtraFilterGroup<T extends string>({
 
 /**
  * What the reading column says when the filters have hidden everything
- * (`r-empty-filter-message`, owner-approved).
+ * (`r-empty-filter-message`).
  *
- * The owner, at the end of a round: *"in the end when there is no more pending
- * it doesn't show me a nice and sweet message that says hey there are no more
- * items that match the selected criteria, something like that so otherwise it
- * looks like a bug that all of a sudden everything vanished when actually the
- * the filtered items really don't have anything left."* The list simply ended
+ * When nothing is left pending, the column needs to say so — that there are no
+ * more items matching the selected criteria — because otherwise it looks like a
+ * bug that everything vanished at once. The list simply ended
  * before this, and an empty column reads as a fault rather than as done.
  *
  * It names the **state**, not the chips that produced it: any combination of the

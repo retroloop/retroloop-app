@@ -24,7 +24,7 @@ type RecordDetail = AppRouterOutputs['records']['get']
  *
  * **Header only**, on this page. The rail is a place to *find* a record and the
  * dashboard counts them; neither is a place to argue with one, and a tag
- * repeated everywhere is a tag nobody reads (KC-0016).
+ * repeated everywhere is a tag nobody reads.
  */
 
 /**
@@ -38,22 +38,22 @@ type RecordDetail = AppRouterOutputs['records']['get']
  *
  * Nothing *inside* a record collapses or filters. A record is read in full or
  * it is not read, and a control that hides part of one would be a control that
- * can hide the part that mattered (KC-0016) — so every section is on screen
+ * can hide the part that mattered — so every section is on screen
  * whenever the card is.
  *
- * The solutions strip is the one place that shows one thing at a time, and it is
- * the owner's own design rather than an exception someone took: *"3 different
- * solutions each in a tab within the retro card"*. It hides no part of the
+ * The solutions strip is the one place that shows one thing at a time, and that
+ * is the design rather than an exception someone took: several solutions, each
+ * in a tab within the record card. It hides no part of the
  * record — the alternatives are alternatives, only one of them is going to be
  * built, and the strip itself names every one of them with its level, which one
- * the AI is behind and which one he picked. What a reader would lose by
+ * the AI is behind and which one the human picked. What a reader would lose by
  * collapsing a section is the section; what they lose here is a road not taken,
  * one click away and announced.
  *
  * Which records are on screen is a different question, and its answer changed:
  * the page filters whole records by decision state, because filtering to
- * pending and watching each decided record fall out is the owner's review
- * workflow (KC-0021, G5). That filter lives on the page, not in here — a card
+ * pending and watching each decided record fall out is the reviewer's
+ * workflow. That filter lives on the page, not in here — a card
  * has no say in whether it is one of the ones being read.
  */
 export function RecordCard({
@@ -91,13 +91,13 @@ export function RecordCard({
             {summary.type}
           </Badge>
           {/* One tag for the verdict, and no second one beside it. A HELD tag
-              rode here for one session and the owner removed the feature that
-              fed it (retro 4 `r-remove-hold`): what an item needs from him is
+              rode here briefly, and the feature that fed it went
+              (`r-remove-hold`): what a record needs from the human is
               `involvement`, which is inside the decision rather than beside
               it. */}
           <DecisionStateTag state={summary.state} />
           {/**
-           * **Somebody has picked this record up** (RL-50) — the in-progress
+           * **Somebody has picked this record up** — the in-progress
            * marker, driven by the wire field and by nothing else.
            *
            * It rides on `summary` rather than on `detail`, so it is on screen
@@ -130,7 +130,7 @@ export function RecordCard({
           {detail.data === undefined ? null : <RecordLabelTags labels={detail.data.labels} />}
           {summary.carriedOver && summary.decidedOnRevision !== null ? (
             /**
-             * D2 carry-over: this verdict was given for an earlier revision and
+             * Carry-over: this verdict was given for an earlier revision and
              * still binds because the content did not change. The reviewer is
              * being asked to trust a decision they are not making now, so the
              * page says which revision they are trusting.
@@ -142,24 +142,23 @@ export function RecordCard({
         </div>
         {/**
          * The title, and the thread it has always had
-         * (`r-title-comments-unreachable`, the owner: *"I want abillity to post
-         * a comment at the title level as well for a record"*).
+         * (`r-title-comments-unreachable`): a comment can be posted at the title
+         * level of a record.
          *
          * `title` is a first-class comment section in the model, in the CLI
          * (`comment add --record <rid> --section title`) and in the skill's own
          * section table; the header was styled as identity rather than as a
          * section, so it was the one section the page offered no way in to and
          * the human's only path there was asking the AI to file the comment for
-         * him.
+         * them.
          *
-         * **The glyph is inline, immediately after the title's last word**, and
-         * that is his reviewer note verbatim: *"it should be right next to the
-         * last word of the title. it shouldn't be separate on the right etc."*
+         * **The glyph is inline, immediately after the title's last word** —
+         * right next to the last word, not set apart on the right.
          * So the `<h2>` is `inline` and the glyph follows it in the same
          * inline run — it sits after the last word wherever the title happens to
          * wrap, rather than at a column edge the title never reaches. Anything
          * `ml-auto`, any second flex column, any `justify-between` is the shape
-         * he ruled out.
+         * that was ruled out.
          */}
         <div className="leading-snug">
           <h2
@@ -222,11 +221,10 @@ function RecordBody({
    * it is in the decision section.
    *
    * **A pending record with a strip arrives on the AI's recommendation, ticked.**
-   * The owner ruled it (`r-recommended-preselected`): *"by default the
-   * recommended solution should already be pre-selected when there are more than
-   * one solutions."* Agreeing with the AI is the common case and it now costs no
-   * press at all; the verdict carries the recommendation unchanged, and the `*`
-   * appears only if he moves the tick somewhere else.
+   * (`r-recommended-preselected`): with more than one solution, the recommended
+   * one is pre-selected by default. Agreeing with the AI is the common case and
+   * it now costs no press at all; the verdict carries the recommendation
+   * unchanged, and the `*` appears only once the tick moves somewhere else.
    *
    * This is a seeded default and not an inference from silence: what the AI
    * recommended is written into the record, so the value comes from the record
@@ -248,8 +246,8 @@ function RecordBody({
   /**
    * The section's own entry point into the panel. It is a click on a section and
    * nothing more: no composer opens here, no thread is rendered here, and what
-   * the click does is aim the panel's one composer at this section (the owner:
-   * *"Replace inline comments in retro body with comments in the side panel"*).
+   * the click does is aim the panel's one composer at this section — comments
+   * live in the side panel rather than inline in the retrospective body.
    */
   const commentOn = (section: RecordSection) => (
     <SectionComment section={section} readOnly={readOnly} onComment={onComment} rid={record.rid} />
@@ -292,10 +290,10 @@ function RecordBody({
  * A record's narrative, whole — the sections the AI authored, in the order it
  * authored them.
  *
- * **It is a component of its own since session 9**, and the reason is that a
- * record is now read in two places: on a card inside a review, and on its own
- * page (`/records/:id`, the owner's *"each record should have it's own
- * dedicated page"*). What a reader sees of the record itself has to be the same
+ * **It is a component of its own**, and the reason is that a
+ * record is read in two places: on a card inside a review, and on its own
+ * dedicated page (`/records/:id`). What a reader sees of the record itself has
+ * to be the same
  * on both — down to the way a footprint is drawn and the way human words are
  * left alone — and a second rendering of five sections is a second place for one
  * of them to quietly start reading differently.
@@ -308,9 +306,8 @@ function RecordBody({
  * Select under any tab.
  *
  * `comment` is how a caller offers to start a thread on a section. The record
- * page passes none, which is the owner's word (*"let's leave out the comments
- * for now"*) rather than an omission, and a section with nothing offered simply
- * has nothing under it.
+ * page passes none, deliberately rather than by omission, and a section with
+ * nothing offered simply has nothing under it.
  */
 export function RecordNarrative({
   record,
@@ -337,7 +334,7 @@ export function RecordNarrative({
    * asked once. A record with one solution has nothing to choose between, and
    * the pick stays `null`: with a single solution the answer is structurally the
    * AI's recommendation and the server's existing fallback already records it,
-   * so there is nothing for the reviewer to say and nothing lost by his not
+   * so there is nothing for the reviewer to say and nothing lost by their not
    * saying it (`r-single-solution-no-tabs`).
    */
   const only = record.solutions?.length === 1 ? record.solutions[0] : undefined
@@ -355,11 +352,11 @@ export function RecordNarrative({
          * The one section nothing may reinterpret. A verbatim quote is what the
          * human actually said and the cleaned line is a restatement of the same
          * words, so neither goes near the markdown renderer: a parse would edit
-         * the person being quoted, and asterisks inside a quote are his.
+         * the person being quoted, and asterisks inside a quote are theirs.
          *
          * `whitespace-pre-line` rather than nothing, because the collapse is the
-         * defect the record names — he dictates in lines, and they were arriving
-         * as one. Newlines back, nothing else read.
+         * defect the record names — the human dictates in lines, and they were
+         * arriving as one. Newlines back, nothing else read.
          */}
         <div className="flex flex-col gap-3">
           {record.humanWords.map((words) => (
@@ -400,8 +397,8 @@ export function RecordNarrative({
          * hand-run alone and each leaves half the failure standing.
          */}
         {/**
-         * One label system for the whole chain (retro 4 `r-whys-labels`, his
-         * screenshot the reference): INCIDENT · WHY 1 … WHY n · ROOT, all caps,
+         * One label system for the whole chain
+         * (`r-whys-labels`): INCIDENT · WHY 1 … WHY n · ROOT, all caps,
          * each label on the line its text starts on and every label the same
          * width. It shipped as four separate choices — an unlabelled incident
          * line, a lowercase "why" against an all-caps ROOT, a label folding onto
@@ -444,12 +441,12 @@ export function RecordNarrative({
       </Section>
 
       {/**
-       * **The evidence, folded away** (RL-52) — and the one thing on this card
+       * **The evidence, folded away** — and the one thing on this card
        * that starts closed.
        *
        * The rule above it says every section is on screen whenever the card is,
        * because a control that hides part of a record can hide the part that
-       * mattered (KC-0016). This does not breach it, because what is behind it
+       * mattered. This does not breach it, because what is behind it
        * is **not part of what is being decided**: it is the log lines and
        * timings the AI diagnosed from, it is on no comment anchor, no verdict is
        * about it, and the finish gate does not know it exists. What the reviewer
@@ -471,10 +468,11 @@ export function RecordNarrative({
        * The two shapes a record can be in, and the card renders whichever it was
        * filed in (data-model.md §Record).
        *
-       * A record filed before the owner's multi-solution design has one agreed
+       * A record filed before the multi-solution design has one agreed
        * direction and one footprint, and it renders here exactly as it always
-       * did — retros 1–5 are full of them, their comments are anchored to those
-       * two sections, and human data is never rewritten to suit a newer page.
+       * did — early retrospectives are full of them, their comments are anchored
+       * to those two sections, and human data is never rewritten to suit a newer
+       * page.
        */}
       {record.solutions === null ? (
         <>
@@ -508,9 +506,8 @@ export function RecordNarrative({
         <Section section="solutions" comment={commentOn('solutions')}>
           {/**
            * One solution is not a choice, and choice chrome around it is the
-           * page asking a question with one answer — the owner, on the strip he
-           * had just been shown: *"When there is only one solution, you
-           * shouldn't show the tab because showing the tab causes confusion."*
+           * page asking a question with one answer: when there is only one
+           * solution the tab is not shown, because showing it causes confusion.
            * The branch is here rather than inside `SolutionTabs` so that
            * component stays honest about being a strip
            * (`r-single-solution-no-tabs`).
@@ -532,12 +529,11 @@ export function RecordNarrative({
 }
 
 /**
- * The AI's proposals, as the owner drew them: *"3 different solutions each in a
- * tab within the retro card. The title of the tab would be like Solution 1,
- * Solution 2 etc. And then some indication like a `*` that shows what is
- * solution recommended by the AI and then a tickmark that indicates what the
- * human actually selected. also within the tab title it should mention L1 … L5
- * so that the human can see what is the level of the solution."*
+ * The AI's proposals, one per tab within the record card. A tab is titled
+ * `Solution 1`, `Solution 2` and so on; a `*` marks the solution the AI
+ * recommends and a tick marks the one the human actually selected; and the tab
+ * title carries the solution's level, L1 to L5, so the human can see how far a
+ * proposal reaches without opening it.
  *
  * The array arrives sorted lowest level first and tab N is position N, so
  * "Solution 2" is a fact about the record rather than a label this decides —
@@ -549,10 +545,9 @@ export function RecordNarrative({
  * (`r-recommended-preselected`). The `*` is what the AI had recommended, and it
  * renders only once the pick is somewhere else — so a strip wearing both markers
  * means exactly one thing, that the reviewer overrode the recommendation, and a
- * strip wearing only the tick means he agrees with it. That is the owner's own
- * simplification: *"the star should only show if I select another option — then
- * it shows the star on the one that was previously recommended by the AI. Right
- * now it shows the star and also the checkmark."*
+ * strip wearing only the tick means they agree with it. The star therefore shows
+ * only once another option is selected, on the one the AI had recommended —
+ * rather than showing beside the tick on every strip.
  *
  * Each marker is a character *and* a word in the tab's accessible name: colour
  * says nothing here, and neither does a shape alone to a reader who cannot see
@@ -590,7 +585,7 @@ function SolutionTabs({
               {`Solution ${position} · L${solution.level}`}
               {/* Only on divergence, and only on the tab the AI had picked: with
                   the tick sitting there too it would be two marks saying the
-                  same thing, which is the pair the owner asked to break up. */}
+                  same thing, which is the pair that had to be broken up. */}
               {solution.recommended && picked !== recommended ? (
                 <Marker
                   symbol="*"
@@ -616,13 +611,13 @@ function SolutionTabs({
             data-testid={`solution-${position}`}
           >
             {/**
-             * **The level leads the body** (`r-level-legend-below-fold`, the
-             * owner: *"you need to add an item to move the Level right after the
-             * tabs so that the user can immediately see what L2 means"*).
+             * **The level leads the body** (`r-level-legend-below-fold`): the
+             * level sits right after the tabs, so a reader can immediately see
+             * what `L2` means.
              *
              * The tab title says `L2` and this line is the only place the page
              * says what L2 *means*. It was the last element of the body — after
-             * the bullets and after the footprint — so on a session-9-sized
+             * the bullets and after the footprint — so on a long
              * solution the gloss was a screen below the tab that named it, and
              * the one decision the strip exists for (choosing between ceilings)
              * was made before its meaning scrolled into view.
@@ -643,7 +638,7 @@ function SolutionTabs({
              * The one control in here, and it is on the tabs it can do something
              * to: the tab already wearing the ✓ offers nothing to press, because
              * a button whose only outcome is the state you are in is a label
-             * pretending to be a control (KC-0014). Gone entirely on a read-only
+             * pretending to be a control. Gone entirely on a read-only
              * review, with every other control on the card.
              */}
             {readOnly || picked === position || onPick === undefined ? null : (
@@ -679,15 +674,15 @@ function recommendedPosition(solutions: NonNullable<RecordDetail['record']['solu
 /**
  * The record that proposes one solution, rendered as the answer it is.
  *
- * No strip, because there is nothing to switch between; no Select, because
- * *"when there is only one solution it shouldn't require me to select the
- * solution — there is no point to it"*; and no tick, because a tick is the
+ * No strip, because there is nothing to switch between; no Select, because with
+ * only one solution there is nothing for a selection to mean; and no tick,
+ * because a tick is the
  * answer to a question that was not asked. What the reviewer decides here is the
  * record, in the decision block below, exactly as on a record that proposes
  * none.
  *
- * **The level leads** — *"the level of the solution should probably come on the
- * top"*. It led here first, because with no strip to carry it in a tab title the
+ * **The level leads**, at the top of the solution.
+ * It led here first, because with no strip to carry it in a tab title the
  * level would otherwise arrive last, after the thing it is the size of. The tab
  * body leads with it too since `r-level-legend-below-fold`, so the two shapes now
  * order a solution the same way and this branch is no longer the exception.
@@ -714,12 +709,11 @@ function SoloSolution({
 /**
  * A solution's footprint: a drawing, framed as the block it is.
  *
- * Three things, and the owner named all three (`r-footprint-block-presentation`):
- * *"The change footprint right now seems squeezed between the bullet points and
- * the L1. Add some vertical margin so it stands on its own, a border that shows
- * this is a code block — because it appears as a code block — and give it a
- * title, something like 'Change footprint', so it's clear what this section is.
- * It shows me how big of a change this is."*
+ * Three things (`r-footprint-block-presentation`): the change footprint used to
+ * read as squeezed between the bullet points and the level, so it gets vertical
+ * margin to stand on its own, a border saying it is a code block — because it
+ * reads as one — and a title, "Change footprint", so it is clear what the block
+ * is and that it says how big a change the solution is.
  *
  * The margin is on top of the body's own gap, because the complaint was about a
  * block that read as squeezed between the two things it sits between. The border
@@ -760,7 +754,7 @@ function SolutionFootprint({ position, footprint }: { position: number; footprin
 
 /**
  * The canonical level label, both halves. The explanatory half is never dropped
- * for brevity — the owner's standing rule (`enum-labels.ts`).
+ * for brevity — the standing rule (`enum-labels.ts`).
  */
 function SolutionLevel({ position, level }: { position: number; level: number }) {
   const option = optionFor(SOLUTION_LEVELS, level)
@@ -779,7 +773,7 @@ function SolutionLevel({ position, level }: { position: number; level: number })
 }
 
 /**
- * A tab's marker: the character the owner named, and the word it stands for.
+ * A tab's marker: the character it is drawn with, and the word it stands for.
  *
  * The word is not decoration. `*` and `✓` are two glyphs a reader has to have
  * been told the meaning of, and a screen reader would otherwise announce the
@@ -868,19 +862,18 @@ function Section({
     <section className="flex flex-col gap-2" data-testid={`section-${section}`}>
       {/**
        * The heading and its comment glyph, in one inline run
-       * (`r-comment-button-below-section`, the owner: *"each of the comment
-       * button should be next to the sesion it is for rather than at the
-       * bottom"*, with his plugin-ledger screenshot as the reference).
+       * (`r-comment-button-below-section`): each comment button belongs next to
+       * the section it is for, rather than at the bottom of it.
        *
        * The affordance used to render after `{children}` — after the problem
-       * bullets, after the human-words block — so on a session-9-sized section
+       * bullets, after the human-words block — so on a long section
        * the way to comment on a section was a screen below the heading that
        * named it, and it read as belonging to whatever came last rather than to
        * the section.
        *
        * The heading is `inline` and the glyph is its sibling rather than its
        * child, which is what keeps the two facts apart: the glyph flows
-       * immediately after the heading's last word the way his ledger draws it,
+       * immediately after the heading's last word,
        * and the heading's accessible name stays the section's name instead of
        * gaining the button's. A screen reader listing this record's headings
        * would otherwise read "Problem, comment on Problem".
@@ -899,23 +892,21 @@ function Section({
 /**
  * The one thing a section still offers about comments: a way to start one on it.
  *
- * The threads themselves left — *"Replace inline comments in retro body with
- * comments in the side panel (look at the old UI how it was done there) - This
- * enables human to see all comments in one place"* — and the affordance they
+ * The threads themselves left — inline comments in the retrospective body were
+ * replaced by comments in the side panel, so the human sees every comment in one
+ * place — and the affordance they
  * were under stayed, because the alternative is asking the reviewer to say which
  * section they meant after they have already pointed at it. Pressing it aims the
  * panel's composer here and puts the panel in front of them; nothing about this
  * card changes.
  *
  * **It is a glyph rather than a button with a word on it, and it sits inline
- * after the name of the thing it comments on** — the owner's ledger pattern,
- * asked for twice in one round: *"each of the comment button should be next to
- * the sesion it is for rather than at the bottom"*
- * (`r-comment-button-below-section`) and *"I want abillity to post a comment at
- * the title level as well for a record"* (`r-title-comments-unreachable`), whose
- * reviewer note fixes the placement exactly: *"make sure that the comment is
- * incline with the title … it should be right next to the last word of the
- * title. it shouldn't be separate on the right etc."*
+ * after the name of the thing it comments on** — one pattern, settled by two
+ * records: each comment button sits next to the section it is for rather than at
+ * the bottom of it (`r-comment-button-below-section`), and a comment can be
+ * posted at the title level of a record too (`r-title-comments-unreachable`),
+ * inline with the title, right next to its last word rather than set apart on
+ * the right.
  *
  * **One component for both, which is what makes them one pattern.** A section
  * heading and the record's own title are the same kind of thing here — a name

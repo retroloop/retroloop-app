@@ -18,15 +18,15 @@ import { useTRPC } from '@/lib/trpc'
 export type RecordAttribute = AppRouterOutputs['records']['byId']['attributes'][number]
 
 /**
- * The values a record carries — the owner's *"external ticket ID"* on the record
- * that went to GitHub, and the second half of the convention he described:
- * *"whenever we add the migrated label, we should also have an attribute that
- * requires a GitHub issue id"*.
+ * The values a record carries — an "external ticket ID" on a record that went to
+ * GitHub, say, which is the second half of a convention like *whenever the
+ * migrated label goes on, the record also carries an attribute holding a GitHub
+ * issue id*.
  *
- * **The convention is his and the system enforces none of it.** Nothing here
- * looks at what the record wears, nothing demands a value because a label is on,
- * and nothing warns when one is missing — *"composition is the USER'S
- * convention … never a system mechanism"*.
+ * **The convention belongs to the human and the system enforces none of it.**
+ * Nothing here looks at what the record wears, nothing demands a value because a
+ * label is on, and nothing warns when one is missing: composition is the *user's*
+ * convention, never a system mechanism.
  *
  * **This page and no other.** A label is a classification and is worth a tag
  * wherever a record is listed; a value is data *about* a record, which is a

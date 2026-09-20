@@ -31,7 +31,8 @@ type Decision = AppRouterOutputs['records']['get']['decision']
 /**
  * The level the radio list can show as chosen — the five it offers, or nothing.
  *
- * A record decided before KC-0021 can hold `upstream`, `none` or `undecided`,
+ * A record decided before those levels were cut can hold `upstream`, `none` or
+ * `undecided`,
  * and none of those is on the list any more. Rather than pre-select something
  * the human did not pick, the list starts with nothing selected and the verdict
  * leaves `solutionLevel` out, which keeps whatever stands. The reviewer changes
@@ -42,16 +43,14 @@ function offerable(level: Decision['solutionLevel']): SolutionLevelInput | undef
 }
 
 /**
- * The verdicts on offer — the three the owner named (retro 4
- * `r-verdict-revise`): *"either I'm going to approve either I'm going to decline
- * or either I'm going to request a revision, all of any of those is going to
- * move it out of pending."*
+ * The verdicts on offer — the three that exist (`r-verdict-revise`): approve,
+ * decline, or request a revision. Any of the three moves a record out of
+ * `pending`.
  *
- * `hold` is not one of them since retro 3 `r-hold-semantics` — the owner: *"Hold
- * is not something that should go in review status. It is not a review status of
- * a retro item."* It became a flag beside the verdict, and retro 4
- * `r-remove-hold` removed that too: *"I can achieve the whole thing by selecting
- * something to be only done with the human in the loop."* Which is
+ * `hold` is not one of them since `r-hold-semantics`: holding is not a review
+ * status of a record. It became a flag beside the verdict, and
+ * `r-remove-hold` removed that too, because the same thing is said by marking a
+ * record as only to be done with the human in the loop. Which is
  * `involvement`, three controls down.
  *
  * The type still says `Exclude<DecisionState, …>` rather than a hand-written
@@ -99,7 +98,7 @@ const PRESSED: Record<Verdict, string> = {
  * **Editing a value is not a decision.** The controls hold what the reviewer has
  * chosen and nothing else happens; the verdict button is the single moment
  * anything is written, and it writes the values that were on screen when it was
- * pressed. That is what "explicit approve only" means here (KC-0010) — no
+ * pressed. That is what "explicit approve only" means here — no
  * autosave, no debounce, and no state that a moment of silence could settle. The
  * router agrees: `decisions.record` has no default `state`.
  *
@@ -137,7 +136,7 @@ export function DecisionControls({
    * (`RecordDecisionUseCase`), and the server refuses a level sent alongside it.
    * So the radio list does not render and the verdict does not carry a level.
    *
-   * The read-only line goes with it. It stayed on both shapes for one lane,
+   * The read-only line goes with it. It stayed on both shapes for a while,
    * while a finished review had no other way to say which ceiling was approved;
    * the ✓ on the tab strip says it now, in the tab's own title (`L2`) and again
    * in full underneath it, and a second copy in the decision block is the same
@@ -146,7 +145,7 @@ export function DecisionControls({
   hasSolutions: boolean
   /**
    * Which solution the reviewer picked, 1-based, or `null` — either because the
-   * record proposes none to pick between, or because he has picked none yet.
+   * record proposes none to pick between, or because none has been picked yet.
    *
    * One `null` for both, because the verdict does the same thing with them: it
    * says nothing about the selection, and the server answers with the rule it
@@ -243,9 +242,9 @@ export function DecisionControls({
               size="sm"
               variant="outline"
               /**
-               * The owner asked for it in as many words: *"there should be a
-               * clear indication as to what is already selected"*, because a
-               * decided button and an undecided one were a shade apart. The
+               * There has to be a clear indication of what is already selected,
+               * because a decided button and an undecided one were a shade
+               * apart. The
                * visible half is `PRESSED` above; `aria-pressed` says the same
                * thing to a screen reader, which cannot see a fill at all.
                */
@@ -258,12 +257,12 @@ export function DecisionControls({
                   retroId,
                   rid,
                   // The revision the page was showing, not the newest one: a
-                  // verdict binds to the content the human actually read (D2).
+                  // verdict binds to the content the human actually read.
                   revision,
                   /**
                    * Pressing the verdict that is already selected undoes it: the
-                   * record goes back to `pending` (retro 4 `r-verdict-revise`,
-                   * *"if I click it again it should undo it"*). That is a new
+                   * record goes back to `pending` (`r-verdict-revise`): pressing
+                   * the same verdict twice undoes it. That is a new
                    * decision version, not an edit — the verdict being undone
                    * stays in the history where the human left it.
                    */
@@ -274,11 +273,11 @@ export function DecisionControls({
                   // solution — the server refuses one there — and on a record
                   // holding a level the list no longer offers that the reviewer
                   // has not replaced, where the server keeps what stands rather
-                  // than being sent a value it would refuse (KC-0021).
+                  // than being sent a value it would refuse.
                   ...(hasSolutions || solutionLevel === undefined ? {} : { solutionLevel }),
                   // The other half of the same rule, from the other side: the
                   // level of a record that proposes solutions is whichever one
-                  // he picked, so the pick is what the verdict carries. Left out
+                  // was picked, so the pick is what the verdict carries. Left out
                   // while it is null — a record with nothing to select, or a
                   // reviewer who has selected nothing — because the server's
                   // answer to silence is a rule (previous, else the AI's
@@ -302,8 +301,8 @@ export function DecisionControls({
  * (data-model.md). A dropdown would hide four ceilings behind the fifth, and the
  * ceiling is the choice the whole record turns on.
  *
- * Five rows, not eight: `none`, `upstream` and `undecided` are no longer choices
- * (KC-0021). An empty `value` is a record still carrying one of them — nothing
+ * Five rows, not eight: `none`, `upstream` and `undecided` are no longer
+ * choices. An empty `value` is a record still carrying one of them — nothing
  * is selected until the reviewer picks a level that exists.
  */
 function LevelRadioList({
@@ -350,9 +349,9 @@ function LevelRadioList({
 }
 
 /**
- * The level as a decided record holds it, which may be one of the three KC-0021
- * cut. Reading is where those stay alive: retro 1's `upstream` and `none` render
- * with the labels they were chosen under, forever.
+ * The level as a decided record holds it, which may be one of the three that
+ * were cut. Reading is where those stay alive: an early retrospective's
+ * `upstream` and `none` render with the labels they were chosen under, forever.
  */
 function StaticLevel({ value }: { value: Decision['solutionLevel'] }) {
   const option = optionFor(READABLE_SOLUTION_LEVELS, value)
@@ -388,9 +387,9 @@ function StaticValue({ testid, label, text }: { testid: string; label: string; t
  * A dropdown whose options are allowed to be as long as they are.
  *
  * shadcn's trigger is a single fixed-height line that clamps its value, which
- * would quietly drop the half of every label that says *why* — the owner's
- * standing rule is that the explanation never goes, and that a two-line wrap is
- * the acceptable cost. So the trigger grows and both it and the options wrap.
+ * would quietly drop the half of every label that says *why* — and the standing
+ * rule is that the explanation never goes, with a two-line wrap as the acceptable
+ * cost. So the trigger grows and both it and the options wrap.
  */
 function EnumSelect<TValue extends string | number>({
   testid,
