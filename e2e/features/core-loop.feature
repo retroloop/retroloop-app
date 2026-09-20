@@ -20,9 +20,9 @@ Feature: The core loop, end to end
     # them are the real thing at once.
     Then the review page shows both solutions of every record
     # The diagnostic data, through the same real stack: a spawned CLI wrote the
-    # evidence into the revision blob, the server read it back out, and this is the browser
-    # keeping it folded away until the reviewer asks for it — the one thing on a
-    # card that starts shut.
+    # evidence into the revision blob, the server read it back out, and this is
+    # the browser keeping it folded away until the reviewer asks for it — the one
+    # thing on a card that starts shut.
     And the diagnostic data of every record is folded away until the reviewer opens it
     When the reviewer approves every record
     And the reviewer finishes the review

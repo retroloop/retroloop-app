@@ -76,9 +76,9 @@ type ProcedureDef = { readonly type: string; readonly output?: Parser }
  * `Function.prototype` and with thenable detection.
  *
  * **They are legal TypeScript and illegal tRPC.** A procedure named `apply`
- * typechecks clean in all four packages — the labels lane shipped one, and the
- * only thing that ever said no was `createRouterFactory` at the moment the
- * router was built. The shipped answer is a naming split: the wire procedure is
+ * typechecks clean in all four packages — one was shipped, and the only thing
+ * that ever said no was `createRouterFactory` at the moment the router was
+ * built. The shipped answer is a naming split: the wire procedure is
  * `labels.set` while the App keeps the domain's `labels.apply`
  * (`apps/api/src/trpc/routers/labels.router.ts`), and until now that split was
  * documented in one file's header, which protects one router and nobody else.

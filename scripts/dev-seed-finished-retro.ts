@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 
 /**
- * **A finished retrospective, on demand** — the stage an acceptance run starts
- * from.
+ * **A finished retrospective, on demand** — the stage that an acceptance run
+ * starts from.
  *
  * The record lane only hands out work from a round the human has **finished**:
  * `record queue` is the approved, unresolved records of retrospectives whose
@@ -14,8 +14,8 @@
  * **It acts as the human, and that is why it is not a CLI command.** Recording a
  * verdict and finishing a round are human-only and UI-only: there is no
  * `retroloop decision record`, and there never will be, because the human
- * deciding in the browser is the product. A seed has to write those
- * rows anyway, so it writes them **here**, in `scripts/`, where nothing ships and
+ * deciding in the browser is the product. A seed has to write those rows
+ * anyway, so it writes them **here**, in `scripts/`, where nothing ships and
  * nobody can reach it by accident from the binary. `apps/cli/test/support/
  * finish-review.ts` stands in the same place for the same reason.
  *

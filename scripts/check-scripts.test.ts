@@ -297,10 +297,10 @@ describe('biome configuration', () => {
   })
 
   test('still processes a checkout that itself lives under .claude/worktrees', async () => {
-    // Worktrees live at .claude/worktrees/<name>, so `.claude` is an
-    // ancestor of the whole checkout. An unanchored `!**/.claude` matches that
-    // ancestor and biome silently checks nothing — a gate that passes because it
-    // looked at zero files. The exclusion has to stay anchored to the root.
+    // Worktrees live at .claude/worktrees/<name>, so `.claude` is an ancestor of
+    // the whole checkout. An unanchored `!**/.claude` matches that ancestor and
+    // biome silently checks nothing — a gate that passes because it looked at
+    // zero files. The exclusion has to stay anchored to the root.
     const worktree = join(root, '.claude', 'worktrees', 'granite')
     await Bun.write(join(worktree, 'packages/core/src/version.ts'), "export  const  X='0'\n")
 

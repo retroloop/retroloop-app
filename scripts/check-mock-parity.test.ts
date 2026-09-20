@@ -3,8 +3,7 @@ import { mockRouter } from '../apps/web/test/trpc-mock.ts'
 import { checkMockParity, reservedNameFindings, routerBuildFinding } from './check-mock-parity.ts'
 
 /**
- * The direction `satisfies MockRouter` cannot see
- * (`r-mock-extra-field-blind`).
+ * The direction `satisfies MockRouter` cannot see (`r-mock-extra-field-blind`).
  *
  * Both directions matter, as everywhere else in this file's neighbours: the
  * shipped mock passes, and a mock one field wider than the router does not. The

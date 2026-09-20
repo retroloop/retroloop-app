@@ -309,9 +309,9 @@ Then('the export carries the solutions, and the recommended one as selected', as
     expect(record.solutions?.map((solution) => solution.level)).toEqual([1, 2])
     expect(record.solutions?.map((solution) => solution.recommended)).toEqual([false, true])
     // The reviewer never moved the tick off the recommendation, so the
-    // recommendation is what the verdict carried
-    // (`r-recommended-preselected`) — and the level follows the pick rather
-    // than being a second answer somebody had to give.
+    // recommendation is what the verdict carried (`r-recommended-preselected`)
+    // — and the level follows the pick rather than being a second answer
+    // somebody had to give.
     expect(record.selectedSolution).toBe(2)
     expect(record.solutionLevel).toBe(2)
     // The two keys this shape replaced are absent from a document written today,
@@ -331,8 +331,8 @@ Then('the export carries the solutions, and the recommended one as selected', as
  * what makes it worth an assertion here rather than one more unit test.
  *
  * Keyed by revision, because the message belongs to a *revision round*: the
- * round is what it is left on, and a reader of a three-round
- * retrospective has to be able to tell which is which.
+ * round is what it is left on, and a reader of a three-round retrospective has
+ * to be able to tell which is which.
  */
 Then('the export carries the final message the reviewer left on the round', async ({ retro }) => {
   const path = retro.state.exportPath

@@ -110,11 +110,11 @@ function reportPending(): void {
  *
  * It is here rather than behind a CLI command because finishing is the human's
  * and has no CLI surface — that is the point of it — and because a revision may
- * only answer a finished round since
- * `r-revision-sneaks-past-review`. A scenario whose subject is the SSE stream
- * needs the round put down without spending a dozen browser steps on doing it,
- * and this is the same standing-in-for-the-server move `apps/cli/test/support/
- * finish-review.ts` makes one layer down.
+ * only answer a finished round (`r-revision-sneaks-past-review`). A scenario
+ * whose subject is the SSE stream needs the round put down without spending a
+ * dozen browser steps on doing it, and this is the same
+ * standing-in-for-the-server move `apps/cli/test/support/finish-review.ts`
+ * makes one layer down.
  *
  * `revise` rather than `approved` because it is the verdict the gate's own
  * refusal names: a mid-round change request becomes a `revise` verdict and a

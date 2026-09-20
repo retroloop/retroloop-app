@@ -285,9 +285,9 @@ refuse_if_active() {
   revert it first — scripts/plant.sh --revert"
 }
 
-# The guard `r-plant-revert-second` exists for. `git status --porcelain` on the targets
-# alone, because dirt elsewhere in the tree is not this run's business — and is
-# never touched by the revert or the restore either.
+# The guard `r-plant-revert-second` exists for: `git status --porcelain` on the
+# targets alone, because dirt elsewhere in the tree is not this run's business —
+# and is never touched by the revert or the restore either.
 guard_clean() {
   local kind="$1" dirty
   dirty="$(git status --porcelain -- "${PATHS[@]}")"

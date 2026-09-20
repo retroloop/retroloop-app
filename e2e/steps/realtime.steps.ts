@@ -43,14 +43,14 @@ Then('both pages announce revision {int}', async ({ reviewers }, revision: numbe
 })
 
 Then('neither page has swapped in the new content', async ({ reviewers, retro }) => {
-  // "Announce, don't swap": the reviewer keeps reading what they were
-  // reading until they ask for the new draft, because a verdict has to bind to
-  // the content the person actually saw.
+  // "Announce, don't swap": the reviewer keeps reading what they were reading
+  // until they ask for the new draft, because a verdict has to bind to the
+  // content the person actually saw.
   const first = retro.state.rids[0] ?? ''
   for (const index of [0, 1]) {
     const page = reviewers.at(index)
-    // `revise` is the verdict the human left in the round they finished, and it is
-    // still what these pages show: they are reading revision 1.
+    // `revise` is the verdict the human left in the round they finished, and
+    // it is still what these pages show: they are reading revision 1.
     await expect(page.getByTestId(`record-${first}`).getByTestId('record-state')).toContainText(
       'revise',
     )

@@ -6,18 +6,22 @@
 #
 # THE CHANNEL HAS FAILED FOUR TIMES, ONE HOP FURTHER ALONG EACH TIME:
 #
-#   `r-finish-event-unnoticed`  — the press went unnoticed; the watcher was
-#            built. The hop fixed: nothing was watching.
-#   `r-monitor-not-realtime`    — the watcher polled and slept 20s, so a press
-#            sat in the database for the length of the sleep. `review
-#            wait --follow` made it live. The hop fixed: store → wait latency.
-#   `r-monitor-notify-gap`      — the watcher SAW the press, printed
-#            `review finished: revision 1` to a file, and told nobody: this
-#            harness re-invokes an agent when a background task EXITS, never
-#            when it prints a line. The hop fixed: watcher → agent.
-#   `r-fourth-finish-channel-failure` — the harness killed the watcher twice
-#            from outside and the watch was STOOD DOWN, asking the human to say
-#            "done" in chat. The hop that broke: watcher survival.
+#   `r-finish-event-unnoticed`
+#       — the press went unnoticed; the watcher was built.
+#         The hop fixed: nothing was watching.
+#   `r-monitor-not-realtime`
+#       — the watcher polled and slept 20s, so a press sat in the database for
+#         the length of the sleep. `review wait --follow` made it live.
+#         The hop fixed: store → wait latency.
+#   `r-monitor-notify-gap`
+#       — the watcher SAW the press, printed `review finished: revision 1` to a
+#         file, and told nobody: this harness re-invokes an agent when a
+#         background task EXITS, never when it prints a line.
+#         The hop fixed: watcher → agent.
+#   `r-fourth-finish-channel-failure`
+#       — the harness killed the watcher twice from outside and the watch was
+#         STOOD DOWN, asking the human to say "done" in chat.
+#         The hop that broke: watcher survival.
 #
 # Each fix repaired the hop that had just broken. None ever owned the chain
 # press → store → wait → watcher → agent as one system, so every hop nobody had
@@ -36,11 +40,11 @@
 #   watcher mid-wait, press while nothing at all is armed, re-arm, and prove the
 #   press is still delivered.
 #
-# NEVER STAND DOWN, RE-ARM ON KILL — it is a standing rule now. While a
-# review is open the watch is never voluntarily abandoned. A kill is not a stop
-# gesture — it is a notification, which means re-arming costs one command and
-# leaves no window. The watch ends at review close, or on the human's explicit
-# word to stop watching, and on nothing else.
+# NEVER STAND DOWN, RE-ARM ON KILL — it is a standing rule now. While a review is
+# open the watch is never voluntarily abandoned. A kill is not a stop gesture —
+# it is a notification, which means re-arming costs one command and leaves no
+# window. The watch ends at review close, or on the human's explicit word to stop
+# watching, and on nothing else.
 #
 # Usage:
 #
@@ -273,8 +277,8 @@ certify() {
   require_cli
   resolve_stage_tool ||
     refuse "no stage tool — certify presses Finish through e2e/support/stage-tool.ts,
-  which has no CLI surface because finishing is the human's. Run this
-  from the repo, or set WATCH_REVIEW_STAGE_TOOL."
+  which has no CLI surface because finishing is the human's. Run this from the
+  repo, or set WATCH_REVIEW_STAGE_TOOL."
 
   CERTIFY_HOME="$(mktemp -d "${TMPDIR:-/tmp}/retro-watch-certify-XXXXXX")"
   CERTIFY_STAGE="$CERTIFY_HOME/data"
@@ -462,8 +466,8 @@ RETRO_ID="$1"
 shift
 [[ "$RETRO_ID" =~ ^[0-9]+$ ]] ||
   refuse "$RETRO_ID is not a retro id. The id is the number 'revision create' answered
-  with — not the retrospective's ordinal, and not the session's.
-  Or did you mean: scripts/watch-review.sh certify"
+  with — not the retrospective's ordinal, and not the session's. Or did you mean:
+  scripts/watch-review.sh certify"
 
 TIMEOUT="$DEFAULT_TIMEOUT"
 while [[ $# -gt 0 ]]; do

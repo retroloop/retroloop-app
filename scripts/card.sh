@@ -4,22 +4,22 @@
 #
 # The card is how a long-running session is watched from outside it, and its
 # update model is push-only: nothing on it animates, so an update that does not
-# write it leaves an active session looking exactly like a hung one. This
-# script is what makes writing it cheap enough to keep doing — it resolves the
-# cmux binary, the workspace ref and the todo-by-name lookup internally, so an
-# update costs one line:
+# write it leaves an active session looking exactly like a hung one. This script
+# is what makes writing it cheap enough to keep doing — it resolves the cmux
+# binary, the workspace ref and the todo-by-name lookup internally, so an update
+# costs one line:
 #
-#   scripts/card.sh lane "layout: building"
+#   scripts/card.sh lane "build: running"
 #   scripts/card.sh progress 0.7 "5/7 steps"
 #   scripts/card.sh done "docs"
 #
-# **Todos are addressed by name, never by index**
-# (`r-todo-index-shift-trap`). cmux re-sorts on every check — completed items
-# sink and the list renumbers — so an index remembered from one call points at a
-# different row by the next. A batch of four check-by-index calls once ticked
-# four wrong rows with that warning already read, which is why this script
-# refuses an index argument outright and takes a fresh listing for every
-# operation. The safe form is the only form there is to type.
+# **Todos are addressed by name, never by index** (`r-todo-index-shift-trap`).
+# cmux re-sorts on every check — completed items sink and the list renumbers —
+# so an index remembered from one call points at a different row by the next. A
+# batch of four check-by-index calls once ticked four wrong rows with that
+# warning already read, which is why this script refuses an index argument
+# outright and takes a fresh listing for every operation. The safe form is the
+# only form there is to type.
 #
 # Outside cmux it no-ops with a note on stderr and exits 0, so the duty costs
 # nothing in a plain terminal.
@@ -39,7 +39,7 @@ card.sh — write the cmux sidebar card.
 Usage: scripts/card.sh <command> [args]
 
 Chips (each key is its own pill; a value replaces that key's pill):
-  lane <value>                     the "lane" pill — card.sh lane "layout: building"
+  lane <value>                     the "lane" pill — card.sh lane "build: running"
   chip <key> <value> [flags]       any other pill; flags: --icon <name>
                                    --color '#RRGGBB' --priority <n>
   clear <key>                      remove that pill
@@ -258,7 +258,7 @@ main() {
 
   case "$command" in
     lane)
-      need_args $# 1 'lane needs a value: card.sh lane "layout: building"' || return 2
+      need_args $# 1 'lane needs a value: card.sh lane "build: running"' || return 2
       card set-status lane "$1"
       ;;
     chip)

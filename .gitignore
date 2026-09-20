@@ -22,6 +22,9 @@ blob-report/
 # machine-local Claude Code state
 .claude/settings.local.json
 
+# per-run report scratch, never merged
+LANE_REPORT.md
+
 # preview stages and screenshot scratch
 preview-stage/
 screenshots/

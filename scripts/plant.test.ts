@@ -180,9 +180,9 @@ describe('the plant harness refuses the unsafe order', () => {
 
 describe('the plant harness restores exactly its own diff', () => {
   test('work written after the plant survives the revert', async () => {
-    // The proof that the historical failure cannot happen even when the worker
-    // does keep planting mid-flow: the fix arrives *after* the plant, is never
-    // committed, and the revert still only unwinds what it planted.
+    // The proof that the historical failure cannot happen even when planting
+    // continues mid-flow: the fix arrives *after* the plant, is never committed,
+    // and the revert still only unwinds what it planted.
     await plant([SOURCE], PLANT_LINE)
     await write(SOURCE, `${COMMITTED}${FIX}const PLANTED = true\n`)
 
@@ -284,10 +284,10 @@ describe('a plant is certified by its check, or it is not a plant', () => {
   })
 
   test('a plant the check cannot see is refused and rolled back', async () => {
-    // The dead plant that shipped as a finding: it edited a tally but not the
-    // useMemo deps that recomputed it, so the
-    // diff was non-empty, the suite stayed green at 214/214, and the report would
-    // have read "the scenario failed to catch it". A non-empty diff is not evidence.
+    // The dead plant: it edited a tally but not the useMemo deps that recomputed
+    // it, so the diff was non-empty, the suite stayed green at 214/214, and the
+    // report would have read "the scenario failed to catch it". A non-empty diff
+    // is not evidence.
     const { exitCode, output } = await plant([SOURCE], INERT_LINE)
 
     expect(output).toContain('the check stayed green with the plant applied')
