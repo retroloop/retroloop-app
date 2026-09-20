@@ -4,14 +4,14 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 /**
- * The finish watch (retro-12 `r-monitor-notify-gap`, retro-13
+ * The finish watch (`r-monitor-notify-gap`,
  * `r-fourth-finish-channel-failure`).
  *
  * The channel has failed four times and every fix was scoped to the hop that had
  * just broken, so what is asserted here is the SHAPE — the property each of those
  * failures violated — rather than the wiring:
  *
- * - **exactly one wait, and no loop.** The retro-12 monitor looped forever
+ * - **exactly one wait, and no loop.** The monitor it replaced looped forever
  *   printing lines into a file no agent ever read. A stub CLI counts its own
  *   invocations, so "one" is a number here and not a claim about a `while`.
  * - **the exit IS the notification.** The exit code passes through untouched and
@@ -80,7 +80,7 @@ async function calls(): Promise<string[]> {
 
 describe('the watch arms exactly one wait', () => {
   test('the CLI runs once and the script is gone — there is no loop to run twice', async () => {
-    // The retro-12 shape: a monitor that loops is a monitor whose events can only
+    // The shape it replaced: a monitor that loops is a monitor whose events can only
     // reach the agent as printed lines, which this harness does not deliver.
     const cli = await stubCli('exit 7')
 
@@ -129,7 +129,7 @@ describe('the watch arms exactly one wait', () => {
 
 describe('the re-arm instruction is in the output before the wait blocks', () => {
   /**
-   * retro-13's failure was not a missing command, it was a reading: two outside
+   * The fourth failure was not a missing command, it was a reading: two outside
    * kills were read as a stop gesture and the watch was stood down mid-review.
    * The kill notification carries whatever this printed at arming time and
    * nothing else, so the instruction has to already be there.
@@ -230,7 +230,7 @@ describe('where says what it would run', () => {
 
 /**
  * The end-to-end half, against a real throwaway stage — the whole point of the
- * record his L3 selected: *nothing certifies the chain end to end before it is
+ * record behind it: *nothing certifies the chain end to end before it is
  * trusted*. This runs the real CLI, the real store and the real stage-tool press,
  * and it is where the killed-watcher drill lives.
  */
@@ -258,7 +258,7 @@ describe('certify runs the chain against a throwaway stage', () => {
   }, 180_000)
 
   test('certify without a stage tool refuses, because finishing has no CLI surface', async () => {
-    // The press is the human's and has no CLI command by design (KC-0010), so
+    // The press is the human's and has no CLI command by design, so
     // certify borrows the e2e stage tool. Without one it refuses rather than
     // certifying a chain whose press it never made.
     const { exitCode, stderr } = await spawn(['certify'], { WATCH_REVIEW_STAGE_TOOL: '  ' })

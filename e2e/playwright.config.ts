@@ -6,8 +6,8 @@ import { defineBddConfig } from 'playwright-bdd'
  * server, real browser contexts, real export file. Capped at ~3 scenarios — they
  * prove wiring only, because everything else is proven a layer down.
  *
- * The scenarios land with BACKLOG item 7; until then this config exists so the
- * runner is wired and the gate exercises it (`--pass-with-no-tests`).
+ * The runner is invoked with `--pass-with-no-tests` so that the verification
+ * gate still exercises this config when no scenario matches.
  */
 const testDir = defineBddConfig({
   features: ['features/**/*.feature'],

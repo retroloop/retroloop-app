@@ -3,8 +3,8 @@ import { mockRouter } from '../apps/web/test/trpc-mock.ts'
 import { checkMockParity, reservedNameFindings, routerBuildFinding } from './check-mock-parity.ts'
 
 /**
- * The direction `satisfies MockRouter` cannot see (retro 6
- * `r-mock-extra-field-blind`).
+ * The direction `satisfies MockRouter` cannot see
+ * (`r-mock-extra-field-blind`).
  *
  * Both directions matter, as everywhere else in this file's neighbours: the
  * shipped mock passes, and a mock one field wider than the router does not. The
@@ -43,10 +43,10 @@ describe('check-mock-parity', () => {
   })
 
   test('an extra canned field in an answer is caught', () => {
-    // The session-7 repro, as a gate finding: this is the shape that compiles
+    // The original repro, as a gate finding: this is the shape that compiles
     // clean under `satisfies MockRouter` and reads as evidence in a scenario.
     const findings = checkMockParity(
-      canning('retros.get', (answer) => ({ ...(answer as object), reviewerName: 'Haider' })),
+      canning('retros.get', (answer) => ({ ...(answer as object), reviewerName: 'Sample' })),
     )
 
     expect(problemsFor('retros.get', findings)).toContain('unrecognized_keys')
@@ -122,7 +122,7 @@ describe('check-mock-parity', () => {
 })
 
 /**
- * The runtime-only naming trap (retro 11 `r-trpc-reserved-names`).
+ * The runtime-only naming trap (`r-trpc-reserved-names`).
  *
  * `then`, `call` and `apply` are legal TypeScript and illegal tRPC, and the
  * refusal happens when the router is BUILT — so the two halves are tested apart:

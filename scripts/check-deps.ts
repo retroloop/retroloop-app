@@ -46,7 +46,7 @@ const PACKAGES: readonly Package[] = [
  * listed here is a violation. Change this table only with the layout doc.
  *
  * `cli -> api` exists because the compiled binary carries the server: `retro
- * serve` starts it in-process (KC-0013). `cli` still reaches the domain through
+ * serve` starts it in-process. `cli` still reaches the domain through
  * `core`, never through the server.
  */
 const ALLOWED_EDGES: Readonly<Record<string, Readonly<Record<string, EdgeKind>>>> = {

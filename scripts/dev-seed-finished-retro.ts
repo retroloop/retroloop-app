@@ -2,11 +2,11 @@
 
 /**
  * **A finished retrospective, on demand** — the stage an acceptance run starts
- * from (RL-50).
+ * from.
  *
  * The record lane only hands out work from a round the human has **finished**:
  * `record queue` is the approved, unresolved records of retrospectives whose
- * latest revision he put down (`list-lane-records.use-case.ts`). So every
+ * latest revision they put down (`list-lane-records.use-case.ts`). So every
  * acceptance run of the lane — the plugin's, a demo, a hand walk-through of
  * `record queue` → `record claim` → `record resolve` — has to start from a stage
  * that holds one, and building one by hand is four commands plus a browser.
@@ -14,7 +14,7 @@
  * **It acts as the human, and that is why it is not a CLI command.** Recording a
  * verdict and finishing a round are human-only and UI-only: there is no
  * `retroloop decision record`, and there never will be, because the human
- * deciding in the browser is the product (KC-0010). A seed has to write those
+ * deciding in the browser is the product. A seed has to write those
  * rows anyway, so it writes them **here**, in `scripts/`, where nothing ships and
  * nobody can reach it by accident from the binary. `apps/cli/test/support/
  * finish-review.ts` stands in the same place for the same reason.
@@ -23,7 +23,7 @@
  * writes nothing and exits 2 — before it opens a store, so a mistyped `--home`
  * pointed at a real stage does not even migrate it. An accident here is not a
  * cosmetic one: it would put approved records and a finished round into somebody's
- * ledger, with the human's name on decisions he never made.
+ * ledger, with the human's name on decisions they never made.
  *
  * **It never closes the review.** Closing is the AI's own act and the lane's
  * business (`review close`, and the catch-up the plugin runs), so the stage is

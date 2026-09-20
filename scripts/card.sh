@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 #
-# The sidebar card, one command per act (retro-10 `r-side-card-needs-asking`).
+# The sidebar card, one command per act (`r-side-card-needs-asking`).
 #
-# The card is how the owner watches a session he is not inside, and its update
-# model is push-only: nothing on it animates, so a checkpoint that does not
-# write it leaves an active session looking exactly like a hung one. The duty
-# lives in the process docs' inner loop; this script is what makes the duty
-# cheap enough to survive — it resolves the cmux binary, the workspace ref and
-# the todo-by-name lookup internally, so a checkpoint costs one line:
+# The card is how a long-running session is watched from outside it, and its
+# update model is push-only: nothing on it animates, so an update that does not
+# write it leaves an active session looking exactly like a hung one. This
+# script is what makes writing it cheap enough to keep doing — it resolves the
+# cmux binary, the workspace ref and the todo-by-name lookup internally, so an
+# update costs one line:
 #
 #   scripts/card.sh lane "layout: building"
-#   scripts/card.sh progress 0.7 "5/7 lanes"
-#   scripts/card.sh done "s10-docs"
+#   scripts/card.sh progress 0.7 "5/7 steps"
+#   scripts/card.sh done "docs"
 #
-# **Todos are addressed by name, never by index** (retro-10
-# `r-todo-index-shift-trap`). cmux re-sorts on every check — completed items
+# **Todos are addressed by name, never by index**
+# (`r-todo-index-shift-trap`). cmux re-sorts on every check — completed items
 # sink and the list renumbers — so an index remembered from one call points at a
-# different row by the next. A batch of four check-by-index calls ticked four
-# wrong rows in session 9 with that warning already read, which is why this
-# script refuses an index argument outright and takes a fresh listing for every
+# different row by the next. A batch of four check-by-index calls once ticked
+# four wrong rows with that warning already read, which is why this script
+# refuses an index argument outright and takes a fresh listing for every
 # operation. The safe form is the only form there is to type.
 #
 # Outside cmux it no-ops with a note on stderr and exits 0, so the duty costs
@@ -29,12 +29,12 @@ set -uo pipefail
 readonly BUNDLED_CMUX='/Applications/cmux.app/Contents/Resources/bin/cmux'
 
 # cmux prints deprecation notices for legacy verbs; nothing here uses one, and
-# quiet output keeps a checkpoint line readable.
+# quiet output keeps an update line readable.
 export CMUX_QUIET="${CMUX_QUIET:-1}"
 
 usage() {
   cat <<'EOF'
-card.sh — write the cmux sidebar card at a checkpoint.
+card.sh — write the cmux sidebar card.
 
 Usage: scripts/card.sh <command> [args]
 
@@ -45,7 +45,7 @@ Chips (each key is its own pill; a value replaces that key's pill):
   clear <key>                      remove that pill
 
 Progress bar:
-  progress <0.0-1.0> [label]       card.sh progress 0.7 "5/7 lanes"
+  progress <0.0-1.0> [label]       card.sh progress 0.7 "5/7 steps"
   clear-progress                   remove the bar
 
 Todos — BY NAME, never by index:
@@ -59,8 +59,8 @@ Todos — BY NAME, never by index:
   is only digits is REFUSED — cmux renumbers the list on every check, so a
   remembered index addresses a different row than the one you read.
 
-  The checklist belongs to the owner (cmux's own caution). Add and tick what he
-  asked to see there; keep your own planning elsewhere.
+  The checklist belongs to the person reading the card (cmux's own caution).
+  Add and tick what they asked to see there; keep your own planning elsewhere.
 
 Diagnostics:
   where                            the binary and workspace ref this would write
@@ -95,8 +95,8 @@ resolve_cmux() {
 # CMUX_WORKSPACE_ID is exported into every cmux terminal, which makes it both
 # the answer and the test for "am I inside cmux". `identify` is asked only for
 # its **caller** block, never its `focused` one: from outside cmux there is no
-# caller and cmux falls back to whatever window the owner happens to be looking
-# at, so reading `focused` would write a lane's status onto a stranger's card.
+# caller and cmux falls back to whatever window is in front at the time, so
+# reading `focused` would write this status onto an unrelated card.
 resolve_workspace() {
   if [[ -n "${CARD_WORKSPACE:-}" ]]; then printf '%s' "$CARD_WORKSPACE"; return; fi
   if [[ -n "${CMUX_WORKSPACE_ID:-}" ]]; then printf '%s' "$CMUX_WORKSPACE_ID"; return; fi
@@ -106,8 +106,8 @@ resolve_workspace() {
   "$bin" identify 2>/dev/null | awk '
     # Only an OPEN BRACE counts as a caller. Outside cmux the key is still there
     # and reads `"caller" : null`, with a populated `focused` block right beneath
-    # it — matching the key alone would walk straight into whatever window the
-    # owner is looking at. Leave when the block closes rather than reading past.
+    # it — matching the key alone would walk straight into whatever window is in
+    # front. Leave when the block closes rather than reading past.
     /"caller"[[:space:]]*:[[:space:]]*\{/ { inside = 1; next }
     inside && /^[[:space:]]*\}/ { exit }
     inside && /^[[:space:]]*"workspace_ref"[[:space:]]*:/ {
@@ -272,7 +272,7 @@ main() {
       card clear-status "$1"
       ;;
     progress)
-      need_args $# 1 'progress needs a fraction: card.sh progress 0.7 "5/7 lanes"' || return 2
+      need_args $# 1 'progress needs a fraction: card.sh progress 0.7 "5/7 steps"' || return 2
       local fraction="$1"
       if [[ ! "$fraction" =~ ^(0|1)(\.[0-9]+)?$ ]]; then
         note "\"$fraction\" is not a fraction between 0.0 and 1.0."
@@ -297,11 +297,11 @@ main() {
       printf '%s\n' "$rows" | cut -f2- | sed 's/^/· /'
       ;;
     add)
-      need_args $# 1 'add needs the item text: card.sh add "merge the docs lane"' || return 2
+      need_args $# 1 'add needs the item text: card.sh add "merge the docs branch"' || return 2
       card todo add "$1"
       ;;
     start | done)
-      need_args $# 1 "$command needs a todo name: card.sh $command \"s10-docs\"" || return 2
+      need_args $# 1 "$command needs a todo name: card.sh $command \"docs\"" || return 2
       refuse_index "$1" || return 2
       local id
       id="$(todo_id_for "$1")" || return $?

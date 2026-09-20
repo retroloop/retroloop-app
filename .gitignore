@@ -22,12 +22,9 @@ blob-report/
 # machine-local Claude Code state
 .claude/settings.local.json
 
-# lane reports are session artifacts, never merged (session 6)
-LANE_REPORT.md
-
-# bake-off preview stages and screenshot scratch (session 11)
+# preview stages and screenshot scratch
 preview-stage/
 screenshots/
 
-# machine-local repo instructions (points into the private meta repo)
+# machine-local repo instructions
 CLAUDE.local.md

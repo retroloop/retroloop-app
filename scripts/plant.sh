@@ -1,40 +1,40 @@
 #!/usr/bin/env bash
 #
-# The plant harness (retro-6 `r-plant-revert-second`, retro-7
-# `r-ineffective-plant-blind` + `r-control-test-signature`; docs/design/testing.md).
+# The plant harness (`r-plant-revert-second`, `r-ineffective-plant-blind`,
+# `r-control-test-signature`; docs/design/testing.md).
 #
-# Plant-and-catch is a standing rule: every worker plants representative defects
-# and watches its own checks catch them. Three things have gone wrong around that
+# Plant-and-catch is a standing rule: representative defects are planted and the
+# checks are watched catching them. Several things have gone wrong around that
 # rule, and each of them is a mode here rather than a sentence someone has to
 # remember at the one moment attention is on the plant table instead of git state.
 #
-#   Reverting the plant took the fix with it, twice. Session 5 lane B lost a fix,
-#   its scenario and a fixture change to a tree-wide `git checkout -- .`; session 7
-#   lost six uncommitted fixes to a per-file one. Both times the written rule
-#   existed and had been quoted.
+#   Reverting the plant took the fix with it, twice. A tree-wide
+#   `git checkout -- .` lost a fix, its scenario and a fixture change; a per-file
+#   one lost six uncommitted fixes. Both times the written rule existed and had
+#   been quoted.
 #
-#   A plant the check could not see passed as a finding. Session 8 planted an edit
-#   that changed a tally but not the dependencies that recomputed it: the diff was
-#   non-empty, the suite stayed green at 214/214, and the report was about to read
-#   "the scenario failed to catch it". A non-empty diff was never evidence.
+#   A plant the check could not see passed as a finding. An edit changed a tally
+#   but not the dependencies that recomputed it: the diff was non-empty, the
+#   suite stayed green at 214/214, and the report was about to read "the scenario
+#   failed to catch it". A non-empty diff was never evidence.
 #
 #   A legitimate control was read as sabotage. `git checkout main -- apps/web`, to
 #   reproduce a flake on unmodified main and restored one command later, is
 #   byte-identical in git signature to the work-destroying revert above — so it
-#   cost an emergency interrupt. Intent cannot be observed; it has to be declared.
+#   cost an emergency interruption. Intent cannot be observed; it has to be
+#   declared.
 #
-#   A cycle's numbers were typed instead of pasted. A lane committed a comment
-#   claiming a control run that never happened — "16 against a menu bottom of 56"
-#   where the real cycle read 18 against 57 — wrong on both figures and by too
-#   little to look wrong. So a certified cycle and a finished control now END by
-#   printing the log block, already formatted to paste (retro-13
-#   `r-invented-evidence-reads-real`).
+#   A cycle's numbers were typed instead of pasted. A comment claimed a control
+#   run that never happened — "16 against a menu bottom of 56" where the real
+#   cycle read 18 against 57 — wrong on both figures and by too little to look
+#   wrong. So a certified cycle and a finished control now END by printing the log
+#   block, already formatted to paste (`r-invented-evidence-reads-real`).
 #
 #   A restore put content back and left the build behind it. `control --from main`
 #   restores source and does not rebuild, so `apps/web/dist` kept serving the
-#   control's shell; one lane nearly showed the owner the wrong design. Every path
-#   here that restores content now says the build is stale (retro-13
-#   `r-stale-dist-after-control`).
+#   control's shell, and a stale bundle was nearly shown as the new design. Every
+#   path here that restores content now says the build is stale
+#   (`r-stale-dist-after-control`).
 #
 # So the safe order is not asked for here, it is the only order that runs:
 #
@@ -58,15 +58,16 @@
 #       A certified cycle prints its log block ready to paste into a report.
 #
 #   scripts/plant.sh control --why <declaration> [--from <rev>] <file>... -- <cmd> [args...]
-#       A declared reproduce-against-another-tree run. Snapshots the lane's files,
-#       writes <rev>'s content into them WITHOUT EVER STAGING IT, runs <cmd>, and
-#       restores the lane unconditionally — on success, on failure, on interrupt.
-#       The declaration is logged before <cmd> starts, so an observer holding only
-#       the worktree reads intent instead of guessing at a git signature.
+#       A declared reproduce-against-another-tree run. Snapshots the worktree's
+#       files, writes <rev>'s content into them WITHOUT EVER STAGING IT, runs
+#       <cmd>, and restores the worktree unconditionally — on success, on failure,
+#       on interrupt. The declaration is logged before <cmd> starts, so an observer
+#       holding only the worktree reads intent instead of guessing at a git
+#       signature.
 #
 #   scripts/plant.sh --log
-#       Prints that log. It is the record a lane report's plant table is copied
-#       from, and the place a declared control is distinguishable by construction.
+#       Prints that log. It is the record a report's plant table is copied from,
+#       and the place a declared control is distinguishable by construction.
 #
 # The state and the log live under the git directory, so neither is ever a file in
 # the tree, neither is ever staged, and neither shows up in `git status`.
@@ -94,8 +95,8 @@ usage: scripts/plant.sh --check <check-cmd> [--expect-green] <file>... -- <apply
            uncommitted work: commit the real work first, then plant.
 
   control  Runs <cmd> against <rev>'s content (default main) under a declared
-           intent, then puts the lane's own content back — always, including on
-           interrupt. Nothing is ever staged, and anything <cmd> writes into a
+           intent, then puts this worktree's own content back — always, including
+           on interrupt. Nothing is ever staged, and anything <cmd> writes into a
            target goes away with the control. Refuses a dirty target set, like a
            plant does.
 
@@ -170,12 +171,12 @@ show_log() {
   exit 0
 }
 
-# ── the paste-ready excerpt (retro-13 `r-invented-evidence-reads-real`) ───────
-# A lane committed a doc comment asserting a control run that never happened, with
-# invented numbers — "16 against a menu bottom of 56" where the real cycle read 18
-# against 57. Wrong on both figures, and by little enough to survive any reading:
-# invented evidence does not look invented, and a number reads as measured BY
-# BEING a number. The repair cost three commits and a JOURNAL correction.
+# ── the paste-ready excerpt (`r-invented-evidence-reads-real`) ───────────────
+# A doc comment once asserted a control run that never happened, with invented
+# numbers — "16 against a menu bottom of 56" where the real cycle read 18 against
+# 57. Wrong on both figures, and by little enough to survive any reading: invented
+# evidence does not look invented, and a number reads as measured BY BEING a
+# number. The repair cost three commits and a correction to the written record.
 #
 # The rule that was already in hand — claims carry their evidence — lived in
 # documents, and the keystroke happened in a comment field with nothing checking
@@ -194,21 +195,21 @@ excerpt() {
   printf '    %s\n' "$LOG"
   sed -n "${start},\$p" "$LOG" | sed 's/^/    /'
   printf '\n'
-  say 'a reading quoted anywhere — a lane report, a test comment, a docstring —'
+  say 'a reading quoted anywhere — a report, a test comment, a docstring —'
   say 'is PASTED from that log and cites its path beside it. A reading with no'
   say 'citable log is written as expected, never as observed (testing.md).'
 }
 
-# ── the dist-is-stale warning (retro-13 `r-stale-dist-after-control`) ─────────
+# ── the dist-is-stale warning (`r-stale-dist-after-control`) ─────────────────
 # A restore puts CONTENT back and does not rebuild, so `apps/web/dist` goes on
-# serving a bundle built from whatever was there before. One lane reached its
-# instance step with dist still holding main's shell and would have served the
-# owner the wrong lane's design as the variation; all three lanes hit the trap and
-# one caught it only by grepping the built bundle for a class string its own design
-# emits — a verification no recipe asked for.
+# serving a bundle built from whatever was there before. A comparison run reached
+# its verification step with dist still holding main's shell and would have shown
+# the wrong design as the variation; every branch in that comparison hit the trap
+# and one caught it only by grepping the built bundle for a class string its own
+# design emits — a verification no recipe asked for.
 #
 # The inverse rule was already written down for merges ("a web-only merge needs
-# only the rebuild, since the build is served from disk per request", retro-3
+# only the rebuild, since the build is served from disk per request",
 # `r-stale-server-verify`). The two are one fact read from opposite sides, and only
 # the merge side had ever been stated. This is the other side, printed at the
 # moment the trap arms rather than in a document read before it.
@@ -223,7 +224,7 @@ warn_stale_dist() {
   say 'The build is served from disk per request, so nothing rebuilds on its own:'
   say 'rebuild before serving, and verify the bundle carries your change (grep the'
   say 'built assets for a marker only your change emits).'
-  say 'retro-13 `r-stale-dist-after-control` — docs/design/testing.md.'
+  say '`r-stale-dist-after-control` — docs/design/testing.md.'
 }
 
 # Every path out of this script that put content back goes through here, rather
@@ -278,13 +279,13 @@ refuse_if_active() {
   if [[ "$mode" == control ]]; then
     refuse "a control is already active in: $targets
   a control restores itself when its command ends; if one was killed outright,
-  put the lane's content back from $STATE/snapshot and delete $STATE."
+  put this worktree's content back from $STATE/snapshot and delete $STATE."
   fi
   refuse "a plant is already active in: $targets
   revert it first — scripts/plant.sh --revert"
 }
 
-# The guard the retro-6 record exists for. `git status --porcelain` on the targets
+# The guard `r-plant-revert-second` exists for. `git status --porcelain` on the targets
 # alone, because dirt elsewhere in the tree is not this run's business — and is
 # never touched by the revert or the restore either.
 guard_clean() {
@@ -302,8 +303,8 @@ guard_clean() {
 }
 
 # Streams the check's own output rather than capturing it: a verdict cropped out
-# of a runner's summary is how a red gets reported as a green (retro-7
-# `r-shell-filtered-verdicts`). The report still quotes those lines untruncated.
+# of a runner's summary is how a red gets reported as a green
+# (`r-shell-filtered-verdicts`). The report still quotes those lines untruncated.
 run_check() {
   printf '\nplant: the check, %s:\nplant:   %s\n' "$1" "$CHECK" >&2
   (
@@ -396,8 +397,8 @@ control_restore() {
   local listed
   listed="$(printf '%s ' "${PATHS[@]}")"
   restore_snapshot
-  field 'restored' "the lane's own content is back in: $listed"
-  say "restored the lane's own content in: $listed"
+  field 'restored' "this worktree's own content is back in: $listed"
+  say "restored this worktree's own content in: $listed"
   excerpt
 }
 
@@ -470,7 +471,7 @@ control() {
   for path in "${PATHS[@]}"; do
     if ! git show "$rev:$path" >"$ROOT/$path"; then
       control_restore
-      refuse "could not read $path from $rev; the lane's own content is back."
+      refuse "could not read $path from $rev; this worktree's own content is back."
     fi
   done
 

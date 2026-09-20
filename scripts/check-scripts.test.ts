@@ -116,9 +116,10 @@ describe('check-deps', () => {
   test('reads a file with a shebang instead of failing to parse it', async () => {
     // An entry point may open with `#!/usr/bin/env bun`, which the tsx loader
     // rejects — and reports as a parse error in `input.tsx`, naming neither the
-    // file nor the shebang. That cost a gate cycle in item 4. Both directions
-    // matter here: the legal file passes, and the violation below it is still
-    // caught, so the fix cannot have turned the check off for shebang files.
+    // file nor the shebang, which costs a whole gate cycle to diagnose. Both
+    // directions matter here: the legal file passes, and the violation below it
+    // is still caught, so the fix cannot have turned the check off for shebang
+    // files.
     await writeFile(
       'apps/cli/src/bin.ts',
       "#!/usr/bin/env bun\nimport { CORE_VERSION } from '@retro/core'\nexport default CORE_VERSION\n",
@@ -296,7 +297,7 @@ describe('biome configuration', () => {
   })
 
   test('still processes a checkout that itself lives under .claude/worktrees', async () => {
-    // Agent worktrees live at .claude/worktrees/<name>, so `.claude` is an
+    // Worktrees live at .claude/worktrees/<name>, so `.claude` is an
     // ancestor of the whole checkout. An unanchored `!**/.claude` matches that
     // ancestor and biome silently checks nothing — a gate that passes because it
     // looked at zero files. The exclusion has to stay anchored to the root.
@@ -312,7 +313,7 @@ describe('biome configuration', () => {
 })
 
 /**
- * Retro 3 `r-lint-never-silent`.
+ * `r-lint-never-silent`.
  *
  * `biome ci` exits **0** on a warning and on an info, so the gate's lint step
  * printed two warnings and one info on every run for as long as anyone could

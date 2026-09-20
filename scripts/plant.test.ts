@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 /**
- * The plant harness (retro-6 `r-plant-revert-second`, retro-7
- * `r-ineffective-plant-blind` and `r-control-test-signature`).
+ * The plant harness (`r-plant-revert-second`, `r-ineffective-plant-blind` and
+ * `r-control-test-signature`).
  *
  * A guard written because prose failed twice has to be shown failing, so every
  * refusal below is exercised against a real git worktree — and the tests that
@@ -105,14 +105,14 @@ function log(): Promise<{ exitCode: number; output: string }> {
 /** Appends a line the file did not have — a defect the check catches. */
 const PLANT_LINE = `printf '%s\\n' 'const PLANTED = true' >> ${SOURCE}`
 
-/** A real diff the check cannot see: session 8's dead plant, in one line. */
+/** A real diff the check cannot see: the dead plant, in one line. */
 const INERT_LINE = `printf '%s\\n' '// a comment no check ever reads' >> ${SOURCE}`
 
 describe('the plant harness refuses the unsafe order', () => {
   test('a fix sitting uncommitted in the target is never planted over', async () => {
-    // Session 5 lane B and session 7, both: real work uncommitted in the file
-    // the plant was about to touch. The revert is what erased it, and this is
-    // the step that makes the revert unreachable.
+    // Both losses were the same shape: real work uncommitted in the file the
+    // plant was about to touch. The revert is what erased it, and this is the
+    // step that makes the revert unreachable.
     await write(SOURCE, `${COMMITTED}${FIX}`)
 
     const { exitCode, output } = await plant([SOURCE], PLANT_LINE)
@@ -204,8 +204,9 @@ describe('the plant harness restores exactly its own diff', () => {
   })
 
   test('uncommitted work elsewhere in the tree is not the revert’s business', async () => {
-    // The session-5 revert was `git checkout -- .`, which is why "elsewhere"
-    // needs its own assertion rather than being assumed from the one above.
+    // The revert that erased work was `git checkout -- .`, which is why
+    // "elsewhere" needs its own assertion rather than being assumed from the one
+    // above.
     await write('src/other.ts', 'export const other = 1\n')
     await git('add', '-A')
     await git('commit', '-qm', 'a second file')
@@ -283,7 +284,8 @@ describe('a plant is certified by its check, or it is not a plant', () => {
   })
 
   test('a plant the check cannot see is refused and rolled back', async () => {
-    // Session 8's dead plant: it edited a tally but not the useMemo deps, so the
+    // The dead plant that shipped as a finding: it edited a tally but not the
+    // useMemo deps that recomputed it, so the
     // diff was non-empty, the suite stayed green at 214/214, and the report would
     // have read "the scenario failed to catch it". A non-empty diff is not evidence.
     const { exitCode, output } = await plant([SOURCE], INERT_LINE)
@@ -349,22 +351,22 @@ describe('a plant is certified by its check, or it is not a plant', () => {
 })
 
 describe('a control declares its intent, so no observer has to guess', () => {
-  /** The lane's own committed work, which every control has to give back. */
-  const LANE = `${COMMITTED}export const lane = true\n`
+  /** The branch's own committed work, which every control has to give back. */
+  const BRANCH = `${COMMITTED}export const feature = true\n`
   const WHY = 'reproducing the landing flake on unmodified main'
 
   beforeEach(async () => {
-    await git('checkout', '-q', '-b', 'lane')
-    await write(SOURCE, LANE)
-    await git('commit', '-qam', 'the lane’s own work')
+    await git('checkout', '-q', '-b', 'feature')
+    await write(SOURCE, BRANCH)
+    await git('commit', '-qam', 'the branch’s own work')
   })
 
-  test('the command sees the other tree’s content and the lane gets its own back', async () => {
+  test('the command sees the other tree’s content and the branch gets its own back', async () => {
     const { exitCode, output } = await control(WHY, [SOURCE], 'cp src/app.ts seen.txt')
 
     expect(exitCode).toBe(0)
     expect(await read('seen.txt')).toBe(COMMITTED)
-    expect(await read(SOURCE)).toBe(LANE)
+    expect(await read(SOURCE)).toBe(BRANCH)
     expect(output).toContain('restored')
   })
 
@@ -395,22 +397,22 @@ describe('a control declares its intent, so no observer has to guess', () => {
     expect((await log()).output).toContain(`command   bash -c 'cp src/app.ts seen.txt'`)
   })
 
-  test('the lane is restored even when the control command fails', async () => {
+  test('the branch is restored even when the control command fails', async () => {
     const { exitCode } = await control(WHY, [SOURCE], 'exit 3')
 
     expect(exitCode).toBe(3)
-    expect(await read(SOURCE)).toBe(LANE)
+    expect(await read(SOURCE)).toBe(BRANCH)
     expect((await git('status', '--porcelain')).output).toBe('')
   })
 
   test('a control refuses to start on a dirty target, same standard as a plant', async () => {
-    await write(SOURCE, `${LANE}${FIX}`)
+    await write(SOURCE, `${BRANCH}${FIX}`)
 
     const { exitCode, output } = await control(WHY, [SOURCE], 'true')
 
     expect(output).toContain('uncommitted work')
     expect(exitCode).toBe(1)
-    expect(await read(SOURCE)).toBe(`${LANE}${FIX}`)
+    expect(await read(SOURCE)).toBe(`${BRANCH}${FIX}`)
   })
 
   test('a control with no declaration is not a control', async () => {
@@ -418,7 +420,7 @@ describe('a control declares its intent, so no observer has to guess', () => {
 
     expect(output).toContain('usage:')
     expect(exitCode).toBe(2)
-    expect(await read(SOURCE)).toBe(LANE)
+    expect(await read(SOURCE)).toBe(BRANCH)
   })
 
   test('a control is refused while a plant is active, and the plant is untouched', async () => {
@@ -436,25 +438,25 @@ describe('a control declares its intent, so no observer has to guess', () => {
     await git('checkout', '-q', '-b', 'other')
     await write(SOURCE, other)
     await git('commit', '-qam', 'a third tree')
-    await git('checkout', '-q', 'lane')
+    await git('checkout', '-q', 'feature')
 
     const { exitCode } = await control(WHY, [SOURCE], 'cp src/app.ts seen.txt', { from: 'other' })
 
     expect(exitCode).toBe(0)
     expect(await read('seen.txt')).toBe(other)
-    expect(await read(SOURCE)).toBe(LANE)
+    expect(await read(SOURCE)).toBe(BRANCH)
   })
 
   test('a rev that never had the file is refused before anything is moved', async () => {
-    await write('src/lane-only.ts', 'export const laneOnly = 1\n')
+    await write('src/feature-only.ts', 'export const featureOnly = 1\n')
     await git('add', '-A')
     await git('commit', '-qm', 'a file main never had')
 
-    const { exitCode, output } = await control(WHY, ['src/lane-only.ts'], 'true')
+    const { exitCode, output } = await control(WHY, ['src/feature-only.ts'], 'true')
 
     expect(output).toContain('does not exist in main')
     expect(exitCode).toBe(1)
-    expect(await read('src/lane-only.ts')).toBe('export const laneOnly = 1\n')
+    expect(await read('src/feature-only.ts')).toBe('export const featureOnly = 1\n')
   })
 })
 
@@ -489,14 +491,14 @@ describe('the harness keeps its own state out of the tree', () => {
 
 /**
  * Evidence arrives already formatted, and the trap says so at the moment it arms
- * (retro-13 `r-invented-evidence-reads-real` and `r-stale-dist-after-control`).
+ * (`r-invented-evidence-reads-real` and `r-stale-dist-after-control`).
  *
  * Both are keystroke-level rules with prose priors that did not hold: the
- * unverified-claims lineage was in the docs when a lane typed invented numbers
+ * unverified-claims lineage was in the docs when invented numbers were typed
  * into a comment, and the stale-server rule was written for merges when three
- * lanes walked into its mirror image. So both directions are asserted here — the
- * cycle that certifies prints them, and the cycle that certifies nothing does
- * not claim it did.
+ * branches walked into its mirror image. So both directions are asserted here —
+ * the cycle that certifies prints them, and the cycle that certifies nothing
+ * does not claim it did.
  */
 describe('a certified cycle hands over its own evidence', () => {
   test('the excerpt carries the log path and all three verdicts, ready to paste', async () => {
@@ -535,9 +537,9 @@ describe('a certified cycle hands over its own evidence', () => {
   })
 
   test('a finished control prints its own block the same way', async () => {
-    await git('checkout', '-q', '-b', 'excerpt-lane')
-    await write(SOURCE, `${COMMITTED}export const lane = true\n`)
-    await git('commit', '-qam', 'the lane’s own work')
+    await git('checkout', '-q', '-b', 'excerpt-branch')
+    await write(SOURCE, `${COMMITTED}export const feature = true\n`)
+    await git('commit', '-qam', 'the branch’s own work')
 
     const { output } = await control('reproducing the flake on main', [SOURCE], 'true', {
       from: 'main',
@@ -561,9 +563,9 @@ describe('a restore says the build behind it is now stale', () => {
   })
 
   test('the control warns — the path the record was actually filed about', async () => {
-    await git('checkout', '-q', '-b', 'stale-lane')
-    await write(SOURCE, `${COMMITTED}export const lane = true\n`)
-    await git('commit', '-qam', 'the lane’s own work')
+    await git('checkout', '-q', '-b', 'stale-branch')
+    await write(SOURCE, `${COMMITTED}export const feature = true\n`)
+    await git('commit', '-qam', 'the branch’s own work')
 
     const { output } = await control('serving main’s content', [SOURCE], 'true', { from: 'main' })
 

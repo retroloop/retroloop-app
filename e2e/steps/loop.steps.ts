@@ -65,7 +65,7 @@ async function registerSession(retro: RetroWorld): Promise<void> {
     '--project',
     'retro',
     '--cwd',
-    '/Users/haider/Developer/retro',
+    '/Users/sample/Developer/retro',
     '--branch',
     'main',
     '--supervised',
@@ -138,8 +138,8 @@ When('the reviewer finishes the review', async ({ page }) => {
   await page.getByTestId('finish-review').click()
   await page.getByTestId('finish-message').fill(FINAL_MESSAGE)
   await page.getByTestId('finish-confirm-submit').click()
-  // His side of the round, acknowledged on the page (retro 4
-  // `r-one-finish-button`). The retrospective is still `reviewing` here.
+  // The human's side of the round, acknowledged on the page
+  // (`r-one-finish-button`). The retrospective is still `reviewing` here.
   await expect(page.getByTestId('finish-acknowledged')).toBeVisible()
 })
 
@@ -147,9 +147,9 @@ When('the reviewer finishes the review', async ({ page }) => {
 const FINAL_MESSAGE = 'Ship these; the lock one first.'
 
 /**
- * The owner's own gesture, in the one suite where it means anything
- * (`r-finish-button-reenables`): *"when I refreshed the page, the finihs review
- * button is enabled again."*
+ * The browser refresh, in the one suite where it means anything
+ * (`r-finish-button-reenables`): after reloading the page, the Finish review
+ * button used to come back enabled.
  *
  * A real reload, against a real server, with a real store that already holds the
  * finish. Suite 4 cannot do this — its mock world lives as long as the module, so
@@ -168,7 +168,7 @@ When('the reviewer reloads the review page', async ({ page }) => {
  * Both halves of what the refresh used to get wrong: the round still reads as
  * sent, and the button that sends it is unpressable.
  *
- * The second is the one the owner reported and the one a presence check would
+ * The second is the one that was reported and the one a presence check would
  * miss — the Sent mark could render beside a button that had quietly re-enabled,
  * which is a page contradicting itself in exactly the way that invites a second
  * press.
@@ -196,7 +196,7 @@ When('the AI closes the review', async ({ retro }) => {
 /* ── what has to be true afterwards ───────────────────────────────────────── */
 
 /**
- * The export's hold state, asserted gone (retro 4 `r-remove-hold`).
+ * The export's hold state, asserted gone (`r-remove-hold`).
  *
  * This step used to read `held` and `holdNote` back off the file. The record
  * removed both, and this is the one layer where the assertion means something:
@@ -217,7 +217,7 @@ When('the AI closes the review', async ({ retro }) => {
  * fails here. The titles carry the marker's spoken word as well as its
  * character, because the tab holds both.
  *
- * The marker on a pending record is the **tick**, not the star, since retro 6
+ * The marker on a pending record is the **tick**, not the star, since
  * `r-recommended-preselected`: the recommendation arrives already picked, and
  * the star is what appears on it only once the reviewer has moved the tick
  * somewhere else. Nobody moves it here, so there is no star on this page — which
@@ -242,7 +242,7 @@ Then('the review page shows both solutions of every record', async ({ page, retr
 })
 
 /**
- * The diagnostic data, where every layer of it is the real one (RL-52).
+ * The diagnostic data, where every layer of it is the real one.
  *
  * A spawned CLI wrote it into the revision blob, the server read it back out of
  * SQLite, and the browser is rendering it — the suites below each prove one of
@@ -309,9 +309,9 @@ Then('the export carries the solutions, and the recommended one as selected', as
     expect(record.solutions?.map((solution) => solution.level)).toEqual([1, 2])
     expect(record.solutions?.map((solution) => solution.recommended)).toEqual([false, true])
     // The reviewer never moved the tick off the recommendation, so the
-    // recommendation is what the verdict carried (retro 6
-    // `r-recommended-preselected`) — and the level follows the pick rather than
-    // being a second answer somebody had to give.
+    // recommendation is what the verdict carried
+    // (`r-recommended-preselected`) — and the level follows the pick rather
+    // than being a second answer somebody had to give.
     expect(record.selectedSolution).toBe(2)
     expect(record.solutionLevel).toBe(2)
     // The two keys this shape replaced are absent from a document written today,
@@ -330,8 +330,8 @@ Then('the export carries the solutions, and the recommended one as selected', as
  * one side — this is the only place the whole channel is real at once, which is
  * what makes it worth an assertion here rather than one more unit test.
  *
- * Keyed by revision, because the owner asked for the message *per revision
- * round*: the round is what it belongs to, and a reader of a three-round
+ * Keyed by revision, because the message belongs to a *revision round*: the
+ * round is what it is left on, and a reader of a three-round
  * retrospective has to be able to tell which is which.
  */
 Then('the export carries the final message the reviewer left on the round', async ({ retro }) => {

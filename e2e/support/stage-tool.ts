@@ -70,7 +70,7 @@ async function seedOld(): Promise<void> {
       actor: 'ai',
       claudeSession: 'uuid-upgrade',
       project: 'retro',
-      cwd: '/Users/haider/Developer/retro',
+      cwd: '/Users/sample/Developer/retro',
       branch: 'main',
       supervised: true,
     })
@@ -109,8 +109,8 @@ function reportPending(): void {
  * record marked `revise`, then Finish.
  *
  * It is here rather than behind a CLI command because finishing is the human's
- * and has no CLI surface — that is the point of it (KC-0010) — and because a
- * revision may only answer a finished round since #113
+ * and has no CLI surface — that is the point of it — and because a revision may
+ * only answer a finished round since
  * `r-revision-sneaks-past-review`. A scenario whose subject is the SSE stream
  * needs the round put down without spending a dozen browser steps on doing it,
  * and this is the same standing-in-for-the-server move `apps/cli/test/support/
