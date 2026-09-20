@@ -1694,7 +1694,7 @@ describe('the CLI', () => {
     })
 
     /**
-     * The state a cold agent lands in when they un-decides a record after
+     * The state a cold agent lands in when they un-decide a record after
      * finishing, and the exit from it — SKILL.md §4 tells one to read the
      * `FINISH_GATE` code, name the records to them, and retry the close on the
      * finish they already gave. This is that sequence at the surface the skill

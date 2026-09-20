@@ -53,7 +53,7 @@ export const migration: Migration = {
       );
       CREATE INDEX ix_finish_messages_retro ON finish_messages (retro_id, revision_n, version);
 
-      ${appendOnlyTriggers('finish_messages', 'the word they left on a round is never edited')}
+      ${appendOnlyTriggers('finish_messages', 'the word he left on a round is never edited')}
     `)
   },
 

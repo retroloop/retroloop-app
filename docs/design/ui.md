@@ -1,8 +1,9 @@
 # UI design — review page (v0) and the rest
 
-> **This file covers the review page** (the only fully-built route in Tier 1)
-> **and the stubs.** The route contract is stated here; data shapes per
-> `docs/design/data-model.md`.
+> **The dashboard's look is settled by a separate visual reference; this file
+> covers what that reference does not:** the review page (the only fully-built
+> route in Tier 1) and the stubs. The route contract is stated here; data shapes
+> per `docs/design/data-model.md`.
 
 **Governing rule: every element earns its place.** Each element below
 names the requirement that pays for it. Anything not listed is deliberately
@@ -62,7 +63,7 @@ no cap.
 | Theme toggle (dark/light/system, persisted) | route contract |
 | Review header: the retro's name (its title, or the `Retro <id> — <cwd basename>` fallback) + identity line `Retro #n · Session S · cwd` + the retro's state tag (shared Tag primitive; a finished retro says FINISHED) — two lines + one tag, nothing more | the session identity and the title on the wire; the retro header |
 | **The decision bar** — sticky under the header (`top-14`, opaque, z below the header's): filter chips on the left, the review's one act on the right, and nothing else. See "The decision bar" below | the filter chips; the filters must stick to the top rather than scrolling away, with the filters on the left of the bar and the finish button on its right |
-| Record index — every record of the shown revision: state icon + #num + truncated title, one-click jump sharing the filter flow's landing mechanic; entries hidden by the filter dim and go inert; no heading, no counts, no scroll-spy. **`wide:`+**: a rail beside the reading column, sticky and capped at the viewport. **Below `wide:`**: a list glyph on the *left* of the sticky header opening a `min(26rem, 100vw − 4rem)` sheet from the left edge; a tap jumps and closes the sheet on the way. Exactly one mount exists at a time | On an iPad the record index must still be reachable, opening in a left panel the way comments open from the right panel — which overturns the earlier "no drawer, no button to open it" stance on exactly that width |
+| Record index — every record of the shown revision: state icon + #num + truncated title, one-click jump sharing the filter flow's landing mechanic; entries hidden by the filter dim and go inert; no heading, no counts, no scroll-spy. **`wide:`+**: a rail beside the reading column, sticky and capped at the viewport. **Below `wide:`**: a list glyph on the *left* of the sticky header opening a `min(26rem, 100vw − 4rem)` sheet from the left edge; a tap jumps and closes the sheet on the way. Exactly one mount exists at a time | the record index rail. On an iPad the record index must still be reachable, opening in a left panel the way comments open from the right panel — which overturns the earlier "no drawer, no button to open it" stance on exactly that width |
 | Comments panel — **the one place a comment is read or written**, holding every thread on the retrospective, record-level included. A record thread carries an anchor line `#num · title` over the section's title, one click back to the record. Threads show their opening message with replies behind a count that opens one level; each message reads `actor · rev N`; a human (never the AI) can resolve one, and a settled thread collapses to a dimmed line carrying a check and the word "Resolved". **`wide:`+**: a rail beside the reading column, threads scrolling above a composer that does not. **Below `wide:`**: one glyph with a thread count on the *right* of the sticky header, opening a `min(48rem, 100vw − 4rem)` sheet from the right edge. **Both sheets take that one rule**: as wide as their cap allows, and never covering the last 4rem of the page — a *fixed* strip rather than a proportion, so the phone keeps a thumb's worth of page to tap back through and the iPad spends the rest on the panel — a flyout leaves a fixed number of pixels uncovered and covers the rest. Exactly one mount at a time; neither has a heading. Hidden entirely when the review is read-only and carries no thread at all | review-level threads (the threads) + the panel placement, which belongs on the side or in a flyout rather than in the card + the move of every thread into the side panel, so the human sees all comments in one place. The panel may be wider, but not excessively so (22rem → 26rem, and → 48rem so an iPad flyout takes more space) |
 | "Revision N available" banner — announce, never swap the content under the reviewer; click loads revision N | the review page's "announce, don't swap"; realtime design |
 
@@ -126,8 +127,8 @@ edit-narrative anywhere (the human corrects via comments → next revision).
   One row per retro, newest first: title · "Retro #n · Session S" (ordinal within
   the session, not the autoincrement id) · session cwd · state (+ pending count
   while reviewing) · click → `/retros/:retroId`. No project cards, no grouping,
-  no summary strip — the dashboard keeps the project's visual language and none
-  of the earlier information architecture. **Built** (`routes/index.tsx`,
+  no summary strip — that reference's **visual language only**, its information
+  architecture is superseded. **Built** (`routes/index.tsx`,
   `dashboard/retro-row.tsx`; identity strings shared with the review header via
   `lib/retro-identity.ts`; empty state = one quiet line; no error state, no live
   updates — deliberate, a retrospective adds them back if wanted). It takes the

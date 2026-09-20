@@ -479,10 +479,12 @@ loop itself produced — so before drafting, search it for the CLASS, not just
 the instance (titles, slugs and problem text are all searchable). A record of
 a recurring class must carry three things: **its priors by name**, **why each
 prior fix did not hold**, and **a solution scoped to the class rather than
-the instance**. A class that keeps recurring is the evidence: a fix aimed at the
-instance repairs the hop that just failed and leaves the class alive, and new
-instances keep getting new sentences when nothing reads the loop's own output at
-drafting time.
+the instance**. The loop's own history is the evidence: the finish channel broke
+three times over successive retrospectives while each fix repaired only the hop
+that had just failed, and rules-that-do-not-bind accumulated six instances after
+an earlier root cause had already named the mechanism — new instances kept
+getting new sentences because nothing in the loop read its own output at drafting
+time.
 
 **Then propose one to three ways to solve it, and say which one you recommend.**
 Not three for the sake of three: in some places only one or two make sense,
@@ -1023,7 +1025,7 @@ arrives the script is gone and that output is all you will have.
 - **anything else** — an error. Read the message, and re-arm.
 
 **Certify the chain before you trust it with a press, once per environment.**
-An uncertified bridge is how this channel has failed before, and words test
+An uncertified bridge has now cost four retrospectives, and words test
 nothing:
 
 ```
@@ -1460,8 +1462,8 @@ content-changed record reads exactly like a record they never touched:
 `involvement`, `selectedSolution` and `solutionLevel` all back to what your new
 draft proposes. Their answers are not gone — the decision they made is in the
 record's history and nothing rewrites it — but they are **not on this
-projection**, and reporting them back to them as though they still stood would
-be telling them a record is decided when the gate says it is pending.
+projection**, and reporting those answers back to the human as though they still
+stood would be telling them a record is decided when the gate says it is pending.
 
 **It is the record going pending that takes their pick, not the solutions edit
 specifically.** Rewriting the `problem` of a record whose `solutions` you left
@@ -1631,9 +1633,9 @@ to answer a `reviewerNote`. Before you answer anything, say back what they said:
 5. **Only then answer**, below the quote, in your own voice.
 
 The replay is what makes your answer checkable: the human reads one block and
-knows whether you understood them before they read a word of the reply. A reply
-that goes straight to the answer costs a comment to say the replay was
-missing.
+knows whether you understood them before they read a word of the reply. Four
+replies in one round went straight to the answer and cost the human a comment to
+say so — after the same miss had been reported twice before.
 
 ```
 **This is what I heard you say written in your own voice:**
@@ -1745,7 +1747,7 @@ the header, so the one way to recover it is to **ask the human to read it off
 the page** — give them the URL and ask for the line under the breadcrumb. If
 they would rather not, write a new one by the same rule as any other (§3, "the
 title names the work this retro covers") and say in a review-level comment that
-you renamed it and why, so the rename is their to object to.
+you renamed it and why, so the rename is theirs to object to.
 
 **Re-author the `title` — nothing gives it back to you.** The revision's title is
 not in `revision get`'s output, or in any other read, so a draft rebuilt this way
@@ -1854,7 +1856,7 @@ records forever.
 - **Never choose the solution.** You propose one to three and mark one
   recommended; **which one is built is theirs**, and so is the level that comes
   with it. Recommending is not choosing, a record where only one solution is
-  worth proposing is still their to accept, and no comment saying "we should
+  worth proposing is still theirs to accept, and no comment saying "we should
   obviously do Solution 3" makes the choice for them. They may pick the one you
   did not recommend, and when they do, that is an answer and not a mistake to
   correct.

@@ -4,7 +4,7 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * `revision_n` is nullable: the AI may answer a request before the revision that
  * addresses it exists ("looking at it"), and cites one only when there is one.
  *
- * The responses are append-only: messages append and are never rewritten.
+ * The responses are append-only, and only the human may close a request.
  * The parent `requests` row deliberately has no such triggers — closing one is a
  * state change the human is entitled to make — so the protection sits exactly
  * where the record of what was said lives.
