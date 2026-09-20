@@ -1134,8 +1134,9 @@ describe('the tRPC surface', () => {
 
     /**
      * **Still reachable on a finished retrospective**, and it is the only write
-     * on this router that is. It is reachable precisely because the retro is
-     * closed; `review.test.ts` in core names it beside the enumeration of every
+     * on this router that is. It is deliberate rather than an oversight:
+     * marking a record fixed happens after the retrospective is closed.
+     * `review.test.ts` in core names it beside the enumeration of every
      * write that refuses.
      */
     test('is not closed by the review closing', async () => {
@@ -1645,9 +1646,10 @@ describe('the tRPC surface', () => {
 
     describe('the vocabularies', () => {
       /**
-       * **A fresh store ships none.** *"To keep it flexible we will not hardcode
-       * any labels or attributes"* — so the first thing this surface says about
-       * itself is that it says nothing, and `migrated` is not there.
+       * **A fresh store ships none**, deliberately: no labels or attributes are
+       * hardcoded, so the vocabulary stays flexible — the first thing this
+       * surface says about itself is that it says nothing, and `migrated` is
+       * not there.
        */
       test('are empty until somebody creates one', async () => {
         expect(await api.caller.labels.list({})).toEqual([])

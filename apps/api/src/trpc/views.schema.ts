@@ -588,7 +588,7 @@ export const recordDetailSchema = z.strictObject({
      *
      * `agreedDirection` and `footprint` are the record's one direction and one
      * tree of files — every record filed before the multi-solution
-     * design, which is all of retros 1–5. Null on a record that has
+     * design existed. Null on a record that has
      * `solutions`, and the page renders the other branch.
      */
     agreedDirection: z.string().nullable(),

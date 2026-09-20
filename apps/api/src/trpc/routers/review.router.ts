@@ -6,10 +6,10 @@ import { reviewOutcomeSchema } from '#trpc/views.schema'
 /**
  * **One act, and it is the human's** (`r-one-finish-button`). There were
  * two — `finish` and `requestChanges`, one procedure per event name — and the
- * second was removed on sight: two buttons are one too many, because requesting
- * a lot of changes in comments and then pressing finish review is a state the
- * page should not allow. Where the round stands is clear from the content of the
- * comments rather than from a redundant button that can be pressed wrong.
+ * second was removed on sight: two buttons are one too many, and a second
+ * button is one more thing to press wrong. Where the round stands is clear from
+ * the content of the comments rather than from a redundant button beside
+ * Finish.
  *
  * So this is what the page can do to a review, whole. `finish` says the human's
  * side of the round is closed; what happens next — the next revision, or the

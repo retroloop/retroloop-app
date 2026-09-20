@@ -22,8 +22,8 @@ export type ApiHarness = {
   revision(sessionId: number, records?: readonly Partial<RecordInput>[]): Promise<number>
   /**
    * A retrospective holding one record in the shape written before solutions
-   * existed — retros 1–5 are full of them, and the wire has to keep rendering
-   * one.
+   * existed — the earliest retrospectives are full of them, and the wire has to
+   * keep rendering one.
    *
    * Straight to the repository, because the write path takes the new shape and
    * nothing else; the repository takes the domain type, whose legacy branch is

@@ -110,8 +110,8 @@ import { createCallerFactory, router } from '#trpc/trpc'
  * that names **two** records, by the global number, across two retrospectives.
  *
  * **`holds.set/clear` is gone** (`r-remove-hold`). Hold left the verdict
- * axis earlier and got two procedures of its own; seen live, the toggle read
- * as unreadable and the concept as already covered — the whole thing can be
+ * axis earlier and got two procedures of its own; seen live, the toggle was
+ * unreadable and the concept already covered — the whole thing can be
  * achieved by marking something to be done only with the human in the loop,
  * so no hold is needed. That is `involvement`, which
  * `decisions.record` already writes. The `holds` table keeps its rows.
