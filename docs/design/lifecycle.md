@@ -19,9 +19,9 @@ are the same one person, who is the product's only human actor.
 
 Two rules run through all of it and are worth stating before the machines:
 
-- **Nothing is inferred from silence.** No state is entered because a
-  commit mentioned something, a session ended, or a reviewer said nothing. Where
-  an absence *is* read as a state, it is read in the safe direction — as *nothing
+- **Nothing is inferred from silence.** No state is entered because a commit
+  mentioned something, a session ended, or a reviewer said nothing. Where an
+  absence *is* read as a state, it is read in the safe direction — as *nothing
   having happened* — and this file says so at each of the two places it happens.
 - **Human data is append-only.** No machine here has an edge that overwrites or
   deletes anything. Every act somebody *takes* is a new row, so the path a thing
@@ -62,9 +62,9 @@ gate again rather than trusting the answer the button gave.
 
 Pressing Finish is refused while any record of the latest revision is still
 `pending`; **a second press for the same revision is absorbed** — no second
-event, no error. That is the opposite
-of the thread rule below, where re-marking is another row: a round ends once, and
-a thread is a conversation somebody can keep having an opinion about.
+event, no error. That is the opposite of the thread rule below, where re-marking
+is another row: a round ends once, and a thread is a conversation somebody can
+keep having an opinion about.
 
 The close is gated three ways (`close-review.use-case.ts`), and refuses unless
 all three hold for the latest revision:
@@ -110,9 +110,10 @@ remove it.
 Two things the word does **not** move. `review status --json` keeps its
 `finished` boolean on the stored terminal state, so a script that keyed off it
 before keys off the same thing after. And the window stays writable: the human
-may still change a verdict, undo one, or comment — including undoing one back to `pending`,
-which leaves a `submitted` retrospective with a pending record in it and is why
-the AI's close asks the finish gate again rather than trusting the button.
+may still change a verdict, undo one, or comment — including undoing one back to
+`pending`, which leaves a `submitted` retrospective with a pending record in it
+and is why the AI's close asks the finish gate again rather than trusting the
+button.
 
 ---
 
@@ -123,10 +124,9 @@ this product has already made once — in two steps, which are worth telling apa
 because both left traces in the schema:
 
 1. **`hold` came off the verdict axis.** It had been a fifth `DecisionState`, and
-   a hold is not a review status of a record at all — it says nothing about
-   whether the record should be done. It became a separate flag with its own
-   table, and the stored `hold` verdicts stayed where they were — see §The
-   verdict machine.
+   a hold is not a review status of a record at all. It became a separate flag
+   with its own table, and the stored `hold` verdicts stayed where they were —
+   see §The verdict machine.
 2. **Then the flag itself was removed**, feature and all: what the flag meant was
    already `involvement` — the dial that rides on the verdict saying how much of
    the work the AI may do alone, up to "not without me in the loop". Marking a
@@ -168,9 +168,8 @@ write — §Born archived says exactly what that means and what it does not.
 
 Four positions: `pending` (nobody has decided), `approved` (do it), `declined`
 (do not), and `revise` — **the reviewer asking for the record itself to be
-rewritten in the next revision**, which is an
-instruction to the drafting AI rather than an outcome, and is why the close
-refuses while one stands.
+rewritten in the next revision**, which is an instruction to the drafting AI
+rather than an outcome, and is why the close refuses while one stands.
 
 Any of them may be submitted from any of them, including `pending` itself —
 re-pressing the selected verdict submits `pending`, which is what an undo is
@@ -246,24 +245,24 @@ history then reads as the two acts it was.)
 
 **References are evidence, and only a resolve makes a claim that needs any.** A
 resolve carries at least one — a commit id, an issue link, or anything else that
-makes the fix easy to see — and every
-other act carries none, refused rather than dropped. So the references **on the
-entry in force** are non-empty exactly when the status is `resolved`, and a
-reader of the current state may treat "has references" and "is resolved" as one
-question. The references a superseded resolve cited are still in the record's
-history, and no read path shows that history today.
+makes the fix easy to see — and every other act carries none, refused rather than
+dropped. So the references **on the entry in force** are non-empty exactly when
+the status is `resolved`, and a reader of the current state may treat "has
+references" and "is resolved" as one question. The references a superseded
+resolve cited are still in the record's history, and no read path shows that
+history today.
 
 **Every act appends a version.** Archiving is **not a delete** and never becomes
 one: keeping the record's discussion readable is the whole reason the state
 exists. Nothing anywhere removes a record.
 
-**This axis is not closed by the close.** `SetRecordLifecycleUseCase` deliberately
-does not call `refuseWhenFinished`, because the axis exists *because* the retro is
-closed: metadata that manages a record's life cycle has to be attachable after
-the review it came from is over. It endangers
-nothing the finish lock protects, because lifecycle is **not exported**: the
-document taken from a finished retrospective is the same document before and
-after. Carrying lifecycle into the export is on the deferred list, and that is
+**This axis is not closed by the close.** `SetRecordLifecycleUseCase`
+deliberately does not call `refuseWhenFinished`, because the axis exists
+*because* the retro is closed: metadata that manages a record's life cycle has to
+be attachable after the review it came from is over. It endangers nothing the
+finish lock protects, because lifecycle is **not exported**: the document taken
+from a finished retrospective is the same document before and after. Carrying
+lifecycle into the export is on the deferred list, and that is
 the one change that would put this exception back in question — if it lands, the
 export has to answer for a document that can change behind its reader, and this
 paragraph is the thing to revisit first.
@@ -287,9 +286,9 @@ disagreeing in the first place.
 **Archived does not mean hidden.** The records page shows archived rows like any
 other and its lifecycle chips are what narrow the list — keeping the discussion
 readable is the reason the state exists, and a row nobody can find is a
-discussion nobody can read. What each state offers on the row is the
-transition table above: a control the server would refuse is a control that is
-not on screen.
+discussion nobody can read. What each state offers on the row is the transition
+table above: a control the server would refuse is a control that is not on
+screen.
 
 #### Born archived — the one derivation, and its exact limits
 
@@ -333,9 +332,9 @@ An AI that fixes something the review declined cannot record the fix on its own;
 it needs the human to bring the record back first. That follows from the two
 rules above rather than being a rule of its own, and it is a narrowing: before
 the archive pair existed, any record could be resolved whatever its verdict said.
-It is stated here rather than worked around, because the alternative —
-letting a resolve reach an archived record — would mean a record could be
-`resolved` and `archived` at once, and the axis has one position at a time.
+It is stated here rather than worked around, because the alternative — letting a
+resolve reach an archived record — would mean a record could be `resolved` and
+`archived` at once, and the axis has one position at a time.
 
 #### The actor rule, per act
 
@@ -380,9 +379,9 @@ The grain is the **thread**, because that is what the panel shows: a top-level
 comment *is* a thread and its replies belong to it.
 
 - **Human only.** Marking a thread resolved is the human's act and never the
-  AI's: `ResolveThreadUseCase` asserts the actor as its first statement, below every
-  adapter, and the table's append-only triggers back it up at L1. There is no CLI
-  flag that reaches it.
+  AI's: `ResolveThreadUseCase` asserts the actor as its first statement, below
+  every adapter, and the table's append-only triggers back it up at L1. There is
+  no CLI flag that reaches it.
 - **Append-only.** Reopening writes another version. Marking a thread the way it
   already stands is still a row, because the human doing it again is a thing that
   happened.

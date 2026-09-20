@@ -14,4 +14,4 @@
 - **Root folder** — the one directory Retroloop owns (default `~/.retroloop`, selected with `--home` or `RETROLOOP_HOME`): `data/` the stage, `backups/db/` the pre-migration snapshots, `retros/` the exports.
 - **Stage** — the data directory under the root (`<root>/data`) owning DB, config, port, logs, and the server lock. One server per stage.
 - **Actor** — `ai` or `human`. The CLI always acts as `ai`; human-authored data is mechanically unwritable by the AI.
-- **Review round** — one numbered pass of human review over a retrospective's latest revision: the human decides every record and presses Finish. A further revision opens the next round; only the latest round counts (`design/lifecycle.md`).
+- **Review round** — one pass of human review over a retrospective's latest revision: the human decides every record and presses Finish. A further revision opens the next round; only the latest round counts (`design/lifecycle.md`).
