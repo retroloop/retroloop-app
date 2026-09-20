@@ -52,7 +52,7 @@
         "finishMessages": {
           "type": "array",
           "items": { "$ref": "#/$defs/finishMessage" },
-          "$comment": "Added by r-finish-confirm-message: the human's final word on each round, written in the confirm step of the Finish button and delivered separately from the comments — a thread is a conversation the AI answers, this is a summary it reads. One entry per revision round he left one on, ascending by `revision`; a round he left none on has no entry, and `[]` is a retrospective he never wrote one for. Human-only — the AI can never write it (architecture.md \u00a7Actor model). Additive: not required, so every v1 document written before the field existed remains valid, and a consumer reading one treats an absent key as `[]`."
+          "$comment": "The human's final word on each round, written in the confirm step of the Finish button and delivered separately from the comments — a thread is a conversation the AI answers, this is a summary it reads. One entry per revision round the human left one on, ascending by `revision`; a round with none has no entry, and `[]` is a retrospective nobody wrote one for. Human-only — the AI can never write it (architecture.md \u00a7Actor model). Additive: not required, so every v1 document written before the field existed remains valid, and a consumer reading one treats an absent key as `[]`."
         },
         "reviewed": {
           "const": "human",
@@ -241,7 +241,7 @@
         },
         "resolved": {
           "type": "boolean",
-          "$comment": "Added by r-resolvable-comments: whether the human marked this thread dealt with. Human-only — the AI can never write it (architecture.md §Actor model). Additive: not required, so every v1 document written before the flag existed remains valid, and a consumer reading one treats an absent key as `false`."
+          "$comment": "Whether the human marked this thread dealt with. Human-only — the AI can never write it (architecture.md §Actor model). Additive: not required, so every v1 document written before the flag existed remains valid, and a consumer reading one treats an absent key as `false`."
         },
         "messages": {
           "type": "array",

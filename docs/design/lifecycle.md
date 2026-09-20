@@ -175,8 +175,8 @@ Any of them may be submitted from any of them, including `pending` itself —
 re-pressing the selected verdict submits `pending`, which is what an undo is
 here: one more append, never a row anybody edits.
 
-**Latest wins, against the content it was given for** — "carry-over". A
-decision stores the hash of the record content it was made against
+**Latest wins, against the content it was given for** — "carry-over". A decision
+stores the hash of the record content it was made against
 (`content-hash.service.ts`). Reading it back:
 
 - content unchanged → the decision **binds**, and carries forward across
@@ -262,10 +262,10 @@ deliberately does not call `refuseWhenFinished`, because the axis exists
 be attachable after the review it came from is over. It endangers nothing the
 finish lock protects, because lifecycle is **not exported**: the document taken
 from a finished retrospective is the same document before and after. Carrying
-lifecycle into the export is on the deferred list, and that is
-the one change that would put this exception back in question — if it lands, the
-export has to answer for a document that can change behind its reader, and this
-paragraph is the thing to revisit first.
+lifecycle into the export is on the deferred list, and that is the one change
+that would put this exception back in question — if it lands, the export has to
+answer for a document that can change behind its reader, and this paragraph is
+the thing to revisit first.
 
 **"In progress" is a marker beside this axis, not a fourth position on it.**
 Somebody working on a record writes a row in `record_claims`
