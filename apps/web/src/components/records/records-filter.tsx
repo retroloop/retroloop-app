@@ -22,16 +22,16 @@ import { cn } from '@/lib/utils'
  *
  * They are **independent toggles that compose**, like the review page's chips:
  * any combination is a question a reader might have — "which issues have been
- * resolved" is one of them, and
- * "the AI's issues that are still open" is another — and none of them on is the
- * whole list, which is the page a reader who presses nothing keeps.
+ * resolved" is one of them, and "the AI's issues that are still open" is
+ * another — and none of them on is the whole list, which is the page a reader
+ * who presses nothing keeps.
  *
  * **Label is the fourth, and it is what labels are for**: being able to filter on
- * a label is the whole argument for why a label beats a comment
- * carrying the same words. It joins the popover rather than the bar because the
- * vocabulary is unbounded — a store with fifteen labels would wrap the bar to
- * four lines, and lifecycle is what this page is *for*
- * (`r-additional-filters` made the same call for verdict and requester).
+ * a label is the whole argument for why a label beats a comment carrying the
+ * same words. It joins the popover rather than the bar because the vocabulary
+ * is unbounded — a store with fifteen labels would wrap the bar to four lines,
+ * and lifecycle is what this page is *for* (`r-additional-filters` made the
+ * same call for verdict and requester).
  *
  * **Attribute filters are deferred**, and deliberately: a value filter is a
  * different control entirely — a name, an operator and a value — and no
@@ -40,9 +40,9 @@ import { cn } from '@/lib/utils'
  * **The counts are over every record, always**, on all four dimensions, and
  * they do not move when a filter narrows the list. That is the same rule the
  * review bar's chips follow — a chip shows the total, not the number currently
- * on screen — and the same
- * reason applies here: the chips answer "how much is there", not "how much is on
- * screen", and a number that changed as you filtered could not be aimed at.
+ * on screen — and the same reason applies here: the chips answer "how much is
+ * there", not "how much is on screen", and a number that changed as you
+ * filtered could not be aimed at.
  */
 export type RecordsFilter = {
   readonly lifecycle: ReadonlySet<LifecycleState>
@@ -275,8 +275,8 @@ export function useRecordsFilter(
  * The bar: the page's own question on the left, everything else behind the icon.
  *
  * **Lifecycle is the one dimension that gets chips**, because it is what the
- * page is for: seeing which issues have been resolved. Verdict and requester
- * go behind the filter icon for the reason `r-additional-filters` gives on the
+ * page is for: seeing which issues have been resolved. Verdict and requester go
+ * behind the filter icon for the reason `r-additional-filters` gives on the
  * review page: two more chip families would wrap this bar to three lines at the
  * width this page is read on, and a bar that wraps is a bar that stops being
  * worth sticking to the top.
@@ -368,11 +368,11 @@ function FilterChip({
  *
  * Every verdict a review can reach keeps its row at zero — "nothing is declined"
  * is itself an answer. `hold` is the one exception and only when it is empty:
- * it stopped being a verdict anyone can give in `r-hold-semantics`, so
- * on any store written since then it is a control that can only ever read
- * zero and filter to nothing. A store that *does* carry one still gets it,
- * because human data is append-only and a verdict somebody once chose stays
- * findable. The review bar decides it the same way, for the same reasons.
+ * it stopped being a verdict anyone can give in `r-hold-semantics`, so on any
+ * store written since then it is a control that can only ever read zero and
+ * filter to nothing. A store that *does* carry one still gets it, because human
+ * data is append-only and a verdict somebody once chose stays findable. The
+ * review bar decides it the same way, for the same reasons.
  */
 function verdictBelongs(state: DecisionState, count: number): boolean {
   return state !== 'hold' || count > 0
@@ -392,10 +392,10 @@ function verdictBelongs(state: DecisionState, count: number): boolean {
  *
  * The applied state is readable **without opening it**, which is the other half
  * of the requirement: there has to be some indication that extra filters are
- * applied. Two marks, answering different questions: the badge
- * says *something* is filtering, from anywhere on the bar; the chip beside it
- * says *what*, and carries the only way to undo them, because that is where the
- * reader is looking when they wonder.
+ * applied. Two marks, answering different questions: the badge says *something*
+ * is filtering, from anywhere on the bar; the chip beside it says *what*, and
+ * carries the only way to undo them, because that is where the reader is
+ * looking when they wonder.
  */
 function ExtraFilters({ filter }: { filter: RecordsFilter }) {
   return (

@@ -16,8 +16,8 @@ type LifecycleAct = Extract<Entry, { kind: 'lifecycle' }>['status']
  * by pressing the verdict it already wears, and that press appends a version
  * like any other (`decision.model.ts`) — so it is a thing somebody did and it
  * belongs on the list of things somebody did. `hold` is on it because an early
- * store carries rows in that state and every reader of a
- * verdict has to go on answering for one (`r-hold-semantics`).
+ * store carries rows in that state and every reader of a verdict has to go on
+ * answering for one (`r-hold-semantics`).
  *
  * `Record<DecisionState, …>` refuses to compile with a state missing, so a
  * verdict added to the wire enum has to be given a word before this list can
@@ -119,10 +119,10 @@ export function RecordTimeline({ timeline }: { timeline: Timeline }) {
 
 /**
  * The line itself. Each kind says the one thing that distinguishes it: which
- * draft a record arrived in, which draft a verdict was given against (a
- * verdict binds to the content it was given for, so which content matters), and
- * nothing beside a lifecycle act, because an act is taken against the record
- * rather than against a draft of it.
+ * draft a record arrived in, which draft a verdict was given against (a verdict
+ * binds to the content it was given for, so which content matters), and nothing
+ * beside a lifecycle act, because an act is taken against the record rather
+ * than against a draft of it.
  */
 function what(entry: Entry): string {
   switch (entry.kind) {

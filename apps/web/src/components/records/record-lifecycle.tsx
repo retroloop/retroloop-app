@@ -18,11 +18,11 @@ export type LifecycleState = RecordListRow['lifecycle']['status']
  * What everything below needs of a record: the pair that addresses it, and where
  * it stands.
  *
- * Narrower than `RecordListRow` on purpose. These controls were
- * born on a row of the flat page and now serve two surfaces — that row, and the
- * record's own page, which reads `records.byId` and has no row shape anywhere
- * near it. Taking the pair and the lifecycle is what they always actually used;
- * taking a whole row was them being written where the whole row happened to be.
+ * Narrower than `RecordListRow` on purpose. These controls were born on a row
+ * of the flat page and now serve two surfaces — that row, and the record's own
+ * page, which reads `records.byId` and has no row shape anywhere near it.
+ * Taking the pair and the lifecycle is what they always actually used; taking a
+ * whole row was them being written where the whole row happened to be.
  *
  * `RecordListRow` satisfies this structurally, so nothing at the row's call site
  * changed. **Their testids moved with them** — `record-lifecycle`,
@@ -194,9 +194,9 @@ export function ResolvedEvidence({ lifecycle }: { lifecycle: LifecycleTarget['li
  * One reference, linked when it is one.
  *
  * A reference is free text by design — a commit id, a GitHub issue, or anything
- * else — so this asks the only question that has an unambiguous answer —
- * does it name a web address? — and answers the rest by printing what was typed.
- * A commit SHA renders as the SHA: there is nowhere for this page to send a
+ * else — so this asks the only question that has an unambiguous answer — does
+ * it name a web address? — and answers the rest by printing what was typed. A
+ * commit SHA renders as the SHA: there is nowhere for this page to send a
  * reader with one, and a link that guessed at a host would be a link that
  * eventually guesses wrong. No GitHub integration is implied by any of this and
  * none is coming in round one (the deferred list).
@@ -357,9 +357,9 @@ function Resolve({ row }: { row: LifecycleTarget }) {
                 /**
                  * The row's own retrospective, never the page's — a rid is
                  * minted per retrospective, so `(retroId, rid)` is the identity
-                 * everywhere. This page is the only
-                 * surface in the product holding rows from several retros at
-                 * once, which makes it the only one that can get this wrong.
+                 * everywhere. This page is the only surface in the product
+                 * holding rows from several retros at once, which makes it the
+                 * only one that can get this wrong.
                  */
                 retroId: row.retroId,
                 rid: row.rid,

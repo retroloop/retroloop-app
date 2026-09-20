@@ -33,10 +33,10 @@ type Decision = AppRouterOutputs['records']['get']['decision']
  *
  * A record decided while `upstream`, `none` and `undecided` were still offered
  * can hold one of them, and none of those is on the list any more. Rather than
- * pre-select something
- * the human did not pick, the list starts with nothing selected and the verdict
- * leaves `solutionLevel` out, which keeps whatever stands. The reviewer changes
- * that ceiling by choosing one of the five, which is the only way to change it.
+ * pre-select something the human did not pick, the list starts with nothing
+ * selected and the verdict leaves `solutionLevel` out, which keeps whatever
+ * stands. The reviewer changes that ceiling by choosing one of the five, which
+ * is the only way to change it.
  */
 function offerable(level: Decision['solutionLevel']): SolutionLevelInput | undefined {
   return optionFor(SOLUTION_LEVELS, level as SolutionLevelInput)?.value
@@ -48,10 +48,10 @@ function offerable(level: Decision['solutionLevel']): SolutionLevelInput | undef
  * `pending`.
  *
  * `hold` is not one of them since `r-hold-semantics`: holding is not a review
- * status of a record. It became a flag beside the verdict, and
- * `r-remove-hold` removed that too, because the same thing is said by marking a
- * record as only to be done with the human in the loop. Which is
- * `involvement`, three controls down.
+ * status of a record. It became a flag beside the verdict, and `r-remove-hold`
+ * removed that too, because the same thing is said by marking a record as only
+ * to be done with the human in the loop. Which is `involvement`, three controls
+ * down.
  *
  * The type still says `Exclude<DecisionState, …>` rather than a hand-written
  * union, because a record decided before the split can still *read* `hold` —
@@ -98,9 +98,9 @@ const PRESSED: Record<Verdict, string> = {
  * **Editing a value is not a decision.** The controls hold what the reviewer has
  * chosen and nothing else happens; the verdict button is the single moment
  * anything is written, and it writes the values that were on screen when it was
- * pressed. That is what "explicit approve only" means here — no
- * autosave, no debounce, and no state that a moment of silence could settle. The
- * router agrees: `decisions.record` has no default `state`.
+ * pressed. That is what "explicit approve only" means here — no autosave, no
+ * debounce, and no state that a moment of silence could settle. The router
+ * agrees: `decisions.record` has no default `state`.
  *
  * The order is severity, then solution level, then involvement, because a
  * ceiling is chosen before how the human wants to be involved in reaching it
@@ -244,9 +244,9 @@ export function DecisionControls({
               /**
                * There has to be a clear indication of what is already selected,
                * because a decided button and an undecided one were a shade
-               * apart. The
-               * visible half is `PRESSED` above; `aria-pressed` says the same
-               * thing to a screen reader, which cannot see a fill at all.
+               * apart. The visible half is `PRESSED` above; `aria-pressed` says
+               * the same thing to a screen reader, which cannot see a fill at
+               * all.
                */
               aria-pressed={chosen}
               className={cn(chosen && PRESSED[state])}
@@ -262,9 +262,9 @@ export function DecisionControls({
                   /**
                    * Pressing the verdict that is already selected undoes it: the
                    * record goes back to `pending` (`r-verdict-revise`): pressing
-                   * the same verdict twice undoes it. That is a new
-                   * decision version, not an edit — the verdict being undone
-                   * stays in the history where the human left it.
+                   * the same verdict twice undoes it. That is a new decision
+                   * version, not an edit — the verdict being undone stays in
+                   * the history where the human left it.
                    */
                   state: chosen ? 'pending' : state,
                   severity,
@@ -302,8 +302,8 @@ export function DecisionControls({
  * ceiling is the choice the whole record turns on.
  *
  * Five rows, not eight: `none`, `upstream` and `undecided` are no longer
- * choices. An empty `value` is a record still carrying one of them — nothing
- * is selected until the reviewer picks a level that exists.
+ * choices. An empty `value` is a record still carrying one of them — nothing is
+ * selected until the reviewer picks a level that exists.
  */
 function LevelRadioList({
   value,

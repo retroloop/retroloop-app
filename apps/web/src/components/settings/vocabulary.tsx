@@ -19,9 +19,8 @@ import { useTRPC } from '@/lib/trpc'
  *
  * **The page exists because the definitions are global.** Labels and attributes
  * need a settings page precisely because each definition is a global thing.
- * Nothing here is scoped to a retrospective, a
- * session or a working directory, which is why it is a route of its own rather
- * than a panel inside a review.
+ * Nothing here is scoped to a retrospective, a session or a working directory,
+ * which is why it is a route of its own rather than a panel inside a review.
  *
  * **One file for both vocabularies and the switch**, because a settings page is
  * one thing a reader reads top to bottom, and three files of forty lines each
@@ -119,10 +118,10 @@ export function LabelVocabulary() {
     <Vocabulary
       kind="label"
       /**
-       * A plain framing, and it is here rather than in a tooltip because
-       * the difference between the two primitives is the thing a first-time
-       * reader of this page has to be told once: a label is usually just a
-       * label, and an attribute is what carries the detail beside one.
+       * A plain framing, and it is here rather than in a tooltip because the
+       * difference between the two primitives is the thing a first-time reader
+       * of this page has to be told once: a label is usually just a label, and
+       * an attribute is what carries the detail beside one.
        */
       blurb="A name a record wears, or does not. Nothing else travels with it."
       definitions={labels.data}
@@ -311,9 +310,9 @@ function Vocabulary({
  * **Retire and Un-retire are the same slot, and exactly one of them is ever
  * there** (`r-retire-burns-a-word`): a retired definition can be brought back to
  * offerable by the human — same row, same one-press shape. An offerable row
- * offers Retire; a retired row
- * offers Un-retire; neither is ever shown disabled, because a control with
- * nothing left to do is a control that has earned nothing.
+ * offers Retire; a retired row offers Un-retire; neither is ever shown
+ * disabled, because a control with nothing left to do is a control that has
+ * earned nothing.
  *
  * **That symmetry is the whole fix, and it is why there is still no confirm
  * dialog.** Retiring used to be one press with no way back, against a store that

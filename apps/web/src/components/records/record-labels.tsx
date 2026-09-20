@@ -80,8 +80,8 @@ export function RecordLabelTags({
  * lifecycle acts).
  *
  * **It works on a finished retrospective**, which is the whole point: the second
- * archetype of use labels records *after* the review closes, so there is
- * no read-only branch here and the server deliberately does not refuse the write
+ * archetype of use labels records *after* the review closes, so there is no
+ * read-only branch here and the server deliberately does not refuse the write
  * either.
  */
 export function RecordLabelControl({

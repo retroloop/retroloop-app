@@ -13,26 +13,26 @@ import {
  * setting lives here, and it defaults to System mode.
  *
  * **The default was already System and is not invented here.** `ThemeProvider`
- * already read `system` as its starting value — the OS decides, and
- * it keeps deciding, so a machine that flips at sunset flips this page. What
- * changed is *where the control lives*: a theme is a set-and-forget
- * preference, not a per-page affordance, so it belongs on the one page that is
- * about the product rather than in the chrome of every page in it.
+ * already read `system` as its starting value — the OS decides, and it keeps
+ * deciding, so a machine that flips at sunset flips this page. What changed is
+ * *where the control lives*: a theme is a set-and-forget preference, not a
+ * per-page affordance, so it belongs on the one page that is about the product
+ * rather than in the chrome of every page in it.
  *
  * **The header toggle is gone, and nothing here had to change when it went.**
  * It went when the top menu collapsed into one dropdown
  * (`chrome/app-menu.tsx`), which is explicit that the theme moves *under
  * Settings* rather than into the menu. Both controls only ever read and wrote
  * the same `ThemeProvider` state, so the removal took a duplicate away and left
- * the setting here: this is now the only place in the product
- * that changes the theme, which is also why every scenario that needs a theme
- * comes through here.
+ * the setting here: this is now the only place in the product that changes the
+ * theme, which is also why every scenario that needs a theme comes through
+ * here.
  *
  * **A `Select` rather than three radio buttons or a switch.** A switch cannot
- * express three states, and the third state is the default;
- * three radios would spend three rows of a section that has one
- * setting in it. The trigger says which of the three is chosen, which is the
- * whole of what this control has to answer.
+ * express three states, and the third state is the default; three radios would
+ * spend three rows of a section that has one setting in it. The trigger says
+ * which of the three is chosen, which is the whole of what this control has to
+ * answer.
  */
 export function Appearance() {
   const { theme, setTheme } = useTheme()

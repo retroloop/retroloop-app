@@ -36,12 +36,11 @@ export type Crumb = {
 /**
  * `Retro › Project › Session › Retro #n · Rev k`, truncated to what applies.
  *
- * **It is a trail and nothing else.** The mark and the app name
- * used to ride on the first crumb, because the trail was the header; now the
- * header has a brand of its own (`app-brand.tsx`) and this renders one line below
- * it, inside the page. So the first crumb lost the glyph and the bold — it is an
- * ancestor like any other, and drawing the mark here would put it on screen
- * twice.
+ * **It is a trail and nothing else.** The mark and the app name used to ride on
+ * the first crumb, because the trail was the header; now the header has a brand
+ * of its own (`app-brand.tsx`) and this renders one line below it, inside the
+ * page. So the first crumb lost the glyph and the bold — it is an ancestor like
+ * any other, and drawing the mark here would put it on screen twice.
  *
  * The first crumb is still "Retro" and still links home. Dropping it would have
  * made the trail start mid-air at "Records", and the way back to the dashboard is

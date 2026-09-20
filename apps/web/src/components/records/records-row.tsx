@@ -27,9 +27,9 @@ import { retroIdentityLine } from '@/lib/retro-identity'
  * page, so the review's `?record=` anchor was it), and it read as a bug: clicking
  * a record on the records page took the reader to the retrospective page, when
  * each record should have its own dedicated page. So the link is
- * `/records/:globalId` now, and the way to the
- * retrospective is on that page. The anchor did not go
- * away: it is what the record page's own link to its review carries.
+ * `/records/:globalId` now, and the way to the retrospective is on that page.
+ * The anchor did not go away: it is what the record page's own link to its
+ * review carries.
  *
  * **One link, and the number in it.** The row shows `#globalId` and the URL is
  * that same number, which is what makes a row something a reader can cite — and
@@ -44,8 +44,8 @@ export function RecordsRow({ row }: { row: RecordListRow }) {
   return (
     <article
       // Keyed by the pair, everywhere, because a rid is minted per
-      // retrospective and two retros can mint the same one. This is the
-      // only page in the product that can hold both at once.
+      // retrospective and two retros can mint the same one. This is the only
+      // page in the product that can hold both at once.
       data-testid={`records-row-${row.retroId}-${row.rid}`}
       className="flex flex-col gap-2.5 rounded-xl border border-hairline bg-card px-4 py-3.5"
     >

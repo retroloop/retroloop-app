@@ -49,10 +49,10 @@ const TYPES: readonly { readonly value: RecordType; readonly label: string }[] =
 ]
 
 /**
- * The reviewer's workflow: filter to pending, and as each
- * record is decided it falls out of the filter and the page follows to the next
- * one still waiting. It reverses v0's no-filters principle for whole records —
- * and only for whole records. Nothing here ever hides part of one.
+ * The reviewer's workflow: filter to pending, and as each record is decided it
+ * falls out of the filter and the page follows to the next one still waiting.
+ * It reverses v0's no-filters principle for whole records — and only for whole
+ * records. Nothing here ever hides part of one.
  *
  * Three things have to be true at once for that workflow to feel like work
  * rather than like the page losing its place:
@@ -60,10 +60,10 @@ const TYPES: readonly { readonly value: RecordType; readonly label: string }[] =
  *   - a decided record *departs* rather than blinking out, so the reviewer sees
  *     which record left and why;
  *   - the viewport lands on the record that is next in the filter, or on the
- *     review's own actions when nothing is left — and the keyboard lands
- *     with it (`r-departure-keyboard-focus`), because the card the
- *     reviewer was working in leaves the document and focus falls to `<body>`
- *     otherwise: a full tab-walk from the top of the page, per verdict;
+ *     review's own actions when nothing is left — and the keyboard lands with
+ *     it (`r-departure-keyboard-focus`), because the card the reviewer was
+ *     working in leaves the document and focus falls to `<body>` otherwise: a
+ *     full tab-walk from the top of the page, per verdict;
  *   - the chips carry live counts, so the pending count is visible from the top
  *     of the page and not only from the bottom of it.
  *
@@ -123,10 +123,11 @@ export type RecordFilter = {
   /**
    * Put the reviewer down on a record, wherever they are. It is the same act
    * whether the page decided to move (a record departed), the reviewer asked for
-   * it (the index rail) or a link from the records page arrived pointing at
-   * one — so it is one implementation: two would be two chances for a landing to
+   * it (the index rail) or a link from the records page arrived pointing at one
+   * — so it is one implementation: two would be two chances for a landing to
    * end up somewhere the other one would not. It answers whether there was a
-   * record to land on, which is how a caller can tell "not there" from "arrived".
+   * record to land on, which is how a caller can tell "not there" from
+   * "arrived".
    */
   readonly jumpTo: (rid: string, landing?: Landing) => boolean
 }
@@ -431,9 +432,9 @@ export function useRecordFilter(records: readonly RecordSummary[] = NO_RECORDS):
       return
     }
     // Nothing matches any more, so the only thing left to do is the review's own
-    // one act — and that act is in the sticky bar, which never
-    // left the screen. The landing is a focus move and nothing else: it used to
-    // scroll the page to its own end, which is where the actions used to be.
+    // one act — and that act is in the sticky bar, which never left the screen.
+    // The landing is a focus move and nothing else: it used to scroll the page
+    // to its own end, which is where the actions used to be.
     focusWithoutScrolling(actions.current)
   }, [landing, active, records, shown, scrollToSlot, focusWithoutScrolling])
 
@@ -463,8 +464,8 @@ export function useRecordFilter(records: readonly RecordSummary[] = NO_RECORDS):
  * the row collapses from its own height to nothing while it fades, so the
  * records below rise into the gap instead of jumping into it — which is a true
  * sentence now and was not before (`collapse` above, and
- * `r-collapse-never-animates` for the stretch in which this comment
- * described something the browser was not doing).
+ * `r-collapse-never-animates` for the stretch in which this comment described
+ * something the browser was not doing).
  *
  * The collapse itself is not here any more. It is an animation started where the
  * departure is decided, because that is the one place the row's own height can
@@ -556,12 +557,12 @@ export function RecordSlot({
  * would be harder to aim at — so `pending`, `approved`, `declined` and `revise`
  * (`r-verdict-revise`) are always there.
  *
- * **`hold` is the one exception, and only when it is empty**
- * (`r-remove-hold`). It is not a state this product can reach any more: `hold`
- * stopped being a verdict in `r-hold-semantics`, and nothing has written
- * one since. On any store written since then, the chip is a control that
- * can only ever read zero and filter to nothing — permanently dead chrome, and
- * every element earns its place (CLAUDE.md).
+ * **`hold` is the one exception, and only when it is empty** (`r-remove-hold`).
+ * It is not a state this product can reach any more: `hold` stopped being a
+ * verdict in `r-hold-semantics`, and nothing has written one since. On any
+ * store written since then, the chip is a control that can only ever read zero
+ * and filter to nothing — permanently dead chrome, and every element earns its
+ * place (CLAUDE.md).
  *
  * A store that *does* carry a hold verdict still gets the chip, because human
  * data is append-only and a verdict somebody once chose stays findable. This is
@@ -575,10 +576,11 @@ function chipBelongs(state: DecisionState, count: number): boolean {
 
 /**
  * The decision bar: what the reviewer is looking for on the left, the one thing
- * they can do about it on the right — and it **stays**. Filter chips that scroll
- * away are chips that have to be scrolled back to, so they stick to the top, and
- * the review's one action sits on the same strip: filters on the left, the
- * Finish button on the right.
+ * they can do about it on the right — and it **stays**. The filter chips
+ * (pending, approved, declined and the rest) used to scroll away with the
+ * records; they stick to the top now. The box that sat at the bottom of the
+ * column went, and the review's one action moved onto this strip: filters on
+ * the left, the Finish button on the right.
  *
  * `top-14` is the app header's own height, so the bar comes to rest against it
  * with nothing showing between the two, and `z-20` puts it under the header and
@@ -668,11 +670,11 @@ function RecordFilterChips({ filter }: { filter: RecordFilter }) {
  *
  * The applied state is readable **without opening it**, which is the other half
  * of the requirement: there has to be some indication that extra filters are
- * applied. Two marks rather than one, and they answer different
- * questions: the badge says *something* is filtering, from anywhere on the bar;
- * the chip beside it says *what*, so a short list is never a mystery. The chip
- * carries the only way to undo them, because that is where the reviewer is
- * looking when they wonder.
+ * applied. Two marks rather than one, and they answer different questions: the
+ * badge says *something* is filtering, from anywhere on the bar; the chip
+ * beside it says *what*, so a short list is never a mystery. The chip carries
+ * the only way to undo them, because that is where the reviewer is looking when
+ * they wonder.
  */
 function ExtraFilters({ filter }: { filter: RecordFilter }) {
   return (
@@ -758,8 +760,7 @@ function appliedLabel(filter: RecordFilter): string {
  *
  * The counts here answer the reader's question — how many records the AI raised
  * and how many the human did — and they are counted over every record, like the
- * chips', so
- * opening the popover never changes the numbers inside it.
+ * chips', so opening the popover never changes the numbers inside it.
  */
 function ExtraFilterGroup<T extends string>({
   label,
@@ -819,8 +820,8 @@ function ExtraFilterGroup<T extends string>({
  *
  * When nothing is left pending, the column needs to say so — that there are no
  * more items matching the selected criteria — because otherwise it looks like a
- * bug that everything vanished at once. The list simply ended
- * before this, and an empty column reads as a fault rather than as done.
+ * bug that everything vanished at once. The list simply ended before this, and
+ * an empty column reads as a fault rather than as done.
  *
  * It names the **state**, not the chips that produced it: any combination of the
  * three filter dimensions can arrive here, and a sentence that recited them

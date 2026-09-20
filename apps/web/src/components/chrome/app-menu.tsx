@@ -25,10 +25,9 @@ import {
  *
  * **The items are real links, and that is a requirement rather than an
  * implementation detail**: real links as items, so open-in-new-tab works.
- * `asChild` hands the menu item's behaviour to a
- * router `Link`, so each row is an `<a href>` a reader can middle-click,
- * ⌘-click, or copy the address of — the three things a menu of `onSelect`
- * handlers silently refuses to do.
+ * `asChild` hands the menu item's behaviour to a router `Link`, so each row is
+ * an `<a href>` a reader can middle-click, ⌘-click, or copy the address of —
+ * the three things a menu of `onSelect` handlers silently refuses to do.
  *
  * **Two items and no more.** Records and Settings are the two places in this
  * product that are not reached from something on the page in front of you; the
@@ -39,17 +38,16 @@ import {
  *
  * **No pinned ongoing-review entry.** One was left conditional on a solution
  * that was not taken: an ongoing retrospective surfaces instead as the Debt
- * Front live band on the dashboard (`dashboard/live-band.tsx`), whose
- * whole argument is that a retrospective in flight gets a surface no finished one
- * can appear on. A second, quieter copy of that entry hidden behind a trigger
- * would compete with the surface built to be impossible to miss.
+ * Front live band on the dashboard (`dashboard/live-band.tsx`), whose whole
+ * argument is that a retrospective in flight gets a surface no finished one can
+ * appear on. A second, quieter copy of that entry hidden behind a trigger would
+ * compete with the surface built to be impossible to miss.
  *
  * **The theme toggle is not here either — it left the header entirely.** It
- * moved under Settings › Appearance › Dark Mode
- * (`settings/appearance.tsx`, `r-theme-under-settings`): it belongs *under
- * Settings*, not inside this dropdown. So the header now holds exactly two
- * things: what this product is, and
- * where else you can go.
+ * moved under Settings › Appearance › Dark Mode (`settings/appearance.tsx`,
+ * `r-theme-under-settings`): it belongs *under Settings*, not inside this
+ * dropdown. So the header now holds exactly two things: what this product is,
+ * and where else you can go.
  */
 export function AppMenu() {
   return (

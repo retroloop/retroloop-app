@@ -26,11 +26,11 @@ function RetroMark() {
  * The product's name in the top menu, and the way home from anywhere.
  *
  * It exists because the trail left the header: breadcrumbs belong somewhere
- * below the top menu rather than inside it. The name used
- * to be the trail's first crumb, so moving the trail down would have taken the
- * app's own name out of the chrome and left a bar holding nothing but a theme
- * toggle. The split is the honest one: **the header says what this is, the trail
- * below says where you are.**
+ * below the top menu rather than inside it. The name used to be the trail's
+ * first crumb, so moving the trail down would have taken the app's own name out
+ * of the chrome and left a bar holding nothing but a theme toggle. The split is
+ * the honest one: **the header says what this is, the trail below says where
+ * you are.**
  *
  * The mark comes with it rather than staying on the first crumb, so the glyph is
  * drawn once per page — a mark in the header and a second mark directly beneath

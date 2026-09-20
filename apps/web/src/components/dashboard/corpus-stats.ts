@@ -201,13 +201,13 @@ function nominal<TValue extends string>(
 /**
  * The axes the corpus chart can be switched between.
  *
- * **`retro` is gone.**
- * It was the design exploration's most striking chart — 14 columns showing the debt
- * trapped in the oldest retrospectives — and it is out anyway, because a
- * retrospective is not a dimension a reader acts on: knowing which round filed a
- * record does not tell you anything you can do about it, and the diary at the
- * foot of the page already says which round filed what. The finding it drew was
- * worth having once; a permanent control is a different bar.
+ * **`retro` is gone.** It was the design exploration's most striking chart — 14
+ * columns showing the debt trapped in the oldest retrospectives — and it is out
+ * anyway, because a retrospective is not a dimension a reader acts on: knowing
+ * which round filed a record does not tell you anything you can do about it,
+ * and the diary at the foot of the page already says which round filed what.
+ * The finding it drew was worth having once; a permanent control is a different
+ * bar.
  */
 export const DIMENSIONS = ['severity', 'level', 'requester', 'type'] as const
 export type Dimension = (typeof DIMENSIONS)[number]
@@ -304,10 +304,9 @@ export function highSeverityOpen(rows: readonly RecordListRow[]): number {
  * **`pullRequest` can read 0, and that is rendered, not hidden.** It is the one
  * place on this page where a zero is drawn rather than suppressed: the page's
  * standing rule is that the honest rendering of nothing is nothing, and that rule
- * is overridden here because the *pair* is the reading.
- * "3 · 0" says the queue is all live-session work and none of it is diff review,
- * which is a fact about how the week will be spent; "3" alone says only the first
- * half of it.
+ * is overridden here because the *pair* is the reading. "3 · 0" says the queue
+ * is all live-session work and none of it is diff review, which is a fact about
+ * how the week will be spent; "3" alone says only the first half of it.
  */
 export type HumanInTheLoop = {
   /** Open, and the human works the fix live. */

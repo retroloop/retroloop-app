@@ -38,23 +38,23 @@ type RecordDetail = AppRouterOutputs['records']['get']
  *
  * Nothing *inside* a record collapses or filters. A record is read in full or
  * it is not read, and a control that hides part of one would be a control that
- * can hide the part that mattered — so every section is on screen
- * whenever the card is.
+ * can hide the part that mattered — so every section is on screen whenever the
+ * card is.
  *
  * The solutions strip is the one place that shows one thing at a time, and that
  * is the design rather than an exception someone took: several solutions, each
- * in a tab within the record card. It hides no part of the
- * record — the alternatives are alternatives, only one of them is going to be
- * built, and the strip itself names every one of them with its level, which one
- * the AI is behind and which one the human picked. What a reader would lose by
- * collapsing a section is the section; what they lose here is a road not taken,
- * one click away and announced.
+ * in a tab within the record card. It hides no part of the record — the
+ * alternatives are alternatives, only one of them is going to be built, and the
+ * strip itself names every one of them with its level, which one the AI is
+ * behind and which one the human picked. What a reader would lose by collapsing
+ * a section is the section; what they lose here is a road not taken, one click
+ * away and announced.
  *
  * Which records are on screen is a different question, and its answer changed:
  * the page filters whole records by decision state, because filtering to
- * pending and watching each decided record fall out is the reviewer's
- * workflow. That filter lives on the page, not in here — a card
- * has no say in whether it is one of the ones being read.
+ * pending and watching each decided record fall out is the reviewer's workflow.
+ * That filter lives on the page, not in here — a card has no say in whether it
+ * is one of the ones being read.
  */
 export function RecordCard({
   retroId,
@@ -97,8 +97,8 @@ export function RecordCard({
               it. */}
           <DecisionStateTag state={summary.state} />
           {/**
-           * **Somebody has picked this record up** — the in-progress
-           * marker, driven by the wire field and by nothing else.
+           * **Somebody has picked this record up** — the in-progress marker,
+           * driven by the wire field and by nothing else.
            *
            * It rides on `summary` rather than on `detail`, so it is on screen
            * with the heading instead of arriving a query later: the claim moves
@@ -153,10 +153,10 @@ export function RecordCard({
          * them.
          *
          * **The glyph is inline, immediately after the title's last word** —
-         * right next to the last word, not set apart on the right.
-         * So the `<h2>` is `inline` and the glyph follows it in the same
-         * inline run — it sits after the last word wherever the title happens to
-         * wrap, rather than at a column edge the title never reaches. Anything
+         * right next to the last word, not set apart on the right. So the
+         * `<h2>` is `inline` and the glyph follows it in the same inline run —
+         * it sits after the last word wherever the title happens to wrap,
+         * rather than at a column edge the title never reaches. Anything
          * `ml-auto`, any second flex column, any `justify-between` is the shape
          * that was ruled out.
          */}
@@ -290,13 +290,12 @@ function RecordBody({
  * A record's narrative, whole — the sections the AI authored, in the order it
  * authored them.
  *
- * **It is a component of its own**, and the reason is that a
- * record is read in two places: on a card inside a review, and on its own
- * dedicated page (`/records/:id`). What a reader sees of the record itself has
- * to be the same
+ * **It is a component of its own**, and the reason is that a record is read in
+ * two places: on a card inside a review, and on its own dedicated page
+ * (`/records/:id`). What a reader sees of the record itself has to be the same
  * on both — down to the way a footprint is drawn and the way human words are
- * left alone — and a second rendering of five sections is a second place for one
- * of them to quietly start reading differently.
+ * left alone — and a second rendering of five sections is a second place for
+ * one of them to quietly start reading differently.
  *
  * What stays outside it is what the *review* adds to a record: the decision
  * block, which is a control rather than content, and the pick's local state,
@@ -381,13 +380,13 @@ export function RecordNarrative({
 
       <Section section="root_cause" comment={commentOn('root_cause')}>
         {/**
-         * `r-incident-line-overflow`: every one of these
-         * rows is a flex pair, and a flex item's automatic minimum size is its
-         * own min-content — which for a line holding a token nothing can break
-         * is that whole token. Left alone the cell lays out at 1231px inside a
-         * 678px row, and the reader loses the end of the incident line with no
-         * scrollbar to say there was more, because a record's slot clips for the
-         * departure animation.
+         * `r-incident-line-overflow`: every one of these rows is a flex pair,
+         * and a flex item's automatic minimum size is its own min-content —
+         * which for a line holding a token nothing can break is that whole
+         * token. Left alone the cell lays out at 1231px inside a 678px row, and
+         * the reader loses the end of the incident line with no scrollbar to
+         * say there was more, because a record's slot clips for the departure
+         * animation.
          *
          * Two clamps, and each does exactly one half. `min-w-0` — the record's
          * own direction — lets the *cell* shrink to the room the row has;
@@ -397,13 +396,13 @@ export function RecordNarrative({
          * hand-run alone and each leaves half the failure standing.
          */}
         {/**
-         * One label system for the whole chain
-         * (`r-whys-labels`): INCIDENT · WHY 1 … WHY n · ROOT, all caps,
-         * each label on the line its text starts on and every label the same
-         * width. It shipped as four separate choices — an unlabelled incident
-         * line, a lowercase "why" against an all-caps ROOT, a label folding onto
-         * two lines, and a width that came from whatever was beside it — because
-         * the section was styled per element as it grew.
+         * One label system for the whole chain (`r-whys-labels`): INCIDENT ·
+         * WHY 1 … WHY n · ROOT, all caps, each label on the line its text
+         * starts on and every label the same width. It shipped as four separate
+         * choices — an unlabelled incident line, a lowercase "why" against an
+         * all-caps ROOT, a label folding onto two lines, and a width that came
+         * from whatever was beside it — because the section was styled per
+         * element as it grew.
          *
          * The width and the wrap live in `.gutter-label`; nothing here sets its
          * own, which is the point.
@@ -441,18 +440,18 @@ export function RecordNarrative({
       </Section>
 
       {/**
-       * **The evidence, folded away** — and the one thing on this card
-       * that starts closed.
+       * **The evidence, folded away** — and the one thing on this card that
+       * starts closed.
        *
        * The rule above it says every section is on screen whenever the card is,
        * because a control that hides part of a record can hide the part that
-       * mattered. This does not breach it, because what is behind it
-       * is **not part of what is being decided**: it is the log lines and
-       * timings the AI diagnosed from, it is on no comment anchor, no verdict is
-       * about it, and the finish gate does not know it exists. What the reviewer
-       * answers — the problem, the cause, the proposals — is all above, open.
-       * Left expanded it would be a screen of pasted output between the cause
-       * and the workaround on every record of the round.
+       * mattered. This does not breach it, because what is behind it is **not
+       * part of what is being decided**: it is the log lines and timings the AI
+       * diagnosed from, it is on no comment anchor, no verdict is about it, and
+       * the finish gate does not know it exists. What the reviewer answers —
+       * the problem, the cause, the proposals — is all above, open. Left
+       * expanded it would be a screen of pasted output between the cause and
+       * the workaround on every record of the round.
        *
        * Rendered only where there is something to render: a record filed before
        * the field existed has no block at all, rather than one that opens onto
@@ -532,8 +531,8 @@ export function RecordNarrative({
  * The AI's proposals, one per tab within the record card. A tab is titled
  * `Solution 1`, `Solution 2` and so on; a `*` marks the solution the AI
  * recommends and a tick marks the one the human actually selected; and the tab
- * title carries the solution's level, L1 to L5, so the human can see how far a
- * proposal reaches without opening it.
+ * title carries the solution's level, L1 to L5, so the human can see what level
+ * each solution is.
  *
  * The array arrives sorted lowest level first and tab N is position N, so
  * "Solution 2" is a fact about the record rather than a label this decides —
@@ -617,10 +616,10 @@ function SolutionTabs({
              *
              * The tab title says `L2` and this line is the only place the page
              * says what L2 *means*. It was the last element of the body — after
-             * the bullets and after the footprint — so on a long
-             * solution the gloss was a screen below the tab that named it, and
-             * the one decision the strip exists for (choosing between ceilings)
-             * was made before its meaning scrolled into view.
+             * the bullets and after the footprint — so on a long solution the
+             * gloss was a screen below the tab that named it, and the one
+             * decision the strip exists for (choosing between ceilings) was
+             * made before its meaning scrolled into view.
              *
              * A tab body opens directly under the strip, so first here *is*
              * directly under the tab. Same line, moved: no new element and no
@@ -638,8 +637,8 @@ function SolutionTabs({
              * The one control in here, and it is on the tabs it can do something
              * to: the tab already wearing the ✓ offers nothing to press, because
              * a button whose only outcome is the state you are in is a label
-             * pretending to be a control. Gone entirely on a read-only
-             * review, with every other control on the card.
+             * pretending to be a control. Gone entirely on a read-only review,
+             * with every other control on the card.
              */}
             {readOnly || picked === position || onPick === undefined ? null : (
               <Button
@@ -676,16 +675,15 @@ function recommendedPosition(solutions: NonNullable<RecordDetail['record']['solu
  *
  * No strip, because there is nothing to switch between; no Select, because with
  * only one solution there is nothing for a selection to mean; and no tick,
- * because a tick is the
- * answer to a question that was not asked. What the reviewer decides here is the
- * record, in the decision block below, exactly as on a record that proposes
- * none.
+ * because a tick is the answer to a question that was not asked. What the
+ * reviewer decides here is the record, in the decision block below, exactly as
+ * on a record that proposes none.
  *
- * **The level leads**, at the top of the solution.
- * It led here first, because with no strip to carry it in a tab title the
- * level would otherwise arrive last, after the thing it is the size of. The tab
- * body leads with it too since `r-level-legend-below-fold`, so the two shapes now
- * order a solution the same way and this branch is no longer the exception.
+ * **The level leads**, at the top of the solution. It led here first, because
+ * with no strip to carry it in a tab title the level would otherwise arrive
+ * last, after the thing it is the size of. The tab body leads with it too since
+ * `r-level-legend-below-fold`, so the two shapes now order a solution the same
+ * way and this branch is no longer the exception.
  *
  * The testids are the strip's own, because a solution is a solution: a scenario
  * asking what solution 1 says, or what its footprint draws, asks the same
@@ -866,17 +864,16 @@ function Section({
        * the section it is for, rather than at the bottom of it.
        *
        * The affordance used to render after `{children}` — after the problem
-       * bullets, after the human-words block — so on a long section
-       * the way to comment on a section was a screen below the heading that
-       * named it, and it read as belonging to whatever came last rather than to
-       * the section.
+       * bullets, after the human-words block — so on a long section the way to
+       * comment on a section was a screen below the heading that named it, and
+       * it read as belonging to whatever came last rather than to the section.
        *
        * The heading is `inline` and the glyph is its sibling rather than its
        * child, which is what keeps the two facts apart: the glyph flows
-       * immediately after the heading's last word,
-       * and the heading's accessible name stays the section's name instead of
-       * gaining the button's. A screen reader listing this record's headings
-       * would otherwise read "Problem, comment on Problem".
+       * immediately after the heading's last word, and the heading's accessible
+       * name stays the section's name instead of gaining the button's. A screen
+       * reader listing this record's headings would otherwise read "Problem,
+       * comment on Problem".
        */}
       <div className="leading-none">
         <h3 className="section-label inline" data-testid="heading-label">
@@ -894,11 +891,10 @@ function Section({
  *
  * The threads themselves left — inline comments in the retrospective body were
  * replaced by comments in the side panel, so the human sees every comment in one
- * place — and the affordance they
- * were under stayed, because the alternative is asking the reviewer to say which
- * section they meant after they have already pointed at it. Pressing it aims the
- * panel's composer here and puts the panel in front of them; nothing about this
- * card changes.
+ * place — and the affordance they were under stayed, because the alternative is
+ * asking the reviewer to say which section they meant after they have already
+ * pointed at it. Pressing it aims the panel's composer here and puts the panel
+ * in front of them; nothing about this card changes.
  *
  * **It is a glyph rather than a button with a word on it, and it sits inline
  * after the name of the thing it comments on** — one pattern, settled by two
@@ -958,9 +954,9 @@ function SectionComment({
 
 /**
  * The two clamps a gutter row's prose cell needs so a token nothing can break
- * narrows instead of taking the line off the page
- * (`r-incident-line-overflow`). Written once and handed to all three row kinds,
- * because the pattern copy-propagated into the third one is how the record came
- * to be filed in the first place.
+ * narrows instead of taking the line off the page (`r-incident-line-overflow`).
+ * Written once and handed to all three row kinds, because the pattern
+ * copy-propagated into the third one is how the record came to be filed in the
+ * first place.
  */
 const GUTTER_PROSE = 'min-w-0 break-words'

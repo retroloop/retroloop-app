@@ -10,8 +10,8 @@ import { cn } from '@/lib/utils'
  * rather than inside it.
  *
  * **What the header holds is now exactly two things: what this product is, and
- * where else you can go** (`r-menu-dropdown`). The theme toggle that
- * used to sit on the right is gone from the chrome entirely — it is Settings ›
+ * where else you can go** (`r-menu-dropdown`). The theme toggle that used to
+ * sit on the right is gone from the chrome entirely — it is Settings ›
  * Appearance › Dark Mode and nothing else (`settings/appearance.tsx`) — and the
  * loose nav links the dashboard used to hang in its `action` slot are the two
  * items of the one dropdown (`app-menu.tsx`), mounted here so that "on every
@@ -42,11 +42,10 @@ import { cn } from '@/lib/utils'
  * they have no rail to live in (`r-review-actions-pinned`, and the same need on
  * a tablet) — those stay where they are, because what the dropdown consolidates
  * is *global* navigation. They are slots rather than components of their own
- * because the
- * header is the one strip
- * of the page that is already sticky and already paid for — putting either
- * affordance anywhere else would spend vertical space, which is the whole
- * complaint the first of those records was filed over.
+ * because the header is the one strip of the page that is already sticky and
+ * already paid for — putting either affordance anywhere else would spend
+ * vertical space, which is the whole complaint the first of those records was
+ * filed over.
  *
  * Each sits on the side its panel opens from: `lead` before the breadcrumb for
  * the record index, which comes out of the left, and `action` after it for the
@@ -55,10 +54,10 @@ import { cn } from '@/lib/utils'
  *
  * **The measure is one measure, on every page and in every state**: the width of
  * the home page and the width of the retrospective page have to agree. It used
- * to be conditional: a `wide` prop the review page
- * passed exactly while its comment rail was mounted, so the dashboard sat at
- * 1024px on a screen where the review sat at 1280px and the review itself
- * changed width with a query's answer.
+ * to be conditional: a `wide` prop the review page passed exactly while its
+ * comment rail was mounted, so the dashboard sat at 1024px on a screen where
+ * the review sat at 1280px and the review itself changed width with a query's
+ * answer.
  *
  * The reason it was conditional is still true and is now handled where it
  * belongs. The extra `wide` measure is the third column's room; hand it to a
@@ -120,15 +119,14 @@ export function AppShell({
  *
  * **The 128px this gained over the earlier 1408 all went to the rails**
  * (`r-wider-page-for-panels`): the maximum width grew, and all of the gain goes
- * to the left index panel and the right comments panel.
- * The reading column's cap did not move: 48rem is a typography ceiling
- * and wider prose would be worse prose, where the rails hold navigation and
- * threads that clip and truncate. So the index took 48 of it and the comments
- * 80 — weighted to the side where threads wrap hardest — and the sum is this
- * number.
+ * to the left index panel and the right comments panel. The reading column's
+ * cap did not move: 48rem is a typography ceiling and wider prose would be
+ * worse prose, where the rails hold navigation and threads that clip and
+ * truncate. So the index took 48 of it and the comments 80 — weighted to the
+ * side where threads wrap hardest — and the sum is this number.
  *
- * `mx-auto` is the other half of that rule: past 1536 the page stops
- * growing and centres instead, so an ultra-wide screen gets margins rather than
- * a line of prose running its whole width.
+ * `mx-auto` is the other half of that rule: past 1536 the page stops growing
+ * and centres instead, so an ultra-wide screen gets margins rather than a line
+ * of prose running its whole width.
  */
 const MEASURE = 'max-w-5xl wide:max-w-[96rem]'

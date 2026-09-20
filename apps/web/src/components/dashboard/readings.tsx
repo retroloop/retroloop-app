@@ -46,9 +46,9 @@ const TABS: readonly {
   },
   /**
    * The Require Human tab exists so that the rows behind the readings match the
-   * tabs above. It lists exactly what
-   * the third stat tile counts — through `needsHuman`, the tile's own predicate,
-   * so the rows here and the numbers up there cannot come to disagree.
+   * tabs above. It lists exactly what the third stat tile counts — through
+   * `needsHuman`, the tile's own predicate, so the rows here and the numbers up
+   * there cannot come to disagree.
    *
    * It sits **second**, where its tile sits third in a row whose first tile
    * (Records) has no cut of its own. Reading down the page the two now line up:
@@ -190,9 +190,9 @@ function ReadingRow({ row }: { row: RecordListRow }) {
       {/**
        * `Retro {retroId} · session {id}` rather than the shared identity line.
        * That line prints `Retro #n`, the per-session number a list must not
-       * use, and the working directory — which on this store is the
-       * same string on all 154 rows and had to be truncated to fit. A column that
-       * says the same thing on every row, illegibly, has earned nothing.
+       * use, and the working directory — which on this store is the same string
+       * on all 154 rows and had to be truncated to fit. A column that says the
+       * same thing on every row, illegibly, has earned nothing.
        */}
       <span className="meta-mono hidden shrink-0 lg:block">
         Retro {row.retroId} · session {row.session.id}

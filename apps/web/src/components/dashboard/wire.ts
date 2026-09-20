@@ -14,11 +14,10 @@ import type { AppRouterOutputs } from '@retro/api'
  * a field the router does not serve.
  *
  * **There is deliberately no local name-fallback helper here any more.** An
- * earlier draft carried one (`roundRetroName`) because the shipped
- * `retroName` still fell back to the per-session number.
- * The global id is now the fallback *everywhere*, so
- * the fix went into `lib/retro-identity.ts` where the dashboard, the review header
- * and the record page all inherit it, and the duplicate died rather than shipping
- * beside it.
+ * earlier draft carried one (`roundRetroName`) because the shipped `retroName`
+ * still fell back to the per-session number. The global id is now the fallback
+ * *everywhere*, so the fix went into `lib/retro-identity.ts` where the
+ * dashboard, the review header and the record page all inherit it, and the
+ * duplicate died rather than shipping beside it.
  */
 export type RetroListRow = AppRouterOutputs['retros']['list'][number]

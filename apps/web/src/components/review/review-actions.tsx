@@ -11,32 +11,31 @@ import { useTRPC } from '@/lib/trpc'
 type RecordList = AppRouterOutputs['records']['list']
 
 /**
- * **One act, and nothing else** (`r-one-finish-button`). There were two
- * buttons here — Finish review and Request changes, one per event the system
- * could raise — and the second went the first time a round forced a choice
- * between them. Requesting a lot of changes in comments and then pressing Finish
- * review is a contradiction the page should not allow: which event the round
- * raises has to be clear from the content of the comments rather than from a
- * redundant button that can be pressed wrong.
+ * **One act, and nothing else** (`r-one-finish-button`). There were two buttons
+ * here — Finish review and Request changes, one per event the system could
+ * raise — and the second went the first time a round forced a choice between
+ * them. With both on screen, a reviewer who had requested a lot of changes in
+ * the comments could still press Finish review, and the press would claim the
+ * wrong event: which event the round raises has to be clear from the content of
+ * the comments rather than from a redundant button that can be pressed wrong.
  *
  * So Finish says one thing — *I am done with this round* — and the AI reads the
  * round to know what it was. What it is not is the end of the retrospective:
  * that arrives from the AI's own side, over the event stream, as a review that
  * has gone read-only.
  *
- * It fires **once per round** (`r-request-changes-multi-press`): the
- * button stays where it was, spent — disabled, still named — with a mark beside
- * it saying the round is with the AI, and the server absorbs a duplicate anyway.
+ * It fires **once per round** (`r-request-changes-multi-press`): the button
+ * stays where it was, spent — disabled, still named — with a mark beside it
+ * saying the round is with the AI, and the server absorbs a duplicate anyway.
  * It stays rather than leaving because a control that vanishes takes the layout
  * and the answer to *"did that work?"* with it. Nothing on this page ever
  * finishes a review because time passed, because every comment was answered, or
  * because the reviewer scrolled to the bottom.
  *
- * **It moved into the sticky bar and lost its box.** It was a
- * bordered panel at the end of the reading column holding a pending count, the
- * action, and the refusal. The box went and the action moved up beside the
- * filters — filters on the left, the Finish button on the right. Two things
- * went with the box:
+ * **It moved into the sticky bar and lost its box.** It was a bordered panel at
+ * the end of the reading column holding a pending count, the action, and the
+ * refusal. The box went and the action moved up beside the filters — filters on
+ * the left, the Finish button on the right. Two things went with the box:
  *
  *   - **the pending count.** The pending chip on the same bar carries it live,
  *     and a second copy on the same strip would be a number to keep in agreement
@@ -52,10 +51,9 @@ type RecordList = AppRouterOutputs['records']['list']
  * against finishing by accident. Pressing Finish is two steps: if the round is
  * actually valid and can be closed, a text box opens where the human enters their
  * final message before closing, and that message is delivered separately from the
- * comments. So the first press arms and the
- * second answers, and between them sits the round's last word — optional, and
- * blank is the same as absent, because nothing on this page is ever inferred
- * from an empty field.
+ * comments. So the first press arms and the second answers, and between them
+ * sits the round's last word — optional, and blank is the same as absent,
+ * because nothing on this page is ever inferred from an empty field.
  *
  * The refusal and the confirm share the one popover on the one button, because
  * they are the same conversation: the confirm is what asks the server and the
@@ -64,10 +62,10 @@ type RecordList = AppRouterOutputs['records']['list']
  *
  * **The gate moved to the first press** (`r-finish-refusal-fires-late`): a
  * refusal has to show on the first press rather than the second, or the human's
- * composed input is at risk of being lost. The gate
- * predates the two-step and had stayed attached to the send, so the redesign
- * silently reordered check and composition — the reviewer wrote their last word
- * on the round and only then learned the round could not finish.
+ * composed input is at risk of being lost. The gate predates the two-step and
+ * had stayed attached to the send, so the redesign silently reordered check and
+ * composition — the reviewer wrote their last word on the round and only then
+ * learned the round could not finish.
  *
  * Everything the refusal needs is on the page before the first press, so the
  * first press is where it is asked, and on a round that cannot finish the
@@ -75,8 +73,8 @@ type RecordList = AppRouterOutputs['records']['list']
  * the backstop for the one case the page cannot see: a verdict taken back
  * somewhere else between the composer opening and the send. When *that* fires,
  * the composed text is kept rather than discarded — so the input that was at
- * risk is safe on both paths, by never being written on one and by never
- * being thrown away on the other.
+ * risk is safe on both paths, by never being written on one and by never being
+ * thrown away on the other.
  */
 export function ReviewActions({
   retroId,
@@ -177,13 +175,13 @@ export function ReviewActions({
    *
    * **The store answers it now, and that is the fix** (`r-finish-button-reenables`):
    * a finished review that said "sent" offered the Finish button again after a
-   * page refresh. It used to be
-   * `finish.isSuccess` alone — in-memory state a fresh page could not recover —
-   * so a refresh offered the button again for a revision the store had already
-   * recorded as finished. The press had landed: the monitor had the
-   * `ReviewFinished` for exactly that revision while the refreshed page was still
-   * offering to send it. It was a read-side gap, and the fact simply was not on
-   * the wire; `revisionMeta.finishedAt` carries it now.
+   * page refresh. It used to be `finish.isSuccess` alone — in-memory state a
+   * fresh page could not recover — so a refresh offered the button again for a
+   * revision the store had already recorded as finished. The press had landed:
+   * the monitor had the `ReviewFinished` for exactly that revision while the
+   * refreshed page was still offering to send it. It was a read-side gap, and
+   * the fact simply was not on the wire; `revisionMeta.finishedAt` carries it
+   * now.
    *
    * The mutation's own answer stays as the second half, and only as that: it
    * covers the frames between the server saying yes and the invalidated
@@ -215,9 +213,9 @@ export function ReviewActions({
     >
       {finished ? (
         /**
-         * The shape is the point: an icon *and* a word, never
-         * a colour on its own, so the state survives a reader who cannot tell
-         * the tones apart and a theme that redefines them.
+         * The shape is the point: an icon *and* a word, never a colour on its
+         * own, so the state survives a reader who cannot tell the tones apart
+         * and a theme that redefines them.
          */
         <p
           className="inline-flex items-center gap-1.5 text-muted-foreground text-sm"

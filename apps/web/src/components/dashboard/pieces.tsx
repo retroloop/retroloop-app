@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils'
  * The two containers and the one figure all three variations are assembled from.
  *
  * They are shared for the same reason the arithmetic is: the choice being made
- * is between three *arguments*, and three sets of slightly different
- * card padding would put a fourth variable in the comparison. What each variation
- * chooses is which panels exist, what goes in them, and what order they come in.
+ * is between three *arguments*, and three sets of slightly different card
+ * padding would put a fourth variable in the comparison. What each variation
+ * chooses is which panels exist, what goes in them, and what order they come
+ * in.
  */
 
 /**
@@ -165,11 +166,10 @@ export function StatTile({
              *
              * A definition list means `<dt>` then `<dd>`, and this rendered them
              * the other way round — pre-existing, non-conforming, and
-             * *load-bearing*, because the reading the tile
-             * is for is the figure with its name under it. Both are true at
-             * once: the DOM says what the markup means and `flex-col-reverse`
-             * says what it looks like, which is the half a stylesheet is
-             * allowed to decide.
+             * *load-bearing*, because the reading the tile is for is the figure
+             * with its name under it. Both are true at once: the DOM says what
+             * the markup means and `flex-col-reverse` says what it looks like,
+             * which is the half a stylesheet is allowed to decide.
              *
              * The two entries are identical in structure, so the `items-baseline`
              * on the list above still aligns them with each other — what the

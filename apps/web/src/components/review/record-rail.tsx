@@ -10,9 +10,9 @@ import { cn } from '@/lib/utils'
 type RecordSummary = AppRouterOutputs['records']['list']['records'][number]
 
 /**
- * The index. A review is one long scroll,
- * and without this the reviewer has no idea how much of it is left, which
- * records they have already dealt with, or how to get back to one.
+ * The index. A review is one long scroll, and without this the reviewer has no
+ * idea how much of it is left, which records they have already dealt with, or
+ * how to get back to one.
  *
  * It is an *index*, so it lists every record of the revision on screen — always
  * all of them, whatever the filter is doing. An index that hides entries is a
@@ -25,14 +25,13 @@ type RecordSummary = AppRouterOutputs['records']['list']['records'][number]
  * carry the counts and the filter, and an index that grew a second copy of them
  * would be two places to read the same number from.
  *
- * **It has two mounts.** It shipped as a rail that simply left
- * below `xl`, on the argument that on a portrait tablet the reading column is
- * the whole screen and a two-tap index on a page you can scroll is not worth the
- * tap or the code. Reading on that screen said otherwise: with the rail gone
- * there is no list to jump to a record from, and it should open in a left panel
- * just as the comments open from the right. So below `xl` it is one glyph in the
- * header and a sheet
- * that opens from the left, the comments' own shape mirrored.
+ * **It has two mounts.** It shipped as a rail that simply left below `xl`, on
+ * the argument that on a portrait tablet the reading column is the whole screen
+ * and a two-tap index on a page you can scroll is not worth the tap or the
+ * code. Reading on that screen said otherwise: with the rail gone there is no
+ * list to jump to a record from, and it should open in a left panel just as the
+ * comments open from the right. So below `xl` it is one glyph in the header and
+ * a sheet that opens from the left, the comments' own shape mirrored.
  *
  * Exactly one mount exists at a time (`lib/side-panel.ts`), and the two share
  * this file's `RecordIndex` — one list, so the two indexes of the same records
@@ -57,10 +56,10 @@ export function RecordRail({
     //
     // `w-72` — 288px, up from 240 (`r-wider-page-for-panels`: the width the page
     // gained goes to the left index panel and the right comments panel), and 208
-    // before that. Still the narrower of the two, and by more
-    // than it was: an entry is a number and a title that truncates, where a
-    // thread is a conversation that wraps, so of the 128px the page gained this
-    // column took 48 and the comments took 80.
+    // before that. Still the narrower of the two, and by more than it was: an
+    // entry is a number and a title that truncates, where a thread is a
+    // conversation that wraps, so of the 128px the page gained this column took
+    // 48 and the comments took 80.
     <nav
       aria-label={INDEX_LABEL}
       data-testid="record-rail"

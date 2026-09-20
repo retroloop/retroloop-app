@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils'
  * Every prose field on a record — and every comment — is *written* as markdown
  * and was being shown as its own source: `**bold**` put its asterisks on the
  * page, single newlines collapsed, and a list was a run-on line. A record is
- * read by skimming its bold leads, and for three retrospectives that method
- * had nothing to skim.
+ * read by skimming its bold leads, and for three retrospectives that method had
+ * nothing to skim.
  *
  * **The subset is the whole contract**, and it is small because a reviewer is
  * reading a record rather than a document:
@@ -38,12 +38,12 @@ import { cn } from '@/lib/utils'
  * columns — which is the house habit for every other text surface — shattered
  * into a bullet followed by bare paragraphs, and a `**` that opened on one line
  * and closed on the next put its asterisks on the page. Both are one bug, and it
- * showed on the very first thread reply: the text simply read as broken.
- * So a line that opens no block marker continues the block above it,
- * which is CommonMark's soft break and is what makes a wrapped bullet one
- * bullet and lets an inline mark cross an authored line break. A blank line is
- * still the paragraph boundary, and a real bullet still starts with `- `, so
- * nothing an author meant as a break was taken from them.
+ * showed on the very first thread reply: the text simply read as broken. So a
+ * line that opens no block marker continues the block above it, which is
+ * CommonMark's soft break and is what makes a wrapped bullet one bullet and
+ * lets an inline mark cross an authored line break. A blank line is still the
+ * paragraph boundary, and a real bullet still starts with `- `, so nothing an
+ * author meant as a break was taken from them.
  *
  * **Two things never reach this renderer at all**, both deliberately:
  *
@@ -59,9 +59,9 @@ import { cn } from '@/lib/utils'
 /**
  * Every marker this grammar reads, written the way an author types it.
  *
- * **The twin of SKILL.md's subset list** (`r-subset-renderer-drift`).
- * The skill is the authoring contract every record is written against and this
- * file is the implementation of it — two copies of one contract, and until this
+ * **The twin of SKILL.md's subset list** (`r-subset-renderer-drift`). The skill
+ * is the authoring contract every record is written against and this file is
+ * the implementation of it — two copies of one contract, and until this
  * enumeration existed nothing held them together: a deliberate plant that
  * changed the documented blockquote marker from `> ` to `>> ` left seventeen
  * skill tests and every web test green, so the skill could document a marker

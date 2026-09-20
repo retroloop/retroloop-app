@@ -18,44 +18,43 @@ import { cn } from '@/lib/utils'
  * worked is the part that should not move.
  *
  * **Correction one — the dates.** They should be relative when they are not too
- * far off. The card led with `Aug 27, 2026, 6:57 AM`, which is the right
- * string for a timeline and the wrong one for a diary: the reading a diary is
- * arranged for is "what was I doing lately", and every absolute stamp makes the
- * reader do a subtraction to get there. So the header now says "2 hours ago" or
- * "yesterday" inside a week and falls back to the date outside it — the boundary,
- * and why it is a week, are in `lib/relative-when.ts`. The ISO instant stays on
- * the `<time dateTime>` attribute, which is where the machine-readable half
- * belongs and the half anything asserting against this reads.
+ * far off. The card led with `Aug 27, 2026, 6:57 AM`, which is the right string
+ * for a timeline and the wrong one for a diary: the reading a diary is arranged
+ * for is "what was I doing lately", and every absolute stamp makes the reader
+ * do a subtraction to get there. So the header now says "2 hours ago" or
+ * "yesterday" inside a week and falls back to the date outside it — the
+ * boundary, and why it is a week, are in `lib/relative-when.ts`. The ISO
+ * instant stays on the `<time dateTime>` attribute, which is where the
+ * machine-readable half belongs and the half anything asserting against this
+ * reads.
  *
  * **Correction two — the ids.** A retrospective needs its global id displayed
- * rather than the session's internal sequence number. The row said
- * `#1`, which is `retroNumber` — a retrospective's position *within its session*.
- * In a real store three of fourteen retrospectives are "#1" and two more are
- * "#2", so the number shown could not identify the thing it was printed on, and
- * the link it sat inside went to a different number entirely. The row now says
- * `Retro 13`, which is `retroId`: minted once, unique across the store, and the
- * number every URL, breadcrumb and record page already uses.
+ * rather than the session's internal sequence number. The row said `#1`, which
+ * is `retroNumber` — a retrospective's position *within its session*. In a real
+ * store three of fourteen retrospectives are "#1" and two more are "#2", so the
+ * number shown could not identify the thing it was printed on, and the link it
+ * sat inside went to a different number entirely. The row now says `Retro 13`,
+ * which is `retroId`: minted once, unique across the store, and the number
+ * every URL, breadcrumb and record page already uses.
  *
- * **And the *name* follows the same rule.** An untitled retrospective
- * used to fall back to `Retro #1 — retro`, so a row could print the global id in
- * one column and the per-session number as the name three characters away. The
- * fallback now reads `Retro 2 — retro`, fixed once in
- * `lib/retro-identity.ts` so the review header and the record page inherit it
- * rather than this page carrying a local copy.
+ * **And the *name* follows the same rule.** An untitled retrospective used to
+ * fall back to `Retro #1 — retro`, so a row could print the global id in one
+ * column and the per-session number as the name three characters away. The
+ * fallback now reads `Retro 2 — retro`, fixed once in `lib/retro-identity.ts`
+ * so the review header and the record page inherit it rather than this page
+ * carrying a local copy.
  *
  * The absolute date has not gone anywhere on the far side of the boundary, and
  * `retroNumber` has not gone anywhere either — it is still what the review page's
  * identity line says, because "Session 10 · Retro #1" is a true sentence about
- * where a retrospective sits, and that line is settled. What changed is
- * which of the two numbers a *list* prints, and the answer is the one that is
- * unique.
+ * where a retrospective sits, and that line is settled. What changed is which
+ * of the two numbers a *list* prints, and the answer is the one that is unique.
  */
 
 /**
  * How much room the diary gets. The three variations disagree about this and it
- * is one of the real questions: on a page whose subject is a corpus, is
- * the history of the work the body of the page or the provenance at the foot of
- * it?
+ * is one of the real questions: on a page whose subject is a corpus, is the
+ * history of the work the body of the page or the provenance at the foot of it?
  *
  * - `full` — a card per sitting, the time leading, every retrospective a ruled
  *   row. The diary as the page.
@@ -213,9 +212,9 @@ function RetroLine({ retro, compact }: { retro: RetroListRow; compact?: boolean 
           compact ? 'py-2' : 'py-3',
         )}
       >
-        {/* The global id. `Retro 13`, not `#1`: the word is not
-            repeated down the card because the number is already unique without
-            it, and the two characters it costs buy an id a reader can act on. */}
+        {/* The global id. `Retro 13`, not `#1`: the word is not repeated down
+            the card because the number is already unique without it, and the
+            two characters it costs buy an id a reader can act on. */}
         <span
           data-testid="retro-global-id"
           className="meta-mono shrink-0 tabular-nums sm:w-[4.5rem]"

@@ -14,12 +14,12 @@ import { useTRPC } from '@/lib/trpc'
  * what a comment looks like — the fork between the rail and the sheet is
  * presentation and nothing else.
  *
- * There is exactly one caller. A record's comments used to be
- * rendered under the section they answered, by a `CommentThreads` component that
- * lived here; the side panel replaced that, so the human sees every comment in
- * one place rather than scattered through the retrospective body. A record
- * thread and a review thread are now the same card in the same column,
- * and the record thread carries a line saying where it hangs.
+ * There is exactly one caller. A record's comments used to be rendered under
+ * the section they answered, by a `CommentThreads` component that lived here;
+ * the side panel replaced that, so the human sees every comment in one place
+ * rather than scattered through the retrospective body. A record thread and a
+ * review thread are now the same card in the same column, and the record thread
+ * carries a line saying where it hangs.
  */
 export type Thread = AppRouterOutputs['threads']['list'][number]
 type Message = Thread['messages'][number]
@@ -47,12 +47,12 @@ export type ThreadAnchor = {
  * human may do to it.
  *
  * **Collapsed by default, one level deep.** The panel nests one level and shows
- * only top-level comments with a reply count; a click opens the replies.
- * A panel that showed every message of every thread
- * is the reading column's problem moved sideways — the point of a column of
- * threads is that you can see how many conversations are open, which a wall of
- * messages hides. There is no third level to worry about: the model has threads
- * and messages and nothing else (data-model.md §Comment threads).
+ * only top-level comments with a reply count; a click opens the replies. A
+ * panel that showed every message of every thread is the reading column's
+ * problem moved sideways — the point of a column of threads is that you can see
+ * how many conversations are open, which a wall of messages hides. There is no
+ * third level to worry about: the model has threads and messages and nothing
+ * else (data-model.md §Comment threads).
  */
 export function ThreadCard({
   thread,
@@ -75,14 +75,14 @@ export function ThreadCard({
   const [opener, ...replies] = thread.messages
 
   /**
-   * A settled thread is one dimmed line: resolved comments appear
-   * collapsed. Dimmed **and** marked: the fade says "dealt with" at a
-   * glance and the word says it to anyone being read to, because a state told
-   * only by opacity is a state a screen reader cannot report.
+   * A settled thread is one dimmed line: resolved comments appear collapsed.
+   * Dimmed **and** marked: the fade says "dealt with" at a glance and the word
+   * says it to anyone being read to, because a state told only by opacity is a
+   * state a screen reader cannot report.
    *
    * It opens on a click like any other collapsed thing here, which is what keeps
-   * "resolved" from meaning "gone": a thread is history and settling one is
-   * a note about it, not a deletion.
+   * "resolved" from meaning "gone": a thread is history and settling one is a
+   * note about it, not a deletion.
    */
   if (thread.resolved && !showSettled) {
     return (
@@ -188,17 +188,17 @@ export function ThreadCard({
  * Where a record thread hangs, and the way back to it — the panel's answer to
  * the question the section heading used to answer for free.
  *
- * **One pattern, in one order** (`r-thread-header-format`): the number, then
- * a separator, then the section, then a separator, then the title. It used to
- * be two fixed lines — the number and title on one, the section under them — and
- * that shape did not survive the first read of a list of section threads.
- * The section is the discriminator between threads on the same record, so it
+ * **One pattern, in one order** (`r-thread-header-format`): the number, then a
+ * separator, then the section, then a separator, then the title. It used to be
+ * two fixed lines — the number and title on one, the section under them — and
+ * that shape did not survive the first read of a list of section threads. The
+ * section is the discriminator between threads on the same record, so it
  * belongs beside the number and before the title; the title is the part that
  * varies in length, so it is last and it is the part that gives way.
  *
  * **Two lines and no more, cut only when it would need a third.**
- * `line-clamp-2` is exactly that and nothing else: a header that fits on
- * one line is one line, one that needs two takes two, and one that would run past
+ * `line-clamp-2` is exactly that and nothing else: a header that fits on one
+ * line is one line, one that needs two takes two, and one that would run past
  * two ends in an ellipsis. Unclamped, a long title pushes every thread below it
  * down the panel; fully truncated, the reader loses the scent of which record
  * this is.
@@ -226,10 +226,10 @@ function AnchorLine({ anchor, onJump }: { anchor: ThreadAnchor; onJump: (rid: st
  * One message: who wrote it, which revision it belongs to, and what it says.
  *
  * A comment shows the revision number it is associated with, while the comments
- * themselves show across all revisions — and
- * both halves are here: the panel never filters by revision, and every message
- * says which one it was written against, so a thread that ran across two rounds
- * reads as one conversation with its history legible.
+ * themselves show across all revisions — and both halves are here: the panel
+ * never filters by revision, and every message says which one it was written
+ * against, so a thread that ran across two rounds reads as one conversation
+ * with its history legible.
  *
  * `revision` is always a number on the wire, stored at write or derived from the
  * revision timestamps for messages older than the column (`thread.view.ts`), so

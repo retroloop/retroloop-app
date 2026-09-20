@@ -17,11 +17,10 @@ import { cn } from '@/lib/utils'
  * (`r-settings-vertical-tabs`): shadcn ships vertical tabs and the settings page
  * is built on them. It was trimmed at first on the rule that a variant nobody
  * asked for is a second look nobody approved — and the settings page is now the
- * one asking. It is Radix's own
- * `orientation="vertical"`: the arrow keys become up/down and every part gets
- * `data-orientation="vertical"`, which is what the classes below key off, so
- * this is one prop rather than a second component. The `line` variant still has
- * no caller and is still not here.
+ * one asking. It is Radix's own `orientation="vertical"`: the arrow keys become
+ * up/down and every part gets `data-orientation="vertical"`, which is what the
+ * classes below key off, so this is one prop rather than a second component.
+ * The `line` variant still has no caller and is still not here.
  *
  * **The two orientations' layout classes are two disjoint sets, and that is the
  * `PRESSED` lesson again rather than tidiness.** tailwind-merge only drops a

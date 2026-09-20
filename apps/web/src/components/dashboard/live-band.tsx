@@ -20,27 +20,26 @@ import { retroName } from '@/lib/retro-identity'
  * the page reserved for urgency.
  *
  * **It renders one row per live retrospective, not just the newest** — one *or
- * more* active retrospectives — and the plural is not hypothetical padding:
- * a session opens a retrospective at a time today, but
- * `retros.list` can carry two the moment two sessions overlap, and a band that
- * silently showed one of them would hide a round nobody had answered. So the
- * surface is a list with one entry each, newest first, and the heading counts
- * them when there is more than one.
+ * more* active retrospectives — and the plural is not hypothetical padding: a
+ * session opens a retrospective at a time today, but `retros.list` can carry
+ * two the moment two sessions overlap, and a band that silently showed one of
+ * them would hide a round nobody had answered. So the surface is a list with
+ * one entry each, newest first, and the heading counts them when there is more
+ * than one.
  *
  * **What the design exploration had here and this does not: the preview toggle.**
  * That control existed so the band could be reviewed on a store whose every
- * retrospective was `finished`. It was scaffolding;
- * it does not ship, and neither does the synthetic retrospective it injected.
+ * retrospective was `finished`. It was scaffolding; it does not ship, and
+ * neither does the synthetic retrospective it injected.
  *
  * **Which retrospectives count.** Everything that is not `finished` — `open`,
  * `reviewing` and `submitted` alike. An `open` retro is one the AI is still
  * drafting, a `reviewing` one is waiting on the human, and a `submitted` one is
  * the window in between: the human has put the round down and the AI has not
- * closed it. Only the
- * middle one is urgent, but all three are rounds in flight, and a dashboard that
- * only lit up at the handover would go dark for exactly the stretches where a
- * reader might want to know something was moving. The state tag says which, in
- * the review page's own words.
+ * closed it. Only the middle one is urgent, but all three are rounds in flight,
+ * and a dashboard that only lit up at the handover would go dark for exactly
+ * the stretches where a reader might want to know something was moving. The
+ * state tag says which, in the review page's own words.
  */
 
 /**
@@ -131,8 +130,8 @@ function LiveRow({ retro }: { retro: RetroListRow }) {
           </span>
           <RetroStateTag state={retro.state} />
         </div>
-        {/* The global id — `retroId`, never
-            `retroNumber`, which counts per session and repeats across the store. */}
+        {/* The global id — `retroId`, never `retroNumber`, which counts per
+            session and repeats across the store. */}
         <span data-testid="live-identity" className="meta-mono break-words">
           Retro {retro.retroId} · session {retro.session.id} · opened{' '}
           <time dateTime={retro.session.startedAt}>{when.text}</time>
@@ -149,11 +148,11 @@ function LiveRow({ retro }: { retro: RetroListRow }) {
          *
          * The one edge, stated because it is reachable rather than because it is
          * likely: the window after a finish is not read-only, so a verdict can be
-         * taken back and leave a `submitted` round with a pending record in
-         * it. The figures stay away then too. A count under a tag that says the
-         * human is done is two claims about the same round, and the one that matters —
-         * that the AI cannot close it — is the one the AI is already told, by
-         * the gate that refuses the close and by `review status`.
+         * taken back and leave a `submitted` round with a pending record in it.
+         * The figures stay away then too. A count under a tag that says the
+         * human is done is two claims about the same round, and the one that
+         * matters — that the AI cannot close it — is the one the AI is already
+         * told, by the gate that refuses the close and by `review status`.
          *
          * Term first in the document, number first on the screen — the same
          * conforming pair the stat tiles draw, and argued at `pieces.tsx`
