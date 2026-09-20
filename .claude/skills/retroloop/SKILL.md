@@ -1075,11 +1075,11 @@ for a channel that works.
 **Rung 2 — a looping monitor, ONLY after you have proved lines reach you.** If
 your harness can run a watching script outside your turns **and hand you each
 line it prints as an event**, one monitor covers every round without a relaunch.
-That second half is load-bearing and is exactly the half that was read past when
-this channel last broke. Prove it before you rely on it: run a background task
-that prints a line and then keeps running, and check whether the line reached
-you as an event. It is a strict optimization over rung 1 — fewer relaunches,
-nothing else — so it is never worth an unproved assumption.
+That second half is load-bearing and is exactly the half that was read past in
+the third of those failures. Prove it before you rely on it: run a background
+task that prints a line and then keeps running, and check whether the line
+reached you as an event. It is a strict optimization over rung 1 — fewer
+relaunches, nothing else — so it is never worth an unproved assumption.
 
 ```sh
 last=0
@@ -1531,10 +1531,10 @@ the solving side's to take; `interactive` and `pull-request` mean it is not to b
 done without them. There is no separate hold or parked flag — there was one
 briefly and the human removed it, because this field already said it.
 
-There is no `requests` key here and no request command. Requests were a second
-ask channel beside the comment threads and the human removed them:
-**every ask now arrives as a comment**, so `threads` is where you read them and
-`retroloop comment add` is how you answer.
+There is no `requests` key here and no request command. Requests were a
+second ask channel beside the comment threads and the human removed them:
+**every ask now arrives as a comment**, so `threads` is where you read them
+and `retroloop comment add` is how you answer.
 
 Drop `--feedback-only` to get the same document with the record bodies attached
 under a `content` key on each record, when you need to see what they were
