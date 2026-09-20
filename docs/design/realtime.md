@@ -29,7 +29,7 @@
 
 ## CLI waiting
 
-- **`retro review wait`** tails the same events table from its own process (500 ms poll) and returns on `ReviewFinished` — one name since retro 4 `r-one-finish-button`, because the page has one terminal button and what the round was about is read from the round. No server involvement — works even if the server is down.
+- **`retro review wait`** tails the same events table from its own process (500 ms poll) and returns on `ReviewFinished` — one name, because the page has one terminal button and what the round was about is read from the round. No server involvement — works even if the server is down.
 
 ## Sequence
 

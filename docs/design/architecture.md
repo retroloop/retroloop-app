@@ -13,7 +13,7 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
 | **L4a** | Driving adapter: server | tRPC routers/context/error map, tailer, SSE, static serving, `serve()` composition root | Bypassed by `createCaller` in tests |
 | **L4b** | Driving adapter: CLI | yargs commands, `--json` output, guard, exit-code map | Run as a real process |
 | **L5** | Web UI | React SPA, tRPC client, `useLiveSession`, components | Mocked only at the typed tRPC link (R-MOCK-LOCK) |
-| **L6** | Browser + transport | Chromium/WebKit, HTTP, SSE/EventSource | Headless real browsers; never the owner's Chrome |
+| **L6** | Browser + transport | Chromium/WebKit, HTTP, SSE/EventSource | Headless real browsers; never a developer's everyday Chrome |
 | **L7** | Distribution | compiled binary, `setup`, `service install`, `update`, plugin hooks | `--dry-run` service registration in CI |
 
 ## Two processes, one code, one database
@@ -30,8 +30,8 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
   apps/api's `createServerRuntime`/`startServer`): stage lock first, then
   `openStore() → createApp(store) → createTailer(store, app) → createRouter(app, tailer) → Bun.serve`;
   `SIGTERM/SIGINT → tailer.stop(); server.stop(); store.close()`. It lives in the
-  CLI because the lock must be taken before anything opens the store (item 7:
-  a duplicate `serve()` in apps/api had no production caller and was removed).
+  CLI because the lock must be taken before anything opens the store; a
+  duplicate `serve()` in apps/api had no production caller and was removed.
 - **CLI `main.ts`** (apps/cli): `createApp(openStore())` + yargs. **No tailer in the CLI** — `review wait` polls the events table itself.
 - **No DI container** — explicit construction at the two roots only.
 
@@ -63,14 +63,14 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
 - **Two actors:** `ai` and `human`. The CLI always acts as `ai`; the browser acts as `human`.
 - **There are no human-decision commands in the CLI.** Approve / decline / revise
   / finish / human comments / human notes / annotations exist only in the UI.
-  `retroloop review close` is not one of them (retro 4 `r-one-finish-button`): it
-  decides nothing, it refuses unless the human has already finished *that*
-  revision with every record decided and none asking to be rewritten, and it is
-  closed to the `human` actor — so the browser cannot reach it even if a
-  procedure were added by mistake.
+  `retroloop review close` is not one of them: it decides nothing, it refuses
+  unless the human has already finished *that* revision with every record
+  decided and none asking to be rewritten, and it is closed to the `human`
+  actor — so the browser cannot reach it even if a procedure were added by
+  mistake.
 - **Enforcement lives in the use cases** (L3): every use case takes an `Actor`; human-owned writes throw `ForbiddenActorError` for `ai`. It holds for every adapter because it is below all of them.
 - **Backstop at L1:** human-authored tables (comments, notes, annotations, decisions, holds) are **append-only with SQLite triggers rejecting `UPDATE`/`DELETE`** — the guarantee holds even against a rogue writer opening the DB directly.
-- **`ReviewFinished` closes every human write, with no exceptions.** `holds.set` and `holds.clear` were reachable on a finished retrospective for one session (`r-hold-semantics`) and went with the feature (retro 4 `r-remove-hold`). One function, `refuseWhenFinished`, is what every human write calls, and `review.test.ts` enumerates them.
+- **`ReviewFinished` closes every human write, with no exceptions.** `holds.set` and `holds.clear` were reachable on a finished retrospective for a time and went with the hold feature when it was removed. One function, `refuseWhenFinished`, is what every human write calls, and `review.test.ts` enumerates them.
 - **Nothing is ever lost:** revisions are immutable; decline is a state, not a deletion; human notes are versioned per revision and viewable as written.
 
 ## The plugin repo (target state — not yet created)
