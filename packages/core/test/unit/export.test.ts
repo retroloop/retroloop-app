@@ -498,8 +498,8 @@ describe('export', () => {
    * pending, does not block the close, and is simply not in the file.
    *
    * A cold agent has no way to guess that from anywhere else, and the mistake is
-   * silent and unrecoverable-looking: SKILL.md now says it in the identity
-   * section, which is why it is pinned here.
+   * silent and unrecoverable-looking: the review skill now says it in the
+   * identity section, which is why it is pinned here.
    */
   test('a record dropped from the final revision leaves the export with it', async () => {
     const { retroId } = await harness.revision(session.id, [

@@ -249,10 +249,11 @@ describe('decisions', () => {
    *
    * They cannot: the proposals seed a record with **no decision**, and after
    * that the fallback chain in `record-decision.use-case.ts` reads the previous
-   * decision, never the new draft. This is what lets SKILL.md tell a cold agent
-   * to carry the human's values forward without fear, and — the case that has no
-   * other answer — to put any legal 1–5 in `defaults.solutionLevel` for a record
-   * the human ruled with a legacy level the input schema can no longer accept.
+   * decision, never the new draft. This is what lets the review skill tell a
+   * cold agent to carry the human's values forward without fear, and — the case
+   * that has no other answer — to put any legal 1–5 in `defaults.solutionLevel`
+   * for a record the human ruled with a legacy level the input schema can no
+   * longer accept.
    */
   test('a later revision’s proposals never overwrite a ruling', async () => {
     await harness.app.decisions.record.execute({

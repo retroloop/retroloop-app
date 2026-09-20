@@ -11,11 +11,11 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * (`20260823120200_create_revisions.ts`), and `rid`/`num` inside it are fields
  * the *AI* authored — `create-revision.use-case.ts` copies them across
  * field by field so that `revision get --content` is byte for byte the draft
- * that was submitted, which SKILL.md promises can be resubmitted as-is. A global
- * number is the one thing about a record the AI does not author, so it cannot go
- * in the blob: putting it there would rewrite an immutable document, break that
- * promise, and change the content hash every decision was carried over on
- * (`content-hash.service.ts`).
+ * that was submitted, which the review skill promises can be resubmitted as-is.
+ * A global number is the one thing about a record the AI does not author, so it
+ * cannot go in the blob: putting it there would rewrite an immutable document,
+ * break that promise, and change the content hash every decision was carried
+ * over on (`content-hash.service.ts`).
  *
  * So: `(retro_id, rid)` — the identity a record actually has (`record.model.ts`)
  * — mapped to one `AUTOINCREMENT` id. `AUTOINCREMENT` rather than a plain

@@ -32,11 +32,11 @@ export type CreateRevisionOutput = {
  * by hand or it is not stored at all.
  *
  * Nothing is derived on the way in, and that is load-bearing: `revision get`'s
- * `content` is *this object*, and SKILL.md promises a lost draft can be rebuilt
- * from it by wrapping it in `{ "records": [...] }`. A key stored here that the
- * input schema does not accept would break that promise, and would only ever
- * surface as an exit 2 in someone else's session. The level a record proposes is
- * read through `proposedLevel()` instead.
+ * `content` is *this object*, and the Retroloop plugin's review skill promises
+ * a lost draft can be rebuilt from it by wrapping it in `{ "records": [...] }`.
+ * A key stored here that the input schema does not accept would break that
+ * promise, and would only ever surface as an exit 2 in someone else's session.
+ * The level a record proposes is read through `proposedLevel()` instead.
  */
 function toRecord(input: RecordInput): RetroRecord {
   return {
@@ -187,7 +187,8 @@ export class CreateRevisionUseCase {
        * round the human has finished — and nothing else. Until this gate the store
        * enforced none of the loop's rhythm: identity and races were guarded, the
        * review's state was never an input, and the file-review-finish-file
-       * choreography lived only in SKILL.md prose, which binds nobody at the API.
+       * choreography lived only in the review skill's prose, which binds nobody
+       * at the API.
        *
        * It fired twice in one retrospective, on the cooperative case: the human
        * asked for changes mid-review, and filing immediately was the obliging thing

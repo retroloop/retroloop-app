@@ -1695,10 +1695,10 @@ describe('the CLI', () => {
 
     /**
      * The state a cold agent lands in when the human un-decides a record after
-     * finishing, and the exit from it — SKILL.md §4 tells one to read the
-     * `FINISH_GATE` code, name the records to the human, and retry the close on
-     * the finish they already gave. This is that sequence at the surface the
-     * skill actually calls.
+     * finishing, and the exit from it — the Retroloop plugin's review skill
+     * tells one to read the `FINISH_GATE` code, name the records to the human,
+     * and retry the close on the finish they already gave. This is that
+     * sequence at the surface the skill actually calls.
      */
     test('is exit 4 with FINISH_GATE when a verdict was undone, and closes once they rule again', async () => {
       const retroId = await aFinishedRound()
@@ -2187,9 +2187,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * The recovery SKILL.md promises when the draft file is gone: each record's
-     * `content` is one record of a revision file, with nothing to strip and
-     * nothing to rename, so `{records: [...contents]}` submits.
+     * The recovery the Retroloop plugin's review skill promises when the draft
+     * file is gone: each record's `content` is one record of a revision file,
+     * with nothing to strip and nothing to rename, so `{records: [...contents]}`
+     * submits.
      *
      * It holds because `content` is the stored record itself. That is easy to
      * break by "improving" the projection — adding a computed key, renaming one —

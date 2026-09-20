@@ -280,7 +280,7 @@ Feature: Reviewing a revision
   # A reply must be given as a quote. It opens by replaying what it is answering
   # — the comment, cleaned, as bullets with bold leads — inside a real quote, and
   # answers underneath it. That needs a blockquote in the subset, which is this
-  # half; the rule that mandates the shape is SKILL.md's.
+  # half; the rule that mandates the shape is the review skill's.
   #
   # The quote holds a list rather than a line, which is the whole reason it holds
   # blocks: a quote that could only carry a paragraph would put the dashes of

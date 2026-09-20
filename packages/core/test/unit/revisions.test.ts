@@ -150,8 +150,8 @@ describe('revisions', () => {
      *
      * It happened twice in one retrospective. Both filings were legal:
      * `revision create` guarded identity and races, and the review's state was
-     * never an input to it — the file-review-finish-file rhythm lived in
-     * SKILL.md prose, which binds nobody at the API. The cost is real: a
+     * never an input to it — the file-review-finish-file rhythm lived in the
+     * review skill's prose, which binds nobody at the API. The cost is real: a
      * replaced round can flip a record the reviewer has already decided back to
      * pending, so the time was spent on a moving target with no signal that it
      * moved.
@@ -443,9 +443,9 @@ describe('revisions', () => {
       /**
        * **It is not in the draft, and that is the promise.** `revision get
        * --content` hands back what was submitted so a lost draft can be rebuilt
-       * from it by wrapping it in `{ "records": [...] }` (SKILL.md); a key the
-       * input schema does not accept would break that, and would only ever
-       * surface as an exit 2 in somebody else's session.
+       * from it by wrapping it in `{ "records": [...] }` (the review skill); a
+       * key the input schema does not accept would break that, and would only
+       * ever surface as an exit 2 in somebody else's session.
        */
       test('is nowhere in the stored draft', async () => {
         const { retroId, revision } = await harness.revision(session.id, [{ rid: 'r-one', num: 1 }])

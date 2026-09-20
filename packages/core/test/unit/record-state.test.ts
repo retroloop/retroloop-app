@@ -55,10 +55,10 @@ describe('effective decision', () => {
   })
 
   /**
-   * What a content-changed record actually reads as, field by field — SKILL.md
-   * tells the drafting AI it is "exactly like a record they never touched", and
-   * that sentence is what stops it reporting a withdrawn verdict back to the
-   * human as though it still stood.
+   * What a content-changed record actually reads as, field by field — the
+   * review skill tells the drafting AI it is "exactly like a record they never
+   * touched", and that sentence is what stops it reporting a withdrawn verdict
+   * back to the human as though it still stood.
    */
   test('a content-changed record shows the AI’s proposals again, all of them', () => {
     const rewritten = aRecord({ problem: 'A materially different problem statement.' })
@@ -76,10 +76,10 @@ describe('effective decision', () => {
   })
 
   /**
-   * The binding is a hash, not a one-way door. SKILL.md tells the AI that
-   * restoring a record's content restores the verdict, which is the whole reason
-   * it is told to leave untouched records alone — an unasked-for "improvement"
-   * is a verdict somebody has to win back.
+   * The binding is a hash, not a one-way door. The review skill tells the AI
+   * that restoring a record's content restores the verdict, which is the whole
+   * reason it is told to leave untouched records alone — an unasked-for
+   * "improvement" is a verdict somebody has to win back.
    */
   test('restoring the content restores the verdict it lost', () => {
     const decision = aDecision({ revisionN: 1 })

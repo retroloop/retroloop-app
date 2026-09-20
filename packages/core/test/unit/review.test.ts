@@ -679,8 +679,8 @@ describe('review', () => {
      * A second press is not needed, and would be absorbed if they made one (the
      * once-per-round rule, `r-request-changes-multi-press`).
      *
-     * Written because SKILL.md now tells a cold agent exactly this: ask the
-     * human to rule on the named records, then retry the close.
+     * Written because the review skill now tells a cold agent exactly this: ask
+     * the human to rule on the named records, then retry the close.
      */
     test('closes on the original finish once they rule again, with no second press', async () => {
       const { retroId, revision } = await finishedRound([{}, {}])

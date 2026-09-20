@@ -53,9 +53,9 @@ export const rootCauseSchema = z.strictObject({
  *
  * Presence is mechanical here as everywhere: that `bullets` leads each bullet
  * with a few bold words, and that `footprint` is a tagged tree rather than a
- * paragraph, are instructed in SKILL.md and unvalidated for the same reason the
- * footprint's layout always was — a regex for those would pass garbage and fail
- * good writing.
+ * paragraph, are instructed in the Retroloop plugin's review skill and
+ * unvalidated for the same reason the footprint's layout always was — a regex
+ * for those would pass garbage and fail good writing.
  */
 export const solutionSchema = z.strictObject({
   bullets: nonEmpty('bullets'),
@@ -146,8 +146,8 @@ export const recordInputSchema = z.strictObject({
    * there was nothing the human could have done — whereas a record filed with
    * nothing looked at is a record that should not have been filed. Presence is
    * all that is checked, as everywhere in this file: what counts as evidence is
-   * instructed in SKILL.md, and a regex for it would pass a paragraph of
-   * assertion and fail a pasted log.
+   * instructed in the Retroloop plugin's review skill, and a regex for it would
+   * pass a paragraph of assertion and fail a pasted log.
    */
   diagnosticData: nonEmpty('diagnosticData'),
   /** Free text or the literal `"none"` — never absent. */

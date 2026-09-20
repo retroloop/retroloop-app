@@ -62,7 +62,8 @@ export type RootCause = {
  * solution's, and `proposedLevel()` below is the one place that says so. A
  * second, authored copy could contradict the array it summarises, and a copy
  * stored on the way in would make the record no longer a revision file — which
- * is what `revision get`'s `content` promises it is (SKILL.md's recovery step).
+ * is what `revision get`'s `content` promises it is (the review skill's
+ * recovery step).
  */
 export type ProposedDefaults = {
   readonly severity: Severity

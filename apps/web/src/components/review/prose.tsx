@@ -59,22 +59,23 @@ import { cn } from '@/lib/utils'
 /**
  * Every marker this grammar reads, written the way an author types it.
  *
- * **The twin of SKILL.md's subset list** (`r-subset-renderer-drift`). The skill
- * is the authoring contract every record is written against and this file is
- * the implementation of it — two copies of one contract, and until this
+ * **The twin of the authoring skill's subset list**
+ * (`r-subset-renderer-drift`). The Retroloop plugin's review skill is the
+ * authoring contract every record is written against and this file is the
+ * implementation of it — two copies of one contract, and until this
  * enumeration existed nothing held them together: a deliberate plant that
- * changed the documented blockquote marker from `> ` to `>> ` left seventeen
- * skill tests and every web test green, so the skill could document a marker
- * the renderer rejects and records authored to it would render as literal text
- * with no red anywhere. The skill ships to other repositories, so the drift
- * would have been exported with it.
+ * changed the documented blockquote marker from `> ` to `>> ` left every test
+ * green, so the skill could document a marker the renderer rejects and records
+ * authored to it would render as literal text with no red anywhere. The skill
+ * ships to other repositories, so the drift would have been exported with it.
  *
- * `apps/cli/test/skill.test.ts` holds the two against each other in both
- * directions and fails by name — a marker documented that nothing here reads,
- * or read here and documented nowhere. It reads this list out of this file's
- * *source* rather than importing it, because `apps/cli` and `apps/web` are
- * siblings and neither may import the other (repo-layout.md); the same test
- * already reads SKILL.md and the root package.json the same way.
+ * This enumeration is the renderer's half of that contract, kept as data so
+ * the two halves can be held against each other in both directions — a marker
+ * documented that nothing here reads, or read here and documented nowhere.
+ * It is written out rather than left implicit in the regexes below for the
+ * same reason a checker must read it from this file's *source* rather than
+ * import it: the skill ships from another repository, and nothing here may
+ * reach across to it.
  *
  * The regexes below are what actually do the reading, and they stay regexes
  * because a `- ` that tolerates more spaces and a numbered line whose digits
