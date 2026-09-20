@@ -212,7 +212,7 @@ describe('create_record_ids', () => {
       db.run("INSERT INTO record_ids (retro_id, rid) VALUES (1, 'r-stale-lock')"),
     ).toThrow(/UNIQUE/)
     // The same rid in a retrospective that has not minted it is a different
-    // record, and is admitted (A5).
+    // record, and is admitted.
     db.run("INSERT INTO record_ids (retro_id, rid) VALUES (2, 'r-prose-raw')")
     expect(mintedIds(db).at(-1)).toEqual([7, 2, 'r-prose-raw'])
 

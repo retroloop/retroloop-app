@@ -605,9 +605,9 @@ describe('record lifecycle', () => {
    * so their life cycle can be managed.
    *
    * It endangers nothing the finish lock protects. That rule exists so an export
-   * cannot grow new feedback behind its reader, and lifecycle is not exported
-   * (A8) — the document taken from this retrospective is the same document
-   * before and after.
+   * cannot grow new feedback behind its reader, and lifecycle is not exported —
+   * the document taken from this retrospective is the same document before and
+   * after.
    */
   test('is reachable after the review has closed — for both actors', async () => {
     const rids = ['r-record-1', 'r-record-2']

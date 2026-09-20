@@ -225,9 +225,9 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
     })
 
     /**
-     * The rid is minted per retrospective (A5), so the same one names two
-     * records — and the number this page shows is what tells them apart out
-     * loud. A sequence keyed on the rid alone would hand both the same one.
+     * The rid is minted per retrospective, so the same one names two records —
+     * and the number this page shows is what tells them apart out loud. A
+     * sequence keyed on the rid alone would hand both the same one.
      */
     test('gives two retrospectives’ records of the same rid different numbers', async () => {
       const alpha = await startSession('uuid-dup-a', '/Users/sample/Developer/retro')
@@ -301,9 +301,9 @@ export function describeListAllRecordsContract(label: string, makeStore: StoreFa
 
     /**
      * **A rid is minted per retrospective, so a label on one is not a label on
-     * the other** (A5). Both retrospectives here hold an `r-flaky-test`, and
-     * only one of them is labelled — a listing keyed on the rid alone puts the
-     * tag on both rows, which is the shape of bug this whole fixture exists for.
+     * the other**. Both retrospectives here hold an `r-flaky-test`, and only one
+     * of them is labelled — a listing keyed on the rid alone puts the tag on both
+     * rows, which is the shape of bug this whole fixture exists for.
      */
     test('gives a label to the record that wears it and not to its namesake', async () => {
       const alpha = await startSession('uuid-label-a', '/Users/sample/Developer/retro')

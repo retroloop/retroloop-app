@@ -878,10 +878,10 @@ describe('review', () => {
      *
      * None of the four endangers what the lock protects, for the same reason:
      * **none is in the export**, so the document taken from this retrospective
-     * reads the same before and after (A8: labels and attributes stay out of
-     * export v1 by design, and relations stay out on exactly this argument — a
-     * relation *can* be added after an export was taken, which is precisely why
-     * it is not in one).
+     * reads the same before and after: labels and attributes stay out of export
+     * v1 by design, and relations stay out on exactly this argument — a relation
+     * *can* be added after an export was taken, which is precisely why it is not
+     * in one.
      *
      * Asserted here rather than only in their own files because this is the file
      * that claims to enumerate the whole set, and a claim about a set is only

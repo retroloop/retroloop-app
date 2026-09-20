@@ -36,8 +36,8 @@ export function describeRecordIdRepositoryContract(label: string, makeStore: Sto
 
     /**
      * A rid is minted per retrospective, so the same one names two different
-     * records (A5). They are two records and they get two numbers — the one
-     * property that makes a global id usable as an address at all.
+     * records. They are two records and they get two numbers — the one property
+     * that makes a global id usable as an address at all.
      */
     test('gives the same rid in two retrospectives two different numbers', async () => {
       const first = await store.recordIds.add({ retroId: here, rid: 'r-stale-lock' })

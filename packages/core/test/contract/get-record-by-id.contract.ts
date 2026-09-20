@@ -84,9 +84,9 @@ export function describeGetRecordByIdContract(label: string, makeStore: StoreFac
 
     /**
      * **The whole reason a global number exists.** A rid is minted per
-     * retrospective (A5), so `r-stale-lock` names two different records here —
-     * and a resolver that matched on the rid, or on a row's position, would open
-     * one of them under the other's number.
+     * retrospective, so `r-stale-lock` names two different records here — and a
+     * resolver that matched on the rid, or on a row's position, would open one of
+     * them under the other's number.
      */
     test('two retrospectives minting the same rid are two records with two numbers', async () => {
       const sessionId = await startSession('uuid-1')
