@@ -38,7 +38,7 @@ retroloop-app/
 └── README.md
 ```
 
-## Conventions (adopted from dca247)
+## Conventions
 
 - **File naming:** `*.model.ts / *.use-case.ts / *.repository.ts / *.service.ts / *.port.ts / *.adapter.ts / *.error.ts / *.schema.ts`; no `I`-prefix; folders materialize with their first member.
 - **Use cases:** one class per file, `execute(Input): Promise<Output>` with explicit DTO types; misses return `undefined`, never throw; typed domain errors; inputs validated once at the boundary.
@@ -48,5 +48,6 @@ retroloop-app/
 
 ## Worktrees
 
-- **Agent worktrees:** `.claude/worktrees/<unrelated-word>` (gitignored), one per worker, branch = same word. Reference branches (e.g. `harbor`, the dashboard styling reference) are never merged.
-- **Owner review worktrees:** `~/Developer/retro-review-N` on branch `review/N` — created fresh per review round, numbered, kept forever, frozen while the owner holds them, never written by agents.
+- **Git worktrees live under `.claude/worktrees/<name>`** (gitignored), one per
+  line of work, with the branch named after the folder. Nothing outside that
+  folder is written by a worktree.

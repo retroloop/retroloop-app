@@ -1,14 +1,8 @@
 # Data model
 
-> **ASSUMED — pending owner review.** This distills the owner-decision brief
-> (D1–D4; private project records) into the normative model. The owner authorized proceeding on safe
-> assumptions (2026-08-23, session 2); every D-reference below marks a decision he
-> may still overturn. If a D is overturned, this file and the code change — the
-> brief records the alternatives.
-
-Integer primary keys everywhere (KC-0016). Records use a stable slug `rid` plus a
+Integer primary keys everywhere. Records use a stable slug `rid` plus a
 **position** `num` inside their retrospective — minted once, never renumbered,
-never reused — and, since session 9, a **global** `id` from one sequence over the
+never reused — and a **global** `id` from one sequence over the
 whole ledger, which is the number a reader is shown (§Record ids). Actor
 enforcement and append-only guarantees per `architecture.md` §Actor model.
 
@@ -16,22 +10,21 @@ State machines — the retrospective's, the record's two, the thread's — are i
 `lifecycle.md`, one per entity. This file is where the data lives; that one is
 what may move it.
 
-> **Iteration-2 direction (KC-0020, owner-approved 2026-08-25):** the model is
-> flattened to **sessions + retros**. `project` is a dormant optional string —
-> no Project entity, nothing groups by it; **`session.cwd` is the identity
-> anchor** (immutable, a Claude Code invariant). A retrospective gains an
-> AI-authored **`title`** carried on the revision payload (latest revision's
-> title wins; fallback "Retro #n — <cwd basename>"). The retro's 1-based ordinal
-> within its session (D12) is display identity; the autoincrement id is the
-> address.
+> **The model is flattened to sessions + retros.** `project` is a dormant
+> optional string — no Project entity, nothing groups by it; **`session.cwd` is
+> the identity anchor** (immutable, a Claude Code invariant). A retrospective
+> gains an AI-authored **`title`** carried on the revision payload (latest
+> revision's title wins; fallback "Retro #n — <cwd basename>"). The retro's
+> 1-based ordinal within its session is display identity; the autoincrement id
+> is the address.
 
 ## Entities
 
 ```
-Project (name)                        — dormant optional string on Session (KC-0020: no project construct)
+Project (name)                        — dormant optional string on Session (no project construct)
 Session 1─n Retrospective 1─n Revision 1─n Record(embedded)
 Session 1─n Note(ai|human) 1─0..1 Annotation (on AI notes, human-authored)
-Retrospective 1─n Request        — removed as a feature (retro 4 `r-remove-requests`); rows are history
+Retrospective 1─n Request             — removed as a feature; rows are history
 Record  1─n Decision(version-append)  1─n CommentThread 1─n Comment
 Record  1─1 RecordId                  — the global number, minted once, outside the revision blob
 Record  1─n RecordLifecycle(version-append) — the second axis: resolved/reopened/archived/unarchived
@@ -42,9 +35,9 @@ Record  1─n RecordAttributeValue(version-append) — what it carries, human-on
 RecordId n─n RecordId  via RecordRelation(version-append) — how two records relate, either actor;
                         the one edge in this diagram that crosses retrospectives
 Setting(version-append) — the global settings; one key, `ai_config_write`
-Record  1─n Hold(version-append)       — removed as a feature (retro 4 `r-remove-hold`); rows are history
+Record  1─n Hold(version-append)      — removed as a feature; rows are history
 Retrospective 1─n CommentThread       — review-level threads (no record)
-Retrospective 1─n FinishMessage(version-append) — his final word on a round, keyed (retro, revision)
+Retrospective 1─n FinishMessage(version-append) — the human's final word on a round, keyed (retro, revision)
 Event   — appended in the same transaction as every write (outbox)
 ```
 
@@ -54,13 +47,13 @@ Event   — appended in the same transaction as every write (outbox)
 |---|---|---|---|
 | `id` | int | system | |
 | `claudeSession` | uuid | ai | idempotency key for `session create` |
-| `project` | string? | ai | optional + dormant since KC-0020 — nothing may build on it |
+| `project` | string? | ai | optional + dormant — nothing may build on it |
 | `cwd`, `branch` | string | ai | |
-| `supervised` | bool | ai | session-level fact, never per record (D1) |
+| `supervised` | bool | ai | session-level fact, never per record |
 | `startedAt` | timestamp | system | |
 | `status` | `active \| reviewing \| finished` | derived | from its retrospectives |
 
-## Retrospective — state machine (D3, amended by retro 4 `r-one-finish-button`)
+## Retrospective — state machine
 
 `open → reviewing → finished` — the machine and its gates are `lifecycle.md`
 §Retrospective; what follows is the same shape with the data around it. Three
@@ -69,25 +62,25 @@ derived per read and never written (`lifecycle.md` §submitted).
 
 - `open → reviewing`: first `revision create` of this retrospective.
 - `reviewing → reviewing`: any further revisions. **`ReviewFinished` does not
-  change state either** — it is the human's one button saying *his side of this
-  round is closed*, and it unblocks `review wait`. (`ChangesRequested` did the
+  change state either** — it is the human's one button saying *the human's side
+  of this round is closed*, and it unblocks `review wait`. (`ChangesRequested` did the
   same job for the second button; nothing appends one since that button was
   removed.)
   **Finish gate:** refused while any record of the latest revision is `pending`
   (every record must be `approved | declined | revise`).
   **Once per round:** a second press for the same revision is absorbed — no
-  second event, no error (retro 4 `r-request-changes-multi-press`).
+  second event, no error, so a mis-press costs one press.
   **The round's final message:** the press may carry one — see §Finish message.
 - `reviewing → finished`: **`ReviewClosed` — the AI's explicit close to export**,
   terminal. It is the AI's step because the choice it encodes is readable from
-  what the human wrote, not from which button he chose: *"there should be just
-  one button, I say finish review, and you then look at what I requested and,
-  based on it, send a new revision — or say OK, there are no new requests"*
-  (retro 4 `r-one-finish-button`). Three mechanical guards, no judgment:
+  what the human wrote, not from which button was pressed: there is one button,
+  the human finishes the review, and the AI then reads what was requested and
+  either sends a new revision or confirms there are no new requests. Three
+  mechanical guards, no judgment:
   a `ReviewFinished` for the **latest** revision must exist, the finish gate must
   still hold, and no record may carry `revise` (that ask must be addressed in the
-  next revision, `r-verdict-revise`).
-- **Between his finish and the close the human may still write** — change a
+  next revision).
+- **Between the finish and the close the human may still write** — change a
   verdict, undo one, add a comment. That is why the close re-asks the gate
   instead of trusting the answer the finish got.
 - **After `finished`, the retrospective itself takes no more writing.**
@@ -97,8 +90,7 @@ derived per read and never written (`lifecycle.md` §submitted).
   write path on a retrospective calls it — with **one deliberate exception**, the record's lifecycle axis,
   which exists precisely because the retro is closed (§Record lifecycle;
   `lifecycle.md` §The finish lock). `holds.set` and `holds.clear` were a second
-  exception for a single session and went with the feature (retro 4
-  `r-remove-hold`).
+  exception for a time and went with the hold feature when it was removed.
 - Exactly **one non-`finished` retrospective per session**; `revision create` on a
   session whose last retrospective is `finished` starts a new one.
 - **The human's outcome is an explicit UI action, and the AI's close is a
@@ -115,17 +107,17 @@ gives an optimistic check (`ConflictError` → exit 4).
 |---|---|---|
 | `retroId`, `n` | int | unique per retro |
 | `createdAt` | timestamp | |
-| `title` | string? | AI-authored; the retrospective's plain-language name, trimmed, 1–80 chars (KC-0020) |
+| `title` | string? | AI-authored; the retrospective's plain-language name, trimmed, 1–80 chars |
 | `records[]` | Record | embedded, ordered by `num` |
 
 **The retrospective's title is the latest revision's title** (null when the
 latest proposed none). A title rides on the draft, so renaming a retro means
-redrafting it — the same rule everything else in a revision obeys (D4). It is
-AI-authored and never a bare number (ledger v2 #120); readers fall back to
+redrafting it — the same rule everything else in a revision obeys. It is
+AI-authored and never a bare number; readers fall back to
 "Retro #n — <cwd basename>". `retros.get`, `retros.list` and the export carry
-it; the dashboard rows and the review header render it (session 4).
+it; the dashboard rows and the review header render it.
 
-## Record (embedded in a revision) — D1
+## Record (embedded in a revision)
 
 **Identity** (minted at first appearance in the retrospective, stable across revisions):
 
@@ -142,9 +134,9 @@ records at once (`/records`) is where keying on the rid alone would first bite.
 
 ### Record ids — one sequence over the whole ledger
 
-The owner: *"I am noticing that records don't seem to have unique id. in each
-retro record ids start from #1 which is weird … obviously I will like the global
-sequence rather than this retro prefix."*
+Record numbers that restart at #1 inside every retrospective are ambiguous
+across the ledger, so the number a reader is shown comes from one global
+sequence rather than a per-retrospective one.
 
 `record_ids` is a table of `(retro_id, rid) → id` with `UNIQUE (retro_id, rid)`
 and the append-only triggers, so a number is minted once and never moves. It is
@@ -176,28 +168,28 @@ export stays valid unmodified.
 | `problem` | markdown | problem + impact, self-contained |
 | `humanWords[]` | `{verbatim, cleaned, context}` | every quotable instance; both halves required |
 | `rootCause` | `{whatHappened, whys[1..5], root}` | five-whys |
-| `diagnosticData` | markdown | the evidence diagnosed from — logs, timings, commands run; required on every record filed from RL-52 on, `undefined` on every record filed before |
+| `diagnosticData` | markdown | the evidence diagnosed from — logs, timings, commands run; required on every record filed since the field was introduced, `undefined` on every record filed before |
 | `workaround` | string | free text or literal `"none"`; never absent |
 | `solutions` | `Solution[1..3]` | one to three ways to solve it — see below |
 | `requester` | `human \| ai` | who raised it |
 | `impacts` | `human \| ai` | primary impact (v2 semantics) |
 
-**Solutions — the owner's multi-solution design** (dictated: *"the AI should do
-deep-dive and propose solutions (up to 3). In some places only 1-2 might make
-sense when it is a quick fix"*). A record no longer carries one agreed direction
-and one footprint; it carries a **choice**, and the human makes it.
+**Solutions — the multi-solution design.** The AI deep-dives and proposes up to
+three solutions; where the fix is quick, one or two is all that makes sense. A
+record no longer carries one agreed direction and one footprint; it carries a
+**choice**, and the human makes it.
 
 | field | type | notes |
 |---|---|---|
 | `bullets` | markdown | the proposal, bold-lead bullets; entries attributed `(human-suggested) \| (AI-suggested) \| (agreed)` |
-| `footprint` | string | affected files/areas tree for *this* solution, or the literal `"none"`; presence validated, layout instructed (D5) |
-| `level` | `1..5` | this solution's ceiling (KC-0021) |
+| `footprint` | string | affected files/areas tree for *this* solution, or the literal `"none"`; presence validated, layout instructed |
+| `level` | `1..5` | this solution's ceiling |
 | `recommended` | bool | true on exactly one of them |
 
 Three rules are **mechanical**, not instructed, because each is load-bearing at
-the other end: one to three entries; **sorted ascending by `level`** (his *"It
-should always be sorted from lower level solution to high level solution"* — the
-order is the identity, since the human's pick is stored as a position); and
+the other end: one to three entries; **sorted ascending by `level`**, always
+from the lowest-level solution to the highest — the order is the identity, since
+the human's pick is stored as a position; and
 **exactly one `recommended`**, which is what a reviewer who touches nothing is
 taken to have accepted. Ties keep the order given.
 
@@ -207,7 +199,7 @@ into an AI-authored array is not, so any change to any solution resets the recor
 to `pending` and the reviewer picks again against what is in front of them.
 
 **`diagnosticData` is outside the content hash** — the one narrative field that
-is (RL-52). It is supporting evidence the human never answers: no comment anchors
+is. It is supporting evidence the human never answers: no comment anchors
 to it, no verdict is about it, and whatever actually changed the diagnosis shows
 up in the narrative that states it. So a record re-filed with a fuller log keeps
 its verdict, which is also what makes the upgrade free for the records decided
@@ -247,20 +239,17 @@ from v2's `ticket-schemas.md` (the single schema authority of the capture
 pipeline this model carries forward):
 
 **Severity — 1 is the highest, 5 the lowest.** Normative, and said on the label
-rather than only here: retro 4 `r-sev-label-descriptions`, his review comment —
-*"in the label clarify that Sev 1 is the highest severity"*. Which end is worst
-is convention rather than intuition, and the products he compares this against
-disagree with each other, so the scale states its own direction. The rows are
-anchors, not thresholds — frequency folds into the judgment, which is why there
-is no separate recurrence field.
+rather than only here, so that a reader learns which end is the highest without
+leaving the control. Which end is worst is convention rather than intuition, and
+comparable products disagree with each other, so the scale states its own
+direction. The rows are anchors, not thresholds — frequency folds into the
+judgment, which is why there is no separate recurrence field.
 
 **A severity option reads `SEVn — <short description>`.** The number leads,
-because severity is the one enum the owner addresses by number and the
-"what — why" convention buried it (retro 3 `r-severity-label-regression`,
-approved); the description follows it, because compact-only overshot that
-correction — one real review in, `SEV1` … `SEV5` alone left a reader unable to
-tell one end of the scale from the other (retro 4 `r-sev-label-descriptions`,
-approved). The option label is the **lead of the rubric row**, nothing new
+because severity is the one enum a reviewer addresses by number and the
+"what — why" convention buried it; the description follows it, because the
+number on its own leaves a reader unable to tell one end of the scale from the
+other. The option label is the **lead of the rubric row**, nothing new
 written; the rows stay canonical as the **rubric** — what a severity *means*,
 and what an AI proposing one is judging against:
 
@@ -272,9 +261,9 @@ and what an AI proposing one is judging against:
 | 4 | SEV4 — minor friction | Minor friction — an extra step, an annoyance, a cosmetic wart; cheap workaround, low cost per hit |
 | 5 | SEV5 — nice-to-have | Nice-to-have — not time-critical, no workaround even needed; an improvement idea more than a problem |
 
-**Solution level** — **strictly levels 1–5** (KC-0021, the owner: *"cut that
-list of solutions to only L1 to L5"*). A ceiling, not a target; chosen before
-involvement; renders as a radio list — bold level name, then its definition:
+**Solution level** — **strictly levels 1–5.** A ceiling, not a target; chosen
+before involvement; renders as a radio list — bold level name, then its
+definition:
 
 | value | option label |
 |---|---|
@@ -285,7 +274,7 @@ involvement; renders as a radio list — bold level name, then its definition:
 | `5` | Level 5 — open-ended: emergent, autonomous, or not cleanly undoable |
 
 **Read-only historical values.** `none`, `upstream` and `undecided` were in the
-enum until KC-0021 and retro 1 holds two of them (r5 `upstream`, r10 `none`).
+enum until it was narrowed to 1–5, and stores written before that hold them.
 They can no longer be **chosen by a human or proposed by a draft** — both write
 paths take the 1–5 input enum and reject them — and they are **never rewritten**,
 because human data is append-only. Every read path keeps them: the wire views,
@@ -314,10 +303,10 @@ one of the five.
 | `undecided` | Undecided — the solving side asks first |
 
 The explanatory half is never dropped for brevity — a two-line wrap in a
-dropdown is acceptable (owner's standing rule). A UI may subset the values,
+dropdown is acceptable. A UI may subset the values,
 never contradict labels or meanings.
 
-## Decision — human-only, versioned, append-only (D1, D4)
+## Decision — human-only, versioned, append-only
 
 One decision row per (retro, `rid`, version). A change appends a new version;
 history is never lost. Written only by actor `human`, only via the UI;
@@ -325,28 +314,27 @@ history is never lost. Written only by actor `human`, only via the UI;
 
 | field | type | notes |
 |---|---|---|
-| `state` | read: `pending \| approved \| declined \| revise \| hold` · write: `pending \| approved \| declined \| revise` | decline is a state, never a deletion; **`revise` is "rewrite this one"** (retro 4 `r-verdict-revise`) — see below; `hold` is read-only history — see §Hold |
+| `state` | read: `pending \| approved \| declined \| revise \| hold` · write: `pending \| approved \| declined \| revise` | decline is a state, never a deletion; **`revise` is "rewrite this one"** — see below; `hold` is read-only history — see §Hold |
 | `severity`, `involvement` | as above | initialized from the AI's proposals |
-| `solutionLevel` | as above | the ceiling he approved. On a record with solutions it is **the selected solution's level**, not a dial he turned separately; on a record without them it is the dial. A stored value may be one of the read-only historical ones (KC-0021) |
-| `selectedSolution` | `int?` | which solution his verdict is for, **1-based** into the record's array — `null` on a record that proposed none. Optional on input with the same fallback as the other values, `input ?? previous ?? the recommended one`: a reviewer who accepts the recommendation says so by leaving it alone. Sending a `solutionLevel` for a record with solutions, or a `selectedSolution` for a record without, is a `ValidationError` rather than a value quietly ignored |
+| `solutionLevel` | as above | the ceiling the human approved. On a record with solutions it is **the selected solution's level**, not a dial turned separately; on a record without them it is the dial. A stored value may be one of the read-only historical ones |
+| `selectedSolution` | `int?` | which solution the verdict is for, **1-based** into the record's array — `null` on a record that proposed none. Optional on input with the same fallback as the other values, `input ?? previous ?? the recommended one`: a reviewer who accepts the recommendation says so by leaving it alone. Sending a `solutionLevel` for a record with solutions, or a `selectedSolution` for a record without, is a `ValidationError` rather than a value quietly ignored |
 | `reviewerNote` | string | the human's free channel; travels verbatim into export |
 | `revisionN` | int | the revision whose content this decision was made against |
 
-**The third verdict, `revise`** (retro 4 `r-verdict-revise`, owner-approved).
-*"Either I'm going to approve either I'm going to decline or either I'm going to
-request a revision — all of any of those is going to move it out of pending."*
+**The third verdict, `revise`.** Approve, decline and revise are the three
+verdicts, and each of them moves a record out of `pending`.
 It is decided as far as the finish gate is concerned, and an instruction as far
 as the AI is concerned: a record carrying one **must be addressed in the next
 revision**, and `ReviewClosed` refuses while one stands. A revision that rewrites
 the record sends it back to `pending` by the carry-over rule below, so the human
-decides it again on the content he asked for.
+decides it again on the content that was asked for.
 
 **Undo is an append.** Re-clicking the verdict a record already carries writes a
-new `pending` version (*"if I click it again it should undo it"*). Nothing is
+new `pending` version, so a second press on the same button undoes it. Nothing is
 mutated and nothing is deleted: the verdict that was undone stays in the record's
 history, which is the same rule every other human write obeys.
 
-**Carry-over (D2, option A — carry-on-unchanged):** when revision n+1 lands, a
+**Carry-over (carry-on-unchanged):** when revision n+1 lands, a
 record whose narrative content is byte-identical (canonical-JSON hash) to the
 version its latest decision was made against keeps that decision (UI shows
 "decided on rev k"); any content change resets the record's effective state to
@@ -356,12 +344,10 @@ identical content.
 
 ## Record lifecycle — both actors per act, versioned, append-only
 
-**The record's second axis**, beside the verdict and never on it — the owner's
-session-8 ask (*"even after a retro has been closed, we should be able to attach
-metadata to issues so that we can manage their life cycle … we should be able to
-specify a commit id or github issue or something as reference"*) widened by his
-session-9 one (*"maybe we can have a type called archived so it's just going to
-be archived and the user should be able to unarchive"*).
+**The record's second axis**, beside the verdict and never on it. Even after a
+retrospective has closed, a record's life cycle has to stay manageable: metadata
+can be attached to it — a commit id, a tracker issue, or any other reference —
+and it can be archived and unarchived.
 
 The **machine** — which acts exist, what each leaves the record in, who may take
 which, and why declined records are born archived — is `lifecycle.md` §Record.
@@ -386,15 +372,15 @@ Three departures from the holds / `thread_resolutions` pattern it otherwise
 copies, each earning its place:
 
 1. **`status` is TEXT, not a bit.** Two positions were never going to be the end
-   of it, and they were not: the enum went from two to four in one session. The
+   of it, and they were not: the enum went from two to four soon after. The
    widening is a **rebuild** (`20260831090000_record_lifecycle_allow_archive.ts`)
    — SQLite cannot alter a CHECK in place, which the original table header got
    wrong when it called a widening "a one-line migration". A rebuild that widens
    an enum keeps every row; unpicking a bit would have had to invent values.
 2. **`refs` is a JSON array** with `json_valid`, on the `revisions.records`
    precedent — the only other column in this schema holding a list. Free text,
-   because the owner named three kinds of reference and a shape that knew which
-   was which would refuse the fourth.
+   because three kinds of reference were named from the start and a shape that
+   knew which was which would refuse the fourth.
 3. **`actor` is a column**, which no other append-only table has, because every
    other one is single-writer and the author is implied by the table. This one is
    written by the AI reporting what it fixed and by the human from the browser.
@@ -415,23 +401,16 @@ Events: `RecordResolved`, `RecordReopened`, `RecordArchived`, `RecordUnarchived`
 — one name per act, scoped `(sessionId, retroId, rid)` and carrying no
 `revisionN`, because a record's lifecycle outlives every redraft of it.
 
-## Labels and attributes — the two vocabularies (session 10)
+## Labels and attributes — the two vocabularies
 
-**The owner ruled both primitives into existence and ruled each of them pure.**
-His words, dictated, superseding the AI proposal that would have hung refs and a
-note off a label's apply event
-(the labels/attributes owner ruling, private project records):
-
-> *"I don't like the idea of label + notes; that is not a standard practice.
-> Usually labels are just labels. A user can create their own conventions if we
-> support labels as well as attributes — they can have a convention that whenever
-> we add the migrated label, we should also have an attribute that requires a
-> GitHub issue id, or something like that. However, to keep it flexible we will
-> not hardcode any labels or attributes. Also, to keep it simple, we can keep
-> attributes to very fixed types and not with too many configs, so that we don't
-> have to put in a lot of validations. Note that adding those will require
-> setting up a settings page, because each label or attribute is going to be a
-> global thing."*
+**Both primitives exist and each of them is pure.** A label plus a note is not
+standard practice: usually labels are just labels. Supporting labels *and*
+attributes lets a team build its own conventions on top of the pair — for
+instance, that whenever the `migrated` label goes on, an attribute holding a
+tracker issue id is set beside it. To stay flexible, no label and no attribute
+is hardcoded. To stay simple, attributes keep to a few fixed types with no
+further configuration, so validation stays small. And because a label or an
+attribute is a global thing, defining them needs a settings page.
 
 Five consequences, each of them a thing this model deliberately has or lacks:
 
@@ -439,8 +418,8 @@ Five consequences, each of them a thing this model deliberately has or lacks:
    and a bit. A team wanting the detail beside the classification sets an
    attribute, which is what the second primitive is for.
 2. **Nothing is enforced between them.** A record can wear `migrated` with no
-   value set and carry a value with no labels; *"composition is the USER'S
-   convention … never a system mechanism"*.
+   value set and carry a value with no labels: composition is the **user's**
+   convention, never a system mechanism.
 3. **Nothing is shipped.** No migration inserts a definition, nothing defaults
    one, and `migrated` is not special in any reader. A store with labels in it is
    a store somebody typed them into.
@@ -478,12 +457,12 @@ table's plain `UNIQUE (name)` stays as the L1 backstop for the exact-match case.
 type the definition no longer claims — retiring and redefining is the whole
 alternative.
 
-**Un-retire, on the other hand, exists** (retro-11 `r-retire-burns-a-word`,
-session 12). It was out of the session-10 scope — *"create, rename, retire"* —
-and the retro that followed named the cost: one press, no confirm, no undo, and
-a name this store never frees, so a mis-press burned a vocabulary word forever.
-Clearing the nullable timestamp is the whole of the write, which is what the
-paragraph this replaced predicted; the row, the id and the name are untouched,
+**Un-retire, on the other hand, exists.** The vocabulary's first scope was
+create, rename and retire, which left retire costing one press with no confirm,
+no undo, and a name the store never frees — so a mis-press burned a vocabulary
+word forever.
+Clearing the nullable timestamp is the whole of the write; the row, the id and
+the name are untouched,
 so nothing that was applied under it is disturbed either way.
 
 ### What a record wears and carries — human-only, versioned, append-only
@@ -500,18 +479,18 @@ because a rid is minted per retrospective; and the version sequence is dense
 | `applied` | `true` puts a label on, `false` takes it off. Removing is a row, never a delete |
 | `value` | the text set, or **absent** where the act was clearing it — a different fact from never having carried one |
 
-**Human-only this session**, whatever the AI-config-write toggle says: that
+**Human-only**, whatever the AI-config-write toggle says: that
 toggle governs the *definitions*, and whether the AI may ever suggest a label on
-its own draft is one of the opens the ruling did not reach. Neither table has an
+its own draft is still open. Neither table has an
 `actor` column, because both are single-writer — the same rule every other
 human-authored table here follows.
 
 **Both are writable on a finished retrospective**, joining `records.setLifecycle`
 and `records.relate` as the exceptions `refuseWhenFinished` deliberately does not
-guard. That is the owner's second usage archetype: *"on completion of the retro
-they may actually want to move everything into GitHub right away … they could
-actually put a label that says 'migrated'"* — which happens after the close by
-construction. None of the four endangers the lock's purpose, because none is in
+guard. That serves a second usage archetype, beside the lifecycle axis's: on
+completion of a retrospective a team may want to move everything into their
+tracker right away, putting a `migrated` label on each record as it goes —
+which happens after the close by construction. None of the four endangers the lock's purpose, because none is in
 the export.
 
 **Not exported**, like the lifecycle axis and for the same reason: a document
@@ -526,13 +505,11 @@ RecordLabelRemoved · RecordAttributeSet · RecordAttributeCleared` are scoped
 `(sessionId, retroId, rid)` and carry no `revisionN`, because a label outlives
 every redraft of the record it is on.
 
-## Record relations — both actors, versioned, append-only (session 11)
+## Record relations — both actors, versioned, append-only
 
-His ask, dictated at the session-11 scope alignment:
-
-> *"Both actors can relate records, each relation carries how-they-relate words,
-> and the relation reads from both sides, so that AI can easily find past records
-> and build holistic solutions."*
+Both actors can relate records, each relation carries how-they-relate words, and
+a relation reads from both sides, so that the AI can find past records and build
+holistic solutions.
 
 `record_relations` is `(from_id, to_id, version, applied, how, actor, at)` with
 `UNIQUE (from_id, to_id, version)`, `CHECK (from_id != to_id)` and the append-only
@@ -540,17 +517,17 @@ triggers. **Both sides are `record_ids.id`**, and that is the only shape
 available: every other per-record table addresses one record as the pair
 `(retro_id, rid)`, and a key made of two pairs is a key nobody can read, join on
 or say out loud. The global id exists for exactly that reason, and it costs a
-cross-retrospective relation nothing — which it must, because *"find past
-records"* means past retrospectives.
+cross-retrospective relation nothing — which it must, because finding past
+records means past retrospectives.
 
 | field | notes |
 |---|---|
-| `how` | the words, **required on every row** — *"each relation carries how-they-relate words"*. Free text, no vocabulary: the `refs` argument, that a shape insisting on knowing which kind it is refuses the fourth kind |
+| `how` | the words, **required on every row**. Free text, no vocabulary: the `refs` argument, that a shape insisting on knowing which kind it is refuses the fourth kind |
 | `applied` | `true` relates, `false` takes it off. Un-relating is a row, never a delete — and the row carries **forward** the words of the relation it takes off, so the history never holds two accounts of one relation |
 | `actor` | `ai` or `human`. The second table in this schema with one, and for `record_lifecycle`'s reason: every other append-only table is single-writer, and this one is not |
 
 **Directed as authored, read from both sides, never mirrored.** One row per
-relation; *"reads from both sides"* is a property of the read
+relation; reading from both sides is a property of the read
 (`listForRecord` asks `from_id = ? OR to_id = ?`, hence one index per side) and
 the direction is what differs between the two answers. A mirror row would be a
 second thing to keep in agreement, a second thing to un-relate, and a second
@@ -570,8 +547,8 @@ relation could occupy — a relation that means something else is different *wor
 or a different pair. Nothing here is a scale.
 
 **Both actors, on both acts.** Unlike the lifecycle, there is no per-act
-exception: the owner gave both acts to both actors in one sentence. The AI writes
-in its own process through `retro record relate` (KC-0004); the human writes from
+exception: both acts belong to both actors. The AI writes in its own process
+through `retro record relate`; the human writes from
 the browser through `records.relate`, whose context actor is `human`
 unconditionally.
 
@@ -595,8 +572,8 @@ retrospective and a relation is the one thing here that crosses them. No
 append-only triggers. It answers one question: **is somebody working on this
 record right now?**
 
-It exists for the lane. `retroloop record queue` is every approved, unresolved
-record of every finished retrospective, and two agents reading that queue a
+It exists for the solving side. `retroloop record queue` is every approved,
+unresolved record of every finished retrospective, and two agents reading that queue a
 minute apart must not both pick up the same record — so the first one writes a
 claim and the second is refused with a conflict.
 
@@ -613,7 +590,7 @@ names one.
 
 **It is a marker beside the lifecycle axis, never a fourth position on it.** The
 cheaper move was a fifth `record_lifecycle.status` word, and it is refused because
-that axis answers *"did we do it"* and every value on it is a settled fact
+that axis answers "did we do it" and every value on it is a settled fact
 somebody reported, with references where a claim is being made. "Being worked on"
 is not settled and reports nothing: it is true for an afternoon and then it is
 not, and a claimed record is still `open` in every sense the lifecycle means. So
@@ -650,20 +627,18 @@ carrying `{ version, actor }`. No `revisionN`, because a claim outlives every
 redraft of the record it is on. `RecordUnclaimed` is also what a clearing resolve
 appends, immediately after `RecordResolved`.
 
-## Settings — the AI-config-write toggle (OWNER RULING 2)
+## Settings — the AI-config-write toggle
 
-His words, dictated at the session-10 scope alignment:
-
-> *"In the config page add a toggle that the user can enable to give the AI the
-> ability to update the configs. Otherwise, if it is disabled, the user can be
-> certain that the AI cannot mess around."*
+The config page carries a toggle the user can enable to give the AI the ability
+to update the configs. While it is disabled, the user can be certain the AI
+cannot change them.
 
 `settings` is a table of versions per key — `(key, version, value, at)`,
 `UNIQUE (key, version)` — with the append-only triggers. One key today:
 `ai_config_write`, `'on'` or `'off'`.
 
-Four properties, and every one of them is *"the user can be certain"* rather
-than a preference:
+Four properties, and every one of them serves that certainty rather than a
+preference:
 
 1. **Off is the default and no row says so.** Nothing is inserted at install, and
    `undefined` reads as off — so the safe state is the state a store is born in.
@@ -688,18 +663,13 @@ the human's — with the switch on it is not.
 It governs the **definitions only**. Applying a label and setting a value stay
 human-only whatever it says.
 
-## Hold — removed (retro 4 `r-remove-hold`, owner-approved)
+## Hold — removed
 
-**Hold is not a feature of this product.** It was one for exactly one session and
-the owner removed it on first contact with the built thing, dictated:
-
-> *"The way you implemented the hold and release feature, it's completely
-> wrong. When I'm seeing it, it shows me hold and it asks me for a reason.
-> When I click it, it goes into release. Now I don't know that before I clicked,
-> was it on hold or after I clicked, it's on hold. What is this kind of
-> experience? … I remove this hold experience altogether. I can achieve the whole
-> thing by selecting something to be only done with the human in the loop. So we
-> don't need the hold."*
+**Hold is not a feature of this product.** It was one briefly, and it was
+removed on first contact with the built thing: the control read *Hold* and asked
+for a reason, and clicking it turned the same control into *Release* — so a
+reader could not tell whether the record was on hold before the click or after
+it.
 
 **The need routes through involvement.** "Do not do this without me" is what
 `involvement: interactive | pull-request` already says, on the decision, where
@@ -717,8 +687,8 @@ model did not need.
 | `held` / `holdNote` in the export **document** | `held` / `holdNote` in `export.v1.schema.json`, optional and read-only |
 | `counts.held` on `review status`, `[held]` in `record list` | any rows a store already carries |
 
-Human data is append-only and is never deleted: the owner's store holds ten hold
-rows and they are still there. What changed is that nothing writes another and
+Human data is append-only and is never deleted: a store that already holds hold
+rows still holds them. What changed is that nothing writes another and
 no read path surfaces one.
 
 **Two consequences worth stating.**
@@ -726,8 +696,8 @@ no read path surfaces one.
 - **The exception these two carried moved rather than vanished.** `holds.set` and
   `holds.clear` were the only two writes a finished retrospective took, because
   the solving side read a hold long after the review closed. With them gone
-  `refuseWhenFinished` governed every human write without qualification for one
-  session — and then the owner's session-8 lifecycle ask reopened the same
+  `refuseWhenFinished` governed every human write without qualification for a
+  time — and then the record lifecycle axis reopened the same
   position for a better reason: §Record lifecycle is now the one write a finished
   retrospective takes, and it is safe where a hold was not because it is not
   exported (`finish-lock.service.ts`, `lifecycle.md`).
@@ -736,19 +706,20 @@ no read path surfaces one.
   property from a versioned public contract whose record object is
   `additionalProperties: false` would invalidate every document written while the
   feature existed — the same reason the schema still admits a `hold` verdict and
-  the solution levels KC-0021 cut. Narrow the write path, never the read path.
+  the solution levels the 1–5 narrowing cut. Narrow the write path, never the
+  read path.
 
 **Read-only historical `hold` verdicts.** Separately from all of the above,
-`hold` was a `DecisionState` until retro 3 `r-hold-semantics`, and every read path
+`hold` was a `DecisionState` until it left the verdict enum, and every read path
 keeps admitting one: the wire views, `retro.export.v1`, record history, the
 decisions table's own CHECK, and `record list --state hold`. Nothing may write one
 — `decisionVerdictSchema` is the four-value input enum (`pending`, `approved`,
-`declined`, `revise`; it was three until retro 4 `r-verdict-revise` added one),
+`declined`, `revise`; it was three until `revise` was added),
 and the narrowing is at
-the write path exactly as KC-0021 did it for solution level. That verdict is a
+the write path exactly as the solution-level narrowing did it. That verdict is a
 value a human once chose and is unaffected by the removal above.
 
-## Comment threads (D8 section enum)
+## Comment threads
 
 Anchored to a record section or review-level. Sections:
 `title | problem | human_words | root_cause | workaround | direction | footprint | solutions | defaults`.
@@ -756,19 +727,20 @@ Anchored to a record section or review-level. Sections:
 `solutions` is **one anchor for the whole block**, not one per solution: a
 comment about the second proposal names it in prose, and an enum grown per array
 element is an enum migrated every time the array can hold one more.
-`direction` and `footprint` stay in the vocabulary forever — the owner's store
-carries threads on both, the export requires a component for every thread, and a
+`direction` and `footprint` stay in the vocabulary forever — stores written
+before solutions carry threads on both, the export requires a component for
+every thread, and a
 value removed here would make documents already written unrepresentable. Nothing
 anchors a *new* thread to either, because a record with solutions has no such
 section.
 Review-level threads have no `rid`. Messages append-only, `actor` = `ai | human`;
 the CLI writes only `ai` replies; human comments are UI-only and immutable.
 
-**A comment carries the revision it was written against; a thread does not.** The
-owner: *"Should should rev number they are associated with but the comment show
-accross all revisions"*. `comments.revision_n` is captured at write time — the
+**A comment carries the revision it was written against; a thread does not.** A
+comment states the revision number it is associated with, while still showing
+across every revision. `comments.revision_n` is captured at write time — the
 browser sends the revision it is showing, because a revision is announced and
-never swapped in (KC-0005), and the CLI sends none and is stamped with the
+never swapped in, and the CLI sends none and is stamped with the
 latest. The column is nullable and every row written before it stays NULL
 forever: human data is never rewritten. Read views emit an always-present
 `revision` per message instead, deriving one for those rows as *the latest
@@ -778,10 +750,9 @@ not which one the writer was reading. The derivation is in
 cannot answer it differently. The **thread** stays keyed on
 `(retroId, rid, section)` and shows on every revision, exactly as before.
 
-**Threads are resolvable, and only the human may resolve one** —
-`r-resolvable-comments`, owner-approved: *"only the human should be able to mark
-it, not the AI"*, and *"User and only the user should be able to mark comments as
-resolved; Resolved comments should appear collapsed."* `thread_resolutions` is a
+**Threads are resolvable, and only the human may resolve one** — the AI never
+marks a thread resolved, and a resolved thread appears collapsed.
+`thread_resolutions` is a
 table of versions per thread — `(thread_id, version, resolved, at)` — with the
 append-only triggers, so reopening is a new row and never an edit, the way a
 decision and a hold are. The effective value is the highest version's, `false`
@@ -791,12 +762,12 @@ and there is no CLI flag that reaches it. Resolution carries no revision,
 deliberately: a thread outlives every redraft of the record it hangs off, so "I
 have dealt with this" does not stop being true because a paragraph was rewritten.
 
-## Finish message — human-only, versioned, append-only (`r-finish-confirm-message`)
+## Finish message — human-only, versioned, append-only
 
-**The round has a field of its own, and it is his.** The owner asked for Finish
-to become two steps: *"if it is actually valid and can be closed then it should
-show a text box where the human can enter their final message before they close
-so this message is going to be delivered separately from the comments"*.
+**The round has a field of its own, and it is the human's.** Finish is two
+steps: when the round is valid and can be closed, a text box takes the human's
+final message before the close, and that message is delivered separately from
+the comments.
 
 `finish_messages` is a table of versions per round — `(retro_id, revision_n,
 version, message, at)` — with the append-only triggers, so an amendment would be
@@ -809,7 +780,7 @@ carried it.
 |---|---|---|
 | `retroId`, `revisionN` | int | the round it closes — the same key `ReviewFinished` carries |
 | `version` | int | 1-based per round; the highest is the one in force |
-| `message` | string | never empty: a blank box writes no row, because an empty box is not a message and nothing is inferred from silence (KC-0010). Stored trimmed |
+| `message` | string | never empty: a blank box writes no row, because an empty box is not a message and nothing is inferred from silence. Stored trimmed |
 | `at` | timestamp | the moment of the finish it rode |
 
 **Why a table and not a column, a comment, or a note.** Nothing owned "the round"
@@ -817,9 +788,9 @@ before this — a round was a `ReviewFinished` *event* keyed `(retroId, revision
 and no row anywhere, and `events.data` is the outbox's audit trail rather than a
 read model. A comment is wrong for a different reason: comments are threads the
 AI answers, and this is a verdict-adjacent summary of the round with a different
-lifecycle and a different reader posture — *"delivered separately from the
-comments"*, in his words. A note is wrong for a third: the AI is blind to human
-notes until drafting (KC-0015), and this must reach it at the moment the round
+lifecycle and a different reader posture — it is delivered separately from the
+comments. A note is wrong for a third: the AI is blind to human
+notes until drafting, and this must reach it at the moment the round
 closes.
 
 **Who writes it and who reads it.** `review.finish` is the one procedure that
@@ -837,16 +808,15 @@ touches it anywhere.
 - **Note (ai):** `note add`, append-only, `kind: human-cost | ai-cost` (seeds the
   record's `impacts` default). Streamed live to the session page.
 - **Note (human):** UI-only, append-only, versioned per revision, invisible to the
-  AI except at drafting time (`note list --with-human`; KC-0018).
+  AI except at drafting time (`note list --with-human`).
 - **Annotation:** human's one-shot remark on one AI note; no threads; same
   drafting-time visibility.
-- **Request:** *removed as a living feature* — retro 4 `r-remove-requests`, the
-  owner's highest-priority item of that round. It was a top-level human ask on a
+- **Request:** *removed as a living feature*. It was a top-level human ask on a
   review, opened and closed by the human and answered by the AI; the panel, the
   `requests.*` procedures, the `retro request` commands, the use cases and
   `revision get`'s `requests` key are all gone, and a **review-level comment
-  thread is the one ask channel** — the owner: *"we can just have the comments at
-  the review level. I can add one individual request per comment."* The
+  thread is the one ask channel** — one ask per review-level comment, which is
+  everything the removed construct offered. The
   `requests` and `request_responses` tables, their migrations, their triggers and
   any rows **stay**, unread, the way the `holds` table does: human data is
   append-only and is never deleted. No store has ever carried a request row.
@@ -866,12 +836,12 @@ AiConfigWriteDisabled · RecordLabelApplied · RecordLabelRemoved ·
 RecordAttributeSet · RecordAttributeCleared · RequestOpened · RequestResponded ·
 RequestClosed · ChangesRequested · ReviewFinished · ReviewClosed`
 
-The eight session-10 names with **no scope at all** — the six definition acts and
+The eight names with **no scope at all** — the six definition acts and
 the two toggle acts — are the first events in this outbox addressed to nothing.
 A definition and a setting are global, so `events.onRetro` delivers none of them
-to any page; they are written because the outbox is this store's audit trail, and
-*"the user can be certain that the AI cannot mess around"* is a claim those rows
-are the evidence for.
+to any page; they are written because the outbox is this store's audit trail,
+and the certainty that the AI changed no configuration unseen is a claim those
+rows are the evidence for.
 
 The four `Record*` names are one per lifecycle act (`lifecycle.md` §Record), so a
 consumer watching for "somebody put this out of the way" reads the name rather
@@ -879,20 +849,20 @@ than unpacking a payload — and the two `Thread*` names are the same idea one
 table over.
 
 `HoldSet`, `HoldCleared`, the three `Request*` names and now `ChangesRequested`
-are **frozen**: nothing appends one since `r-remove-hold`, `r-remove-requests`
-and `r-one-finish-button`, and they stay in the set because a store written
+are **frozen**: nothing appends one since hold, requests and the second review
+button were removed, and they stay in the set because a store written
 before those removals holds rows carrying them and every reader — the tailer,
 `review wait`, the subscription — must go on parsing one rather than choking on
 it. The same rule the read-only decision states obey.
 
 `review wait` terminates on **`ReviewFinished`** for its retro and prints
-`{ kind, retroId, revision, at }`. One name since `r-one-finish-button`: the
+`{ kind, retroId, revision, at }`. One name, because the
 human presses one button, and what the round was about is read from the round.
 A `ChangesRequested` row in an old store no longer unblocks a wait, which cannot
 matter — the wait starts from the latest `RevisionCreated`, and such a row is
 always older than that.
 
-## Mutability matrix (D4)
+## Mutability matrix
 
 | data | writer | mutability |
 |---|---|---|
@@ -909,16 +879,16 @@ always older than that.
 | relations between two records (relate / un-relate) | ai **or** human | append-only versions |
 | the in-progress marker on a record (claim / release) | ai **or** human | append-only versions |
 | the `ai_config_write` setting | human, UI-only | append-only versions |
-| holds (held, note) | nobody, since `r-remove-hold` | existing rows are append-only history; no read path |
+| holds (held, note) | nobody, since hold was removed | existing rows are append-only history; no read path |
 | finish message (the round's final word) | human, UI-only | append-only versions |
 | human comments, notes, annotations | human, UI-only | append-only |
-| requests | nobody, since `r-remove-requests` | existing rows are append-only history; no read path |
+| requests | nobody, since requests were removed | existing rows are append-only history; no read path |
 
 The human never edits narrative — corrections travel as comments and come
 back as revision n+1 authored by the AI. The AI never writes any human field —
 enforced at L3 (use cases) and backstopped at L1 (triggers).
 
-## Dropped from v2 (D1)
+## Dropped from v2
 
 - `reviewed: human | none` — every finished Retro review passed through the UI by
   construction; the export states it as a constant.
