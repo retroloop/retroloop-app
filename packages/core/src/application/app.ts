@@ -54,9 +54,9 @@ export type AppDependencies = {
 
 /**
  * The use-case layer, assembled — **the only boundary any driving adapter
- * sees**. The tRPC routers and the CLI commands both hold one of these and
- * know nothing below it, which is what keeps the actor rules and the invariants
- * true for every adapter, present and future.
+ * sees**. The tRPC routers and the CLI commands both hold one of these and know
+ * nothing below it, which is what keeps the actor rules and the invariants true
+ * for every adapter, present and future.
  *
  * There is no DI container: both composition roots (`serve()` and the CLI's
  * `main.ts`) construct explicitly, `createApp(openStore())`.
@@ -157,8 +157,8 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
      * (`r-retire-burns-a-word`): retire was one press with no way back, and
      * pairing it with an inverse makes a mis-press a two-press round trip
      * rather than a burned word. `apply` and `set` are **human-only for now**
-     * whatever the toggle says — the toggle governs the config, and whether
-     * the AI may mark up its own draft records is still open.
+     * whatever the toggle says — the toggle governs the config, and whether the
+     * AI may mark up its own draft records is still open.
      */
     labels: {
       define: new DefineLabelUseCase(store, clock),

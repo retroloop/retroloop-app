@@ -40,9 +40,9 @@ export const decisionStateSchema = z.literal(['pending', 'approved', 'declined',
  *
  * `pending` stays, and is not an oversight: a reviewer explicitly moving a
  * record back to undecided is an act, and the whole product turns on nothing
- * being inferred from silence. It is also the shape an undo takes —
- * re-clicking the selected verdict submits `pending`, which is one more append
- * rather than a row anybody edits.
+ * being inferred from silence. It is also the shape an undo takes — re-clicking
+ * the selected verdict submits `pending`, which is one more append rather than
+ * a row anybody edits.
  */
 export const decisionVerdictSchema = z.literal(['pending', 'approved', 'declined', 'revise'])
 export const recordSectionSchema = z.literal([...RECORD_SECTIONS])
@@ -96,11 +96,12 @@ export const severitySchema = z.literal([1, 2, 3, 4, 5])
 /**
  * A ceiling, not a target (D1) — the **read** shape, all eight values.
  *
- * `none`, `upstream` and `undecided` are history: they were cut from what anyone
- * may choose, and stored retrospectives already hold two of them. Human data
- * is append-only and is never rewritten, so every read path — the wire views,
- * the export, record history, the database's own CHECK — keeps admitting them,
- * forever. Nothing may *write* one; that is `solutionLevelInputSchema` below.
+ * `none`, `upstream` and `undecided` are history: they were cut from what
+ * anyone may choose, and stored retrospectives already hold two of them. Human
+ * data is append-only and is never rewritten, so every read path — the wire
+ * views, the export, record history, the database's own CHECK — keeps admitting
+ * them, forever. Nothing may *write* one; that is `solutionLevelInputSchema`
+ * below.
  */
 export const solutionLevelSchema = z.union([
   z.literal([1, 2, 3, 4, 5]),

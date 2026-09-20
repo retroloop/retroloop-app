@@ -93,8 +93,9 @@ export class ListRecordsUseCase {
      * The **same read** `records.listAll` makes, keyed the same way. There is no
      * per-retrospective read on this repository and this deliberately does not add
      * one: the two projections joining identical rows through identical helpers is
-     * what makes them unable to disagree, which is the whole of what that record
-     * asks for, and the store is hundreds of records for one user (A4).
+     * what makes them unable to disagree, which is the whole of what
+     * `r-lifecycle-projection-gap` asks for, and the store is hundreds of records
+     * for one user (A4).
      */
     const lifecycle = lifecycleByRecord(await this.store.recordLifecycle.listLatestForEachRecord())
     /**

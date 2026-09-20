@@ -212,11 +212,11 @@ export class SetRecordLifecycleUseCase {
        * standing would make every resolved record read as still being worked on
        * — and the next agent scanning the lane would skip work nobody is doing.
        *
-       * **This is not an inference from silence**, which is the rule it
-       * has to answer to: nothing here reads a commit, a close or the passage of
-       * time. It is the same actor, in the same unit of work, at the same
-       * instant, saying that they finished — and the row it writes says so, with
-       * their name on it.
+       * **This is not an inference from silence**, which is the rule it has to
+       * answer to: nothing here reads a commit, a close or the passage of time.
+       * It is the same actor, in the same unit of work, at the same instant,
+       * saying that they finished — and the row it writes says so, with their
+       * name on it.
        *
        * **Only the resolve.** A reopen does not hand the record back to whoever
        * had it (picking it up again is a claim, and somebody has to make it), and

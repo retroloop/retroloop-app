@@ -35,7 +35,7 @@ export type Repositories = {
   readonly recordIds: RecordIdRepository
   readonly decisions: DecisionRepository
   /**
-   * The word the human left on a round on finishing it — one per
+   * The word the human left on a round when it was finished — one per
    * `(retroId, revisionN)`, versioned, never edited (`r-finish-confirm-message`).
    */
   readonly finishMessages: FinishMessageRepository
@@ -56,10 +56,10 @@ export type Repositories = {
   readonly recordLifecycle: RecordLifecycleRepository
   /**
    * The label vocabulary — global, user-created, and empty until somebody
-   * creates one: no labels or attributes are hardcoded. It and the
-   * attribute vocabulary beside it are the **only two mutable repositories in
-   * this store**: a definition is configuration rather than human data, so a
-   * rename really writes over the row (`label-definition.repository.ts`).
+   * creates one: no labels or attributes are hardcoded. It and the attribute
+   * vocabulary beside it are the **only two mutable repositories in this
+   * store**: a definition is configuration rather than human data, so a rename
+   * really writes over the row (`label-definition.repository.ts`).
    */
   readonly labelDefinitions: LabelDefinitionRepository
   readonly attributeDefinitions: AttributeDefinitionRepository
@@ -107,10 +107,10 @@ export type Repositories = {
 
 /**
  * The storage port (L1 boundary). One `tx` call is one unit of work — `BEGIN
- * IMMEDIATE` in SQLite, snapshot-and-restore in memory. Every mutating
- * use case does its writes *and* appends its domain event inside a single `tx`,
- * which is what makes the outbox trustworthy: an event exists if and only if the
- * write it describes committed.
+ * IMMEDIATE` in SQLite, snapshot-and-restore in memory. Every mutating use case
+ * does its writes *and* appends its domain event inside a single `tx`, which is
+ * what makes the outbox trustworthy: an event exists if and only if the write
+ * it describes committed.
  */
 export type Store = Repositories & {
   tx<T>(work: (repositories: Repositories) => Promise<T>): Promise<T>

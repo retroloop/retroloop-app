@@ -51,9 +51,9 @@ export type ThreadView = {
  * **The derivation is not the same fact as the capture, and the difference is
  * worth stating.** It says which revision was *current* at that moment, not
  * which one the writer was *reading*: a new revision is announced and never
- * swapped in, so a reviewer can be pinned to `?rev=1` while revision 2
- * exists, and a comment they write then derives as 2. Every comment written
- * since `comments_add_revision` carries the real answer instead; the derivation
+ * swapped in, so a reviewer can be pinned to `?rev=1` while revision 2 exists,
+ * and a comment they write then derives as 2. Every comment written since
+ * `comments_add_revision` carries the real answer instead; the derivation
  * exists for the rows written before it, which are human data and are never
  * rewritten.
  *

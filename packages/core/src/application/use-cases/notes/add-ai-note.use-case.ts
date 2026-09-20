@@ -21,8 +21,8 @@ export type AddAiNoteInput = {
 export type AddAiNoteOutput = { readonly note: Note }
 
 /**
- * The AI's friction note, filed as it happens. Append-only: there is no
- * use case that edits or removes one, here or anywhere.
+ * The AI's friction note, filed as it happens. Append-only: there is no use
+ * case that edits or removes one, here or anywhere.
  */
 export class AddAiNoteUseCase {
   constructor(

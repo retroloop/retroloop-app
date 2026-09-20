@@ -68,8 +68,8 @@ function isCalendarDay(value: string): boolean {
  * So each rule below goes exactly as far as the type's name promises and stops.
  * A `number` parses as a number; a `url` names a web address; a `date` is a
  * calendar day in ISO form; `text` is text. Nothing here checks that a URL
- * resolves, that a date is in the past, or that a number is in a range —
- * every one of those would be a config this design deliberately does not grow.
+ * resolves, that a date is in the past, or that a number is in a range — every
+ * one of those would be a config this design deliberately does not grow.
  *
  * The value is stored **verbatim after trimming**, never canonicalised. `007`
  * stays `007`: nothing in the product does arithmetic on one, and rewriting a

@@ -97,9 +97,8 @@ export type RecordListAllRow = {
    * exactly like `severity` and `state` above.
    *
    * It is here because the dashboard's fourth stat tile counts the records that
-   * are open **and** `interactive` — the tile checks exactly that pair — and a
-   * count over every open record cannot be answered by the per-record read: that
-   * is one round trip per open record.
+   * are open **and** `interactive`, and a count over every open record cannot be
+   * answered by the per-record read: that is one round trip per open record.
    *
    * **This widened the wire, and it was taken knowingly.** The tradeoffs are
    * real: two of the five values (`other`, `undecided`) cannot be read as
@@ -215,11 +214,11 @@ const NO_LABELS: readonly [] = []
  * it is the order the reviewer read them in, and the order the revision stores
  * them in.
  *
- * **No filtering arguments**, deliberately (A4). The filters the page offers are
- * the page's own: the counts are small enough that the client can
- * hold every row, and a filter on the wire would be a decision made ahead of the
- * evidence about which filters matter — the same reasoning `retros.list` gives
- * for taking no input at all.
+ * **No filtering arguments**, deliberately (A4). The page filters, and it filters
+ * client-side: the counts are small enough that the client can hold every row,
+ * and a filter on the wire would be a decision made ahead of the evidence about
+ * which filters matter — the same reasoning `retros.list` gives for taking no
+ * input at all.
  */
 export class ListAllRecordsUseCase {
   constructor(private readonly store: Store) {}

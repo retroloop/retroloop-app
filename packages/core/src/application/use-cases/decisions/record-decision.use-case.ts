@@ -28,8 +28,8 @@ export type RecordDecisionInput = {
   readonly retro: RetroRef
   readonly rid: string
   /**
-   * The revision whose content the human was looking at. Defaults to the latest.
-   * A new revision is announced, never swapped in, so a reviewer can
+   * The revision whose content the human was looking at. Defaults to the
+   * latest. A new revision is announced, never swapped in, so a reviewer can
    * still be deciding against revision 1 while revision 2 exists — and their
    * verdict must bind to what they actually read.
    */
@@ -125,10 +125,9 @@ function chooseSolution(
 
  * The verdict is one of four — pending, approved, declined, revise. `hold` was
  * one until `r-hold-semantics`; a decision row that already carries it is still
- * read, and never rewritten, and nothing writes another.
- * Values the caller leaves out fall back to their previous decision and then to
- * the AI's proposals for that record — never to a state, which is always
- * explicit.
+ * read, and never rewritten, and nothing writes another. Values the caller
+ * leaves out fall back to their previous decision and then to the AI's
+ * proposals for that record — never to a state, which is always explicit.
  */
 export class RecordDecisionUseCase {
   constructor(

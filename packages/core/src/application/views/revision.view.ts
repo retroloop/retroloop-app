@@ -36,8 +36,8 @@ export type RevisionMeta = {
  * When each round was finished, keyed by revision number.
  *
  * Built once per read and handed to `toRevisionMeta` rather than looked up per
- * revision, so a retrospective with N revisions still costs one events read.
- * A round finished twice cannot happen — `finish-review.use-case.ts` absorbs a
+ * revision, so a retrospective with N revisions still costs one events read. A
+ * round finished twice cannot happen — `finish-review.use-case.ts` absorbs a
  * repeat press without appending a second event — but the earliest is taken
  * anyway, because "when was it finished" has one honest answer and it is the
  * first time it was said.

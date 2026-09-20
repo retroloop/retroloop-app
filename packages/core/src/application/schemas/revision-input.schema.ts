@@ -161,11 +161,12 @@ export const recordInputSchema = z.strictObject({
 /**
  * The retrospective's name, as the AI proposes it.
  *
- * A flat list of retros needs something to read: "Retro #1, Retro #2" is the bare
- * ticket number this product avoids everywhere else. It is optional
+ * A flat list of retros needs something to read: "Retro #1, Retro #2" is the
+ * bare ticket number this product avoids everywhere else. It is optional
  * because a retrospective without one still works — the reader falls back to
- * "Retro #n — <cwd basename>" — and capped at 80 characters because it is a name
- * on a row, not a summary. The latest revision's title is the retro's title.
+ * "Retro #n — <cwd basename>" — and capped at 80 characters because it is a
+ * name on a row, not a summary. The latest revision's title is the retro's
+ * title.
  */
 export const revisionTitleSchema = z
   .string()

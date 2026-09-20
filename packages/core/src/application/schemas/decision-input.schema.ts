@@ -11,15 +11,15 @@ import { optionalTextSchema } from '#application/schemas/text.schema'
 /**
  * The human's verdict on one record (data-model.md §Decision).
  *
- * `state` is required and has no default: the whole product turns on nothing ever
- * being inferred from silence, so there is no shape of this input that
- * decides a record without saying so. The three value fields are optional and fall
- * back to the AI's proposals for that record — a reviewer who accepts the proposed
- * severity says so by leaving it alone, which is an explicit act on an explicit
- * value, not an absence.
+ * `state` is required and has no default: the whole product turns on nothing
+ * ever being inferred from silence, so there is no shape of this input that
+ * decides a record without saying so. The three value fields are optional and
+ * fall back to the AI's proposals for that record — a reviewer who accepts the
+ * proposed severity says so by leaving it alone, which is an explicit act on an
+ * explicit value, not an absence.
  *
- * `solutionLevel` takes the **input** enum, 1–5 only. Leaving it out
- * on a record that already holds a legacy level keeps that level, which is the
+ * `solutionLevel` takes the **input** enum, 1–5 only. Leaving it out on a
+ * record that already holds a legacy level keeps that level, which is the
  * append-only rule doing its job: the human's earlier answer stands until they
  * give a new one, and the new one can only be a level they were offered.
  *
