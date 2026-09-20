@@ -82,10 +82,10 @@ describe('review wait', () => {
   })
 
   test('does not return an outcome that belongs to an earlier revision', async () => {
-    // Round one ended with the human finishing it; the AI read what they wrote and
-    // answered with revision 2. That old event is not news about the draft now
-    // under review, and returning it would send the AI round the loop again on
-    // feedback it has already addressed.
+    // Round one ended with the human finishing it; the AI read what the human
+    // wrote and answered with revision 2. That old event is not news about the
+    // draft now under review, and returning it would send the AI round the loop
+    // again on feedback it has already addressed.
     await emit('ReviewFinished', 1)
     const file = cli.file('second.json', aRevisionDraft())
     await cli.run(['revision', 'create', '--session', '1', '--file', file, '--json'])

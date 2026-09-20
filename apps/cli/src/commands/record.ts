@@ -310,10 +310,10 @@ export function registerRecordCommand(
                 rid: view.record.rid,
                 /**
                  * The number the human sees on the page and says out loud — so
-                 * the AI reading this list can find the record they mean. `num`
-                 * stays beside it because it is what the draft authored and what
-                 * a resubmitted draft must keep saying; `globalId` is minted by
-                 * the store and is not part of a draft at all
+                 * the AI reading this list can find the record the human means.
+                 * `num` stays beside it because it is what the draft authored
+                 * and what a resubmitted draft must keep saying; `globalId` is
+                 * minted by the store and is not part of a draft at all
                  * (`record-id.model.ts`).
                  */
                 globalId: view.globalId,
@@ -610,11 +610,11 @@ const LANE_HELP = `The lane — the work, and the marker on it
                           state, resolvedAt, ref, refs }]
     claim/unclaim      { recordId, retroId, slug, version, claim }
 
-  humanWords are the record's quotes: what they said in the session, context null
-  when a quote has none. ownerWords are their reviewer note and then their review
-  comments, oldest first. They are different things, and [] under either means
-  only that: no quotes, or no note and no comment. workaround is "none" when
-  there was none.
+  humanWords are the record's quotes: what the human said in the session, context
+  null when a quote has none. ownerWords are their reviewer note and then their
+  review comments, oldest first. They are different things, and [] under either
+  means only that: no quotes, or no note and no comment. workaround is "none"
+  when there was none.
 
   Exit codes: 0 ok · 2 usage · 3 no such record · 4 conflict (already claimed,
   not claimed, or not open) · 5 forbidden actor · 7 server.`
@@ -665,7 +665,8 @@ async function readLane(
          * Where the record came from, which a queue row does not carry and a
          * reader of one record always wants: this is the block that says whether
          * the round is closed and when the human put it down, so an agent can
-         * tell "they finished this an hour ago" from "they finished it in April".
+         * tell "the human finished this an hour ago" from "the human finished it
+         * in April".
          */
         retrospective: {
           retroId: row.retroId,

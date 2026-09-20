@@ -1694,11 +1694,11 @@ describe('the CLI', () => {
     })
 
     /**
-     * The state a cold agent lands in when they un-decide a record after
+     * The state a cold agent lands in when the human un-decides a record after
      * finishing, and the exit from it — SKILL.md §4 tells one to read the
-     * `FINISH_GATE` code, name the records to them, and retry the close on the
-     * finish they already gave. This is that sequence at the surface the skill
-     * actually calls.
+     * `FINISH_GATE` code, name the records to the human, and retry the close on
+     * the finish they already gave. This is that sequence at the surface the
+     * skill actually calls.
      */
     test('is exit 4 with FINISH_GATE when a verdict was undone, and closes once they rule again', async () => {
       const retroId = await aFinishedRound()

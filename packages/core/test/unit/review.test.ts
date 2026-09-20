@@ -128,7 +128,7 @@ describe('review', () => {
 
   /**
    * `review.listFinished` — every round the human has put down, across the whole
-   * stage, for an AI that was not watching when they pressed the button.
+   * stage, for an AI that was not watching when the human pressed the button.
    *
    * `review wait` answers about one retrospective and only about finishes that
    * land while it blocks; an agent that started after the press, or that is
@@ -669,8 +669,9 @@ describe('review', () => {
 
     /**
      * **The way out of the state the previous test lands in**, and the reason it
-     * is not a trap: the AI has no verdict to give and cannot press their button,
-     * so if the round could only be reopened by a second finish it would wedge.
+     * is not a trap: the AI has no verdict to give and cannot press the human's
+     * button, so if the round could only be reopened by a second finish it would
+     * wedge.
      *
      * It does not. `ReviewFinished` is an event about a revision, not a latch on
      * a state — an undo does not retract it — so once they rule on the record
@@ -678,8 +679,8 @@ describe('review', () => {
      * A second press is not needed, and would be absorbed if they made one (the
      * once-per-round rule, `r-request-changes-multi-press`).
      *
-     * Written because SKILL.md now tells a cold agent exactly this: ask them to
-     * rule on the named records, then retry the close.
+     * Written because SKILL.md now tells a cold agent exactly this: ask the
+     * human to rule on the named records, then retry the close.
      */
     test('closes on the original finish once they rule again, with no second press', async () => {
       const { retroId, revision } = await finishedRound([{}, {}])

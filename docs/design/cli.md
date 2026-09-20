@@ -450,16 +450,16 @@ one row plus `retrospective` for `get`:
 `ownerWords` is the human's reviewer note first and then their comments on the
 record, oldest first — their instructions in one field, so an agent can act on
 a queue row without opening the review page. **`humanWords` is a different
-thing:** the record's own quotes, what they said in the session the record was
-drafted from, copied off the record beside its `workaround` (`"none"` when there
-was none) — so `[]` under `humanWords` means they said nothing quotable, and `[]`
-under `ownerWords` means only that they wrote no note and no comment. `context`
-is `null` on a quote that has none, and `diagnosticData` is `null` on a record
-filed before the field existed. `record get` prints both in its text form, under
-their own names; the one line per record that `queue` and `list --all` print
-carries no narrative at all. `lifecycle.state` is the **lane state**: the
-verdict, the lifecycle and the claim folded into one word (`lifecycle.md`).
-`record relations <#globalId>` prints
+thing:** the record's own quotes, what the human said in the session the record
+was drafted from, copied off the record beside its `workaround` (`"none"` when
+there was none) — so `[]` under `humanWords` means they said nothing quotable,
+and `[]` under `ownerWords` means only that they wrote no note and no comment.
+`context` is `null` on a quote that has none, and `diagnosticData` is `null` on
+a record filed before the field existed. `record get` prints both in its text
+form, under their own names; the one line per record that `queue` and
+`list --all` print carries no narrative at all. `lifecycle.state` is the
+**lane state**: the verdict, the lifecycle and the claim folded into one word
+(`lifecycle.md`). `record relations <#globalId>` prints
 `[{ recordId, retroId, retro, slug, title, kind, direction, state, resolvedAt, ref, refs }]`,
 where those last four are the **far** record's — and a far record a later draft
 withdrew is still listed, with its rid for a title and `null` for its state,

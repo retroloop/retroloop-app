@@ -127,8 +127,8 @@ edit-narrative anywhere (the human corrects via comments → next revision).
   One row per retro, newest first: title · "Retro #n · Session S" (ordinal within
   the session, not the autoincrement id) · session cwd · state (+ pending count
   while reviewing) · click → `/retros/:retroId`. No project cards, no grouping,
-  no summary strip — that reference's **visual language only**, its information
-  architecture is superseded. **Built** (`routes/index.tsx`,
+  no summary strip — the separate visual reference's **visual language only**,
+  its information architecture is superseded. **Built** (`routes/index.tsx`,
   `dashboard/retro-row.tsx`; identity strings shared with the review header via
   `lib/retro-identity.ts`; empty state = one quiet line; no error state, no live
   updates — deliberate, a retrospective adds them back if wanted). It takes the

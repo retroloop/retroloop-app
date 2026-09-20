@@ -31,7 +31,7 @@ export type CloseReviewOutput = {
  *
  * It exists because the human's Finish stopped being terminal
  * (`r-one-finish-button`). The human presses one button; the AI then reads what
- * they wrote and either files the next revision or takes the export. **That
+ * the human wrote and either files the next revision or takes the export. **That
  * second outcome is an act with a name and an event of its own** — a state this
  * important may not arrive as a side effect of something else, and `review
  * wait`, the tailer and the page all learn about it the same way they learn

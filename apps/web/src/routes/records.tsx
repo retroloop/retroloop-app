@@ -74,7 +74,7 @@ function RecordsPage() {
    * So the two signals it does have are the ones it uses: it invalidates after
    * its own writes, and it asks again when the reader comes back to the tab —
    * which is exactly when the AI, working in its own process, has been
-   * resolving the records they left open.
+   * resolving the records the reader left open.
    */
   const records = useQuery({
     ...trpc.records.listAll.queryOptions({}),

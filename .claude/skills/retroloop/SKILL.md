@@ -10,9 +10,9 @@ You never approve a record, decline one, send one back for a rewrite, write the
 reviewer's note, or press their **Finish review** button — those are theirs,
 and the CLI has no command for any of them. You write plenty here — drafts,
 notes, replies in their threads — but on **the review's outcome** you have
-exactly one act: **closing it to export** once they are done and nothing is left
-to address. It decides nothing, it refuses if they have not finished, and step 5
-is where it lives.
+exactly one act: **closing it to export** once the human is done and nothing is
+left to address. It decides nothing, it refuses if they have not finished, and
+step 5 is where it lives.
 
 Everything you need to run the loop is in this file: the commands, every field
 you author, every vocabulary you choose from, and the shape of every answer you
@@ -413,8 +413,9 @@ read a session you were not in, and its notes are the human's to show you, not
 yours to go looking for. Say so and ask: *"I wasn't in that session, so I have
 nothing to draft from. Tell me what happened, or point me at the session id if
 notes were filed under it and I will read them back."* With an id you are back
-in step 3 with `note list --with-human`; without one, what they tell you in chat
-is the material, and the records should say that is where they came from.
+in step 3 with `note list --with-human`; without one, what the human tells you
+in chat is the material, and the records should say that is where they came
+from.
 
 ## 3 · When the human types `/retroloop`
 
@@ -454,8 +455,8 @@ list forbids outside this step.
 
 Two things in that shape: `author` is `"human"` or `"ai"`, the only two actors
 there are; and `kind` is `null` on every human note, because who-paid is a
-judgment you make about your own notes and they were never asked for one. `null`
-there is not missing data.
+judgment you make about your own notes and the human was never asked for one.
+`null` there is not missing data.
 
 **Run this even when you filed no notes yourself.** It is not a wasted call: the
 human may have written notes or annotated yours while you were working, and this
@@ -505,7 +506,7 @@ The questions that decide how many, and which one you stand behind:
   four distinct ceilings, drop the one you would argue against hardest and say
   in the recommended solution's bullets that you considered it and why it lost.
 - **Do the answers sit at different levels?** The most useful set is a ladder:
-  guidance at level 1, a tune at level 2, a new surface at level 3. They are
+  guidance at level 1, a tune at level 2, a new surface at level 3. The human is
   choosing a **ceiling**, and a ladder is what makes that choice mean something.
 - **Would you defend the one you marked?** Exactly one solution carries
   `"recommended": true`, and it is your judgment on the record. Marking the
@@ -654,9 +655,9 @@ are withdrawing it and why.
 
 ### The two you propose in `defaults`
 
-Both are *proposals* — the human's values are what count, and they set them in
-the UI. Propose both anyway; declining to judge is not an option the schema
-offers.
+Both are *proposals* — the human's values are what count, and the human sets
+them in the UI. Propose both anyway; declining to judge is not an option the
+schema offers.
 
 ```json
 "defaults": { "severity": 3, "involvement": "autonomous" }
@@ -775,7 +776,7 @@ Every prose field in the revision file is a plain JSON string carrying a safe
 markdown subset — write the literal characters: `**bold**`, `` `code` ``, `- `
 bullets (indent a bullet under another to nest it), `1. ` numbered lines, `> `
 blockquote lines, which carry bullets and bold inside them and are how a reply
-quotes them back to themselves, blank lines between paragraphs, and
+quotes the human back to themselves, blank lines between paragraphs, and
 triple-backtick fenced blocks for preformatted excerpts (their contents are
 never parsed). The review page renders exactly that subset; anything else,
 including HTML, shows as literal text. One exemption: a solution's `footprint`
@@ -802,9 +803,9 @@ reads best in the file.
    solution: the project root's real path on the first line, then a tree with
    every entry tagged `[CREATE]`, `[UPDATE]` or `[DELETE]` plus a short
    description of the exact change at that path, tags aligned in a column (the
-   alignment is part of the form — they scan the tags). No code fence inside the
-   field. A solution with no file to touch writes the literal `none`, like a
-   workaround.
+   alignment is part of the form — the human scans the tags). No code fence
+   inside the field. A solution with no file to touch writes the literal `none`,
+   like a workaround.
 
    **An `[UPDATE]` entry names where inside the file the change lands** — the
    section, the rule, the list it extends — **and drafting verifies that surface
@@ -1214,8 +1215,8 @@ stated, not hidden:** a draft correction seconds after your own filing also
 waits for a finish. That is what buys the guarantee, and loosening it is their
 call, not a flag you reach for.
 
-- **Any `revise` records** → they asked for a rewrite by name. File revision
-  n+1; `review close` refuses while one stands.
+- **Any `revise` records** → the human asked for a rewrite by name. File
+  revision n+1; `review close` refuses while one stands.
 - **Any thread still waiting on you** → answer it. Whether it *also* costs a
   revision depends on what it says, which is the next paragraph.
 - **Any `reviewerNote` that asks for something** → treat it exactly like a
@@ -1232,7 +1233,7 @@ call, not a flag you reach for.
   — the format is in "The threads waiting on you".
 
 **The section names are not the field names**, and one of them is a trap. Map
-what they are talking about to the section that carries it:
+what the human is talking about to the section that carries it:
 
 | the field you author | the `--section` that carries it |
 |---|---|
@@ -1304,7 +1305,7 @@ next draft you file is `--expect-revision <n+1>`.
 
 The finish gate refuses while any record is undecided, so a round cannot
 *become* finished with pending records — but it can *go back* to having them:
-they can undo a verdict in the window between their Finish review and your
+the human can undo a verdict in the window between their Finish review and your
 close, and an undo is one more append, not an edit. Then `review close` refuses
 with `FINISH_GATE` (exit 4) and names them:
 
@@ -1498,15 +1499,15 @@ That makes `defaults` on a ruled record a formality — the field is required, s
 fill it in, and prefer their values so the file says what is true. Two cases
 that need a word:
 
-- **They ruled `involvement: "other"`.** Carry it forward verbatim — `other` is
-  a legal value in a draft, and echoing their ruling is not the same act as
-  proposing one. The rule in step 3 is about *originating* `other`, which you
-  cannot explain because the note that explains it is theirs.
-- **They ruled a `solutionLevel` you may not write** — `none`, `upstream` or
-  `undecided`, from before the enum was cut, on a record filed before solutions
-  existed. There is no field to carry it forward in, and the old shape cannot be
-  filed again. **Which branch you are in depends on whether the round needs a
-  new revision at all**, and they are not interchangeable:
+- **The human ruled `involvement: "other"`.** Carry it forward verbatim —
+  `other` is a legal value in a draft, and echoing their ruling is not the same
+  act as proposing one. The rule in step 3 is about *originating* `other`, which
+  you cannot explain because the note that explains it is theirs.
+- **The human ruled a `solutionLevel` you may not write** — `none`, `upstream`
+  or `undecided`, from before the enum was cut, on a record filed before
+  solutions existed. There is no field to carry it forward in, and the old shape
+  cannot be filed again. **Which branch you are in depends on whether the round
+  needs a new revision at all**, and they are not interchangeable:
 
   - **The round needs no new revision.** File none. The revision that holds that
     record stays the latest one, so their ruling — level included — is what
@@ -1624,10 +1625,10 @@ to answer a `reviewerNote`. Before you answer anything, say back what they said:
    said, written in **their** first person ("I want the tabs sorted…", never
    "you want"), each bullet opening with a few **bold thesis words** the way
    every bullet in a record does.
-3. **Fix the dictation silently.** They speak their comments, so words arrive
-   garbled, sentences restart, a term lands wrong. Repair all of it without a
-   note about having done so; never quote a garble back at them, and never ask
-   them to confirm a meaning that is already plain.
+3. **Fix the dictation silently.** The human speaks their comments, so words
+   arrive garbled, sentences restart, a term lands wrong. Repair all of it
+   without a note about having done so; never quote a garble back at them, and
+   never ask them to confirm a meaning that is already plain.
 4. **Replay all of it, not just the part you are answering.** A replay that
    drops half their comment tells them the other half was not read.
 5. **Only then answer**, below the quote, in your own voice.
@@ -1736,8 +1737,8 @@ because it is the only one. Two exceptions:
   proposable once, until the human cut the list to `1`–`5`, and there is no
   conversion rule — decide the level yourself, `1`–`5`, the way you would for a
   new record.
-- **They already ruled on it.** Their verdict is bound to the old content, so
-  rewriting the record into the new shape sends it back to `pending` however
+- **The human already ruled on it.** Their verdict is bound to the old content,
+  so rewriting the record into the new shape sends it back to `pending` however
   faithful the rebuild is. There is no way around that and no reason to hide it:
   say so in a thread on the record, and let them rule on what is now in front of
   them.

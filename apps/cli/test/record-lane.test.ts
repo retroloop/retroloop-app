@@ -209,8 +209,8 @@ describe('the record lane', () => {
     /**
      * **The queue's whole definition, in one assertion and one row.** Approved,
      * unresolved, not archived, in a retrospective the human finished — with
-     * everything an agent needs to start: their words, the solution they picked, and
-     * the files it touches.
+     * everything an agent needs to start: the human's words, the solution they
+     * picked, and the files it touches.
      */
     test('returns the approved, unresolved work of finished retrospectives', async () => {
       const result = await cli.run(['record', 'queue', '--json'])
