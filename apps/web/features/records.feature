@@ -60,10 +60,10 @@ Feature: The records page
     And record "r-ipad-scroll" of retro 3 shows the severity "SEV4"
 
   # Records did not use to have a unique id — each retro's record ids started
-  # from #1, which read as if two different records shared a number. A
-  # global sequence replaces the per-retro prefix, and this scenario is the
-  # whole of what that means: seven records, seven numbers, and no two rows
-  # saying the same one.
+  # from #1, which read as if two different records shared a number. A global
+  # sequence replaces the per-retro prefix, and this scenario is the whole of
+  # what that means: seven records, seven numbers, and no two rows saying the
+  # same one.
   #
   # Every pairing below disagrees with the reading it replaced. Retro 2's first
   # record is #4 and retro 3's is #6, so a per-retro number is out; both
@@ -105,9 +105,8 @@ Feature: The records page
       | requester-human  | 4     |
       | requester-ai     | 3     |
 
-  # The "hold" verdict is frozen and its dead chip was removed from the
-  # review bar. The same rule applies to a filter that could only ever read
-  # zero here.
+  # The "hold" verdict is frozen and its dead chip was removed from the review
+  # bar. The same rule applies to a filter that could only ever read zero here.
   Scenario: The verdict nobody can give any more is not offered
     Given the reviewer opens the records page
     Then the filters do not offer "verdict-hold"
@@ -235,11 +234,11 @@ Feature: The records page
       | resolved | 0     |
       | archived | 1     |
 
-  # Only records marked declined during the retro carry the archived type —
-  # so the discussion can still be kept without leaving the record open. A
-  # declined record is archived from birth and NOTHING WAS WRITTEN to put it
-  # there — so there is no author, no evidence block, and the only act it
-  # offers is the one that brings it back.
+  # Only records marked declined during the retro carry the archived type — so
+  # the discussion can still be kept without leaving the record open. A declined
+  # record is archived from birth and NOTHING WAS WRITTEN to put it there — so
+  # there is no author, no evidence block, and the only act it offers is the one
+  # that brings it back.
   Scenario: A declined record is archived, and nobody archived it
     Given the reviewer opens the records page
     Then record "r-export-widening" of retro 2 is "archived"
@@ -247,9 +246,9 @@ Feature: The records page
     And record "r-export-widening" of retro 2 cites nothing
     And record "r-export-widening" of retro 2 offers only "Unarchive"
 
-  # Records with approval are normal records that a user can choose to
-  # archive. One press, no composer: an archive cites nothing, and a note it
-  # could take is a note this page never shows back.
+  # Records with approval are normal records that a user can choose to archive.
+  # One press, no composer: an archive cites nothing, and a note it could take is
+  # a note this page never shows back.
   Scenario: The human puts an open record out of the way
     Given the reviewer opens the records page
     Then record "r-bullet-responses" of retro 1 is "open"
@@ -313,10 +312,10 @@ Feature: The records page
     Then record "r-silent-tailer" of retro 1 is "resolved"
     And record "r-silent-tailer" of retro 1 was resolved by "AI"
 
-  # On what a row used to do: clicking a record used to take the reviewer to
-  # the retro page, but each record now has its own dedicated page. So a
-  # row's one link is that page, and the way to the retrospective lives on
-  # it — which reverses what a row used to do.
+  # On what a row used to do: clicking a record used to take the reviewer to the
+  # retro page, but each record now has its own dedicated page. So a row's one
+  # link is that page, and the way to the retrospective lives on it — which
+  # reverses a standing rule.
   Scenario: A row is one click to that record's own page
     Given the reviewer opens the records page
     When the reviewer opens record "r-bullet-responses" of retro 1 from the records page
@@ -337,12 +336,12 @@ Feature: The records page
 
   # ── the record's own page ─────────────────────────────────────────────────
   #
-  # Each record has its own dedicated page, with the consistent width and
-  # overall layout every page shares, and the record page offers a way to go
-  # to the retro page. Everything below runs on the same
-  # three-retrospective stage, which is what makes "its own" falsifiable: two of
-  # them mint the same rid, and a page reading the wrong half of the pair renders
-  # the other record's narrative under this record's number.
+  # Each record has its own dedicated page, with the consistent width and overall
+  # layout every page shares, and the record page offers a way to go to the retro
+  # page. Everything below runs on the same three-retrospective stage, which is
+  # what makes "its own" falsifiable: two of them mint the same rid, and a page
+  # reading the wrong half of the pair renders the other record's narrative under
+  # this record's number.
 
   Scenario: The record page carries the record, whole
     Given the reviewer opens record 3 directly
@@ -481,9 +480,9 @@ Feature: The records page
 
   # ── relations ─────────────────────────────────────────────────────────────
   #
-  # Both actors can relate records, each relation carries how-they-relate
-  # words, and the relation reads from both sides, so the AI can easily find
-  # past records and build holistic solutions.
+  # Both actors can relate records, each relation carries how-they-relate words,
+  # and the relation reads from both sides, so the AI can easily find past
+  # records and build holistic solutions.
   #
   # The world opens holding one relation, written by the AI — which is the actor
   # the feature was asked for, and one the browser could never impersonate: its
@@ -806,10 +805,9 @@ Feature: The records page
     Then the records page lists 5 records
     And the "open" lifecycle chip is pressed
 
-  # `?lifecycle=nonsense` used to render 0 of 132 records with no chip
-  # pressed — the junk reached the filter even though the route's validator
-  # returns {} for it, because `validateSearch` narrows the TYPE and does not
-  # police the VALUE.
+  # `?lifecycle=nonsense` used to render 0 of 132 records with no chip pressed —
+  # the junk reached the filter even though the route's validator returns {} for
+  # it, because `validateSearch` narrows the TYPE and does not police the VALUE.
   #
   # It is the emptiness that made it worth fixing rather than the typo: a page
   # showing none of its corpus with nothing pressed to explain why reads as a
@@ -822,17 +820,17 @@ Feature: The records page
     And no lifecycle chip is pressed
     And the browser reported no console errors
 
-  # The quiet line an empty product lands on is the first thing anyone ever
-  # sees of it, and it is not the emptied-filter message — emptiness the
-  # filters did not cause is not emptiness they can explain.
+  # The quiet line an empty product lands on is the first thing anyone ever sees
+  # of it, and it is not the emptied-filter message — emptiness the filters did
+  # not cause is not emptiness they can explain.
   Scenario: A fresh install says the one true thing and stops
     Given the AI has never filed a revision
     And the reviewer opens the records page of a fresh install
     Then the records page says "No records yet. They land here as the AI files retrospectives."
 
-  # Both themes, one channel at a time, because a dark override that
-  # suppresses one channel leaves the others standing and a joined
-  # assertion passes on the strength of whichever survived.
+  # Both themes, one channel at a time, because a dark override that suppresses
+  # one channel leaves the others standing and a joined assertion passes on the
+  # strength of whichever survived.
   Scenario Outline: The lifecycle chip that is on stands out from the one that is off
     Given the reviewer opens the records page
     And the reviewer has set dark mode to "<theme>"

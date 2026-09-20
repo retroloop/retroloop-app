@@ -30,17 +30,15 @@ Feature: Labels, attributes and the settings page
 
   # ── the settings page ─────────────────────────────────────────────────────
 
-  # The settings page uses a standing list of section names down the left,
-  # built with shadcn's vertical tabs: the current section highlighted, one
-  # panel beside it — and the counted chip row an earlier version shipped
-  # with is gone.
+  # The settings page uses a standing list of section names down the left, built
+  # with shadcn's vertical tabs: the current section highlighted, one panel
+  # beside it — and the counted chip row an earlier version shipped with is gone.
   #
-  # The order matters too: General is the first item in the list, and
-  # Appearance is another tab of its own alongside it. So: General,
-  # Appearance, Labels, Attributes — asserted as a sequence rather than one
-  # item at a time, because "General is first" is a claim about the order
-  # and an assertion per item would pass on a list that held them in any
-  # order at all.
+  # The order matters too: General is the first item in the list, and Appearance
+  # is another tab of its own alongside it. So: General, Appearance, Labels,
+  # Attributes — asserted as a sequence rather than one item at a time, because
+  # "General is first" is a claim about the order and an assertion per item would
+  # pass on a list that held them in any order at all.
   #
   # The panels not open are asserted absent rather than merely invisible: that is
   # what makes these sections instead of four blocks with three of them hidden,
@@ -122,10 +120,10 @@ Feature: Labels, attributes and the settings page
   #
   # System is asserted as the value the control OPENS on, which is the half of
   # the rule a control that merely offered the option would satisfy without
-  # honouring. The header toggle that used to sit beside it is gone — the
-  # top navigation dropped it when it moved under one menu — so this is the
-  # only control in the product that changes the theme, and the walk every
-  # other feature's theme step now takes ends here (chrome.feature).
+  # honouring. The header toggle that used to sit beside it is gone — the top
+  # navigation dropped it when it moved under one menu — so this is the only
+  # control in the product that changes the theme, and the walk every other
+  # feature's theme step now takes ends here (chrome.feature).
   Scenario: Dark Mode lives under Appearance and starts on System
     Given the reviewer opens the settings page
     When the reviewer opens the "appearance" settings section
@@ -155,8 +153,8 @@ Feature: Labels, attributes and the settings page
     And the label "migrated" offers no way to un-retire it
 
   # A retired definition can be brought back to offerable by the human — same
-  # row, same one-press shape, no history rewritten, the name never freed
-  # either way.
+  # row, same one-press shape, no history rewritten, the name never freed either
+  # way.
   #
   # The round trip is asserted in both directions on one row, because the claim
   # is that the two acts are inverses: retire then un-retire has to leave the row
@@ -178,11 +176,10 @@ Feature: Labels, attributes and the settings page
       | needs triage |
       | wontfix      |
 
-  # Both kinds — un-retire applies to BOTH definition kinds — and the
-  # attribute half carries the difference that matters: the type comes back with
-  # it, because there is no retype anywhere and a definition that returned
-  # without its type would be claiming something its own stored values do not
-  # satisfy.
+  # Both kinds — un-retire applies to BOTH definition kinds — and the attribute
+  # half carries the difference that matters: the type comes back with it,
+  # because there is no retype anywhere and a definition that returned without
+  # its type would be claiming something its own stored values do not satisfy.
   Scenario: An attribute comes back with the type it was created with
     Given the reviewer opens the settings page
     When the reviewer opens the "attributes" settings section
@@ -284,9 +281,9 @@ Feature: Labels, attributes and the settings page
     When the reviewer turns the AI config switch off
     Then the AI config switch is off
 
-  # Both themes, one channel at a time, because a dark override that
-  # suppresses one channel leaves the others standing and a joined
-  # assertion passes on the strength of whichever survived.
+  # Both themes, one channel at a time, because a dark override that suppresses
+  # one channel leaves the others standing and a joined assertion passes on the
+  # strength of whichever survived.
   Scenario Outline: The switch looks different on than off, in either theme
     Given the reviewer opens the settings page
     When the reviewer opens the "appearance" settings section
@@ -434,10 +431,10 @@ Feature: Labels, attributes and the settings page
 
   # ── the label filter ──────────────────────────────────────────────────────
 
-  # Being able to filter on the label is the whole argument for why a label
-  # beats a comment carrying the same words. It is behind the filter icon
-  # rather than on the bar because the vocabulary is unbounded: a store with
-  # fifteen labels would wrap the bar to four lines.
+  # Being able to filter on the label is the whole argument for why a label beats
+  # a comment carrying the same words. It is behind the filter icon rather than
+  # on the bar because the vocabulary is unbounded: a store with fifteen labels
+  # would wrap the bar to four lines.
   Scenario: The label filter counts what the page holds, and narrows to it
     Given the reviewer opens the records page
     Then the filters count:

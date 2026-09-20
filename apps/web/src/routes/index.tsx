@@ -21,10 +21,10 @@ export const Route = createFileRoute('/')({ component: Dashboard })
 /**
  * **The composed dashboard.**
  *
- * Several compositions were tried, with charts chosen against real data
- * rather than against fixtures; this is the one that shipped: primarily
- * "The Control Room", with two pieces borrowed from the alternatives and
- * two of the Control Room's own blocks removed.
+ * Several compositions were tried, with charts chosen against real data rather
+ * than against fixtures; this is the one that shipped: primarily "The Control
+ * Room", with two pieces borrowed from the alternatives and two of the Control
+ * Room's own blocks removed.
  *
  * **The order, top to bottom:**
  *
@@ -43,17 +43,16 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  * 6. **The diary** — the Work Diary's session cards, with relative dates and
  *    global retro ids.
  *
- * **Removed, entirely:** "What The Open Queue Costs" (the
- * solution-level donut) and "Which End Is Being Neglected" (the severity radar).
- * Deleted, not hidden — an unreachable chart is code that keeps compiling for
- * nobody.
+ * **Removed, entirely:** "What The Open Queue Costs" (the solution-level donut)
+ * and "Which End Is Being Neglected" (the severity radar). Deleted, not hidden —
+ * an unreachable chart is code that keeps compiling for nobody.
  *
  * **What this replaced.** The previous dashboard led with a records block whose
- * own docstrings argued from "132 records" and "twelve retrospectives" — a
- * count that went stale within a week. Those numbers are gone with the block,
- * and nothing here restates a count in prose: a figure that lives in a comment
- * is a figure that goes stale silently, and this page is now read by four
- * components that all count the same rows through `corpus-stats.ts`.
+ * own docstrings argued from "132 records" and "twelve retrospectives" — a count
+ * that went stale within a week. Those numbers are gone with the block, and
+ * nothing here restates a count in prose: a figure that lives in a comment is a
+ * figure that goes stale silently, and this page is now read by four components
+ * that all count the same rows through `corpus-stats.ts`.
  *
  * **It must still stay calmer than `/records`, or it has no reason to exist.**
  * That page enumerates the corpus — every row, four filters, a reader scanning.
@@ -91,8 +90,8 @@ function Dashboard() {
         /**
          * Only ever true on a fresh install: a retrospective is what this product
          * makes, and nothing deletes one. So it says the one true thing and stops
-         * — an onboarding panel here is a panel seen once and every
-         * later reader never sees at all.
+         * — an onboarding panel here is a panel seen once and every later reader
+         * never sees at all.
          *
          * Keyed on the retrospectives and not on the corpus, because a store can
          * hold a retrospective whose every record has been archived, and that is

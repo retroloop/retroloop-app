@@ -18,11 +18,10 @@ Feature: Reviewing a revision
   # find out that nothing they did up there would count. The word is the
   # dashboard row's word, so the two screens agree.
   #
-  # Three words now, because the middle one indicates the human has submitted
-  # but the AI hasn't closed. The walk is one scenario rather than three
-  # because the claim is about the BOUNDARIES — a tag that changed one press
-  # early or one press late still reads correctly at two of these three
-  # points.
+  # Three words now, because the middle one indicates the human has submitted but
+  # the AI hasn't closed. The walk is one scenario rather than three because the
+  # claim is about the BOUNDARIES — a tag that changed one press early or one
+  # press late still reads correctly at two of these three points.
   Scenario: The header says what state the review is in, through the press and the close
     Then the review header says the retro is "reviewing"
     When the reviewer approves record "r-stale-lock"
@@ -82,10 +81,10 @@ Feature: Reviewing a revision
     And record "r-stale-lock" shows "Write the pid into the lock"
     And record "r-stale-lock" shows "apps/cli/src/server/lock.ts"
 
-  # The AI now files the evidence it diagnosed from — log lines, timings,
-  # the commands it ran — on every record. It is the one block on a card that
-  # starts closed, and that is not the "a record is read in full" rule bending:
-  # what is behind it is not part of what the reviewer is deciding. It anchors no
+  # The AI now files the evidence it diagnosed from — log lines, timings, the
+  # commands it ran — on every record. It is the one block on a card that starts
+  # closed, and that is not the "a record is read in full" rule bending: what is
+  # behind it is not part of what the reviewer is deciding. It anchors no
   # comment, no verdict is about it, and the finish gate does not know it exists.
   # Left open it would be a screen of pasted output on every record of the round.
   #
@@ -144,11 +143,11 @@ Feature: Reviewing a revision
       | WHY 5    |
       | ROOT     |
 
-  # The two geometry claims, on the iPad in portrait — the screen the review
-  # is read on, and the width where a gutter that sizes itself off the prose
-  # beside it has least room to stay on one line. Both are controlled
-  # assertions (testing.md §Operational rules): each was hand-run with the
-  # shared width deleted before it shipped.
+  # The two geometry claims, on the iPad in portrait — the screen the review is
+  # read on, and the width where a gutter that sizes itself off the prose beside
+  # it has least room to stay on one line. Both are controlled assertions
+  # (testing.md §Operational rules): each was hand-run with the shared width
+  # deleted before it shipped.
   Scenario: A root-cause label is one line, whatever the text beside it says
     When the reviewer is on an iPad in portrait
     Then the root-cause labels of record "r-stale-lock" are one line each
@@ -161,11 +160,10 @@ Feature: Reviewing a revision
     Then the root-cause labels of record "r-stale-lock" are all the same width
     And the root-cause labels of record "r-silent-tailer" are all the same width
 
-  # The INCIDENT row is a flex row whose prose cell lacks `min-w-0`, so a
-  # fenced block or one long unbroken token in `whatHappened` can floor
-  # min-content above the column width and force horizontal overflow. The
-  # pattern predates this fix on the why/root rows; the label work extended
-  # it by one more row.
+  # The INCIDENT row is a flex row whose prose cell lacks `min-w-0`, so a fenced
+  # block or one long unbroken token in `whatHappened` can floor min-content
+  # above the column width and force horizontal overflow. The pattern predates
+  # this fix on the why/root rows; the label work extended it by one more row.
   #
   # It was reviewer-flagged rather than observed, because nothing in the fixture
   # had a token that could not wrap. One does now — the cursor the tailer died
@@ -279,11 +277,10 @@ Feature: Reviewing a revision
       """
     And the "workaround" prose of record "r-silent-tailer" is built only from the safe subset
 
-  # A reply must be given as a quote. It opens by replaying what it is
-  # answering — the comment, cleaned, as bullets with bold leads — inside a
-  # real quote, and answers underneath it. That needs a blockquote in the
-  # subset, which is this half; the rule that mandates the shape is
-  # SKILL.md's.
+  # A reply must be given as a quote. It opens by replaying what it is answering
+  # — the comment, cleaned, as bullets with bold leads — inside a real quote, and
+  # answers underneath it. That needs a blockquote in the subset, which is this
+  # half; the rule that mandates the shape is SKILL.md's.
   #
   # The quote holds a list rather than a line, which is the whole reason it holds
   # blocks: a quote that could only carry a paragraph would put the dashes of
@@ -355,12 +352,12 @@ Feature: Reviewing a revision
           └── OPERATION.md       [UPDATE] the answer-shape check in the inner loop
       """
 
-  # The multi-solution design: the AI can propose up to 3 different
-  # solutions, each in a tab within the retro card. The tab title reads
-  # Solution 1, Solution 2, and so on, with a * marking the one the AI
-  # recommends and a tickmark marking the one the human actually selected.
-  # The tab title also carries the solution's level, L1 through L5, and the
-  # tabs are always sorted from the lowest-level solution to the highest.
+  # The multi-solution design: the AI can propose up to 3 different solutions,
+  # each in a tab within the retro card. The tab title reads Solution 1, Solution
+  # 2, and so on, with a * marking the one the AI recommends and a tickmark
+  # marking the one the human actually selected. The tab title also carries the
+  # solution's level, L1 through L5, and the tabs are always sorted from the
+  # lowest-level solution to the highest.
   #
   # The fixture's recommendation is on the MIDDLE tab on purpose: with it on the
   # last one, a page that opened the last tab, marked the last tab, or read the
@@ -373,10 +370,10 @@ Feature: Reviewing a revision
       | Solution 3 · L4             |
     And the "✓" on solution tab 2 of record "r-stale-lock" is named "selected"
 
-  # The recommended tab is open by default, and it arrives already ticked:
-  # the recommended solution is pre-selected whenever there is more than one
-  # solution. The `*` stays out of the way while the two agree, because a
-  # star and a tick on the same tab were two marks saying one thing.
+  # The recommended tab is open by default, and it arrives already ticked: the
+  # recommended solution is pre-selected whenever there is more than one
+  # solution. The `*` stays out of the way while the two agree, because a star
+  # and a tick on the same tab were two marks saying one thing.
   Scenario: The recommended tab is the one open, and it arrives already ticked
     Then solution tab 2 of record "r-stale-lock" is the one open
     And solution tab 2 of record "r-stale-lock" is ticked
@@ -385,12 +382,11 @@ Feature: Reviewing a revision
     And solution 2 of record "r-stale-lock" shows "Write the pid into the lock"
     And solution 2 of record "r-stale-lock" reads the level "Level 2 — tune existing: behavior change inside artifacts that already exist"
 
-  # The other marker state, and the round trip between them: the user has
-  # the option to switch around and select another solution, and they will
-  # then see a star on the one that was previously recommended, in case they
-  # have selected something different. Switching back restores the agreement
-  # state, so the two states are reachable in both directions rather than
-  # one being a trapdoor.
+  # The other marker state, and the round trip between them: the user has the
+  # option to switch around and select another solution, and they will then see a
+  # star on the one that was previously recommended, in case they have selected
+  # something different. Switching back restores the agreement state, so the two
+  # states are reachable in both directions rather than one being a trapdoor.
   Scenario: Switching marks what the AI had recommended, and switching back takes the mark away
     When the reviewer selects solution 3 of record "r-stale-lock"
     Then solution tab 3 of record "r-stale-lock" is ticked
@@ -406,11 +402,11 @@ Feature: Reviewing a revision
   # The Level line moves right after the tabs, so the user can immediately
   # see what a level like L2 means.
   #
-  # The tab strip leads with `Solution 2 · L2` and this line is the only place the
-  # page says what L2 means. It was the last element of the body — after the
-  # bullets and after the wrapped footprint — so on a large solution the
-  # gloss sat a screen below the tab that named it, and the one decision the
-  # strip exists for was made before its meaning scrolled into view.
+  # The tab strip leads with `Solution 2 · L2` and this line is the only place
+  # the page says what L2 means. It was the last element of the body — after the
+  # bullets and after the wrapped footprint — so on a large solution the gloss
+  # sat a screen below the tab that named it, and the one decision the strip
+  # exists for was made before its meaning scrolled into view.
   #
   # The same line, moved: the body order for the rest of it stands, and the
   # tab body now opens the way the single-solution branch always has.
@@ -431,11 +427,11 @@ Feature: Reviewing a revision
     Then the footprint of solution 1 of record "r-stale-lock" is preformatted
     And the footprint of solution 1 of record "r-stale-lock" differs from solution 3
 
-  # The change footprint used to sit squeezed between the bullet points and
-  # the level line. It gets vertical margin so it stands on its own, a
-  # border that shows this is a code block — because it appears as a code
-  # block — and a title, "Change footprint", so it is clear what the section
-  # is and how big the change is.
+  # The change footprint used to sit squeezed between the bullet points and the
+  # level line. It gets vertical margin so it stands on its own, a border that
+  # shows this is a code block — because it appears as a code block — and a
+  # title, "Change footprint", so it is clear what the section is and how big the
+  # change is.
   #
   # The frame is read one channel at a time and against the card behind it: a
   # border painted in the card's own colour is a border nobody can see, and a
@@ -451,9 +447,9 @@ Feature: Reviewing a revision
       | light |
       | dark  |
 
-  # "Same treatment wherever a solution footprint renders" — the tab body and the
-  # single-solution branch, which is the shape that has no tab body at all. One
-  # component draws both, and this is the assertion that keeps it that way.
+  # The same treatment wherever a solution footprint renders — the tab body and
+  # the single-solution branch, which is the shape that has no tab body at all.
+  # One component draws both, and this is the assertion that keeps it that way.
   Scenario: The one-solution record frames its footprint exactly as a tab body does
     When the AI files the next revision
     And the reviewer loads the announced revision
@@ -490,10 +486,10 @@ Feature: Reviewing a revision
     And record "r-stale-lock" shows no AI mark on any solution tab
 
   # The tick, and what pays for it: a tickmark that indicates what the human
-  # actually selected. It is the human's act and nothing else writes it, so
-  # it appears the moment Select is pressed, and it is on a different tab
-  # from the `*` — which is the only arrangement that shows the two markers
-  # are two things.
+  # actually selected. It is the human's act and nothing else writes it, so it
+  # appears the moment Select is pressed, and it is on a different tab from the
+  # `*` — which is the only arrangement that shows the two markers are two
+  # things.
   #
   # And it is still on that tab after the verdict, which is the round trip: the
   # record reseeds from the decision the server wrote, so a payload carrying the
@@ -660,12 +656,12 @@ Feature: Reviewing a revision
   # inside its own box, and it does so at every width this product is read at —
   # all three canonical ones, plus the one where the column is at its narrowest.
   #
-  # Since the reading column's breakpoint moved to 92rem, none of the
-  # three canonical viewports has rails: on all of them the reading column is
-  # most of the page. The column is narrowest at 1472, the breakpoint itself,
-  # where it shares the row with both rails at its 704px floor — so that row is
-  # here, because a box that scrolls at 1024 is not evidence about the width the
-  # prose is actually tightest at.
+  # Since the reading column's breakpoint moved to 92rem, none of the three
+  # canonical viewports has rails: on all of them the reading column is most of
+  # the page. The column is narrowest at 1472, the breakpoint itself, where it
+  # shares the row with both rails at its 704px floor — so that row is here,
+  # because a box that scrolls at 1024 is not evidence about the width the prose
+  # is actually tightest at.
   Scenario Outline: A footprint wider than the column scrolls inside its tab at <width> by <height>
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens retro 1
@@ -724,14 +720,13 @@ Feature: Reviewing a revision
     # so the dial only exists on a record filed before they did.
     And the solution level of record "r-bullet-responses" is "1"
 
-  # Two retrospectives, one label. The severity option puts the number back
-  # in front: severity is the one enum addressed by number, and generalising
-  # the "what — why" rule to all three buried it under a sentence. A
-  # follow-up fix is the other half — that correction overshot, deleting the
-  # description instead of demoting it, and one real review later a
-  # compact-only select read as opaque with the scale's direction nowhere on
-  # screen. So: the number leads, a short description rides behind it, and
-  # SEV1 says which end is the top.
+  # Two retrospectives, one label. The severity option puts the number back in
+  # front: severity is the one enum addressed by number, and generalising the
+  # "what — why" rule to all three buried it under a sentence. A follow-up fix is
+  # the other half — that correction overshot, deleting the description instead
+  # of demoting it, and one real review later a compact-only select read as
+  # opaque with the scale's direction nowhere on screen. So: the number leads, a
+  # short description rides behind it, and SEV1 says which end is the top.
   Scenario: Severity is offered as SEV1 … SEV5, each saying what it means
     Then the severity options of record "r-stale-lock" read:
       | SEV1 — highest — halts everything |
@@ -742,8 +737,8 @@ Feature: Reviewing a revision
 
   # The canonical strings of docs/design/data-model.md §Enum option labels, which
   # holds v2's wording verbatim. This scenario is what stops a label being
-  # paraphrased, reordered, or quietly shortened — and what stops
-  # `none`, `upstream` or `undecided` coming back as something a human can pick.
+  # paraphrased, reordered, or quietly shortened — and what stops `none`,
+  # `upstream` or `undecided` coming back as something a human can pick.
   Scenario: Every solution level is offered, in order, with its definition intact
     Then the solution level options of record "r-bullet-responses" read:
       | Level 1 — words only: guidance text; nothing executes it, nothing conforms to it                         |
@@ -781,10 +776,10 @@ Feature: Reviewing a revision
     And the solution level of record "r-silent-tailer" is "3"
 
   # The standing rule for the enums that still explain themselves: the
-  # explanatory half is never dropped for brevity, and a two-line wrap is
-  # the acceptable cost. On a laptop even the longest row fits on one line,
-  # so the rule can only be observed where the wrap happens. Severity is
-  # exempt and has nothing left to clip.
+  # explanatory half is never dropped for brevity, and a two-line wrap is the
+  # acceptable cost. On a laptop even the longest row fits on one line, so the
+  # rule can only be observed where the wrap happens. Severity is exempt and has
+  # nothing left to clip.
   Scenario: No label is shortened, even on the narrow screen where it has to wrap
     When the reviewer is on an iPad in portrait
     Then no label on record "r-bullet-responses" is cut off
@@ -813,11 +808,10 @@ Feature: Reviewing a revision
     And the filter counts read:
       | pending | 2 |
 
-  # Hold left the verdict row and became a control and a tag of its own; it
-  # was removed once it shipped, because there was no way to tell whether a
-  # record was on hold before or after the hold control was clicked. The
-  # same outcome is reachable by selecting something to be done only with
-  # the human in the loop.
+  # Hold left the verdict row and became a control and a tag of its own; it was
+  # removed once it shipped, because there was no way to tell whether a record
+  # was on hold before or after the hold control was clicked. The same outcome is
+  # reachable by selecting something to be done only with the human in the loop.
   #
   # So the card carries a verdict and its three values, and nothing beside them.
   # The two scenarios below are that absence: what a card offers, and what a card
@@ -834,9 +828,9 @@ Feature: Reviewing a revision
     Then record "r-silent-tailer" is "approved"
     And record "r-silent-tailer" wears no status but its verdict and who asked for it
 
-  # An agent takes a record off the queue in its own process, and the
-  # review page says so while the reviewer is reading it — the claim lands on the
-  # event stream and the card re-reads records.list, with no reload anywhere.
+  # An agent takes a record off the queue in its own process, and the review page
+  # says so while the reviewer is reading it — the claim lands on the event
+  # stream and the card re-reads records.list, with no reload anywhere.
   #
   # The second half is the one that would actually have failed in the field: a
   # badge that went up and never came down would have the reviewer believing
@@ -891,12 +885,11 @@ Feature: Reviewing a revision
     And the filter counts read:
       | pending | 2 |
 
-  # Two verdicts could not say "redo this one": a third answer used to ride
-  # in comments, a mis-click had no way back, and a decided button looked
-  # much like an undecided one. Approving, declining or requesting a
-  # revision each moves a record out of pending, and pressing the same
-  # verdict again undoes it — with a clear indication of what is already
-  # selected.
+  # Two verdicts could not say "redo this one": a third answer used to ride in
+  # comments, a mis-click had no way back, and a decided button looked much like
+  # an undecided one. Approving, declining or requesting a revision each moves a
+  # record out of pending, and pressing the same verdict again undoes it — with a
+  # clear indication of what is already selected.
 
   Scenario: Asking for a revision decides the record, like the other two verdicts
     When the reviewer asks for a revision of record "r-bullet-responses"
@@ -948,11 +941,10 @@ Feature: Reviewing a revision
       | light |
       | dark  |
 
-  # Comments used to be rendered under the section they answered. They moved
-  # into the side panel so a human can see all comments in one place.
-  # Reading a review meant scrolling the whole page to find out what had
-  # been said on it, and the seven comment surfaces a single record could
-  # show were seven places to look.
+  # Comments used to be rendered under the section they answered. They moved into
+  # the side panel so a human can see all comments in one place. Reading a review
+  # meant scrolling the whole page to find out what had been said on it, and the
+  # seven comment surfaces a single record could show were seven places to look.
   #
   # So a record's threads are in the panel with every other comment, and each one
   # says where it hangs — the record's number, the section's display title and
@@ -977,11 +969,11 @@ Feature: Reviewing a revision
   Scenario: A record's comment says which record and which section it is on
     Then the "direction" thread of record "r-bullet-responses" is anchored to "#2 · Agreed direction · Answers come back as bullet lists when prose was asked for"
 
-  # The second half of the rule, and it is a ceiling rather than a
-  # height: a header runs into a second line when it needs one, and is cut at the
-  # end of that line only when it would need a third. Both halves are measured
-  # here, because either alone passes on a header that is always two lines and on
-  # one that is always cut.
+  # The second half of the rule, and it is a ceiling rather than a height: a
+  # header runs into a second line when it needs one, and is cut at the end of
+  # that line only when it would need a third. Both halves are measured here,
+  # because either alone passes on a header that is always two lines and on one
+  # that is always cut.
   #
   # In both themes: the leading and the font that decide where the cut falls are
   # tokens, and a token a theme overrides would move the cut in one theme and not
@@ -1057,13 +1049,12 @@ Feature: Reviewing a revision
     When the reviewer comments "Two of these records are the same complaint." on the review
     Then the review thread offers no reply count
 
-  # Comments show the revision number they are associated with, but the
-  # comments show across all revisions regardless. Both halves are here —
-  # every message says which revision it belongs to, and the panel never
-  # filters by the one on screen. The fixture's comments were written
-  # against revision 1 and the page is showing revision 2, so a page that
-  # stamped everything with what it is displaying would fail rather than
-  # pass by accident.
+  # Comments show the revision number they are associated with, but the comments
+  # show across all revisions regardless. Both halves are here — every message
+  # says which revision it belongs to, and the panel never filters by the one on
+  # screen. The fixture's comments were written against revision 1 and the page
+  # is showing revision 2, so a page that stamped everything with what it is
+  # displaying would fail rather than pass by accident.
   Scenario: Every comment says which revision it was written against, across all of them
     When the reviewer comments "This one is the same complaint as #1." on the review
     # The three openers on screen, in panel order: the record's thread, the
@@ -1122,10 +1113,10 @@ Feature: Reviewing a revision
   # small comment glyph inline beside the heading text.
   #
   # The affordance rendered after the section's content — after the problem
-  # bullets, after the human-words block — so on a large section it was
-  # a screen below the heading that named it and read as belonging to whatever
-  # came last. Two ways for that to be wrong and both are asserted: it has to be
-  # beside the heading, and it has to have left the bottom.
+  # bullets, after the human-words block — so on a large section it was a screen
+  # below the heading that named it and read as belonging to whatever came last.
+  # Two ways for that to be wrong and both are asserted: it has to be beside the
+  # heading, and it has to have left the bottom.
   Scenario: A section's comment glyph sits beside its heading, not under its body
     Then the comment glyph of the "problem" of record "r-stale-lock" sits inline after the heading
     And the comment glyph of the "problem" of record "r-stale-lock" is above the section body
@@ -1140,17 +1131,16 @@ Feature: Reviewing a revision
     Then the "problem" thread of record "r-stale-lock" shows "The impact is understated."
     And the "problem" thread of record "r-stale-lock" is anchored to "#1 · Problem · Deploy blocked on a stale lock file"
 
-  # A record's title can also carry a comment. `title` has been a
-  # first-class comment section in the model, in the CLI and in the section table
-  # all along; the header was styled as identity rather than as a section, so the
-  # one section that names the record was the one section the page offered no way
-  # to discuss.
+  # A record's title can also carry a comment. `title` has been a first-class
+  # comment section in the model, in the CLI and in the section table all along;
+  # the header was styled as identity rather than as a section, so the one
+  # section that names the record was the one section the page offered no way to
+  # discuss.
   #
-  # The placement is deliberate: the comment glyph sits inline with the
-  # title, right next to its last word, rather than separated off to the
-  # right. That is measured rather than eyeballed — a floated-right glyph
-  # satisfies every visibility check ever written and is exactly the shape
-  # that was ruled out.
+  # The placement is deliberate: the comment glyph sits inline with the title,
+  # right next to its last word, rather than separated off to the right. That is
+  # measured rather than eyeballed — a floated-right glyph satisfies every
+  # visibility check ever written and is exactly the shape that was ruled out.
   Scenario: A record's title carries the same glyph, right after its last word
     Then the comment glyph on the title of record "r-stale-lock" sits after the title's last word
     And every comment glyph on record "r-stale-lock" says what it is for
@@ -1165,10 +1155,10 @@ Feature: Reviewing a revision
     Then the "title" thread of record "r-stale-lock" shows "The title says the symptom, not the cause."
     And the "title" thread of record "r-stale-lock" is anchored to "#1 · Title · Deploy blocked on a stale lock file"
 
-  # A human-only resolved flag per comment (or per thread), visible state on
-  # the review page, and the AI forbidden at the schema level like every
-  # human field — only the user can mark comments as resolved, and resolved
-  # comments appear collapsed.
+  # A human-only resolved flag per comment (or per thread), visible state on the
+  # review page, and the AI forbidden at the schema level like every human field
+  # — only the user can mark comments as resolved, and resolved comments appear
+  # collapsed.
   Scenario: The human settles a thread, and it collapses to one line
     When the reviewer resolves the "direction" thread of record "r-bullet-responses"
     Then the "direction" thread of record "r-bullet-responses" is settled and collapsed
@@ -1199,9 +1189,9 @@ Feature: Reviewing a revision
 
   # There used to be no way to raise something about the review itself,
   # mid-review — every comment box on the page hung off one section of one
-  # record. So asks about the review as a whole went through a record's
-  # thread instead, where a review-level reading cannot see them — the
-  # record they were smuggled under was not what any of them was about.
+  # record. So asks about the review as a whole went through a record's thread
+  # instead, where a review-level reading cannot see them — the record they were
+  # smuggled under was not what any of them was about.
   #
   # The domain has carried review-level threads since the first schema
   # (data-model.md §Comment threads). Nothing on the page had ever reached them.
@@ -1223,10 +1213,9 @@ Feature: Reviewing a revision
     And the reviewer opens the replies in the review thread
     Then the comments panel shows "Merged them in the next revision."
 
-  # A requests panel shipped beside the review's comment threads and was
-  # removed the first time it was seen live: comments at the review level
-  # cover the same need, with one individual request addressable per
-  # comment.
+  # A requests panel shipped beside the review's comment threads and was removed
+  # the first time it was seen live: comments at the review level cover the same
+  # need, with one individual request addressable per comment.
   #
   # So the page carries one review-level surface and not two. This scenario is
   # the absence, asserted where a returning panel would be seen: the review's own
@@ -1268,15 +1257,15 @@ Feature: Reviewing a revision
     And the review shows no comment panel and no requests panel
 
   # The review's comments used to ship as a full-width panel above the first
-  # record. That placement cost a full scroll to the top to add a comment
-  # and then a scroll back down to find the place again — nine of those
-  # round trips in one round — and on the iPad the panel cost the fold
-  # whether it was used or not.
+  # record. That placement cost a full scroll to the top to add a comment and
+  # then a scroll back down to find the place again — nine of those round trips
+  # in one round — and on the iPad the panel cost the fold whether it was used or
+  # not.
   #
-  # The fix moves comments to the side, or behind a flyout. So the comments
-  # left the reading column — for a rail beside it where there is room for a
-  # third column, and for a sheet behind one glyph in the sticky header
-  # where there is not.
+  # The fix moves comments to the side, or behind a flyout. So the comments left
+  # the reading column — for a rail beside it where there is room for a third
+  # column, and for a sheet behind one glyph in the sticky header where there is
+  # not.
 
   Scenario: The review's comments stand beside the reading column, open to type into
     Given the reviewer's screen is 1536 by 960
@@ -1343,10 +1332,10 @@ Feature: Reviewing a revision
       | 1536  | 960    | 344  |
       | 1472  | 900    | 344  |
 
-  # The record itself, on the laptop: the reviewer is deep in the list,
-  # types a comment, and is still where they were. Both halves are asserted
-  # — the comment landed *and* the page did not move — because either alone
-  # is half the complaint.
+  # The record itself, on the laptop: the reviewer is deep in the list, types a
+  # comment, and is still where they were. Both halves are asserted — the comment
+  # landed *and* the page did not move — because either alone is half the
+  # complaint.
   Scenario: A comment written from the rail costs the reviewer nothing of their place
     Given the reviewer's screen is 1536 by 960
     And the reviewer opens retro 1
@@ -1375,10 +1364,10 @@ Feature: Reviewing a revision
       | 1366  | 1024   | is not on screen | is offered     |
       | 1024  | 1366   | is not on screen | is offered     |
 
-  # The portrait iPad, which is what this scenario is about. The sheet opens
-  # over the page rather than in it, so the reading column never reflows:
-  # the record the reviewer was on is still exactly where it was left while
-  # the sheet is open, after posting, and once it is closed again.
+  # The portrait iPad, which is what this scenario is about. The sheet opens over
+  # the page rather than in it, so the reading column never reflows: the record
+  # the reviewer was on is still exactly where it was left while the sheet is
+  # open, after posting, and once it is closed again.
   Scenario: On the portrait iPad the comments open over the page and give the place back
     Given the reviewer's screen is 1024 by 1366
     And the reviewer opens retro 1
@@ -1399,10 +1388,10 @@ Feature: Reviewing a revision
   # come home to a sheet nobody tapped, which reads as the page acting on its own.
   #
   # It used to be written as an iPad turned to landscape and back, and it cannot
-  # be any more: with the breakpoint at 92rem, both of that device's
-  # orientations are on the narrow side and the rotation crosses nothing. The
-  # behaviour is unchanged and still has to hold, so the scenario crosses the
-  # breakpoint the only way that is left.
+  # be any more: with the breakpoint at 92rem, both of that device's orientations
+  # are on the narrow side and the rotation crosses nothing. The behaviour is
+  # unchanged and still has to hold, so the scenario crosses the breakpoint the
+  # only way that is left.
   Scenario: The sheet does not come back by itself once the page has crossed the breakpoint and back
     Given the reviewer's screen is 1024 by 1366
     And the reviewer opens retro 1
@@ -1435,12 +1424,11 @@ Feature: Reviewing a revision
     And the page does not scroll sideways
     And the browser reported no console errors
 
-  # The reveal rule: a flyout leaves X pixels of the page uncovered, and the
-  # rest is covered. X is 64px and it is a *constant* — the 85vw it
-  # replaces was a proportion, which is the same thing said in a way that
-  # gets it wrong at both ends: 59px of strip on the phone, where a thumb
-  # has to find it, and 125px on the iPad, where it is width the comments
-  # could have had.
+  # The reveal rule: a flyout leaves X pixels of the page uncovered, and the rest
+  # is covered. X is 64px and it is a *constant* — the 85vw it replaces was a
+  # proportion, which is the same thing said in a way that gets it wrong at both
+  # ends: 59px of strip on the phone, where a thumb has to find it, and 125px on
+  # the iPad, where it is width the comments could have had.
   #
   # Two screens, because a fixed reveal and a capped width are one rule with two
   # halves and each screen shows one of them. On the phone neither cap is reached
@@ -1471,13 +1459,13 @@ Feature: Reviewing a revision
       | 390   | 844    | 326      | 64             | 326   | 64          |
       | 834   | 1112   | 768      | 66             | 416   | 418         |
 
-  # On the portrait iPad sheet, an empty review used to mount the composer
-  # at the top; the moment the first comment posted, the thread list took
-  # the flex space and the composer landed pinned at the bottom — the
-  # control the user was mid-interaction with moved across the whole sheet.
-  # The fix anchors it at the bottom in the empty state too, so the first
-  # post changes nothing about where the box sits. Both halves are
-  # asserted, because the second one alone was always true.
+  # On the portrait iPad sheet, an empty review used to mount the composer at the
+  # top; the moment the first comment posted, the thread list took the flex space
+  # and the composer landed pinned at the bottom — the control the user was
+  # mid-interaction with moved across the whole sheet. The fix anchors it at the
+  # bottom in the empty state too, so the first post changes nothing about where
+  # the box sits. Both halves are asserted, because the second one alone was
+  # always true.
   Scenario: The composer is anchored at the bottom before there is anything above it
     Given the review has no comments at all
     And the reviewer's screen is 1024 by 1366
@@ -1502,9 +1490,9 @@ Feature: Reviewing a revision
     And the reviewer comments "This one is the same complaint as #1." on the review
     Then the review comments affordance counts "3"
 
-  # The badge counts unresolved threads only. It reaches zero once
-  # everything is settled, which is the moment the affordance stops needing
-  # attention — the count is a to-do number rather than an archive size.
+  # The badge counts unresolved threads only. It reaches zero once everything is
+  # settled, which is the moment the affordance stops needing attention — the
+  # count is a to-do number rather than an archive size.
   #
   # Every move is made through the page, and the count is read after each one, so
   # this is the number following the threads in both directions rather than one
@@ -1577,17 +1565,16 @@ Feature: Reviewing a revision
     And the comment rail is not on screen
 
   # Two asks in one breath, and they are one bar: the filter chips (pending,
-  # approved, declined etc) used to scroll away and needed to stick to the
-  # top instead; and the box at the bottom reading "X of Y pending - Review
-  # finished ..." needed to go, replaced with a button next to the filters
-  # (filters on the left, finish button on the right). Once a review is
-  # finished, the button is replaced with an icon and text that indicates
-  # the retro has been submitted.
+  # approved, declined etc) used to scroll away and needed to stick to the top
+  # instead; and the box at the bottom reading "X of Y pending - Review finished
+  # ..." needed to go, replaced with a button next to the filters (filters on the
+  # left, finish button on the right). Once a review is finished, the button is
+  # replaced with an icon and text that indicates the retro has been submitted.
   #
-  # So the filter bar became the decision bar: it holds the two things
-  # named above and nothing else, it stops under the header instead of
-  # leaving with the first record, and the pending count went with the box
-  # — the pending chip on the same bar was already saying it.
+  # So the filter bar became the decision bar: it holds the two things named
+  # above and nothing else, it stops under the header instead of leaving with the
+  # first record, and the pending count went with the box — the pending chip on
+  # the same bar was already saying it.
 
   Scenario Outline: The filters and the one action stay under the header, however far down the review goes
     Given the reviewer's screen is <width> by <height>
@@ -1657,8 +1644,8 @@ Feature: Reviewing a revision
     And the review is not finished
 
   # Records did not use to have a unique id — each retro's record ids started
-  # from #1, which read as if two different records shared a number. So a
-  # record has one number, its place in the whole ledger, and it is that number
+  # from #1, which read as if two different records shared a number. So a record
+  # has one number, its place in the whole ledger, and it is that number
   # everywhere it is named — the card, the index, a comment's anchor, the chip
   # that says where the composer is aimed, and the refusal that lists what is
   # still undecided. Five surfaces that each name a record, and five chances for
@@ -1708,10 +1695,10 @@ Feature: Reviewing a revision
   # actually valid and can be closed, a text box where the human can enter a
   # final message before closing — delivered separately from the comments.
   #
-  # The guard for validity already shipped — the gate refuses while a
-  # record is undecided, which is the block above. This is the half that had not:
-  # a *valid* finish confirms, and the confirm is where the round's last word
-  # goes. Delivered separately from the comments, so nothing here is a thread.
+  # The guard for validity already shipped — the gate refuses while a record is
+  # undecided, which is the block above. This is the half that had not: a *valid*
+  # finish confirms, and the confirm is where the round's last word goes.
+  # Delivered separately from the comments, so nothing here is a thread.
   Scenario: A valid finish asks before it fires, and nothing is sent until it is answered
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1756,8 +1743,8 @@ Feature: Reviewing a revision
     And the round carries no final message
 
   # The confirm has to give the page back, exactly as the refusal does — and
-  # backing out of it must leave the round untouched, which is the whole
-  # reason the second step exists.
+  # backing out of it must leave the round untouched, which is the whole reason
+  # the second step exists.
   Scenario: Backing out of the confirm finishes nothing and gives the keyboard back
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1769,17 +1756,16 @@ Feature: Reviewing a revision
     And finishing is still offered
     And the keyboard is on the finish button
 
-  # The refusal used to arrive after pressing finish, and after the
-  # finishing message might already have been entered — a risk of losing
-  # the human's input, since the check should show on the first click
-  # rather than the second.
+  # The refusal used to arrive after pressing finish, and after the finishing
+  # message might already have been entered — a risk of losing the human's input,
+  # since the check should show on the first click rather than the second.
   #
-  # The gate predates the two-step and stayed attached to the send, so an
-  # earlier redesign silently reordered check and composition. Everything the
-  # refusal needs is on the page before the first press — the popover names the
-  # records by their global ids — so the composer is simply unreachable on a round
-  # that cannot finish, and there is no composed text to lose. The order is the
-  # claim, so the absence of the composer is asserted next to the refusal.
+  # The gate predates the two-step and stayed attached to the send, so an earlier
+  # redesign silently reordered check and composition. Everything the refusal
+  # needs is on the page before the first press — the popover names the records
+  # by their global ids — so the composer is simply unreachable on a round that
+  # cannot finish, and there is no composed text to lose. The order is the claim,
+  # so the absence of the composer is asserted next to the refusal.
   Scenario: The refusal arrives on the first press, and the composer never opens
     When the reviewer approves record "r-stale-lock"
     And the reviewer presses Finish review
@@ -1793,11 +1779,11 @@ Feature: Reviewing a revision
   # another device, whose event has not reached this page yet — so the send can
   # still be refused on a round the page believed was finishable.
   #
-  # That is the one case where a refusal fires with something written in the
-  # box, which is exactly the risk named above. The text is kept: pressing
-  # Finish again brings back the last written word on the round, still
-  # there, unsent and unedited. The input-loss risk dies on both paths — by
-  # never writing on one, and by never discarding on the other.
+  # That is the one case where a refusal fires with something written in the box,
+  # which is exactly the risk named above. The text is kept: pressing Finish
+  # again brings back the last written word on the round, still there, unsent and
+  # unedited. The input-loss risk dies on both paths — by never writing on one,
+  # and by never discarding on the other.
   Scenario: A verdict taken back elsewhere is refused at send time, and the draft survives it
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1823,8 +1809,8 @@ Feature: Reviewing a revision
   # in-memory only, and the finished-this-revision fact was on no query the page
   # held: `revisionMeta.finishedAt` now carries it, and the bar derives from it.
   #
-  # The earlier gap left exactly this untested: it tested the press path,
-  # and no scenario put anything between the press and the assertion.
+  # The earlier gap left exactly this untested: it tested the press path, and no
+  # scenario put anything between the press and the assertion.
   Scenario: The submitted state survives the reviewer leaving the page and coming back
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1858,10 +1844,10 @@ Feature: Reviewing a revision
     Then the review is finished
     And record "r-stale-lock" offers no decision buttons
 
-  # Two buttons used to encode one judgment twice, and the contradiction
-  # they invite: requesting a lot of changes in comments and then also
-  # clicking finish review is a contradiction that a single button avoids —
-  # there is just one button now.
+  # Two buttons used to encode one judgment twice, and the contradiction they
+  # invite: requesting a lot of changes in comments and then also clicking finish
+  # review is a contradiction that a single button avoids — there is just one
+  # button now.
   #
   # So the page's whole terminal surface is one button, and these three
   # scenarios are what it means: what it offers, what it says when pressed, and
@@ -1872,10 +1858,10 @@ Feature: Reviewing a revision
 
   # The header word here is SUBMITTED and not REVIEWING, and the two assertions
   # under it are why that is not the same claim twice: `the review is not
-  # finished` says the retrospective did NOT end on the press — the doctrine
-  # this scenario is named for — and the header word says the page now tells the
-  # reviewer which half of the window they are in. Before the fourth word
-  # existed the only surface saying so was the bar's own mark, one line below.
+  # finished` says the retrospective did NOT end on the press — the doctrine this
+  # scenario is named for — and the header word says the page now tells the
+  # reviewer which half of the window they are in. Before the fourth word existed
+  # the only surface saying so was the bar's own mark, one line below.
   Scenario: Finishing says so, and does not end the retrospective on its own
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1885,11 +1871,11 @@ Feature: Reviewing a revision
     And the review is not finished
     And the review header says the retro is "submitted"
 
-  # The finish action used to be pressable multiple times. Both layers hold
-  # it to once per round — the button goes unpressable, and the server
-  # absorbs a duplicate anyway (`review.test.ts`, `procedures.test.ts`). Two
-  # scenarios rather than one, because they are two claims and a scenario
-  # that stopped at the first would never reach the second.
+  # The finish action used to be pressable multiple times. Both layers hold it to
+  # once per round — the button goes unpressable, and the server absorbs a
+  # duplicate anyway (`review.test.ts`, `procedures.test.ts`). Two scenarios
+  # rather than one, because they are two claims and a scenario that stopped at
+  # the first would never reach the second.
   Scenario: The terminal action cannot be pressed a second time
     When the reviewer approves record "r-stale-lock"
     And the reviewer declines record "r-bullet-responses"
@@ -1924,12 +1910,11 @@ Feature: Reviewing a revision
   # "no records are declined" is an answer, and a bar that changed length with
   # the counts would be harder to aim at.
   #
-  # `hold` is not one of those states. It stopped being a verdict and
-  # nothing has written one since, so on every store in use it is a chip
-  # that can only read zero and filter to nothing — dead chrome on every
-  # real retro, and every element earns its place. It is gone from the bar
-  # here and present in the scenario below it, which is the whole of the
-  # rule.
+  # `hold` is not one of those states. It stopped being a verdict and nothing has
+  # written one since, so on every store in use it is a chip that can only read
+  # zero and filter to nothing — dead chrome on every real retro, and every
+  # element earns its place. It is gone from the bar here and present in the
+  # scenario below it, which is the whole of the rule.
   Scenario: The filter offers the states a review can reach, and filters nothing until it is used
     Then no filter chip is active
     And the filter offers the chips "pending, approved, declined, revise"
@@ -1994,9 +1979,9 @@ Feature: Reviewing a revision
   # The departing row's height once stepped from full to zero between two
   # consecutive frames and only the opacity faded, in every run including
   # unloaded baselines. The element carried a 0.24s transition on
-  # `grid-template-rows`, and the code said in as many words that the
-  # records below "rise into the gap instead of jumping into it" — they
-  # jumped every time a decided record left a filtered view.
+  # `grid-template-rows`, and the code said in as many words that the records
+  # below "rise into the gap instead of jumping into it" — they jumped every time
+  # a decided record left a filtered view.
   #
   # No assertion on a final state can see this: the row ends at zero height
   # whether it animated or not, and the opacity half ran correctly over the same
@@ -2028,9 +2013,9 @@ Feature: Reviewing a revision
     Then the viewport lands on record "r-bullet-responses"
     And the keyboard is on record "r-bullet-responses"
 
-  # The other half: there is no next record, so the page falls back to
-  # the one before — which is above where the reviewer was sitting, so nothing
-  # but a deliberate landing can put it at the top of the reading area.
+  # The other half: there is no next record, so the page falls back to the one
+  # before — which is above where the reviewer was sitting, so nothing but a
+  # deliberate landing can put it at the top of the reading area.
   Scenario: When the record that left was the last one, the page falls back to the one before it
     When the reviewer filters to "pending"
     And the reviewer approves record "r-silent-tailer"
@@ -2049,22 +2034,22 @@ Feature: Reviewing a revision
 
   # This scenario is re-scoped by its own trace.
   #
-  # The hypothesis was that a departure shrinks the document and the
-  # browser clamps scrollY in the same layout pass the landing scroll is issued
-  # in, cancelling it — an unverified relay that needed a trace to confirm or
-  # rule out first. About 2,350 instrumented runs ruled it out. In every
-  # captured failure and in every baseline the shrink and the browser's
-  # adjustment had already completed before `scrollIntoView` was called, and
-  # the landing that was issued was correct and did arrive — at the right
-  # pixel, with `scrollend` fired.
+  # The hypothesis was that a departure shrinks the document and the browser
+  # clamps scrollY in the same layout pass the landing scroll is issued in,
+  # cancelling it — an unverified relay that needed a trace to confirm or rule
+  # out first. About 2,350 instrumented runs ruled it out. In every captured
+  # failure and in every baseline the shrink and the browser's adjustment had
+  # already completed before `scrollIntoView` was called, and the landing that
+  # was issued was correct and did arrive — at the right pixel, with `scrollend`
+  # fired.
   #
   # What was actually failing is the *wait*. `scrollAtRest` concluded the page
   # had stopped by counting unchanged frames, and on a renderer that has almost
   # stopped painting those frames are seconds apart: the landing arrives, and the
   # wait then owes three more frames before it will say so. That tax, not the
   # scroll, is what ran past the assertion's budget — and while it ran, every
-  # sample read the same mid-flight position, which is exactly the stable
-  # offset for the full fifteen seconds that was observed.
+  # sample read the same mid-flight position, which is exactly the stable offset
+  # for the full fifteen seconds that was observed.
   #
   # So this scenario starves the renderer on purpose rather than borrowing a
   # loaded machine, and asserts the landing is *read* correctly. It is red on the
@@ -2072,12 +2057,11 @@ Feature: Reviewing a revision
   # has ended.
   #
   # @starved, and it is the scenario this tag was written for: starving its
-  # own renderer is what puts it in the class, and its fifteen-second budget
-  # is what the class costs. Measured on this tip: green at the gate's five
-  # workers, and 12 of 12 red at twelve concurrent copies on twelve workers —
-  # the same fifteen-second predicate timeout every time, the page alive in
-  # all of them. The budget did not move; the scenario left the parallel
-  # bulk.
+  # own renderer is what puts it in the class, and its fifteen-second budget is
+  # what the class costs. Measured on this tip: green at the gate's five workers,
+  # and 12 of 12 red at twelve concurrent copies on twelve workers — the same
+  # fifteen-second predicate timeout every time, the page alive in all of them.
+  # The budget did not move; the scenario left the parallel bulk.
   @starved
   Scenario: The landing is read correctly on a renderer that has almost stopped painting
     When the reviewer filters to "pending"
@@ -2143,10 +2127,9 @@ Feature: Reviewing a revision
     Then the records appear in the order "r-stale-lock"
     And record "r-bullet-responses" is not listed
 
-  # The chips show the total count rather than the number currently on
-  # screen. The chips answer "how much is there", not "how much is on
-  # screen" — so an extra filter narrows the list and leaves every chip's
-  # number alone.
+  # The chips show the total count rather than the number currently on screen.
+  # The chips answer "how much is there", not "how much is on screen" — so an
+  # extra filter narrows the list and leaves every chip's number alone.
   Scenario: The state chips keep total counts while an extra filter narrows the list
     When the reviewer opens the extra filters
     And the reviewer filters to requester "ai"
@@ -2157,8 +2140,8 @@ Feature: Reviewing a revision
       | declined | 0 |
       | revise   | 0 |
 
-  # The indication has both halves of it — so "why is the list short"
-  # cannot happen — and one press to undo it.
+  # The indication has both halves of it — so "why is the list short" cannot
+  # happen — and one press to undo it.
   Scenario: An applied extra filter says so on the icon and beside it, and clears in one press
     When the reviewer opens the extra filters
     And the reviewer filters to requester "ai"
@@ -2184,11 +2167,11 @@ Feature: Reviewing a revision
       | light |
       | dark  |
 
-  # At the end of deciding a round, when there is no more pending, the page
-  # needs a nice and sweet message that says there are no more items that
-  # match the selected criteria — otherwise it looks like a bug that
-  # everything vanished all of a sudden, when actually the filtered items
-  # really don't have anything left.
+  # At the end of deciding a round, when there is no more pending, the page needs
+  # a nice and sweet message that says there are no more items that match the
+  # selected criteria — otherwise it looks like a bug that everything vanished
+  # all of a sudden, when actually the filtered items really don't have anything
+  # left.
   #
   # The list used to just end. The scenario below it — "Deciding the last record
   # in the filter empties it without stranding the reviewer" — proves the page
@@ -2269,13 +2252,12 @@ Feature: Reviewing a revision
   # from the left — never both, because two copies of the same list in one
   # document is one too many and whichever a reader reached would be a coin toss.
   #
-  # It shipped the other way at first: on the portrait iPad the reading
-  # column was the whole screen and the rail stepped out of the way — no
-  # drawer, no button to open it, because a two-tap index on a page you can
-  # scroll was judged not worth the tap or the code. That was overturned: on
-  # iPad the issues list that lets a reader jump to specific issues needed
-  # to be reachable, opening in a left panel just like comments open from
-  # the right panel.
+  # It shipped the other way at first: on the portrait iPad the reading column
+  # was the whole screen and the rail stepped out of the way — no drawer, no
+  # button to open it, because a two-tap index on a page you can scroll was
+  # judged not worth the tap or the code. That was overturned: on iPad the issues
+  # list that lets a reader jump to specific issues needed to be reachable,
+  # opening in a left panel just like comments open from the right panel.
   Scenario Outline: The index is a rail where there is room for one, and a left sheet where there is not
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens retro 1
@@ -2296,17 +2278,17 @@ Feature: Reviewing a revision
     # on a laptop-sized screen, which is what "there is no room for the third
     # column" has always meant.
     #
-    # 1920 is the other rule — on a very wide screen the content should not
-    # go all the way to the sides — and the assertion is that the measure
-    # stops at 1536 rather than following the screen out to its edges.
+    # 1920 is the other rule — on a very wide screen the content should not go
+    # all the way to the sides — and the assertion is that the measure stops at
+    # 1536 rather than following the screen out to its edges.
     #
     # **The last three rows are the price of the wider breakpoint, written
-    # down.** All three canonical viewports (testing.md) are on the narrow
-    # side of the breakpoint now: at 84rem the 1440 laptop and the 1366
-    # landscape iPad both had three columns, and rails of 288 + 368 do not
-    # fit either of them above the reading column's 704px floor. Nothing
-    # the product is actually reviewed on shows the wide layout any more —
-    # the rail numbers are the dial, and this table is what they move.
+    # down.** All three canonical viewports (testing.md) are on the narrow side
+    # of the breakpoint now: at 84rem the 1440 laptop and the 1366 landscape iPad
+    # both had three columns, and rails of 288 + 368 do not fit either of them
+    # above the reading column's 704px floor. Nothing the product is actually
+    # reviewed on shows the wide layout any more — the rail numbers are the dial,
+    # and this table is what they move.
     Examples:
       | width | height | presence         | affordance     | measure |
       | 1920  | 1080   | is on screen     | is not offered | 1536    |
@@ -2331,11 +2313,10 @@ Feature: Reviewing a revision
     And the record index lists "r-stale-lock, r-bullet-responses, r-silent-tailer"
     And the record index entry for "r-stale-lock" reads "#1" and "Deploy blocked on a stale lock file"
 
-  # Jumping to a specific record closes the sheet on the way, because the
-  # record it lands on is under the backdrop and scrolling to it without
-  # closing would put the reviewer somewhere they cannot see. Both halves
-  # asserted: the sheet gave the page back *and* the page went where it was
-  # asked.
+  # Jumping to a specific record closes the sheet on the way, because the record
+  # it lands on is under the backdrop and scrolling to it without closing would
+  # put the reviewer somewhere they cannot see. Both halves asserted: the sheet
+  # gave the page back *and* the page went where it was asked.
   Scenario: An entry in the sheet jumps to that record and gives the page back
     Given the reviewer's screen is 1024 by 1366
     And the reviewer opens retro 1
@@ -2348,8 +2329,8 @@ Feature: Reviewing a revision
   # takes the sheet off the page and it must not be waiting there on the way
   # back, or a screen widened and narrowed again comes home to a panel nobody
   # tapped. Like its twin it crosses the breakpoint with a viewport change rather
-  # than a rotation now, because since the breakpoint moved to 92rem an
-  # iPad turned end to end never crosses it.
+  # than a rotation now, because since the breakpoint moved to 92rem an iPad
+  # turned end to end never crosses it.
   Scenario: The index sheet does not come back by itself once the page has crossed the breakpoint and back
     Given the reviewer's screen is 1024 by 1366
     And the reviewer opens retro 1

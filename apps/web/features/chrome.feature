@@ -81,11 +81,11 @@ Feature: Page chrome
   # The menu items move under a single dropdown in the top right, built with the
   # shadcn dropdown-menu component.
   #
-  # Three claims, and the record made all three: the menu is in the top right,
-  # it holds these two items in this order, and each item is a real link — which
-  # is why open-in-new-tab works and why the table reads hrefs. The absence
-  # beside it is counted rather than named: nothing is left loose up there, not
-  # that two particular testids went away.
+  # Three claims, and all three are asserted: the menu is in the top right, it
+  # holds these two items in this order, and each item is a real link — which is
+  # why open-in-new-tab works and why the table reads hrefs. The absence beside
+  # it is counted rather than named: the claim is that nothing is left loose up
+  # there, not that two particular testids went away.
   Scenario: Global navigation is one dropdown in the top right, with nothing loose beside it
     Given the reviewer opens "/"
     Then the top menu carries no loose navigation links
@@ -122,10 +122,10 @@ Feature: Page chrome
   # The renderer is starved by Chromium's own CPU throttle rather than by the
   # main-thread hold review.feature's landing scenario uses, and the choice was
   # measured. The hold loop quantises the page into whole periods and lets the
-  # menu close commit inside one, between two of the harness's acts; the
-  # throttle slows the close by a factor instead, so the waits actually spend
-  # budget and a budget that is too small is red rather than lucky. Both
-  # engines' numbers are in the step docstrings.
+  # menu close commit inside one, between two of the harness's acts; the throttle
+  # slows the close by a factor instead, so the waits actually spend budget and a
+  # budget that is too small is red rather than lucky. Both engines' numbers are
+  # in the step docstrings.
   #
   # The throttle is applied FIRST, before the menu is opened: the open, the close
   # and the navigation after it are all starved, so all three of this scenario's

@@ -132,11 +132,10 @@ Then(
 )
 
 /**
- * The absence of both figures, counted rather than asserted invisible — the
- * same call `there is no band` makes, and for the same reason: a `<dl>`
- * rendered at zero height is invisible and still there, and what the band
- * promises is that a round nobody owes the reviewer anything on carries no
- * numbers at all.
+ * The absence of both figures, counted rather than asserted invisible — the same
+ * call `there is no band` makes, and for the same reason: a `<dl>` rendered at
+ * zero height is invisible and still there, and what the band promises is that a
+ * round nobody owes the reviewer anything on carries no numbers at all.
  *
  * Both testids, because the pair is rendered together and dropping one of them
  * would be a half-fix this step has to see.

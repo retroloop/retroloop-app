@@ -17,12 +17,12 @@ import { fileURLToPath } from 'node:url'
  *
  * That isolates worktrees, and the unit that actually contends is the *run*:
  * two processes — one running a suite, another running the gate — in one
- * worktree at once, both derived the same port from the same path, and two
- * gate runs on the same commit failed a rotating scenario each, twice,
- * though neither run was wrong. So the run's own process id is hashed in
- * beside the path. Two runs in one tree are two pids and two ports; the class
- * is gone rather than scheduled around, bar the one time in eighty that
- * eighty ports hands the same number to both.
+ * worktree at once, both derived the same port from the same path, and two gate
+ * runs on the same commit failed a rotating scenario each, twice, though
+ * neither run was wrong. So the run's own process id is hashed in beside the
+ * path. Two runs in one tree are two pids and two ports; the class is gone
+ * rather than scheduled around, bar the one time in eighty that eighty ports
+ * hands the same number to both.
  *
  * The range sits clear of every port this project allocates by hand — the
  * server, the dev server, the reference build, the old preview port, and one
@@ -61,9 +61,9 @@ export function derivePort(checkout: string, pid: number): number {
 }
 
 /**
- * The ports nothing derived may land on: each of these is handed to
- * something by name — 24100 the server, 24300 `dev`, 24301 the reference build,
- * 24302 the preview port this replaces, and 24310, reserved.
+ * The ports nothing derived may land on: each of these is handed to something
+ * by name — 24100 the server, 24300 `dev`, 24301 the reference build, 24302 the
+ * preview port this replaces, and 24310, reserved.
  */
 export const RESERVED_PORTS: readonly number[] = [24100, 24300, 24301, 24302, 24310]
 

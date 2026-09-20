@@ -312,8 +312,8 @@ type ClaimRow = {
 }
 
 /**
- * One act of the human putting a label on a record, or taking it off — a
- * label is just a name, usually.
+ * One act of the human putting a label on a record, or taking it off — a label
+ * is just a name, usually.
  *
  * Rows rather than a set on the record, because that is what `record_labels` is:
  * removing a label appends a version and the highest one stands, so nothing here
@@ -350,8 +350,8 @@ type RecordAttributeValueRow = {
 
 /**
  * One act of somebody saying two records belong together, or taking it back —
- * both actors can relate records, each relation carries how-they-relate
- * words, and the relation reads from both sides.
+ * both actors can relate records, each relation carries how-they-relate words,
+ * and the relation reads from both sides.
  *
  * **Keyed on two global ids and on nothing else**, exactly as `record_relations`
  * is: a relation names two records and may name them across two retrospectives,
@@ -539,9 +539,9 @@ const staleLock: RecordSeed = {
     whys: [
       // The one why written the way a real one is — "**Why did X?** because Y",
       // a full line of prose rather than a clause. The gutter label beside it is
-      // the only thing on this page a long line can squeeze
-      // (`r-whys-labels`): with a short why there is no shrink pressure at all,
-      // and the control for "one line each" passes without observing anything.
+      // the only thing on this page a long line can squeeze (`r-whys-labels`):
+      // with a short why there is no shrink pressure at all, and the control for
+      // "one line each" passes without observing anything.
       '**Why did the start refuse?** A lock file was sitting in the stage directory, and ' +
         'the guard reads the file itself as proof that something is already serving it.',
       'The lock file was present because the previous process did not remove it.',
@@ -551,10 +551,10 @@ const staleLock: RecordSeed = {
     root: 'The lock records that someone held it, not who — so no one can tell it is stale.',
   },
   /**
-   * **The evidence, authored the way a real one is** — bold leads, a
-   * bullet list and a fence, because the block renders with the same markdown
-   * subset every other prose field uses and a fixture of plain sentences could
-   * not tell the renderer from a `<pre>`.
+   * **The evidence, authored the way a real one is** — bold leads, a bullet list
+   * and a fence, because the block renders with the same markdown subset every
+   * other prose field uses and a fixture of plain sentences could not tell the
+   * renderer from a `<pre>`.
    *
    * It is on the record the review scenarios open, so the collapsed block, the
    * click that opens it and what comes out of the renderer are all read off a
@@ -571,8 +571,8 @@ const staleLock: RecordSeed = {
     '```',
   workaround: 'Delete the lock file by hand before starting.',
   /**
-   * **The record in the multi-solution shape**: one to three solutions,
-   * lowest level first, exactly one recommended.
+   * **The record in the multi-solution shape**: one to three solutions, lowest
+   * level first, exactly one recommended.
    *
    * **Three of them, with the recommendation in the middle**, because every
    * question this fixture has to answer is a question about *which* — which one
@@ -827,10 +827,10 @@ const silentTailerRewritten: RecordSeed = {
 /**
  * The record that proposes **one** solution, and the only one in the fixture.
  *
- * A record with a single solution has nothing to switch between, and it
- * renders without the strip — when there is only one solution, the tab is
- * not shown, because showing it causes confusion. Nothing here can show
- * that unless a record is in that shape, and none was.
+ * A record with a single solution has nothing to switch between, and it renders
+ * without the strip — when there is only one solution, the tab is not shown,
+ * because showing it causes confusion. Nothing here can show that unless a
+ * record is in that shape, and none was.
  *
  * It arrives **with revision 3** rather than widening revisions 1 and 2. The AI
  * filing a new record in a new revision is the product's own path to this shape,
@@ -901,8 +901,8 @@ const doctorBlind: RecordSeed = {
  * The third proposes **no title**, which is the one way a retrospective loses
  * its name: the title is optional on the draft and the latest draft wins, so a
  * later revision that proposes none leaves the retro unnamed and the reader
- * falls back to "Retro #n — <cwd basename>". That is a real product
- * state, and filing this revision is how a scenario reaches it.
+ * falls back to "Retro #n — <cwd basename>". That is a real product state, and
+ * filing this revision is how a scenario reaches it.
  *
  * It also carries the fixture's one-solution record, which is the other thing
  * only a new revision can bring: a record that did not exist in the round before
@@ -1242,12 +1242,12 @@ const OPENING_CLAIMS: readonly ClaimRow[] = [
 /**
  * **Somebody created these**, which is the whole of "nothing hardcoded".
  *
- * The product ships zero labels and zero attributes — to keep it
- * flexible, nothing hardcodes any labels or attributes — so these are
- * fixture constants of the same standing as `retroNumber: 1`: they are what this
- * world *is*, because a human sat on the settings page and typed them. Nothing
- * under `apps/web/src` knows any of these names, `migrated` included; it is
- * an example, not a value the product knows about.
+ * The product ships zero labels and zero attributes — to keep it flexible,
+ * nothing hardcodes any labels or attributes — so these are fixture constants of
+ * the same standing as `retroNumber: 1`: they are what this world *is*, because
+ * a human sat on the settings page and typed them. Nothing under `apps/web/src`
+ * knows any of these names, `migrated` included; it is an example, not a value
+ * the product knows about.
  *
  * The set is arranged so that **every branch a reader has** is on the fixture
  * before a scenario performs anything:
@@ -1423,8 +1423,8 @@ type World = {
   /** What has been done about each record since the review closed. */
   lifecycle: LifecycleRow[]
   /**
-   * Who has picked each record up, and who has given one back — the
-   * in-progress marker's rows.
+   * Who has picked each record up, and who has given one back — the in-progress
+   * marker's rows.
    *
    * A table of its own beside `lifecycle` rather than a column on it, exactly as
    * the store keeps it: a claim is not a position on the lifecycle axis, it is a
@@ -1520,9 +1520,8 @@ const RECORD_THREAD: ThreadRow = {
 
 /**
  * A thread about the review rather than about any record — the shape that had a
- * write path and no read path until review-level threads existed, which is
- * most of why comments about the review used to go in under a record
- * instead.
+ * write path and no read path until review-level threads existed, which is most
+ * of why comments about the review used to go in under a record instead.
  *
  * It carries both actors, because the panel renders whoever wrote a message and
  * the AI's half arrives from a different process entirely.
@@ -1557,11 +1556,10 @@ const REVIEW_THREAD: ThreadRow = {
  * comment, and the one the comments panel has nothing to show in.
  *
  * It emptied the *review's* threads and left the record's until an earlier
- * redesign, when `threads.list` stopped filtering to review-level threads —
- * so a human can see all comments in one place. A record thread is
- * something the panel shows now, so a world that kept one would not be a world
- * with an empty panel — and every scenario that sets this flag is about the
- * empty panel.
+ * redesign, when `threads.list` stopped filtering to review-level threads — so a
+ * human can see all comments in one place. A record thread is something the
+ * panel shows now, so a world that kept one would not be a world with an empty
+ * panel — and every scenario that sets this flag is about the empty panel.
  *
  * It is arranged rather than performed, and it has to be: threads are
  * append-only, so there is no act in the product that empties them. A scenario
@@ -1596,8 +1594,8 @@ function freshInstall(): boolean {
 
 /**
  * Whether this page was opened on a store that carries a **`hold` verdict** —
- * the fourth `DecisionState`, which stopped being writable through any
- * current path.
+ * the fourth `DecisionState`, which stopped being writable through any current
+ * path.
  *
  * Arranged rather than performed, and it has to be: no write path in the product
  * can produce one, which is the whole point of the state. It is a real row of a
@@ -1962,9 +1960,9 @@ function narrativeAt(revision: Revision, rid: string): RecordSeed {
  *
  * The three keys taken off are the three the server leaves out of
  * `recordContent()` — identity, the AI's proposed defaults, and the diagnostic
- * data, which is supporting evidence the human never answers. A mock
- * that hashed one of them would send a record back to pending on a redraft the
- * server would have carried the verdict across.
+ * data, which is supporting evidence the human never answers. A mock that hashed
+ * one of them would send a record back to pending on a redraft the server would
+ * have carried the verdict across.
  */
 function contentOf(record: RecordSeed): string {
   const {
@@ -2085,9 +2083,9 @@ function chooseSolution(
 
 /**
  * `effectiveDecision` from core, restated over the wire shapes: a verdict binds
- * to the content it was given for. Identical content carries it forward;
- * changed content sends the record back to pending without writing anything,
- * because pending is the *absence* of a decision for what is on screen.
+ * to the content it was given for. Identical content carries it forward; changed
+ * content sends the record back to pending without writing anything, because
+ * pending is the *absence* of a decision for what is on screen.
  */
 function effectiveDecision(
   retro: Retrospective,
@@ -3221,10 +3219,9 @@ export const mockRouter = {
   },
 
   /**
-   * **Every thread of the retrospective**, record-level and review-level
-   * alike — the same answer the router gives, so a panel that dropped the
-   * record comments would fail in a scenario rather than only against the real
-   * server.
+   * **Every thread of the retrospective**, record-level and review-level alike —
+   * the same answer the router gives, so a panel that dropped the record
+   * comments would fail in a scenario rather than only against the real server.
    */
   'threads.list': (input) => {
     const retro = requireRetro(input.retroId)
@@ -3554,8 +3551,8 @@ export const mockRouter = {
   'settings.get': () => ({ aiConfigWrite: world.aiConfigWrite }),
 
   /**
-   * The AI-config switch, moved by the human — which is the only actor a
-   * browser can be (`context.ts`), so there is nothing here to refuse.
+   * The AI-config switch, moved by the human — which is the only actor a browser
+   * can be (`context.ts`), so there is nothing here to refuse.
    *
    * **The guarantee it makes is not modelled here and cannot be.** What the
    * switch governs is whether the *AI* may write definitions, and the AI never
@@ -3703,8 +3700,8 @@ export type MockControl = {
   /** An AI reply lands in the newest thread about the review itself. */
   aiReviewReply: (text: string) => void
   /**
-   * **The AI marks a record resolved after fixing it** — the act the
-   * lifecycle table is actually about, taken in the AI's own process.
+   * **The AI marks a record resolved after fixing it** — the act the lifecycle
+   * table is actually about, taken in the AI's own process.
    *
    * It is here rather than on the router for the reason `closeReview` is: the
    * browser's context is `human` unconditionally, so no procedure the page can

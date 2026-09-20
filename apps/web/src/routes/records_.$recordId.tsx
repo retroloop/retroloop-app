@@ -112,10 +112,10 @@ function RecordPage({ id }: { id: number }) {
        * same measure for the same reason: the page grew to 1536px at `wide` for
        * three columns, and prose handed all of it runs to a line length a UI
        * review already called a defect once. It sits at the left rather than
-       * centred, because the whole of the width rule is that content
-       * starts where content starts — the breadcrumb above it does, the
-       * dashboard's rows do, and a column centred under a left-aligned trail
-       * would be this page disagreeing with every other one.
+       * centred, because the whole of the width rule is that content starts
+       * where content starts — the breadcrumb above it does, the dashboard's
+       * rows do, and a column centred under a left-aligned trail would be this
+       * page disagreeing with every other one.
        *
        * Below `wide` the column is the page, as everywhere else; above it the
        * room a rail would use stays empty, because this page has no rails.
@@ -137,10 +137,10 @@ function RecordPage({ id }: { id: number }) {
             <DecisionStateTag state={page.decision.state} />
             <LifecycleTag status={page.lifecycle.status} />
             {/**
-             * And whether anybody is on it right now — a third thing
-             * that is true about the record, beside the two axes rather than on
-             * either of them: a claimed record is still open and still carries
-             * the verdict the review gave it.
+             * And whether anybody is on it right now — a third thing that is
+             * true about the record, beside the two axes rather than on either
+             * of them: a claimed record is still open and still carries the
+             * verdict the review gave it.
              *
              * This page is where a reader comes to ask where a record stands, so
              * it is the one surface outside the review that says so. The flat
@@ -185,9 +185,9 @@ function RecordPage({ id }: { id: number }) {
 
         {/**
          * **What the record wears and what it carries** — a pair, and the
-         * surface the migrate story actually happens on: on completion of
-         * the retro, records may move into GitHub right away, wearing a
-         * label that says 'migrated'.
+         * surface the migrate story actually happens on: on completion of the
+         * retro, records may move into GitHub right away, wearing a label that
+         * says 'migrated'.
          *
          * Both work on a **closed** retrospective, like the lifecycle controls
          * below them and for the same reason — that is when this gets used.

@@ -228,12 +228,11 @@ Then('the label {string} offers a way to retire it', async ({ page }, name: stri
 })
 
 /**
- * The two controls are one slot with two occupants
- * (`r-retire-burns-a-word`), so both directions are asserted by **presence and
- * absence**: an offerable row must not offer Un-retire, and a retired one must.
- * `toHaveCount(0)` rather than invisibility, for the reason the panel steps give
- * — a hidden control is still in the accessibility tree and still pressable by
- * anything that is not a mouse.
+ * The two controls are one slot with two occupants (`r-retire-burns-a-word`), so
+ * both directions are asserted by **presence and absence**: an offerable row must
+ * not offer Un-retire, and a retired one must. `toHaveCount(0)` rather than
+ * invisibility, for the reason the panel steps give — a hidden control is still
+ * in the accessibility tree and still pressable by anything that is not a mouse.
  */
 Then('the label {string} offers a way to un-retire it', async ({ page }, name: string) => {
   await expect(
@@ -406,8 +405,8 @@ Then('the selected settings section stands out from the others', async ({ page }
  * text**, which is the thing a reader sees, rather than off the provider's state
  * or `localStorage`. A control that had drifted from the theme actually applied
  * would satisfy an assertion made against the state behind it and fail this one,
- * which is the direction that matters: the whole of the rule is that the
- * setting be visible in one named place.
+ * which is the direction that matters: the whole of the rule is that the setting
+ * be visible in one named place.
  */
 Then('the dark mode setting reads {string}', async ({ page }, option: string) => {
   await expect(page.getByTestId('settings-theme')).toHaveText(option)

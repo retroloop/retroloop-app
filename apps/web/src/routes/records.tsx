@@ -40,10 +40,9 @@ export const Route = createFileRoute('/records')({
 })
 
 /**
- * Every record of every retrospective, flat — a page that shows all the
- * retro items flat with filtering, so every item shows irrespective of the
- * session or retro or cwd it happened in, all in one place, narrowed down
- * with filters.
+ * Every record of every retrospective, flat — a page that shows all the retro
+ * items flat with filtering, so every item shows irrespective of the session or
+ * retro or cwd it happened in, all in one place, narrowed down with filters.
  *
  * Newest first, which is the order `records.listAll` sends and this page does
  * not second-guess: retro id descending, and each retrospective's records in the
@@ -71,7 +70,7 @@ function RecordsPage() {
    * retrospective and keeps itself current from that retrospective's event
    * stream; this page is scoped to all of them, `events.onRetro` is per-retro,
    * and a flat cross-retro page therefore has nothing single to subscribe to
-   * (the finding; the rule is that no cross-retro scope gets invented for v1).
+   * (and the standing rule is that no cross-retro scope gets invented for v1).
    * So the two signals it does have are the ones it uses: it invalidates after
    * its own writes, and it asks again when the reader comes back to the tab —
    * which is exactly when the AI, working in its own process, has been

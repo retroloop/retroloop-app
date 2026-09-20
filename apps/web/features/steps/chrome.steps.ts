@@ -43,9 +43,9 @@ When('the reviewer opens the app menu', async ({ page }) => {
  * the menu it belongs to (`review.steps.ts` §chooses the theme, retired with the
  * toggle). It arrived carrying an account of its own hazard — a closing Radix layer
  * holding `body` at `pointer-events: none` for the length of its exit and taking
- * the next press as an outside one — and a follow-up measurement found that
- * account **wrong on this library version**. It is corrected here rather than
- * repeated, because a step comment is read as instruction.
+ * the next press as an outside one — and a follow-up measurement found that account
+ * **wrong on this library version**. It is corrected here rather than repeated,
+ * because a step comment is read as instruction.
  *
  * **What actually happens on `radix-ui` 1.6.7.** The exit releases `body`
  * *before* the content unmounts, not after: under a two-second main-thread hold the
@@ -64,11 +64,11 @@ When('the reviewer opens the app menu', async ({ page }) => {
  *
  * **So why the wait is still here, and what does certify it.** Both conditions
  * stay: which of the two comes last is Radix's to change, and a wait that holds
- * only by accident of ordering is one nobody would notice losing. What is
- * provable is the *budget* — that this walk survives a renderer running fifty
- * times slower — and that is what `chrome.feature` §the app menu opens, closes
- * and arrives asserts, red with every budget in it cut to a healthy page's
- * 300ms — 10 green, 10 red with the budgets cut, 10 green again.
+ * only by accident of ordering is one nobody would notice losing. What is provable
+ * is the *budget* — that this walk survives a renderer running fifty times slower —
+ * and that is what `chrome.feature` §the app menu opens, closes and arrives
+ * asserts, red with every budget in it cut to a healthy page's 300ms — 10 green, 10
+ * red with the budgets cut, 10 green again.
  */
 export async function followAppMenuItem(page: Page, label: string): Promise<void> {
   const item = page.getByTestId(`app-menu-${label.toLowerCase()}`)
@@ -162,10 +162,10 @@ Then('the app menu points at:', async ({ page }, table: DataTable) => {
  *
  * A pair of `toHaveCount(0)` assertions against `records-link` and `settings-link`
  * would pass on a header that had grown three new links under different names,
- * which is the failure this record exists to prevent: what is required is that
- * the top menu carries *no loose items*, not that two particular ones were
- * renamed. So the sweep counts what a reader would count, and the only anchor
- * left in the chrome is the brand — the way home, which was never a menu item.
+ * which is the failure this record exists to prevent: what is required is that the
+ * top menu carries *no loose items*, not that two particular ones were renamed. So
+ * the sweep counts what a reader would count, and the only anchor left in the
+ * chrome is the brand — the way home, which was never a menu item.
  *
  * Selecting by tag is the exception to this suite's testid rule and it is the
  * point: an absence assertion addressed by testid can only see the absences it
@@ -189,8 +189,8 @@ Then('the top menu carries no theme control', async ({ page }) => {
 })
 
 /**
- * The app menu's position is stated as "in the top right", so the position
- * is asserted rather than assumed.
+ * The app menu's position is stated as "in the top right", so the position is
+ * asserted rather than assumed.
  *
  * A position assertion is shown to fail before it is trusted
  * (`r-uncontrolled-assertions`): a browser lays a flex row out left to right for

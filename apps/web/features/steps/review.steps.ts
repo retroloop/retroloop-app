@@ -67,9 +67,9 @@ function solutionTab(page: Page, rid: string, position: number): Locator {
 }
 
 /**
- * The two markers by the character each is named with, so a scenario can
- * say `the "✓" on solution tab 3` and mean the element rather than a substring
- * of the tab's text.
+ * The two markers by the character each is named with, so a scenario can say
+ * `the "✓" on solution tab 3` and mean the element rather than a substring of
+ * the tab's text.
  */
 const MARKERS: Readonly<Record<string, string>> = { '*': 'recommended', '✓': 'selected' }
 
@@ -174,9 +174,9 @@ When('the page is reloaded', async ({ page }) => {
  */
 When('the reviewer leaves the review and comes back', async ({ page }) => {
   await page.getByTestId('breadcrumb').getByRole('link', { name: 'Retro' }).click()
-  // The dashboard's landmark since its recomposition: `retro-list` was
-  // the flat list of retrospectives that led the page before the corpus block, and
-  // both are gone. The stat row is what says the dashboard has finished loading.
+  // The dashboard's landmark since its recomposition: `retro-list` was the flat
+  // list of retrospectives that led the page before the corpus block, and both
+  // are gone. The stat row is what says the dashboard has finished loading.
   await expect(page.getByTestId('dashboard-stats')).toBeVisible()
   await page.goBack()
   await expect(page.getByTestId('review-actions')).toBeVisible()
@@ -185,8 +185,8 @@ When('the reviewer leaves the review and comes back', async ({ page }) => {
 /**
  * The narrow half of the two screens this product is read on (a laptop and an
  * iPad). It is where the long labels have to wrap, so it is the only width at
- * which "the explanation is never dropped" can be observed at all — on a
- * 1280px laptop even the longest severity row fits on one line.
+ * which "the explanation is never dropped" can be observed at all — on a 1280px
+ * laptop even the longest severity row fits on one line.
  */
 When('the reviewer is on an iPad in portrait', async ({ page }) => {
   await page.setViewportSize({ width: 834, height: 1112 })
@@ -248,9 +248,9 @@ When('the reviewer asks for a revision of record {string}', async ({ page }, rid
 })
 
 /**
- * The undo: pressing the same verdict again undoes it. The step presses
- * whatever is selected rather than a verdict it was told, because that is the
- * act — the reviewer aims at the button that is lit.
+ * The undo: pressing the same verdict again undoes it. The step presses whatever
+ * is selected rather than a verdict it was told, because that is the act — the
+ * reviewer aims at the button that is lit.
  */
 When(
   'the reviewer presses the chosen verdict of record {string} again',
@@ -363,9 +363,9 @@ function sectionGlyph(page: Page, rid: string, section: string): Locator {
 }
 
 /**
- * **Where a comment glyph sits, measured** — a shared placement pattern:
- * the comment glyph is inline with the title, right next to the last word
- * of the title, never separated off to the right.
+ * **Where a comment glyph sits, measured** — a shared placement pattern: the
+ * comment glyph is inline with the title, right next to the last word of the
+ * title, never separated off to the right.
  *
  * A controlled assertion, and it has to be three claims rather than one
  * (`r-uncontrolled-assertions`, `r-theme-blind-assertions`' per-channel half):
@@ -745,9 +745,9 @@ Then('the reading column keeps its measure', async ({ page }) => {
  * Where the reading column *starts*, which is the half of the width question a
  * band cannot answer. The page's measure used to be a function of whether the
  * comment rail had mounted, so the column moved sideways when a query came back
- * with a thread on it; one measure everywhere means the same number here
- * whether the rail is beside the column or not, and the two scenarios that use
- * this step are those two states with the same expected value.
+ * with a thread on it; one measure everywhere means the same number here whether
+ * the rail is beside the column or not, and the two scenarios that use this step
+ * are those two states with the same expected value.
  *
  * The card is the column: `RecordSlot` is a full-width grid cell inside it.
  *
@@ -1020,11 +1020,11 @@ When('the reviewer confirms the finish', async ({ page }) => {
 })
 
 /**
- * A second press of the one terminal action
- * (`r-request-changes-multi-press`). Forced, because the button is disabled by
- * then and a disabled button is exactly what this is checking: the click is
- * dispatched at it and the page swallows it, which is why the event count on
- * the other side of the step is the assertion that matters.
+ * A second press of the one terminal action (`r-request-changes-multi-press`).
+ * Forced, because the button is disabled by then and a disabled button is
+ * exactly what this is checking: the click is dispatched at it and the page
+ * swallows it, which is why the event count on the other side of the step is the
+ * assertion that matters.
  */
 When('the reviewer presses finish again', async ({ page }) => {
   await page.getByTestId('finish-review').click({ force: true })
@@ -1079,12 +1079,12 @@ When('the AI replies {string} in the review thread', async ({ page }, text: stri
 })
 
 /**
- * **The AI takes a record off the queue** — the in-progress marker being
- * put up, in the AI's own process.
+ * **The AI takes a record off the queue** — the in-progress marker being put up,
+ * in the AI's own process.
  *
- * It names the retrospective, like the resolve step in `records.steps.ts` and for
- * that step's reason: an agent works a queue that spans retrospectives, and a rid
- * on its own does not name a record. Nothing about this goes through the
+ * It names the retrospective, like the resolve step in `records.steps.ts` and
+ * for that step's reason: an agent works a queue that spans retrospectives, and
+ * a rid on its own does not name a record. Nothing about this goes through the
  * page, because nothing can — there is no procedure to claim with, by design.
  */
 When(
@@ -1115,8 +1115,7 @@ Then('record {string} is {string}', async ({ page }, rid: string, state: string)
 })
 
 /**
- * The absence of the hold surface, counted rather than named
- * (`r-remove-hold`).
+ * The absence of the hold surface, counted rather than named (`r-remove-hold`).
  *
  * There were four testids on the control and its tag — `hold`, `release`,
  * `hold-note`, `record-held` — and checking for the four somebody remembers is
@@ -1184,8 +1183,8 @@ Then(
  * Which verdict the card says is selected, in the form assistive technology
  * reads it. The visible half of the same claim is the step below — both are
  * asserted, because a fill nobody can hear and a state nobody can see are each
- * half an answer to the rule that there should be a clear indication of
- * what is already selected.
+ * half an answer to the rule that there should be a clear indication of what is
+ * already selected.
  */
 Then(
   'the chosen verdict on record {string} is {string}',
@@ -1480,9 +1479,9 @@ Then(
 /* ── how prose renders (r-prose-renders-raw) ──────────────────────────────── */
 
 /**
- * The bold leads, as an exact ordered list. A record is read by skimming
- * them, so the claim is not "some bold exists somewhere" — it is that these
- * leads, in this order, are what a skim would pick up.
+ * The bold leads, as an exact ordered list. A record is read by skimming them,
+ * so the claim is not "some bold exists somewhere" — it is that these leads, in
+ * this order, are what a skim would pick up.
  */
 Then(
   'the {string} prose of record {string} has the bold leads:',
@@ -1608,14 +1607,14 @@ Then(
 )
 
 /**
- * "The Ys label is taking two lines. It should be just one line."
+ * The Ys label used to take two lines. It should be just one line.
  *
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`): hand-run with `.gutter-label`'s width and
  * `nowrap` deleted — the gutter shrinking against the prose beside it until
  * "WHY" and its number were on different lines. Asserted on the iPad in
- * portrait, the screen the review is read on and the width where a
- * text-relative gutter has least room to stay on one line.
+ * portrait, the screen the review is read on and the width where a text-relative
+ * gutter has least room to stay on one line.
  */
 Then(
   'the root-cause labels of record {string} are one line each',
@@ -1660,10 +1659,10 @@ Then(
 )
 
 /**
- * `r-incident-line-overflow`: the prose half of a gutter row is a flex
- * item, so its automatic minimum size is its own min-content — the longest thing
- * in it that cannot be broken — and a cell whose min-content beats the row lays
- * out at that min-content and hangs off the end of it.
+ * `r-incident-line-overflow`: the prose half of a gutter row is a flex item, so
+ * its automatic minimum size is its own min-content — the longest thing in it
+ * that cannot be broken — and a cell whose min-content beats the row lays out at
+ * that min-content and hangs off the end of it.
  *
  * **Two channels, because the fix is two clamps and each leaves the other's
  * failure standing** (`r-theme-blind-assertions`' rule about joined signatures,
@@ -1783,10 +1782,10 @@ Then(
  * answered asynchronously: the arrow moves focus, the strip's own handler sets
  * the value, and React commits on a later tick. A single read taken the moment
  * the press returned caught the tab that *was* open about one run in five — a
- * flake reproduced here at 7 in 36 before this changed. Instrumenting it
- * settled the question: the strip reached the right tab **5ms** after the
- * failing read, so the key was never lost and nothing was unready — the step
- * was simply reading a state machine mid-step.
+ * flake reproduced here at 7 in 36 before this changed. Instrumenting it settled
+ * the question: the strip reached the right tab **5ms** after the failing read,
+ * so the key was never lost and nothing was unready — the step was simply
+ * reading a state machine mid-step.
  *
  * The claim is a settled one ("tab N is the one open"), so a settled read is
  * what states it. Nothing is weakened: the poll still has to arrive at exactly
@@ -1862,9 +1861,9 @@ Then('record {string} shows no AI mark on any solution tab', async ({ page }, ri
 
 /**
  * The single-solution shape, swept by counting rather than by naming what is
- * gone (`r-single-solution-no-tabs`, and the renamed-panel lesson: a
- * sweep that names the elements it expects to be absent passes the day one of
- * them is renamed).
+ * gone (`r-single-solution-no-tabs`, and the renamed-panel lesson: a sweep that
+ * names the elements it expects to be absent passes the day one of them is
+ * renamed).
  *
  * Four zeros and a one. The zeros are the choice chrome — no strip, no tab, no
  * tick, nothing to press — and the one is the solution itself, because a card
@@ -1911,9 +1910,9 @@ Then(
 )
 
 /**
- * The canonical level label, both halves, never abbreviated — the
- * standing rule for the enums that explain themselves. An exact match rather
- * than a containment: a truncated label contains its own prefix.
+ * The canonical level label, both halves, never abbreviated — the standing rule
+ * for the enums that explain themselves. An exact match rather than a
+ * containment: a truncated label contains its own prefix.
  */
 Then(
   'solution {int} of record {string} reads the level {string}',
@@ -2524,10 +2523,10 @@ Then(
 )
 
 /**
- * A record holding a level that was later cut has nothing on the list to
- * select, and the list must not guess one for it. Asserting "no radio is
- * checked" rather than "some particular radio is not checked" is what catches a
- * pre-selection that landed on the wrong row.
+ * A record holding a level that was later cut has nothing on the list to select,
+ * and the list must not guess one for it. Asserting "no radio is checked" rather
+ * than "some particular radio is not checked" is what catches a pre-selection
+ * that landed on the wrong row.
  */
 Then('no solution level is chosen on record {string}', async ({ page }, rid: string) => {
   const radios = card(page, rid).getByTestId('solution-level').getByRole('radio')
@@ -2735,10 +2734,9 @@ Then(
 )
 
 /**
- * And the other half of the same rule — the comments show across all
- * revisions: the panel never filters by the revision on screen, so a thread
- * whose messages cross a revision boundary is one conversation, not two halves
- * on two pages.
+ * And the other half of the same rule — the comments show across all revisions:
+ * the panel never filters by the revision on screen, so a thread whose messages
+ * cross a revision boundary is one conversation, not two halves on two pages.
  */
 Then(
   'the {string} thread of record {string} carries revisions {string}',
@@ -2801,13 +2799,13 @@ Then(
  * The visible half: a settled thread must not render like the ones still open.
  *
  * Read off the rendered page rather than off a class name, and **channel by
- * channel** (testing.md §Operational rules,
- * `r-assertion-value-distinctiveness` / `r-theme-blind-assertions`): "differs
- * somehow" is not the claim. The treatment promises two things — the card fades
- * and its ink goes muted — and a joined-string comparison would pass on a state
- * where only one of them survived and could not say which. Each channel is also
- * asserted to agree across the threads still open, so a panel where every card
- * looked different could not pass by accident.
+ * channel** (testing.md §Operational rules, `r-assertion-value-distinctiveness`
+ * / `r-theme-blind-assertions`): "differs somehow" is not the claim. The
+ * treatment promises two things — the card fades and its ink goes muted — and a
+ * joined-string comparison would pass on a state where only one of them survived
+ * and could not say which. Each channel is also asserted to agree across the
+ * threads still open, so a panel where every card looked different could not
+ * pass by accident.
  *
  * Run in both themes by the scenario that uses it, driven through the app's own
  * toggle: the fade is theme-invariant and the ink is not, and a dark-mode
@@ -2936,8 +2934,8 @@ Then('the review shows no comment panel and no requests panel', async ({ page })
 /**
  * The other half of the same rule, and the one that stops it being over-applied:
  * what a review *does* carry stays readable once it is finished. A thread is
- * history, so a finished review that was commented on still shows it,
- * read-only, rather than hiding it along with the controls.
+ * history, so a finished review that was commented on still shows it, read-only,
+ * rather than hiding it along with the controls.
  */
 Then('the review still shows the comments it already had', async ({ page }) => {
   // Both of the fixture's threads: the record's and the review's. The panel is
@@ -3110,11 +3108,11 @@ Then('no filter chip is active', async ({ page }) => {
 /**
  * Which chips the bar offers, as an exact ordered list.
  *
- * `hold` is on it only where a store carries that verdict
- * (`r-remove-hold`), so this is the step that holds both halves of the rule: it
- * fails on a `hold` chip that came back to a clean store, and on a missing one
- * where a hold verdict exists. Read off the testids rather than the labels,
- * because the testid is what the rest of these steps address a chip by.
+ * `hold` is on it only where a store carries that verdict (`r-remove-hold`), so
+ * this is the step that holds both halves of the rule: it fails on a `hold` chip
+ * that came back to a clean store, and on a missing one where a hold verdict
+ * exists. Read off the testids rather than the labels, because the testid is
+ * what the rest of these steps address a chip by.
  */
 Then('the filter offers the chips {string}', async ({ page }, states: string) => {
   const offered = await page
@@ -3424,9 +3422,9 @@ const LANDED = 'landed at the top of the reading area'
  * unchanged in before the page counts as having come to rest.
  *
  * Frames rather than milliseconds, and that is the whole fix
- * (`r-flaky-landing-test`). A smooth scroll advances once per frame, so
- * two identical frames already mean it is over; three is what the frame the
- * click landed in costs, before the browser has scheduled the first step of the
+ * (`r-flaky-landing-test`). A smooth scroll advances once per frame, so two
+ * identical frames already mean it is over; three is what the frame the click
+ * landed in costs, before the browser has scheduled the first step of the
  * animation. Counting frames is also what tells a *finished* scroll apart from a
  * *starved* one: a renderer that has stopped painting produces no samples at
  * all, so this waits instead of concluding the page is still — which is exactly
@@ -3472,12 +3470,11 @@ const REST_BUDGET_FRAMES = 600
  * Counting frames is a sound way to notice a scroll is over, but it is not a
  * free one: it cannot know until `REST_FRAMES` more frames have been *painted*,
  * and on a renderer that has almost stopped painting those frames are seconds
- * apart. Measured on a page painting once every six seconds: the landing
- * arrived at 6.3s, correct to the pixel, and this wait did not admit it until
- * 24.4s — against an assertion budget of fifteen. Every sample taken in between
- * read the same mid-flight position, which is precisely the "stable offset for
- * the full fifteen seconds" that was filed as an app race and turned out to be
- * this.
+ * apart. Measured on a page painting once every six seconds: the landing arrived
+ * at 6.3s, correct to the pixel, and this wait did not admit it until 24.4s —
+ * against an assertion budget of fifteen. Every sample taken in between read the
+ * same mid-flight position, which is precisely the "stable offset for the full
+ * fifteen seconds" that was filed as an app race and turned out to be this.
  *
  * So the first question is the page's own scroll state (`fixtures.ts`, watched
  * from before load — a listener attached when the wait begins arrives after the
@@ -3549,14 +3546,13 @@ const LANDING_MS = 15_000
  * an assertion that cannot tell those apart is not evidence of anything.
  *
  * Landing is the record's top edge at the top of the reading area, and the
- * reading area starts where the page's sticky chrome ends: the header, and
- * the decision bar stuck under it. That edge is measured rather than
- * written down, because it is the same number `scroll-mt-28` spells in
- * `record-filter.tsx` and two copies of it would drift — and it is the *lower*
- * bound, so a landing that leaves the record tucked behind the bar fails here
- * rather than reading as arrival. The miss is reported in pixels, with the
- * chrome's own edge beside it, so a failure says how far off it was and from
- * what.
+ * reading area starts where the page's sticky chrome ends: the header, and the
+ * decision bar stuck under it. That edge is measured rather than written down,
+ * because it is the same number `scroll-mt-28` spells in `record-filter.tsx` and
+ * two copies of it would drift — and it is the *lower* bound, so a landing that
+ * leaves the record tucked behind the bar fails here rather than reading as
+ * arrival. The miss is reported in pixels, with the chrome's own edge beside it,
+ * so a failure says how far off it was and from what.
  *
  * Every reading is taken off a page that has stopped scrolling (`scrollAtRest`),
  * which is what makes this deterministic rather than a race the machine's load
@@ -3614,10 +3610,10 @@ Then('the keyboard is on record {string}', async ({ page }, rid: string) => {
  * It used to also say `toBeInViewport` on the review actions, which could not
  * fail even then: every record has been filtered off the page, so what is left
  * is short enough that the actions are on screen whether the page landed on
- * them, scrolled somewhere else, or never moved. They are now in the
- * sticky bar and are on screen at every scroll position of every review, so that
- * half is not merely weak, it is a fact about the layout with nothing to do with
- * the landing. It is gone.
+ * them, scrolled somewhere else, or never moved. They are now in the sticky bar
+ * and are on screen at every scroll position of every review, so that half is
+ * not merely weak, it is a fact about the layout with nothing to do with the
+ * landing. It is gone.
  *
  * Focus is what is left, and it is the whole claim: nothing on this page moves
  * the keyboard to the bar except this landing.
@@ -3669,8 +3665,8 @@ Then('the review is finished', async ({ page }) => {
 const HEADER = 56
 
 /**
- * The filter chips (pending, approved and declined etc) used to scroll
- * away when scrolling the page; they stick to the top instead.
+ * The filter chips (pending, approved and declined etc) used to scroll away when
+ * scrolling the page; they stick to the top instead.
  *
  * A controlled assertion (testing.md §Operational rules,
  * `r-uncontrolled-assertions`) and it has to be: a bar near the top of a page is
@@ -3732,11 +3728,10 @@ Then('the decision bar is painted, not see-through', async ({ page }) => {
  * and the box this replaced had grown a third that had to be removed: the box
  * at the bottom reading "X of Y pending - Review finished ...".
  *
- * It grew a third item with the additional-filters feature: an icon that
- * opens a pop-up where the additional filters can be selected. It is named
- * here rather than the list being loosened, so the next thing to appear on
- * this bar still has to be argued for — which is the whole job of this
- * assertion.
+ * It grew a third item with the additional-filters feature: an icon that opens a
+ * pop-up where the additional filters can be selected. It is named here rather
+ * than the list being loosened, so the next thing to appear on this bar still
+ * has to be argued for — which is the whole job of this assertion.
  *
  * The icon is its own child rather than living inside `record-filter`, and that
  * is a test-shape decision as much as a layout one: the chip steps read *every*
@@ -3756,8 +3751,8 @@ Then('the decision bar holds the filters and one action, and nothing else', asyn
 })
 
 /**
- * The finished state: once a review is finished the button is replaced
- * with an icon and text that indicates the retro has been submitted.
+ * The finished state: once a review is finished the button is replaced with an
+ * icon and text that indicates the retro has been submitted.
  *
  * Two channels, read separately (`r-theme-blind-assertions`): the **shape** it
  * carries and the **word** it says. Either one alone would be a mark that only
@@ -3939,9 +3934,9 @@ Then('the round carries no final message', async ({ page }) => {
 })
 
 /**
- * What the review's own actions offer, counted and named rather than checked
- * for the absence of the one button somebody remembers
- * (`r-one-finish-button`). Request changes left from here.
+ * What the review's own actions offer, counted and named rather than checked for
+ * the absence of the one button somebody remembers (`r-one-finish-button`).
+ * Request changes left from here.
  */
 Then('the review actions offer the buttons {string}', async ({ page }, buttons: string) => {
   await expect(page.getByTestId('review-actions').getByRole('button')).toHaveText(listed(buttons))
@@ -3959,8 +3954,8 @@ Then('there is no revision banner', async ({ page }) => {
 
 /**
  * The same two strings a dashboard row carries, on the page the row leads to.
- * Asserted with `toHaveText` rather than `toContainText` because the
- * identity line is a format, not a set of facts that happen to be present.
+ * Asserted with `toHaveText` rather than `toContainText` because the identity
+ * line is a format, not a set of facts that happen to be present.
  */
 Then('the review header names the retro {string}', async ({ page }, name: string) => {
   await expect(page.getByTestId('retro-name')).toHaveText(name)
@@ -4039,10 +4034,10 @@ Then('the rail is on screen', async ({ page }) => {
 
 /**
  * `toHaveCount(0)` rather than `toBeHidden()`. The rail used to be CSS-hidden
- * below `wide` and hidden was all that could be asked; now it is not
- * rendered at all, and that is load-bearing rather than tidy — a hidden rail
- * behind an open sheet would be two copies of the same index in one document,
- * and `toBeHidden()` passes on both (`lib/side-panel.ts`).
+ * below `wide` and hidden was all that could be asked; now it is not rendered at
+ * all, and that is load-bearing rather than tidy — a hidden rail behind an open
+ * sheet would be two copies of the same index in one document, and
+ * `toBeHidden()` passes on both (`lib/side-panel.ts`).
  */
 Then('the rail is not on screen', async ({ page }) => {
   await expect(page.getByTestId('record-rail')).toHaveCount(0)

@@ -42,10 +42,10 @@ type ReviewSearch = {
   /**
    * `?record=<rid>` — the record a link is pointing at.
    *
-   * With `&view=history` it is one record across revisions, Tier 2, and
-   * still a stub. On its own it is the **anchor** a link into this page
-   * carries, so arriving here arrives *at the record* rather than at the top of
-   * a review that may hold a dozen of them.
+   * With `&view=history` it is one record across revisions, Tier 2, and still a
+   * stub. On its own it is the **anchor** a link into this page carries, so
+   * arriving here arrives *at the record* rather than at the top of a review
+   * that may hold a dozen of them.
    *
    * **Who sends it changed, and so did the rule behind it.** It was the flat
    * records page's rows — no per-record detail page, this page is a record's

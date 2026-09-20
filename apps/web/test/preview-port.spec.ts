@@ -30,9 +30,8 @@ const CHECKOUTS = [
 const PIDS = Array.from({ length: 80 }, (_, step) => 1000 + step)
 
 /**
- * The claim, and the reason the pid is in there at all: a second run in
- * a worktree that is already running one does not take the port out from under
- * it.
+ * The claim, and the reason the pid is in there at all: a second run in a
+ * worktree that is already running one does not take the port out from under it.
  *
  * It is a hash and not an allocator, so what can be asserted is that the pid
  * genuinely reaches the derivation and spreads across the range rather than
@@ -56,8 +55,8 @@ test('gives two runs in one worktree their own ports', () => {
 })
 
 /**
- * The claim, which the pid must not have cost: the checkout is still in
- * the hash, so two worktrees of one checkout do not contend.
+ * The claim, which the pid must not have cost: the checkout is still in the
+ * hash, so two worktrees of one checkout do not contend.
  *
  * Counted over the same pids rather than asserted at one of them, because seven
  * paths in eighty ports collide for about a quarter of pids however good the
@@ -92,10 +91,10 @@ test('answers the same port for the same run, every time', () => {
 })
 
 /**
- * The ports that are handed to something by name, the old 24302 among
- * them. A stale worktree still previewing there is the collision most likely to
- * actually happen, so the range is chosen to leave those alone rather than to be
- * merely unlikely to hit them.
+ * The ports that are handed to something by name, the old 24302 among them. A
+ * stale worktree still previewing there is the collision most likely to actually
+ * happen, so the range is chosen to leave those alone rather than to be merely
+ * unlikely to hit them.
  */
 test('never lands on a port something fixed already binds', () => {
   const [first, last] = PORT_RANGE

@@ -10,10 +10,10 @@ const bddTestDir = defineBddConfig({
 
 /**
  * Derived from this checkout's path and this run's pid, not written down
- * (`preview-port.ts`): the literal 24302 that used to be here meant two
- * worktrees could not verify at the same time, and the path alone meant two runs
- * in one worktree could not either — both died on `--strictPort` for a reason
- * that had nothing to do with the change under test.
+ * (`preview-port.ts`): the literal 24302 that used to be here meant two worktrees
+ * could not verify at the same time, and the path alone meant two runs in one
+ * worktree could not either — both died on `--strictPort` for a reason that had
+ * nothing to do with the change under test.
  *
  * Importing it here is what fixes it for the whole run: the derivation publishes
  * itself into the environment, and the workers this process forks and the
@@ -26,23 +26,23 @@ const baseURL = `http://127.0.0.1:${PREVIEW_PORT}`
  * The screen a scenario that does not name one is standing on, and the rule it is
  * chosen by: **it sits on the wide side of the geometry, well clear of the
  * breakpoint.** `Desktop Chrome` brings 1280×720, which used to be exactly where
- * the review's third column became possible — the default sat on the breakpoint
- * and every unstated scenario read the wide layout by one pixel. The
- * breakpoint moved to 1344 and this default was set to 1440×900 so that the next
- * change to the geometry would move the scenarios that chose their width rather
- * than all the ones that didn't.
+ * the review's third column became possible — the default sat on the breakpoint and
+ * every unstated scenario read the wide layout by one pixel. The breakpoint moved
+ * to 1344 and this default was set to 1440×900 so that the next change to the
+ * geometry would move the scenarios that chose their width rather than all the ones
+ * that didn't.
  *
  * **A later change caught the laptop.** The rails widened, which moved the
- * breakpoint with them to 92rem / 1472px (`lib/side-panel.ts`), and 1440 is
- * below it: on the laptop the review is now one column with both panels behind
- * their glyphs. Left alone, the default would have silently handed the whole
- * suite the narrow layout — the exact accident the paragraph above exists to
- * prevent — so the default moves and the rule holds.
+ * breakpoint with them to 92rem / 1472px (`lib/side-panel.ts`), and 1440 is below
+ * it: on the laptop the review is now one column with both panels behind their
+ * glyphs. Left alone, the default would have silently handed the whole suite the
+ * narrow layout — the exact accident the paragraph above exists to prevent — so the
+ * default moves and the rule holds.
  *
- * 1536×960 is the width at which the three columns close flush against the
- * measure, and the width the feature files name wherever they need the wide layout
- * now. That the laptop is no longer one of those widths is the geometry's doing
- * and is flagged for review, not decided here.
+ * 1536×960 is the width at which the three columns close flush against the measure,
+ * and the width the feature files name wherever they need the wide layout now. That
+ * the laptop is no longer one of those widths is the geometry's doing and is
+ * flagged for review, not decided here.
  *
  * It is one object shared by both browser projects below rather than two literals:
  * the serialized project differs from the parallel bulk in **when it runs and how
@@ -119,11 +119,11 @@ export default defineConfig({
      * **Debugging these does not need the bulk's 348.** `--no-deps` ignores the
      * dependency, so the whole project is reachable on its own:
      *
-     * That number is hand-maintained and nothing checks it — it read 331 when
-     * the bulk was 330, was corrected once, and had gone stale again by five
-     * before this line was next read. Two changes landing at once is all it
-     * takes. `bunx playwright test --list` is the authority; this is a reader's
-     * sense of scale and should be treated as one:
+     * That number is hand-maintained and nothing checks it — it read 331 when the
+     * bulk was 330, was corrected once, and had gone stale again by five before
+     * this line was next read. Two changes landing at once is all it takes. `bunx
+     * playwright test --list` is the authority; this is a reader's sense of scale
+     * and should be treated as one:
      *
      *   cd apps/web && bun run test --project=starved --no-deps
      */

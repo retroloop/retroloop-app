@@ -128,14 +128,14 @@ When('the reviewer filters to the requester {string}', async ({ page }, party: s
  * Closing is by Escape rather than by a second press on the trigger: a click
  * lands wherever the panel happens to be and Radix's dismiss layer may take it
  * as the outside press that closes the panel anyway, which would leave the
- * trigger's own state depending on which of the two won. Escape has one
- * meaning. The step is over when the panel is out of the document and the page
- * takes presses again — the same two conditions `chrome.steps.ts`
- * §followAppMenuItem waits on, and the account of *why* lives there rather than
- * in a second copy here. Read it before trusting either: a follow-up
- * measurement checked the swallowed-press hazard both of these comments used to
- * assert and could not reproduce it on `radix-ui` 1.6.7, where the layer
- * releases the body before it unmounts.
+ * trigger's own state depending on which of the two won. Escape has one meaning.
+ * The step is over when the panel is out of the document and the page takes
+ * presses again — the same two conditions `chrome.steps.ts` §followAppMenuItem
+ * waits on, and the account of *why* lives there rather than in a second copy
+ * here. Read it before trusting either: a follow-up measurement checked the
+ * swallowed-press hazard both of these comments used to assert and could not
+ * reproduce it on `radix-ui` 1.6.7, where the layer releases the body before it
+ * unmounts.
  *
  * Exported for `labels.steps.ts`: the label filter is a fourth group in this
  * same panel, and a second copy of this helper would be a second chance to get
@@ -519,10 +519,9 @@ type ChipLook = {
  *
  * Three channels, because the fill, the ink and the border are three separate
  * rules and a dark override that suppresses one leaves the other two standing —
- * which is how a chosen-verdict styling once shipped green with only its
- * font weight surviving. Transitions are killed before measuring, so what is
- * sampled is where the colours ended rather than where they were passing
- * through.
+ * which is how a chosen-verdict styling once shipped green with only its font
+ * weight surviving. Transitions are killed before measuring, so what is sampled
+ * is where the colours ended rather than where they were passing through.
  */
 Then('the pressed lifecycle chip stands out from the unpressed ones', async ({ page }) => {
   await page.mouse.move(0, 0)
@@ -752,12 +751,12 @@ When('the reviewer reopens the record', async ({ page }) => {
  * The whole timeline, in order, each line as the pair it reads: who did it and
  * what they did.
  *
- * The list rather than a line at a time, because order is the claim — a
- * timeline at the bottom shows how the record evolved — and a set of
- * assertions that each event is *somewhere* would pass on a page that grouped
- * them by kind. The actor rides along because two of the three kinds take theirs
- * from a domain rule rather than a column, and a line that named the wrong one
- * would otherwise read plausibly.
+ * The list rather than a line at a time, because order is the claim — a timeline
+ * at the bottom shows how the record evolved — and a set of assertions that each
+ * event is *somewhere* would pass on a page that grouped them by kind. The actor
+ * rides along because two of the three kinds take theirs from a domain rule
+ * rather than a column, and a line that named the wrong one would otherwise read
+ * plausibly.
  */
 Then("the record's timeline reads:", async ({ page }, table: DataTable) => {
   const wanted = table.hashes().map((entry) => [String(entry.actor), String(entry.what)])

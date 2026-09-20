@@ -19,13 +19,12 @@
  * mounted or not mounted, never CSS-hidden, so the number lives in two languages
  * and both of them say where the other one is.
  *
- * **It moved from 84rem, and it moved because the rails did** — the max
- * width needed to be even wider, with all of it going to the left index
- * panel and the right comments panel.
- * The breakpoint is not a taste value: it is the rails plus the gutters plus the
- * floor, so widening the rails by 128px moves it by the same 128px. The three
- * columns first fit 128px later than they used to, and this is the number that
- * says so.
+ * **It moved from 84rem, and it moved because the rails did** — the max width
+ * needed to be even wider, with all of it going to the left index panel and the
+ * right comments panel. The breakpoint is not a taste value: it is the rails
+ * plus the gutters plus the floor, so widening the rails by 128px moves it by
+ * the same 128px. The three columns first fit 128px later than they used to, and
+ * this is the number that says so.
  */
 @theme {
   --breakpoint-wide: 92rem;

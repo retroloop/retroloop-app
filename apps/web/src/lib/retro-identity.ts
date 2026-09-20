@@ -39,9 +39,9 @@ export type RetroIdentity = RetroPlace & {
    * It is on this shape and not on `RetroPlace` because `retroName` is the only
    * reader that needs it: the identity line below is deliberately the
    * *per-session* reading ("Session S · Retro #n"), which was settled and is
-   * still true. Every output that satisfies this type already carries the
-   * field — `retros.list`, `retros.get`, and `records.byId` through
-   * `recordDetailSchema` — so nothing on the wire changed to make this possible.
+   * still true. Every output that satisfies this type already carries the field —
+   * `retros.list`, `retros.get`, and `records.byId` through `recordDetailSchema`
+   * — so nothing on the wire changed to make this possible.
    */
   readonly retroId: number
   readonly title: string | null
@@ -53,13 +53,13 @@ export type RetroIdentity = RetroPlace & {
  *
  * **The fallback used to print `retroNumber`, and that was the bug.** The diary
  * view needed retros to show their global ids rather than a session's internal
- * sequence number, and the rule settled on it directly: untitled retros show
- * the global id as fallback. `retroNumber` counts **within a session** —
- * several retrospectives across sessions are "#1" and more are "#2" — so on any
- * list that shows more than one session the old fallback printed a number that
- * could not identify the thing it was printed on. On the dashboard it was worse
- * than ambiguous: the row showed the global id in one column and `Retro #1` as
- * the name three characters away, which is two different numbers for one
+ * sequence number, and the rule settled on it directly: untitled retros show the
+ * global id as fallback. `retroNumber` counts **within a session** — several
+ * retrospectives across sessions are "#1" and more are "#2" — so on any list that
+ * shows more than one session the old fallback printed a number that could not
+ * identify the thing it was printed on. On the dashboard it was worse than
+ * ambiguous: the row showed the global id in one column and `Retro #1` as the
+ * name three characters away, which is two different numbers for one
  * retrospective on one line.
  *
  * **The directory stays.** The fallback is still not a bare number, which is
@@ -82,10 +82,10 @@ export function retroName(retro: RetroIdentity): string {
 /**
  * "Session S · Retro #n · <cwd>" — the identity line, whole.
  *
- * The order: the home page shows "Session #X · Retro #Y" rather than
- * "Retro #1 · Session 1". The session is the larger thing and comes first — a
- * retrospective is the *n*th of a session, not the other way round — and the
- * line now reads outside-in, the way the breadcrumb already did.
+ * The order: the home page shows "Session #X · Retro #Y" rather than "Retro #1 ·
+ * Session 1". The session is the larger thing and comes first — a retrospective
+ * is the *n*th of a session, not the other way round — and the line now reads
+ * outside-in, the way the breadcrumb already did.
  *
  * Changed in one place, so three surfaces follow: the dashboard row, the review
  * header, and a row of the flat records page — which is the reader who most

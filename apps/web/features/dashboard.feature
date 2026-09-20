@@ -39,7 +39,7 @@ Feature: The dashboard
   # "Exclusively" has two halves and both are asserted: the band is *there* with
   # the round that is in flight, and it is *absent* the moment nothing is. The
   # absence half is the one that matters — a permanent strip reading "nothing
-  # open" is the control the direction was filed against.
+  # open" is the state this scenario is written against.
   Scenario: A retrospective in flight gets a band of its own
     Given the reviewer opens the dashboard
     Then the band names 1 retrospective in flight
@@ -66,12 +66,11 @@ Feature: The dashboard
 
   # ── the fourth word: the round is down, the AI has not closed it ──────────
   #
-  # There is a status in between that indicates the human has submitted but the
-  # AI hasn't closed. The dashboard is the surface it was missing from — the
-  # review bar has said "Retro submitted" at the bottom of the review page for a
-  # while, and the row a reviewer actually looks at said REVIEWING for the whole
-  # of that window, which is the same word it says while the round is
-  # untouched.
+  # There is a status in between that indicates the human has submitted but the AI
+  # hasn't closed. The dashboard is the surface it was missing from — the review
+  # bar has said "Retro submitted" at the bottom of the review page for a while,
+  # and the row a reviewer actually looks at said REVIEWING for the whole of that
+  # window, which is the same word it says while the round is untouched.
   #
   # Run through the product, because the state is a reading of an act: nothing
   # arranged could tell a derivation from a fixture. The awaiting-you figures are
@@ -113,9 +112,9 @@ Feature: The dashboard
 
   # The new tag look is colour, and colour is the one thing a dark override can
   # suppress without anything else moving. Asserted in both themes, and asserted
-  # as a *separation* rather than as a value: the words on this page are
-  # SUBMITTED and FINISHED, and if the two ever resolved to the same fill and
-  # ink the tag would be carrying its state on the word alone.
+  # as a *separation* rather than as a value: the words on this page are SUBMITTED
+  # and FINISHED, and if the two ever resolved to the same fill and ink the tag
+  # would be carrying its state on the word alone.
   #
   # The three-retrospective fixture is what makes the pair available on one page
   # — two of its retros are already finished — so both looks are measured in the
@@ -207,8 +206,8 @@ Feature: The dashboard
 
   # The Retrospective axis offers nothing useful and is left out entirely.
   # Absence, so it is asserted as absence — and this is the scenario a plant
-  # legitimately leaves green, because nothing can be removed to make an
-  # absent tab appear.
+  # legitimately leaves green, because nothing can be removed to make an absent
+  # tab appear.
   Scenario: The Retrospective axis is not offered
     Given the stage holds the retrospectives of two sessions
     And the reviewer opens the dashboard
@@ -275,8 +274,8 @@ Feature: The dashboard
     Given the reviewer opens the dashboard
     Then the sitting for session 1 is stamped "2026-08-24T09:00:00.000Z"
 
-  # Never a bare number. A retro whose latest draft proposed no name reads
-  # as its GLOBAL id plus the directory it happened in.
+  # Never a bare number. A retro whose latest draft proposed no name reads as its
+  # GLOBAL id plus the directory it happened in.
   Scenario: A retro whose latest draft proposed no name reads as its global id
     Given the reviewer opens retro 1
     When the AI files the next revision

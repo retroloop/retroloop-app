@@ -29,11 +29,10 @@ test('a comment reaches the panel whichever surface it was written from', () => 
 })
 
 /**
- * A real bug. Both of these fell to the everything-else branch and
- * invalidated `records.*` alone, which stopped being where a record's threads
- * live when the comments panel became the one comments surface — so a thread
- * settled in one browser never settled in a second one watching the same
- * retrospective.
+ * A real bug. Both of these fell to the everything-else branch and invalidated
+ * `records.*` alone, which stopped being where a record's threads live when the
+ * comments panel became the one comments surface — so a thread settled in one
+ * browser never settled in a second one watching the same retrospective.
  */
 test('settling a thread reaches a second browser, and so does reopening it', () => {
   expect(staleAfter('ThreadResolved')).toEqual(BOTH_COMMENT_QUERIES)
@@ -42,13 +41,13 @@ test('settling a thread reaches a second browser, and so does reopening it', () 
 
 /**
  * `retros` on both is what carries the intermediate status to a page nobody
- * reloaded. The retrospective's state is a *reading* of these two
- * events now — REVIEWING to SUBMITTED on the finish, SUBMITTED to FINISHED on
- * the close — so an event that stopped invalidating `retros` would leave the
- * review page's header showing the state before the act, with nothing else on
- * the page wrong to give it away. The review page is the surface this reaches:
- * it is the one that subscribes (`useLiveSession`), and the dashboard re-reads
- * on navigation instead.
+ * reloaded. The retrospective's state is a *reading* of these two events now —
+ * REVIEWING to SUBMITTED on the finish, SUBMITTED to FINISHED on the close — so
+ * an event that stopped invalidating `retros` would leave the review page's
+ * header showing the state before the act, with nothing else on the page wrong
+ * to give it away. The review page is the surface this reaches: it is the one
+ * that subscribes (`useLiveSession`), and the dashboard re-reads on navigation
+ * instead.
  */
 test('the end of a round refetches the retrospective, either way it went', () => {
   expect(staleAfter('ReviewFinished')).toEqual(['records', 'retros'])

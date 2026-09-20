@@ -53,8 +53,8 @@ function SettingsPage() {
        * same measure for the same reason: the page grows to 1536px at `wide` to
        * make room for a review's three columns, and a form handed all of it is a
        * form whose label and its control are half a screen apart. It sits at the
-       * left, because the whole of the width rule is that content starts
-       * where content starts.
+       * left, because the whole of the width rule is that content starts where
+       * content starts.
        *
        * The nav is inside that measure rather than outside it, so the reading
        * column keeps its width and the section list travels with the content
@@ -82,11 +82,11 @@ type Section = 'general' | 'appearance' | 'labels' | 'attributes'
  * nothing argues with it.
  *
  * **Appearance is second, and it is a section of its own by design** —
- * appearance is another tab of its own, like general etc. It could have
- * been two more rows inside General; it is not, because General is where the
- * product's *permissions* live and Appearance is where the reader's own
- * preference does, and folding one into the other would make the page's first
- * section mean two unrelated things.
+ * appearance is another tab of its own, like general etc. It could have been two
+ * more rows inside General; it is not, because General is where the product's
+ * *permissions* live and Appearance is where the reader's own preference does,
+ * and folding one into the other would make the page's first section mean two
+ * unrelated things.
  *
  * **General holds one switch and is honest about it.** There is no filler here:
  * every element earns its place, and a settings section that says one true thing
@@ -102,8 +102,8 @@ type Section = 'general' | 'appearance' | 'labels' | 'attributes'
  * whose surfaces are the ones that *do* read a search param.
  *
  * Radix `Tabs` underneath at `orientation="vertical"`, which is the shadcn
- * vertical-tabs pattern: the keyboard contract — roving focus, up/down
- * arrows, Home/End, `aria-selected` — is not worth reimplementing by hand, and
+ * vertical-tabs pattern: the keyboard contract — roving focus, up/down arrows,
+ * Home/End, `aria-selected` — is not worth reimplementing by hand, and
  * `ui/tabs.tsx` already says so.
  */
 function SettingsSections() {
@@ -164,7 +164,7 @@ function SettingsSections() {
  * 'Labels (1)' instead of 'Labels 1'. The brackets are what make the number
  * read as an annotation on the name rather than as part of it; the typographic
  * separation this replaced — a lighter, spaced number — said the same thing in
- * a channel that read unclearly.
+ * a channel a reader may not read it in.
  *
  * **It is one formatting site on purpose.** Every counted navigation item in
  * this product goes through here or through something that copies this line, so
@@ -200,8 +200,8 @@ function SectionTab({
  * the item's text, so the whole literal — `Labels (3)` — is one thing a reader
  * sees and one thing a scenario can assert. Split across two elements the
  * separator becomes a `gap` in the layout, which reads correctly on screen and
- * puts `Labels(3)` in the DOM, where an assertion for the exact literal
- * would have to be written against something other than the rule.
+ * puts `Labels(3)` in the DOM, where an assertion for the exact literal would
+ * have to be written against something other than the rule.
  */
 function countedLabel(label: string, count: number | undefined): string {
   return count === undefined ? label : `${label} (${count})`

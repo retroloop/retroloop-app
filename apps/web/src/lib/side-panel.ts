@@ -28,10 +28,10 @@ import { useState, useSyncExternalStore } from 'react'
  *
  * **The cost is paid by real screens and it is the widest it has ever been**: a
  * 1440px laptop and a landscape iPad at 1366 both read the review in the narrow
- * layout now — one column, both panels behind their glyphs — where at 84rem
- * they had three columns. That is the trade the rail widths make for
- * themselves, and it is tracked as a tradeoff rather than buried here: the two
- * are one dial, and moving the rails is what moves it.
+ * layout now — one column, both panels behind their glyphs — where at 84rem they
+ * had three columns. That is the trade the rail widths make for themselves, and
+ * it is tracked as a tradeoff rather than buried here: the two are one dial, and
+ * moving the rails is what moves it.
  */
 const RAIL_FITS = '(min-width: 92rem)'
 
