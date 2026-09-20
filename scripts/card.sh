@@ -21,8 +21,8 @@
 # outright and takes a fresh listing for every operation. The safe form is the
 # only form there is to type.
 #
-# Outside cmux it no-ops with a note on stderr and exits 0, so the duty costs
-# nothing in a plain terminal.
+# Outside cmux it no-ops with a note on stderr and exits 0, so writing the card
+# costs nothing in a plain terminal.
 
 set -uo pipefail
 
