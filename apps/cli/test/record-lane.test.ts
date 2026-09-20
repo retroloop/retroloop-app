@@ -539,7 +539,7 @@ describe('the record lane', () => {
     })
 
     /**
-     * **The incident itself.** `r-flaky-test` has that shape: quotes on the
+     * **The incident itself.** `r-flaky-test` has this shape: quotes on the
      * record, and not one word from the human at review time. Its `ownerWords`
      * is `[]` and that is true — and it says nothing about what was said in the
      * session.

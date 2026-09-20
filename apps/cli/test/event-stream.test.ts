@@ -11,11 +11,11 @@ import { type RunningServer, startServer } from '#server/serve'
  * The subscribing half of `review wait --follow`, against a **real socket**.
  *
  * The frames below are not invented: they are the bytes a real `retro serve`
- * put on the wire when it was measured, down
- * to tRPC's trailing blank line. That is what makes this suite a contract with
- * the server rather than with the parser's own idea of SSE — and the real-server
- * scenario in `wait-across-processes.test.ts` is what keeps the two honest, by
- * driving the same code against the actual `events.onRetro`.
+ * put on the wire when it was measured, down to tRPC's trailing blank line.
+ * That is what makes this suite a contract with the server rather than with
+ * the parser's own idea of SSE — and the real-server scenario in
+ * `wait-across-processes.test.ts` is what keeps the two honest, by driving the
+ * same code against the actual `events.onRetro`.
  */
 const CONNECTED = 'event: connected\ndata: {}\n\n\n'
 

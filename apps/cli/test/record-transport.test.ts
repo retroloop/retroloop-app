@@ -8,8 +8,8 @@ import { aRevisionDraft, type Cli, createCli, removeTempStages } from './support
 afterAll(removeTempStages)
 
 /**
- * **The transport test** — the AI actor can never write a human
- * field, proven against the real store rather than asserted at the use case.
+ * **The transport test** — the AI actor can never write a human field, proven
+ * against the real store rather than asserted at the use case.
  *
  * The lane gives the AI three new writes: a claim, a release, and the resolve
  * that clears a claim. Each of them touches a record the human decided, in a

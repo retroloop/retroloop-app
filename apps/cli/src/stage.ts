@@ -65,11 +65,11 @@ export function resolveDataDir(options: StageOptions = {}): string {
  * its lock file — then the default. Asking the lock rather than a config file
  * means the URL describes what is running, not what someone once configured.
  *
- * The host is asked of the same lock, for the same reason: `localhost` unless
- * the running server took one named interface, which is then the only place it
- * answers and so the only link worth printing. With no server
- * running there is no bind to describe, and the link says `localhost`. Nothing
- * here chooses a bind — a start binds `--bind`, else loopback, whatever this read.
+ * The host is asked of the same lock, for the same reason: `localhost` unless the
+ * running server took one named interface, which is then the only place it answers
+ * and so the only link worth printing. With no server running there is no bind to
+ * describe, and the link says `localhost`. Nothing here chooses a bind — a start
+ * binds `--bind`, else loopback, whatever this read.
  */
 export function resolveStage(options: StageOptions = {}): Stage {
   const env = options.env ?? {}

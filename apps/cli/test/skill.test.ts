@@ -158,12 +158,12 @@ describe('the /retro skill', () => {
    * This hook reads the CLI's help by running the CLI, once per command group
    * plus the root — nine `bun run bin.ts … --help` subprocesses. Started one
    * after another, its cost is process startup **times nine, serialized**, and
-   * that sum is what grows when the machine is busy: three suites running in
-   * parallel turned a hook that fits inside bun's 5s default into one that
-   * missed it in three runs out of eight, on an unmodified base. Started
-   * together, the sum collapses to the slowest single spawn, which is a number
-   * load moves far less. Measured under the same load, the parallel form saw 0
-   * failures in 6 runs against 3 in 6.
+   * that sum is what grows when the machine is busy: three builds running at
+   * once turned a hook that fits inside bun's 5s default into one that missed
+   * it in three runs out of eight, on an unmodified base. Started together, the
+   * sum collapses to the slowest single spawn, which is a number load moves far
+   * less. Measured under the same load, the parallel form saw 0 failures in 6
+   * runs against 3 in 6.
    *
    * **Not a raised timeout.** The budget is untouched on purpose: what was wrong
    * was the serialized multiplication, and raising the ceiling would have kept
@@ -191,15 +191,15 @@ describe('the /retro skill', () => {
   test('names at least the commands the loop is built from', () => {
     const named = new Set(invocations.map((invocation) => invocation.group))
 
-    // `request` was on this list until `r-remove-requests` took the
-    // whole ask channel out; a skill that still named it would send an AI at a
-    // command the CLI no longer has.
+    // `request` was on this list until `r-remove-requests` took the whole ask
+    // channel out; a skill that still named it would send an AI at a command
+    // the CLI no longer has.
     //
-    // `label` and `attribute` joined it later: they are the AI's
-    // transport for the two vocabularies, and the one place in this whole
-    // surface where an exit 5 is a real answer rather than a bug — which is why
-    // the skill had to grow a passage about them and to correct its own
-    // "you cannot actually reach 5".
+    // `label` and `attribute` joined it later: they are the AI's transport for
+    // the two vocabularies, and the one place in this whole surface where an
+    // exit 5 is a real answer rather than a bug — which is why the skill had to
+    // grow a passage about them and to correct its own "you cannot actually
+    // reach 5".
     expect([...named].sort()).toEqual([
       'attribute',
       'comment',

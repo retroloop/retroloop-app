@@ -11,10 +11,9 @@ afterAll(removeTempStages)
  * Every command's `--json` shape, locked (testing.md suite 3).
  *
  * These assertions are the CLI's public contract: the plugin shells out and reads
- * exactly these keys, so breaking one is a major version. `toEqual` on
- * the whole object rather than a few properties is deliberate — an extra key is a
- * change to the contract too, and it should have to be written down here before
- * it ships.
+ * exactly these keys, so breaking one is a major version. `toEqual` on the whole
+ * object rather than a few properties is deliberate — an extra key is a change to
+ * the contract too, and it should have to be written down here before it ships.
  */
 describe('the CLI', () => {
   let cli: Cli
@@ -98,8 +97,8 @@ describe('the CLI', () => {
     })
 
     /**
-     * `--project` is optional and dormant. Registering without it is
-     * the ordinary path now, and it returns the same shape as any other — a
+     * `--project` is optional and dormant. Registering without it is the
+     * ordinary path now, and it returns the same shape as any other — a
      * session that had to name a project to exist would still be a project
      * construct on the critical path.
      */
@@ -344,10 +343,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * The retro's name is authored in the payload, not passed as a flag:
-     * it is part of the draft, so it travels with it and changes the
-     * only way anything in a draft changes — by redrafting. The CLI's job is to
-     * hand the file to the core without touching what is in it.
+     * The retro's name is authored in the payload, not passed as a flag: it is
+     * part of the draft, so it travels with it and changes the only way
+     * anything in a draft changes — by redrafting. The CLI's job is to hand the
+     * file to the core without touching what is in it.
      */
     test('carries the payload’s title through to the stored revision, untouched', async () => {
       const sessionId = await aSession()
@@ -619,10 +618,10 @@ describe('the CLI', () => {
     })
 
     /**
-     * **The dogfood scenario that filed the projection gap, end to end** — resolve through the
-     * CLI, then read the list back through the CLI. That is the AI's own
-     * verification loop after a batch resolve, and it reported nothing about the
-     * writes it had just made.
+     * **The dogfood scenario that filed the projection gap, end to end** — resolve
+     * through the CLI, then read the list back through the CLI. That is the AI's
+     * own verification loop after a batch resolve, and it reported nothing about
+     * the writes it had just made.
      */
     test('shows a resolved record’s lifecycle, refs and all, right after resolving it', async () => {
       const sessionId = await aSession()
@@ -746,8 +745,8 @@ describe('the CLI', () => {
      * The line a person reads carries the verdict and nothing beside it.
      *
      * It carried a `[held]` marker for one session, which is what this test was
-     * written for; `r-remove-hold` took the feature out, so the marker
-     * is asserted absent instead — with the verdict asserted present in the same
+     * written for; `r-remove-hold` took the feature out, so the marker is
+     * asserted absent instead — with the verdict asserted present in the same
      * line, because a check that only looked for a missing word would pass on a
      * command that printed nothing at all.
      */
@@ -1540,8 +1539,8 @@ describe('the CLI', () => {
      * as the counts asserted present: an assertion that only checked the prefix
      * would pass on a line that still had it.
      *
-     * `revise` joined the line with the verdict (`r-verdict-revise`);
-     * the frozen `hold` bucket stays off it, which is the difference between a
+     * `revise` joined the line with the verdict (`r-verdict-revise`); the
+     * frozen `hold` bucket stays off it, which is the difference between a
      * count that can still change and one that never will again.
      */
     test('reads out the verdict counts, and says nothing about holds', async () => {
@@ -2188,9 +2187,9 @@ describe('the CLI', () => {
     })
 
     /**
-     * The recovery SKILL.md promises when the draft file is gone: each
-     * record's `content` is one record of a revision file, with nothing
-     * to strip and nothing to rename, so `{records: [...contents]}` submits.
+     * The recovery SKILL.md promises when the draft file is gone: each record's
+     * `content` is one record of a revision file, with nothing to strip and
+     * nothing to rename, so `{records: [...contents]}` submits.
      *
      * It holds because `content` is the stored record itself. That is easy to
      * break by "improving" the projection — adding a computed key, renaming one —
@@ -2549,8 +2548,8 @@ describe('the CLI', () => {
        * A human can open review-level threads that the CLI once could not answer:
        * `--record` was required, so the reply went through chat instead — off the
        * durable review record, which is the smuggling review-level threads exist to
-       * end. The store takes all three targets; these lock the two
-       * the CLI was missing.
+       * end. The store takes all three targets; these lock the two the CLI was
+       * missing.
        */
       test('--thread answers the review-level thread the human opened', async () => {
         const sessionId = await aSession()

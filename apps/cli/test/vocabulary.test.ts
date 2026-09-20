@@ -330,11 +330,11 @@ describe('the vocabularies, from the CLI', () => {
    * stating rather than a gap: there is no command that puts a label on a record
    * or sets a value on one.
    *
-   * Those writes are human-only whatever the switch says — the
-   * switch governs the *configuration*, and whether the AI may ever mark up its
-   * own draft records is still open.
-   * The house shape for a human-only write is a use-case refusal and no CLI
-   * surface at all (`threads.resolve`, `review.finish`), and this follows it.
+   * Those writes are human-only whatever the switch says — the switch governs
+   * the *configuration*, and whether the AI may ever mark up its own draft
+   * records is still open. The house shape for a human-only write is a use-case
+   * refusal and no CLI surface at all (`threads.resolve`, `review.finish`), and
+   * this follows it.
    *
    * `record archive` is the one deliberate departure in the product — offered
    * *and* refused, because it sits on the same command as `record resolve`,

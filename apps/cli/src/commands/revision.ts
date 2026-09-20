@@ -108,18 +108,18 @@ type GetArgs = {
  * human say", and padding that answer with keys it must ignore is how a caller
  * ends up parsing the wrong one.
  *
- * `--feedback-only` also carries `finishMessage` since
- * `r-finish-confirm-message`: the word the human left when finishing the round.
- * It is delivered separately from the comments and belongs to the same question
- * this projection answers. It is `null` when they left none, like every other
- * optional here — a key that comes and goes is a shape a script has to guess
- * at. The full projection does not carry it: the record names this one.
+ * `--feedback-only` also carries `finishMessage` since `r-finish-confirm-message`:
+ * the word the human left when finishing the round. It is delivered separately
+ * from the comments and belongs to the same question this projection answers. It
+ * is `null` when they left none, like every other optional here — a key that comes
+ * and goes is a shape a script has to guess at. The full projection does not carry
+ * it: the record names this one.
  *
- * `held` and `holdNote` were in both projections once.
- * `r-remove-hold` took them out with the feature: whether to pick an item up
- * without the human is `involvement`, which is a verdict field and is already
- * in both. `requests` went the same way (`r-remove-requests`) — the asks are
- * review-level comments now, and they are in `threads`.
+ * `held` and `holdNote` were in both projections once. `r-remove-hold` took
+ * them out with the feature: whether to pick an item up without the human is
+ * `involvement`, which is a verdict field and is already in both. `requests`
+ * went the same way (`r-remove-requests`) — the asks are review-level comments
+ * now, and they are in `threads`.
  */
 async function getRevision(context: CliContext, args: GetArgs): Promise<void> {
   const retro = retroRef(args)

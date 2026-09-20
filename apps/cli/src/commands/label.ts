@@ -21,14 +21,13 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * anything else that opens the store (`config-write.service.ts`).
  *
  * **There is deliberately no way to put a label on a record from here.** That
- * write is human-only whatever the switch says — the switch governs
- * the *configuration*, and whether the AI may ever mark up its own draft records
- * is still open. The house shape for
- * a human-only write is a use-case refusal and no CLI surface at all, which is
- * what `threads.resolve` and `review.finish` do; the one deliberate departure is
- * `record archive`, which is offered *and refused* because it sits on the same
- * command as an act the AI uses constantly. Nothing here sits beside such an act,
- * so nothing here is offered to be refused.
+ * write is human-only whatever the switch says — the switch governs the
+ * *configuration*, and whether the AI may ever mark up its own draft records is
+ * still open. The house shape for a human-only write is a use-case refusal and no
+ * CLI surface at all, which is what `threads.resolve` and `review.finish` do; the
+ * one deliberate departure is `record archive`, which is offered *and refused*
+ * because it sits on the same command as an act the AI uses constantly. Nothing
+ * here sits beside such an act, so nothing here is offered to be refused.
  *
  * **Addressed by name, not by id.** The browser lists definitions and holds ids,
  * and an id survives a rename; what an agent has in hand is the word it read in
@@ -169,9 +168,9 @@ export function registerLabelCommand(
           { id: label.id, name: label.name, retiredAt: label.retiredAt ?? null },
           () =>
             // Not a delete, and the line says so: the records that wear it go on
-            // wearing it. Reversible (`r-retire-burns-a-word`), and
-            // the line says that too — a reader who has just mis-pressed this is
-            // exactly the reader who needs to know.
+            // wearing it. Reversible (`r-retire-burns-a-word`), and the line
+            // says that too — a reader who has just mis-pressed this is exactly
+            // the reader who needs to know.
             `Retired "${label.name}"; it is no longer offered, the records wearing it keep it, and \`label unretire "${label.name}"\` brings it back`,
         )
       }),

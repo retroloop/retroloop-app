@@ -313,11 +313,11 @@ async function waitForOutcome(
  * existing forms are untouched.
  *
  * `close` is the other end of that change, and the only act on a review the AI
- * has ever had. After the wait returns, the AI reads the round — the records
- * the human sent back with `revise`, the threads still waiting on an answer —
- * and either files the next revision or runs this, which takes the retrospective
- * to `finished` and makes the export possible. It decides nothing: it refuses
- * unless the human has finished *this* revision, every record is decided, and none of
+ * has ever had. After the wait returns, the AI reads the round — the records the
+ * human sent back with `revise`, the threads still waiting on an answer — and
+ * either files the next revision or runs this, which takes the retrospective to
+ * `finished` and makes the export possible. It decides nothing: it refuses unless
+ * the human has finished *this* revision, every record is decided, and none of
  * them asked to be rewritten (`close-review.use-case.ts`).
  *
  * **`--any` and `list --finished` are the same two questions asked by an agent
