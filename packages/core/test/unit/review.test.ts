@@ -543,7 +543,7 @@ describe('review', () => {
         })
 
         expect(feedback.finishMessage).toBe('Ship it.')
-        // Separately from the comments, as he asked: nothing about it is a thread.
+        // Separately from the comments by design: nothing about it is a thread.
         expect(feedback.threads).toEqual([])
       })
 

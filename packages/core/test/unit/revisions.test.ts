@@ -203,8 +203,8 @@ describe('revisions', () => {
       /**
        * Every round after the first is gated too, not just the second: the point
        * is the rhythm, and a gate that let revision 3 replace an unfinished
-       * revision 2 would have allowed exactly the second of the two filings the
-       * owner objected to.
+       * revision 2 would have allowed exactly the second of the two filings
+       * this gate exists to refuse.
        */
       test('gates every later round, not only the second', async () => {
         const first = await harness.revision(session.id)
@@ -683,11 +683,11 @@ describe('revisions', () => {
     })
 
     /**
-     * **#111 — finished, per round.**
+     * **Finished, per round.**
      *
      * `retrospective.finishedAt` is the retro's own close, written once at the
-     * very end, so a reader asking "has he put down the round I am showing?" got
-     * null through every round but the last. There is no `review.status`
+     * very end, so a reader asking "has the human put down the round I am
+     * showing?" got null through every round but the last. There is no `review.status`
      * procedure to ask instead, so the fact rides on the revision it describes.
      *
      * Both directions in one test, because either alone passes on a broken fix:

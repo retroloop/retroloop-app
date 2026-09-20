@@ -95,7 +95,7 @@ describe('the schema validator', () => {
 })
 
 /**
- * Retro 3 `r-validator-silent-keywords`.
+ * `r-validator-silent-keywords`.
  *
  * Every test above proves the validator enforces a rule it knows. None of them
  * could see the other failure mode: a keyword it has *never heard of* is skipped

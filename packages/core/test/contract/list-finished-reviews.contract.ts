@@ -68,7 +68,7 @@ export function describeListFinishedReviewsContract(label: string, makeStore: St
     })
 
     /**
-     * The whole row, against the shape the store actually holds in production: three
+     * The whole row, against the store actually used in production: three
      * retrospectives across two sessions, one of each reading, and the two
      * orders that have to disagree — retro id ascending for the list, position
      * within the session for the ordinal.

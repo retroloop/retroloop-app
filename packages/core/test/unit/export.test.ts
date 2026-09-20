@@ -145,7 +145,7 @@ describe('export', () => {
         },
       ])
       expect(conformanceProblems(document)).toEqual([])
-      // Separately from the comments, as he asked: nothing about it is a thread.
+      // Separately from the comments by design: nothing about it is a thread.
       expect(document.reviewThreads).toEqual([])
     })
 

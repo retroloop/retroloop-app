@@ -21,7 +21,7 @@ import { aLegacyRecord } from '../support/fixtures'
  * a test that hashes twice with the same code passes however wrong that code
  * is, and this one has to fail if the bytes move.
  */
-const LEGACY_CONTENT_HASH = '7922f606db18f6be6b3b4bc2ba5afe8c2cd30201736621fe5537002e18d0d03b'
+const LEGACY_CONTENT_HASH = '74e4bd9c2e828e054c9d858cf7cfc39a6c6b7bb1225984b8c717a7d69f893d9b'
 
 describe('a record filed before solutions existed', () => {
   test('hashes to the byte-identical content hash it always did', () => {

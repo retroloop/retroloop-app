@@ -302,9 +302,10 @@ describe('record relations', () => {
   })
 
   /**
-   * The AI's read-back channel — #103's lesson one table over. A relation is
-   * written through the CLI and checked by listing the records, so a listing
-   * silent about relations reads exactly like a store that refused every write.
+   * The AI's read-back channel — `r-lifecycle-projection-gap`'s lesson one
+   * table over. A relation is written through the CLI and checked by listing
+   * the records, so a listing silent about relations reads exactly like a
+   * store that refused every write.
    */
   describe('the revision listing carries them', () => {
     test('with the far record’s address rather than its title', async () => {

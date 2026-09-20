@@ -125,7 +125,7 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
     title: 'Plant-and-catch found two real bugs that every written test had passed',
     type: 'feature',
     problem:
-      "**Filed as a practice that paid, not a friction.** The falsifiability discipline — every worker plants defects and must watch its own suites catch them before reporting — found two real bugs in finished, fully-green work: item 5's frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and item 7's unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: it lived in spawn specs, not in any doc.",
+      "**Filed as a practice that paid, not a friction.** The falsifiability discipline — deliberately planting defects and watching the suites catch them before reporting a change finished — found two real bugs in finished, fully-green work: item 5's frozen tailer cursor (masked by the idle short-circuit until a restart re-emitted history) and item 7's unreachable duplicate `serve()` (found because a planted defect FAILED to fail, proving the code path dead). Both had passed every test written for them. The practice was ad-hoc: an unwritten habit, not a documented rule.",
     humanWords: [],
     rootCause: {
       whatHappened:
@@ -142,9 +142,8 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
     diagnosticData: undefined,
     workaround: 'none',
     agreedDirection:
-      '(AI-suggested) Promote plant-and-catch from spawn-spec habit to standing rule: a short paragraph in testing.md §Operational rules (every worker report includes planted defects and what caught them; a check never observed failing is an unverified claim). Your approval makes it law.',
-    footprint:
-      'docs/design/testing.md (§Operational rules) · docs/EXECUTION.md (worker table note)',
+      '(AI-suggested) Promote plant-and-catch from an unwritten habit to a standing rule: a short paragraph in testing.md §Operational rules (every report of finished work includes planted defects and what caught them; a check never observed failing is an unverified claim).',
+    footprint: 'docs/design/testing.md (§Operational rules)',
     requester: 'ai',
     impacts: 'human',
     defaults: { severity: 5, solutionLevel: 1, involvement: 'autonomous' },

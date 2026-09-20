@@ -325,7 +325,7 @@ describe('the lane', () => {
     /**
      * **The queue's whole definition, in one assertion.** Approved, unresolved,
      * not archived, in a retrospective the human finished — and a record somebody
-     * is already holding stays on it, because the manager reading the queue needs
+     * is already holding stays on it, because whoever is working the queue needs
      * to see what is in progress rather than being told it does not exist.
      */
     test('is the approved, unresolved work of finished retrospectives, claims included', async () => {
