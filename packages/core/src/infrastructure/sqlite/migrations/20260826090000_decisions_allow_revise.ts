@@ -1,14 +1,14 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The decisions table learns the third verdict (retro 4 `r-verdict-revise`).
+ * The decisions table learns the third verdict (`r-verdict-revise`).
  *
  * `state` carries a CHECK constraint, and SQLite cannot alter one in place, so
  * this is the rebuild pattern (migrations.md §SQLite rebuild pattern). Two
  * things about it are deliberate:
  *
  * - **The old CHECK is widened, never narrowed.** `hold` stays in the list it
- *   has always been in: human data is append-only and the owner's store holds
+ *   has always been in: human data is append-only and existing stores hold
  *   rows carrying it. A migration that dropped a value would make existing rows
  *   unwritable back into their own table half-way through this rebuild.
  * - **The triggers are recreated with the table.** `DROP TABLE` takes its

@@ -13,8 +13,8 @@ import type { MigrationDb } from '#infrastructure/sqlite/checked-exec'
  * is only true if a failure inside `up` actually reaches the migrator. It did not
  * used to: `db` is a `MigrationDb` rather than a `Database` because bun's `exec`
  * drops a runtime failure in anything but a lone statement, so a migration could
- * half-apply in silence and be ledgered as applied (#100
- * `r-db-exec-swallows-errors`; the whole argument is in `checked-exec.ts`). The
+ * half-apply in silence and be ledgered as applied
+ * (`r-db-exec-swallows-errors`; the whole argument is in `checked-exec.ts`). The
  * narrower type is what makes that unreachable for a migration nobody has written
  * yet, rather than for the ones that happened to be converted.
  */

@@ -4,7 +4,7 @@ import type { Actor } from '#domain/models/actor.model'
 export type NoteKind = 'human-cost' | 'ai-cost'
 
 /**
- * A friction note. Notes belong to the session, not to a retrospective (KC-0015);
+ * A friction note. Notes belong to the session, not to a retrospective;
  * a retrospective drafts from the notes written since the previous one finished.
  *
  * Append-only for both authors. `kind` is set on AI notes and absent on human

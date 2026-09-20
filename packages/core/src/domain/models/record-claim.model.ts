@@ -23,7 +23,7 @@ import type { Actor } from '#domain/models/actor.model'
  * column. The CLI writes `ai`, because the AI is who picks work up; the column
  * is what lets a human's claim from the browser be representable without a
  * second table. Nothing infers a claim: no commit, no branch, no open record,
- * and no passage of time writes one (KC-0010).
+ * and no passage of time writes one.
  *
  * **Append-only, and releasing is a row.** "Claimed at 10:00, released at 11:40,
  * claimed again at 14:00" is what somebody asks for when they want to know why a

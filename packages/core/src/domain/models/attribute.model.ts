@@ -1,14 +1,11 @@
 /**
  * An attribute definition — a name and a type, and per-record values against it.
  *
- * The owner's own framing of why both primitives exist, dictated:
- *
- * > *"The other way is to provide attributes: the user can create attributes and
- * > then assign values to those attributes. For example, someone might be using
- * > GitHub, someone might be using something else — so they could create an
- * > attribute that says 'Jira ticket', or maybe just 'external ticket ID' or
- * > whatever, and then they can say it's always going to be a number. Then it
- * > will be easier for them to query."*
+ * Why both primitives exist: beside labels, a user can create attributes and
+ * then assign values to those attributes. One team uses GitHub and another
+ * something else, so they create an attribute that says 'Jira ticket', or maybe
+ * just 'external ticket ID', declare that it always holds a number, and can
+ * then query on it.
  *
  * That is the whole of the case for a type: **queryability**. A label answers
  * "which of these are migrated"; an attribute answers "where did this one go",
@@ -16,10 +13,9 @@
  * independent — labels classify, attributes carry data — and nothing in this
  * system couples them.
  *
- * And his ruling on how much type there should be:
- *
- * > *"to keep it simple, we can keep attributes to very fixed types and not with
- * > too many configs, so that we don't have to put in a lot of validations."*
+ * And how much type there should be: to keep it simple, attributes stay on very
+ * fixed types and carry no configuration to speak of, so that little validation
+ * has to be written at all.
  *
  * So: four types, no per-attribute configuration at all, and validation that
  * goes exactly as far as the type's name promises and no further
@@ -29,7 +25,7 @@ export const ATTRIBUTE_TYPES = ['number', 'text', 'url', 'date'] as const
 
 /**
  * What a value of this attribute has to look like. Four, deliberately, and the
- * set is closed by the owner's *"very fixed types"* rather than open for a
+ * set is closed by the very-fixed-types rule rather than open for a
  * fifth to be added on a hunch.
  *
  * Every value is **stored as text**, whatever the type — SQLite has no date and

@@ -13,7 +13,7 @@
  *   decides. The human's values are what count; these only seed them.
  *
  * The narrative comes in **two shapes** and always exactly one of them: one to
- * three `solutions` on every record filed since the owner's multi-solution
+ * three `solutions` on every record filed since the multi-solution
  * design, and one `agreedDirection` plus one `footprint` on every record filed
  * before it. Revisions are immutable, so both are read forever and only the
  * first is ever written.
@@ -28,14 +28,14 @@ export type Severity = 1 | 2 | 3 | 4 | 5
 /**
  * A ceiling, not a target (D1) — what a stored level can *be*.
  *
- * The three named values are legacy (KC-0021): they can no longer be chosen or
+ * The three named values are legacy: they can no longer be chosen or
  * proposed, and retro 1 holds two of them. They stay in this type because human
  * data is append-only — a reader that could not name them could not render the
  * history it is looking at.
  */
 export type SolutionLevel = 1 | 2 | 3 | 4 | 5 | 'none' | 'upstream' | 'undecided'
 
-/** What a new decision or proposal may be: strictly 1–5 (KC-0021). */
+/** What a new decision or proposal may be: strictly 1–5. */
 export type SolutionLevelInput = 1 | 2 | 3 | 4 | 5
 
 export type Involvement = 'autonomous' | 'pull-request' | 'interactive' | 'other' | 'undecided'
@@ -75,8 +75,8 @@ export type LegacyProposedDefaults = ProposedDefaults & {
 }
 
 /**
- * One way the AI proposes to solve the record (the owner: *"the AI should do
- * deep-dive and propose solutions (up to 3)"*).
+ * One way the AI proposes to solve the record: it deep-dives the friction and
+ * proposes up to three of these.
  *
  * A record carries one to three of these, sorted from the lowest level to the
  * highest, with exactly one marked `recommended` — all three enforced by
@@ -128,9 +128,9 @@ type SharedNarrative = {
  *
  * Nothing may author it any more — the write path takes `solutions` and nothing
  * else — and it is not deprecated either, because the revisions that hold it are
- * immutable and the owner's five retrospectives are full of them. A reader that
+ * immutable and existing retrospectives are full of them. A reader that
  * could not name this shape could not render the history it is looking at, which
- * is the same rule the legacy solution levels obey (KC-0021).
+ * is the same rule the legacy solution levels obey.
  */
 export type LegacyNarrative = SharedNarrative & {
   readonly agreedDirection: string
@@ -195,8 +195,8 @@ export type RetroRecord = LegacyRecord | SolutionsRecord
  * enum grown per array element is an enum that has to be migrated every time the
  * array can hold one more.
  *
- * `direction` and `footprint` stay, forever, and are not dead entries. The
- * owner's store carries threads anchored to both, human comments are append-only,
+ * `direction` and `footprint` stay, forever, and are not dead entries. Existing
+ * stores carry threads anchored to both, human comments are append-only,
  * and the export contract requires a component for every thread — so a value
  * removed here would make documents already written unrepresentable. Nothing
  * anchors a *new* thread to them, because a record with `solutions` has no such

@@ -7,7 +7,7 @@ import type { Hold, NewHold } from '#domain/models/hold.model'
  *
  * There is no `listLatestForEachRetro` here, and that is not an omission: no
  * read model in the product asks "what is held everywhere". The cross-retro view
- * of held items is `r-held-items-view`, which the owner parked — and a method
+ * of held items is `r-held-items-view`, which is parked — and a method
  * nothing calls is a method every adapter has to implement twice.
  */
 export type HoldRepository = {

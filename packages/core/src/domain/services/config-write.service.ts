@@ -4,12 +4,12 @@ import { AI_CONFIG_WRITE, SETTING_ON, type SettingEntry } from '#domain/models/s
 import type { SettingRepository } from '#domain/repositories/setting.repository'
 
 /**
- * **The owner's certainty, expressed as one function every definition write
- * calls.** OWNER RULING 2, dictated:
+ * **The human's certainty, expressed as one function every definition write
+ * calls.**
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
+ * The config page carries a toggle the user can enable to give the AI the
+ * ability to update the configs; while it is disabled, the user can be certain
+ * the AI cannot change them.
  *
  * Three properties, and every one of them is what *certainty* means rather than
  * a preference about where code goes:
@@ -18,17 +18,17 @@ import type { SettingRepository } from '#domain/repositories/setting.repository'
  *    would do the writing.** Not in the settings page, not in a tRPC
  *    middleware, not in the CLI's argument parsing — all three of those can be
  *    bypassed by anything that opens the store, and the AI runs in its own
- *    process against the same SQLite file (KC-0004). Reading the setting inside
+ *    process against the same SQLite file. Reading the setting inside
  *    the same `tx` as the write also closes the window where the human turns
  *    the toggle off while a write is in flight.
  * 2. **Off is the default and no row says so.** A fresh install has never
  *    written a settings row, and `undefined` reads as off — so the safe state is
  *    the state a store is born in, and turning the guarantee on is something
  *    somebody had to do. Nothing is inferred from silence except the answer that
- *    refuses (KC-0010).
+ *    refuses.
  * 3. **It refuses `ai` and says nothing about `human`.** The human writes
  *    definitions whatever the toggle says; the toggle is about the AI, which is
- *    the whole of what he asked for.
+ *    the whole of what it is for.
  */
 export function aiConfigWriteEnabled(entry: SettingEntry | undefined): boolean {
   return entry?.value === SETTING_ON
@@ -47,11 +47,10 @@ export function aiConfigWriteEnabled(entry: SettingEntry | undefined): boolean {
  * now.
  *
  * It deliberately does **not** govern applying a label or setting an attribute
- * value on a record. Those are human-only this session whatever the toggle says
+ * value on a record. Those are human-only for now, whatever the toggle says
  * (`record-label.model.ts`), because the toggle is about the global
- * configuration — *"the ability to update the configs"* — and whether the AI may
- * ever mark up its own draft records is one of the opens his ruling did not
- * reach.
+ * configuration — the ability to update the configs — and whether the AI may
+ * ever mark up its own draft records is still open.
  */
 export async function assertAiMayWriteDefinitions(
   settings: SettingRepository,

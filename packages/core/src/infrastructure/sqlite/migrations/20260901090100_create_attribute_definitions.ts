@@ -3,10 +3,9 @@ import type { Migration } from '#infrastructure/sqlite/migration'
 /**
  * The attribute vocabulary — the second primitive, and the queryable one.
  *
- * The owner: *"the user can create attributes and then assign values to those
- * attributes … they could create an attribute that says 'Jira ticket', or maybe
- * just 'external ticket ID' or whatever, and then they can say it's always going
- * to be a number. Then it will be easier for them to query."*
+ * A user creates attributes and then assigns values to those attributes: an
+ * attribute called 'Jira ticket', or maybe just 'external ticket ID', declared
+ * always to hold a number, and thereafter easy to query on.
  *
  * It is `label_definitions` plus one column, and the extra column is the reason
  * the primitive exists: a type is what turns a per-record value from prose into
@@ -15,8 +14,8 @@ import type { Migration } from '#infrastructure/sqlite/migration'
  * day one**.
  *
  * The CHECK is the same shape every enum in this schema has: **widened, never
- * narrowed**. Four types is the owner's *"very fixed types"* and the set is
- * closed by his ruling rather than by this constraint; a fifth would be a
+ * narrowed**. Four types is the very-fixed-types rule, and the set is
+ * closed by that rule rather than by this constraint; a fifth would be a
  * rebuild, exactly as widening `record_lifecycle.status` was
  * (`20260831090000_record_lifecycle_allow_archive.ts`).
  *

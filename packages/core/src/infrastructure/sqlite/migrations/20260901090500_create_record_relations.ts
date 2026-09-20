@@ -1,10 +1,10 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * One record related to another, in the words of whoever related them — the
- * owner's session-11 ask: *"both actors can relate records, each relation
- * carries how-they-relate words, and the relation reads from both sides, so that
- * AI can easily find past records and build holistic solutions."*
+ * One record related to another, in the words of whoever related them. Both
+ * actors can relate records, each relation carries how-they-relate words, and
+ * the relation reads from both sides, so that the AI can easily find past
+ * records and build holistic solutions.
  *
  * **Both sides are `record_ids.id`, and that is the only shape available.**
  * Every other per-record table in this schema addresses one record as
@@ -13,7 +13,7 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * two pairs is a key nobody can read, join on, or cite. `record_ids` exists
  * precisely because *"nobody says a pair out loud"* (`record-id.model.ts`): it
  * is the one single-column handle a record has, it is minted once and never
- * moves, and it is the number the owner and the AI actually say to each other.
+ * moves, and it is the number a reader and the AI actually say to each other.
  * So it is the foreign key on both sides, and a relation crossing two
  * retrospectives costs this table nothing — which it has to, because *"find past
  * records"* is the feature.
@@ -22,17 +22,17 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * the store should not be able to hold the row even if a rogue writer opens the
  * database directly. The use case refuses it first, with a sentence.
  *
- * **`how` is NOT NULL, because his sentence made it a part of the act.** *"Each
- * relation carries how-they-relate words"* — not "may carry". A relation with no
+ * **`how` is NOT NULL, because the words are a part of the act.** Each
+ * relation carries how-they-relate words — not "may carry". A relation with no
  * words is the thing this feature is *instead of*: a bare link that leaves the
  * reader to guess whether the second record supersedes the first, duplicates it,
  * or was caused by it. Free text with no vocabulary, on the argument
- * `record_lifecycle.refs` already made and won: the owner named three kinds of
- * relation and *"a shape that insisted on knowing which of those it was would be
- * a shape that refuses the fourth kind"*. A vocabulary is a settings-page
+ * `record_lifecycle.refs` already made and won: there are several kinds of
+ * relation, and a shape that insisted on knowing which of those it was would be
+ * a shape that refuses the fourth kind. A vocabulary is a settings-page
  * feature, and labels are already that.
  *
- * ## The fork this table had to choose, consciously
+ * ## The choice this table had to make, consciously
  *
  * `record_lifecycle` took a widenable `status` word; `record_labels` took an
  * `applied` bit, on the ground that *"a label's two positions are on and off,

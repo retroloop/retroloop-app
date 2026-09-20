@@ -40,7 +40,7 @@ export type SqliteStore = Store & {
   /**
    * `PRAGMA data_version`. It changes when **another connection** commits — not
    * for this connection's own writes — which is exactly the signal the server's
-   * tailer polls to notice that the CLI wrote something (KC-0005).
+   * tailer polls to notice that the CLI wrote something.
    */
   dataVersion(): number
   /** Absolute path of the database file. */
@@ -48,7 +48,7 @@ export type SqliteStore = Store & {
 }
 
 export type SqliteStoreOptions = {
-  /** The stage directory: it holds `retro.db` (KC-0013). */
+  /** The stage directory: it holds `retro.db`. */
   readonly dataDir: string
   /**
    * Where pre-migration snapshots go. The caller places them, because the
@@ -123,7 +123,7 @@ export function openSqliteStore(options: SqliteStoreOptions): SqliteStore {
   let closed = false
 
   /**
-   * One unit of work = one `BEGIN IMMEDIATE` (KC-0006).
+   * One unit of work = one `BEGIN IMMEDIATE`.
    *
    * The in-process queue exists because the work is async: between two awaits
    * another caller could otherwise start a second transaction on the same

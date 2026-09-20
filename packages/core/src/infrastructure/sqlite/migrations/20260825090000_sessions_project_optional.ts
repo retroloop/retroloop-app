@@ -1,7 +1,7 @@
 import type { Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * `sessions.project` becomes nullable (KC-0020): a project routinely holds
+ * `sessions.project` becomes nullable: a project routinely holds
  * several software packages, so it was the wrong unit, and nothing routes,
  * groups or filters by it any more. `cwd` is the identity anchor instead.
  *

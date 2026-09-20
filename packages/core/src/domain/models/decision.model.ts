@@ -2,7 +2,7 @@ import type { Involvement, Severity, SolutionLevel } from '#domain/models/record
 
 /**
  * `declined` is a state, never a deletion; `revise` is "rewrite this one and
- * bring it back" (retro 4 `r-verdict-revise`); `hold` is read-only history.
+ * bring it back" (`r-verdict-revise`); `hold` is read-only history.
  */
 export type DecisionState = 'pending' | 'approved' | 'declined' | 'revise' | 'hold'
 

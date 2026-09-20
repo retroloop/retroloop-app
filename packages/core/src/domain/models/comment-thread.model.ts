@@ -9,8 +9,8 @@ export type Comment = {
   readonly text: string
   readonly at: string
   /**
-   * The revision this comment was written against, captured at write time —
-   * the owner's *"comment show the rev number they are associated with"*.
+   * The revision this comment was written against, captured at write time, so
+   * that a comment can show the revision number it is associated with.
    *
    * `undefined` on every comment written before the column existed, and it stays
    * that way: human data is never rewritten, so nothing backfills it. A reader

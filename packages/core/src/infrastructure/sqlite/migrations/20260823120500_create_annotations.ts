@@ -2,7 +2,7 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
 
 /**
  * `note_id` is UNIQUE: the human's remark on an AI note is one-shot, never a
- * thread (KC-0015). The use case checks first and raises `ConflictError`; this
+ * thread. The use case checks first and raises `ConflictError`; this
  * index is what makes the rule true of the file itself.
  */
 export const migration: Migration = {

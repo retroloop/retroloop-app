@@ -6,8 +6,8 @@ import type { LabelDefinitionRepository } from '#domain/repositories/label-defin
 /**
  * The rules both definition kinds share, written once.
  *
- * Labels and attributes are **pure and independent primitives** — the owner's
- * ruling is explicit that composing them is the user's convention and never a
+ * Labels and attributes are **pure and independent primitives** — composing them
+ * is explicitly the user's convention and never a
  * system mechanism — and nothing here couples them. What this file holds is the
  * handful of rules that are the *same shape* on both sides because a definition
  * is a definition: how it is addressed, whether it is still offerable, and

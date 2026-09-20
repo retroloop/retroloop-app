@@ -1,8 +1,8 @@
 /**
- * The one number a record is known by across the whole ledger — the owner's ask:
- * *"I am noticing that records don't seem to have unique id. in each retro record
- * ids start from #1 which is weird"*, and *"obviously I will like the global
- * sequence rather than this retro prefix."*
+ * The one number a record is known by across the whole store. Without it a
+ * record has no unique id of its own: record ids start again from #1 in every
+ * retrospective, and what a reader wants is a global sequence rather than a
+ * per-retrospective prefix.
  *
  * A record already had two names and neither of them answers "which record is
  * this" on its own (`record.model.ts`): `rid` is minted per retrospective and
@@ -18,7 +18,7 @@
  *
  * **Internal addressing does not change.** Every write, link, testid and lookup
  * in the system still goes by `(retroId, rid)`; this is what a reader is shown
- * and what the owner cites back. `num` stays on every shape that had it — a
+ * and what a reader cites back. `num` stays on every shape that had it — a
  * record's position in its own retrospective is still real data, and the export
  * has carried it since v1 — it simply stops being the number on the page.
  */

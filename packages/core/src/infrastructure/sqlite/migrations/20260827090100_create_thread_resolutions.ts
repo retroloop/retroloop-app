@@ -2,11 +2,11 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
 
 /**
  * A thread can be marked resolved, and only the human may mark it
- * (`r-resolvable-comments`, owner-approved).
+ * (`r-resolvable-comments`).
  *
- * His words: *"only the human should be able to mark it, not the AI"*, and this
- * session: *"User and only the user should be able to mark comments as resolved;
- * Resolved comments should appear collapsed."* So this is a human field, and it
+ * Only the human marks a thread, never the AI: the user and only the user marks
+ * comments as resolved, and resolved comments appear collapsed. So this is a
+ * human field, and it
  * obeys every rule a human field obeys — which is why it is a table of versions
  * rather than a column on `comment_threads`: **unresolving is a new row, never an
  * edit**, exactly as a release is a new `holds` row and an undone verdict is a
@@ -21,9 +21,9 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * table: no schema version ever exists in which it is unprotected
  * (migrations.md).
  *
- * The grain is the **thread**, not the message. The panel the owner is asking
- * for shows top-level comments, and a top-level comment is a thread; resolving
- * one message of a conversation and leaving the rest is not a thing he asked
+ * The grain is the **thread**, not the message. The panel this serves shows
+ * top-level comments, and a top-level comment is a thread; resolving one message
+ * of a conversation and leaving the rest is not something anybody asked
  * for, and a grain nobody needs is a grain every reader has to fold away.
  */
 export const migration: Migration = {

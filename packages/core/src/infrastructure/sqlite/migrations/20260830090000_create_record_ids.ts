@@ -1,10 +1,10 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * Every record gets one number that means the same thing everywhere — the
- * owner's ask: *"I am noticing that records don't seem to have unique id. in
- * each retro record ids start from #1 which is weird"*, and *"obviously I will
- * like the global sequence rather than this retro prefix."*
+ * Every record gets one number that means the same thing everywhere. Without it
+ * a record has no unique id: record ids start again from #1 in every
+ * retrospective, and what a reader wants is a global sequence rather than a
+ * per-retrospective prefix.
  *
  * **Its own table, and the reason is physical.** A record has no row: it lives
  * inside `revisions.records`, which is one immutable JSON document
@@ -56,8 +56,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * number above every number already spoken for. Ordering on the revision a record
  * first appeared in as well would be a second way of saying the same thing, and a
  * term no fixture the product can produce is able to disagree with is a term no
- * test can catch being wrong. (Checked against the owner's store as well as
- * argued: all seven retrospectives, 98 records, both orders identical.)
+ * test can catch being wrong. (Checked against a real store as well as
+ * argued: every retrospective in it, both orders identical.)
  *
  * **Every revision, not only the latest.** The forward rule is "a rid the
  * retrospective has not seen yet gets the next number", so the backfill is that
@@ -66,9 +66,9 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * code. It matters in exactly one case: a record the AI withdrew in a later draft
  * (`create-revision.use-case.ts` allows it — density is per rid). Reading only
  * the latest revision would leave that record with no number at all, and
- * `records.list --revision 1` still shows it. On the owner's seven
- * retrospectives no record was ever withdrawn, so both readings assign the same
- * 98 numbers; this one also answers for the store where one was.
+ * `records.list --revision 1` still shows it. In a store where no record was
+ * ever withdrawn both readings assign the same numbers; this one also answers
+ * for the store where one was.
  */
 export const migration: Migration = {
   version: '20260830090000',

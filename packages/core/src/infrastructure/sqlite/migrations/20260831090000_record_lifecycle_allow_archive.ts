@@ -1,11 +1,10 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The lifecycle table learns the archive pair — the owner's session-9 ask:
- * *"maybe we can have a type called archived so it's just going to be archived
- * and the user should be able to unarchive. by default all others that have
- * approval, those are normal records so if a user wants, they can just archive
- * it."*
+ * The lifecycle table learns the archive pair: a record can be given the
+ * archived status and the user can unarchive it again. By default every other
+ * approved record is a normal record, which a user may simply archive whenever
+ * they want to.
  *
  * **The table's own header predicted this migration and got one detail wrong.**
  * `20260829093000_create_record_lifecycle.ts` argued for TEXT over a 0/1 column

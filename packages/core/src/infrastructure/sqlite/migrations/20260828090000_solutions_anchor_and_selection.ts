@@ -1,7 +1,7 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The schema learns the owner's multi-solution record: a comment can be filed on
+ * The schema learns the multi-solution record: a comment can be filed on
  * the solutions block, and a decision records which solution the human picked.
  *
  * Both are CHECK/column changes SQLite cannot make in place, so both are the
@@ -12,8 +12,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * Four things about it are deliberate.
  *
  * - **The section CHECK is widened, never narrowed.** `direction` and
- *   `footprint` stay in the list they have always been in. The owner's store
- *   carries two threads and four comments anchored to them, human data is
+ *   `footprint` stay in the list they have always been in. Existing stores
+ *   carry threads and comments anchored to them, human data is
  *   append-only, and the export requires a component for every thread — a
  *   migration that dropped either value would make those rows unwritable
  *   half-way through this rebuild and the documents already exported

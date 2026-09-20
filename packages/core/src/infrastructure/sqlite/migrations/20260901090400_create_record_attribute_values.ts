@@ -1,8 +1,8 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The value a record carries for one attribute — the owner's *"external ticket
- * ID"* on the record that went to GitHub.
+ * The value a record carries for one attribute — an "external ticket ID", say,
+ * on a record that went to GitHub.
  *
  * It is `record_labels` with a value where the bit is, and the two differences
  * are the two things attributes exist for:

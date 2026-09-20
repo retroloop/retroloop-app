@@ -16,12 +16,12 @@ export type RetrospectiveRepository = {
   listBySession(sessionId: number): Promise<readonly Retrospective[]>
   /**
    * The same, oldest first, across every session — what the dashboard's flat
-   * list is built from (KC-0020). Unfiltered on purpose: nothing groups or
+   * list is built from. Unfiltered on purpose: nothing groups or
    * routes by project. Oldest first because "Retro #n within its session" is
    * countable in one pass over that order; the dashboard reverses it.
    */
   listAll(): Promise<readonly Retrospective[]>
-  /** The session's one non-`finished` retrospective, if it has one (KC-0011). */
+  /** The session's one non-`finished` retrospective, if it has one. */
   findOpenBySession(sessionId: number): Promise<Retrospective | undefined>
   /** Most recently started, whatever its state. */
   findLatestBySession(sessionId: number): Promise<Retrospective | undefined>

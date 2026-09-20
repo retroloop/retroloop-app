@@ -1,10 +1,10 @@
 /**
  * A thread marked resolved, or reopened — the human's "I am done with this one"
- * (`r-resolvable-comments`, owner-approved).
+ * (`r-resolvable-comments`).
  *
- * The owner: *"only the human should be able to mark it, not the AI"*, and
- * *"User and only the user should be able to mark comments as resolved; Resolved
- * comments should appear collapsed."* So it is a human field with everything
+ * Only the human may mark a thread, never the AI: the user and only the user
+ * marks comments as resolved, and resolved comments appear collapsed. So it is
+ * a human field with everything
  * that implies: the AI is refused at the use case and the table's triggers back
  * that up at L1, and reopening writes a new version rather than editing the one
  * that stands.

@@ -2,11 +2,10 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
 
 /**
  * A record can be marked resolved after the review that filed it closed, and
- * reopened again — the owner's ask: *"even after a retro has been closed, we
- * should be able to attach metadata to issues so that we can manage their life
- * cycle. so once the AI fixes those issues, we should have a way to … show that
- * this issue was resolved, we should be able to specify a commit id or github
- * issue or something as reference."*
+ * reopened again. Even after a retrospective has been closed, metadata can be
+ * attached to its records so that their life cycle stays manageable: once the AI
+ * fixes an issue there is a way to show that the issue was resolved, and to
+ * specify a commit id, a GitHub issue or some other reference.
  *
  * Its own table rather than a column anywhere, and both alternatives were real:
  *
@@ -28,14 +27,14 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * 1. **`status` is TEXT, not the 0/1 column `holds.held` and
  *    `thread_resolutions.resolved` are.** Those two chose a bit because "there
  *    are exactly two values and neither will grow a third". That is not true
- *    here: labels and tags were deferred out of round one rather than ruled out,
+ *    here: labels and tags were deferred rather than ruled out,
  *    and a third position (`wontfix`, say) is a plausible next ask. A widened
  *    CHECK is a one-line migration; unpicking a boolean is a rebuild. The CHECK
  *    is widened and never narrowed, like every other enum in this schema.
  * 2. **`refs` is a JSON array**, with `json_valid` — the precedent is
  *    `revisions.records` (`20260823120200_create_revisions.ts`), which is the
  *    only other column in the schema holding a list. Free text, unvalidated
- *    beyond a non-empty trim, because the owner named three kinds of reference
+ *    beyond a non-empty trim, because there are several kinds of reference
  *    and a shape that knew which was which would refuse the fourth.
  * 3. **`actor` is a column**, which no other append-only table has. Every one of
  *    them is single-writer, so the author is implied by the table; this one is

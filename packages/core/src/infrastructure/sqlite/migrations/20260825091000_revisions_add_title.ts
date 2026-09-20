@@ -1,7 +1,7 @@
 import type { Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The retrospective's name, carried on the revision that proposed it (KC-0020).
+ * The retrospective's name, carried on the revision that proposed it.
  *
  * Additive, and nullable for the same reason it is optional in the schema: every
  * revision already filed has no title, and the reader falls back to

@@ -3,17 +3,17 @@
  *
  * **This is the whole of what applying a label means** — which record, which
  * definition, and whether it is on. There is no note here and no reference,
- * because the owner ruled the payload out by name: *"I don't like the idea of
- * label + notes; that is not a standard practice. Usually labels are just
- * labels."* A team that wants the detail beside the classification creates an
+ * because a payload is ruled out by name: label-plus-notes is not standard
+ * practice, and usually labels are just
+ * labels. A team that wants the detail beside the classification creates an
  * attribute and sets it, which is the second primitive existing for exactly that
  * reason.
  *
- * **Human-only this session.** Applying a label and setting an attribute value
+ * **Human-only, for now.** Applying a label and setting an attribute value
  * are the human's, regardless of the AI-config-write toggle — that toggle
  * governs the *definitions* (`setting.model.ts`), and whether the AI may ever
- * suggest a label on its own draft is one of the opens the owner's ruling did
- * not reach. So this is a human field with everything that implies: the use case
+ * suggest a label on its own draft is still open. So this is a human field with
+ * everything that implies: the use case
  * refuses the `ai` actor before it reads anything, the table's append-only
  * triggers back that up at L1, and there is **no `actor` column** because the
  * table is single-writer and the author is implied by it.
