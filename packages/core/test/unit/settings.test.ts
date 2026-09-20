@@ -46,10 +46,10 @@ describe('the AI-config-write toggle', () => {
 
   /**
    * **The history is the feature here**, which is why this is a versioned table
-   * rather than a column. "It is off now" is a weaker answer to *"the user can
-   * be certain"* than "it has been off since the 27th, and here is every time it
-   * moved" — and a column would have thrown the second one away on the first
-   * change.
+   * rather than a column. "It is off now" is a weaker answer to the certainty
+   * this switch promises than "it has been off since the 27th, and here is
+   * every time it moved" — and a column would have thrown the second one away
+   * on the first change.
    *
    * Re-asserting what already stands still writes a row, unlike almost every
    * other act in this product: the human reaffirming a permission is a thing

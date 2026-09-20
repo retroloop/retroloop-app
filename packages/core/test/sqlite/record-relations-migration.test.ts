@@ -24,9 +24,8 @@ const MIGRATION = MIGRATIONS[INDEX]
  * sequence per **ordered** pair, and words that are never null.
  *
  * The seeded store is the shape the feature exists for — two retrospectives, one
- * of them closed sessions ago — because the relation this product was asked for
- * is the one that crosses them: *"so that AI can easily find past records and
- * build holistic solutions."*
+ * of them closed long ago — because the relation exists for the case that
+ * crosses them: the AI finding past records and building holistic solutions.
  */
 function storeBeforeTheMigration(): Database {
   const db = new Database(join(createTempStage(), 'retro.db'), { create: true })
@@ -138,8 +137,8 @@ describe('create_record_relations', () => {
   })
 
   /**
-   * **The words are half the act** — *"each relation carries how-they-relate
-   * words"* — so the column is `NOT NULL` rather than offered. The use case's
+   * **The words are half the act** — each relation carries how-they-relate
+   * words — so the column is `NOT NULL` rather than offered. The use case's
    * schema refuses an empty string above this; what L1 refuses is the absence.
    */
   test('refuses a relation with no words, and an actor nobody defined', () => {
@@ -180,8 +179,9 @@ describe('create_record_relations', () => {
 
   /**
    * One index per side, because the read this table exists for asks about both
-   * columns in one `OR` — *"the relation reads from both sides"* — and a single
-   * composite index would serve only the half that leads with its first column.
+   * columns in one `OR`, because the relation reads from both sides — and a
+   * single composite index would serve only the half that leads with its first
+   * column.
    */
   test('indexes both sides, and ships its triggers with the table', () => {
     const db = migrated()

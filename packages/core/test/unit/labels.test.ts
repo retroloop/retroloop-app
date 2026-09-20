@@ -26,10 +26,10 @@ describe('labels', () => {
 
   describe('the vocabulary', () => {
     /**
-     * **The product ships none.** *"To keep it flexible we will not hardcode any
-     * labels or attributes"* — so an untouched store answers with an empty list,
-     * and `migrated` is not there, because it is the example he used rather than
-     * a value this product knows about.
+     * **The product ships none.** No labels or attributes are hardcoded, so
+     * that the vocabulary stays flexible — an untouched store answers with an
+     * empty list, and `migrated` is not there, because it is only an example
+     * rather than a value this product knows about.
      */
     test('is empty until somebody creates one, and `migrated` is not special', async () => {
       expect(await names()).toEqual([])

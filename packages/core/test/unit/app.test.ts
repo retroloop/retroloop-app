@@ -33,8 +33,7 @@ describe('createApp', () => {
     expect(useCases.map(([name]) => name)).toEqual([
       // The attribute vocabulary and the values records carry from it. Five
       // acts and a read, exactly as labels have — the two primitives are pure
-      // and independent, so neither list is folded into the other
-      // (`labels-attributes-external-lifecycle.md`).
+      // and independent, so neither list is folded into the other.
       'attributes.define',
       'attributes.list',
       'attributes.rename',

@@ -82,9 +82,9 @@ const INVARIANTS: readonly Invariant[] = [
   },
   /**
    * The human's verdict on a *conversation* (`r-resolvable-comments`). The AI
-   * may answer a thread — comments are the one write both actors make — and it
-   * may never declare one dealt with: *"only the human should be able to mark
-   * it, not the AI."*
+   * may answer a thread — comments are the one write both actors make — and
+   * it may never declare one dealt with: only the human may mark a comment
+   * resolved, never the AI.
    */
   {
     name: 'thread resolve',

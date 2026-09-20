@@ -107,11 +107,11 @@ export function someSolutions(overrides: readonly Partial<Solution>[] = []): Sol
  *
  * It is **not** a builder over `aRecordInput`: nothing may author this shape any
  * more (the write path takes solutions only), so the only way one exists is as a
- * JSON blob an earlier binary wrote. This is that blob, and its fields are
- * copied verbatim from record 11 of a real legacy export
- * (`~/.retroloop/retros/_legacy-exports/retro-1.json`, `r-falsifiability-paid`) so the
- * upgrade is tested against a document that actually exists rather than against
- * a shape a test invented.
+ * JSON blob an earlier binary wrote. This is that blob, modeled on record 11 of
+ * a real legacy export (`~/.retroloop/retros/_legacy-exports/retro-1.json`,
+ * `r-falsifiability-paid`) so the upgrade is tested against a document that
+ * actually existed rather than against a shape a test invented; its structure
+ * and values are unchanged, its prose reworded for this public copy.
  *
  * `defaults` is not in the export — the export carries the human's decided
  * values, not the AI's proposals — so those three are the decided ones, which is
@@ -134,7 +134,7 @@ export function aLegacyRecord(overrides: Partial<LegacyRecord> = {}): LegacyReco
         'Why did written tests miss them? Both bugs lived in paths the tests never exercised — one masked by an optimization, one dead code.',
         'Why did plants find them? A plant tests the TESTS: it asks whether the net can catch, not whether the fish already in it are dead.',
       ],
-      root: 'Example suites verify anticipated behavior; only falsification probes verify the verification itself — and that step existed only as per-spawn instruction.',
+      root: 'Example suites verify anticipated behavior; only falsification probes verify the verification itself — and that step was never written down as a rule.',
     },
     // No diagnostic data, because no record filed then carried any — the same
     // reason this blob has no `solutions`. Written out rather than left off, so

@@ -138,8 +138,7 @@ describe('attributes', () => {
      * **Retire is reversible here too**, and the type is what makes it safe: an
      * attribute comes back offering the type it always had, so every value
      * stored under it stays as true as it was and there is still no path that
-     * changes one (his selected solution names both kinds — *"un-retire for
-     * BOTH definition kinds"*).
+     * changes one (the chosen solution covers both definition kinds).
      */
     test('un-retires the same row, keeping its type, and refuses a second un-retire', async () => {
       const defined = await harness.app.attributes.define.execute({

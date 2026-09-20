@@ -15,16 +15,16 @@ import { aLegacyRecord } from '../support/fixtures'
  * in production would have silently un-decided itself on
  * the first read after the upgrade.
  *
- * `LEGACY_CONTENT_HASH` was computed against the code as it stood **before**
- * the change, over the fixture copied verbatim from retro-1's export. It is a
- * constant here rather than a comparison against a rebuilt record on purpose:
- * a test that hashes twice with the same code passes however wrong that code
- * is, and this one has to fail if the bytes move.
+ * `LEGACY_CONTENT_HASH` is pinned against the encoding in force, over the
+ * `aLegacyRecord()` fixture below. It is a constant here rather than a
+ * comparison against a rebuilt record on purpose: a test that hashes twice
+ * with the same code passes however wrong that code is, and this one has to
+ * fail if `recordContent()` changes what a legacy record hashes to.
  */
-const LEGACY_CONTENT_HASH = '74e4bd9c2e828e054c9d858cf7cfc39a6c6b7bb1225984b8c717a7d69f893d9b'
+const LEGACY_CONTENT_HASH = 'b2a306e0419b2347760ece5974276e45968104d952bf5c2f45b962fe14c1498e'
 
 describe('a record filed before solutions existed', () => {
-  test('hashes to the byte-identical content hash it always did', () => {
+  test('hashes to its pinned content hash', () => {
     expect(hashRecordContent(aLegacyRecord())).toBe(LEGACY_CONTENT_HASH)
   })
 

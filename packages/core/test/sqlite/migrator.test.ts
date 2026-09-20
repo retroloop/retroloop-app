@@ -144,11 +144,10 @@ describe('migrator', () => {
   })
 
   /**
-   * `20260825120000_create_holds` is the only migration that moves data, and the
-   * data it moves does not exist in the store used in production: every one of its 35
-   * decisions is `approved`, as are the 13 in its pre-batch backup, and none of
-   * the three exports contains a `hold`. A step nothing exercises is a step
-   * nobody has seen work, so the rows are seeded by hand here.
+   * `20260825120000_create_holds` is the only migration that moves data, and in
+   * practice there is no data for it to move: no store this product has written
+   * holds a `hold` verdict. A step nothing exercises is a step nobody has seen
+   * work, so the rows are seeded by hand here.
    *
    * What it must do (`r-hold-semantics`): a record whose **latest** verdict was
    * `hold` reads as held under the new model, carrying the reviewer's note as

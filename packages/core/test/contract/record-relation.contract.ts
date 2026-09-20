@@ -10,7 +10,7 @@ import { type StoreFactory, seedRetrospective, seedSession } from './store.contr
  * adapter could be quietly wrong while passing every type check:
  *
  * 1. **`listForRecord` reads both columns.** The row is directed as authored and
- *    is never mirrored, so *"the relation reads from both sides"* is true only
+ *    is never mirrored, so the relation reading from both sides is true only
  *    because this read asks about `from_id` **or** `to_id`. An adapter that read
  *    one column would answer correctly on the record the relation was authored
  *    from and silently show nothing on the other.

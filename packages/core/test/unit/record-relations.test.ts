@@ -85,10 +85,10 @@ describe('record relations', () => {
     })
 
     /**
-     * **The first clause of the ask.** Every other append-only table in the store
+     * **The first clause of the rule.** Every other append-only table in the store
      * is single-writer; this one and `record_lifecycle` are not, and unlike the
      * lifecycle there is no per-act exception here — both actors may take both
-     * acts, because he gave them both in one sentence.
+     * acts, because relating and un-relating are one capability rather than two.
      */
     test('both actors may relate, and the row records which', async () => {
       const byAi = await relate({ actor: 'ai', how: 'supersedes' })
@@ -224,7 +224,7 @@ describe('record relations', () => {
       await expect(relate({ fromId: ids[1], toId: ids[0] })).rejects.toBeInstanceOf(NotFoundError)
     })
 
-    /** *"Each relation carries how-they-relate words"* — required, not offered. */
+    /** Each relation carries how-they-relate words — required, not offered. */
     test('a relation with no words, or with empty ones', async () => {
       await expect(
         harness.app.records.relate.execute({
