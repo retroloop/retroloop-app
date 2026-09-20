@@ -41,11 +41,11 @@ export type Repositories = {
   readonly finishMessages: FinishMessageRepository
   /**
    * The hold rows a store already carries. Hold was a lifecycle flag beside the
-   * verdict for a time (`r-hold-semantics`) and `r-remove-hold` took the feature
-   * away again; no use case reads or writes one now. The repository
-   * stays for the reason `requests` does — human data is append-only, the table
-   * is never dropped, and append-only is a property of this layer rather than of
-   * whoever happens to call it.
+   * verdict for a time (`r-hold-semantics`) and `r-remove-hold` removed the
+   * feature; no use case reads or writes one now. The repository stays for the
+   * reason `requests` does — human data is append-only, the table is never
+   * dropped, and append-only is a property of this layer rather than of whoever
+   * happens to call it.
    */
   readonly holds: HoldRepository
   /**
@@ -73,10 +73,10 @@ export type Repositories = {
   /**
    * Which records belong together, and how: both actors can relate records,
    * each relation carries how-they-relate words, and the relation reads from
-   * both sides. The **second** append-only table both
-   * actors write, and the only one in this store addressed by global id rather
-   * than by `(retroId, rid)`: a relation names two records, and the pair that
-   * identifies one of them is not a foreign key anything can hold twice
+   * both sides. The **second** append-only table both actors write, and the
+   * only one in this store addressed by global id rather than by `(retroId,
+   * rid)`: a relation names two records, and the pair that identifies one of
+   * them is not a foreign key anything can hold twice
    * (`record-relation.model.ts`).
    */
   readonly recordRelations: RecordRelationRepository

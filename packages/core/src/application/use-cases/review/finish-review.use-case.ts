@@ -66,10 +66,10 @@ export type FinishReviewOutput = {
  * round can be closed, the page offers a text box where the human enters their
  * final message before closing, and that message is delivered separately from
  * the comments. It is optional, it is written in the same unit of work as the
- * event, and a blank one
- * writes no row at all. An absorbed press carries no message either, for the
- * reason it carries no event: the round was already closed, and a second word on
- * a round that already has one would be an edit by another name.
+ * event, and a blank one writes no row at all. An absorbed press carries no
+ * message either, for the reason it carries no event: the round was already
+ * closed, and a second word on a round that already has one would be an edit by
+ * another name.
  */
 export class FinishReviewUseCase {
   constructor(

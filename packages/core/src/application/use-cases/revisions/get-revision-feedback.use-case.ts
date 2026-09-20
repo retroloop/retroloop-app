@@ -74,11 +74,11 @@ export type GetRevisionFeedbackOutput = {
  * round, which is the one thing here that is neither a verdict nor a comment: it
  * travels separately from both, and the drafting step reads it alongside them.
  *
- * `held` and `holdNote` rode here for one session and are gone
- * (`r-remove-hold`). "Do not pick this up without me" is `involvement`, which is
- * part of the verdict and already on every row. `requests` is gone for the
- * matching reason (`r-remove-requests`): the asks arrive as review-level
- * comments, which are in `threads`.
+ * `held` and `holdNote` rode here for one session and are gone (`r-remove-hold`).
+ * "Do not pick this up without me" is `involvement`, which is part of the
+ * verdict and already on every row. `requests` is gone for the matching reason
+ * (`r-remove-requests`): the asks arrive as review-level comments, which are in
+ * `threads`.
  */
 export class GetRevisionFeedbackUseCase {
   constructor(private readonly store: Store) {}

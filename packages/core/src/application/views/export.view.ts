@@ -18,10 +18,10 @@ import type { Session } from '#domain/models/session.model'
 import { effectiveDecision } from '#domain/services/record-state.service'
 
 /**
- * `retro.export.v1` — **the public contract**
- * (`docs/export/export.v1.schema.json`). User-written import scripts read this
- * shape; breaking it is a major version, so the types here are written to match
- * the schema exactly rather than to be convenient.
+ * `retro.export.v1` — **the public contract** (`docs/export/export.v1.schema.json`).
+ * User-written import scripts read this shape; breaking it is a major version,
+ * so the types here are written to match the schema exactly rather than to be
+ * convenient.
  *
  * Three places where the schema is stricter than the domain, and the difference
  * is deliberate:
@@ -147,9 +147,9 @@ export type ExportRecord = {
    * They are optional here, and optional in the published schema, for the reason
    * `held` and `holdNote` are: this record object is `additionalProperties:
    * false`, so a key removed from v1 would invalidate every document written
-   * while it existed — every one of them. The builder
-   * stops emitting them; the contract goes on admitting them. Narrow the write
-   * path, never the read path (data-model.md §Hold).
+   * while it existed. The builder stops emitting them; the contract goes on
+   * admitting them. Narrow the write path, never the read path (data-model.md
+   * §Hold).
    */
   readonly agreedDirection?: string
   readonly footprint?: string
@@ -199,8 +199,9 @@ export type ExportRetrospective = {
   readonly revisions: number
   /**
    * One entry per round the human left a word on, ascending by revision; `[]`
-   * when none was left. Always emitted, and optional in the schema, so documents written
-   * before the field existed stay valid (the `thread.resolved` precedent).
+   * when none was left. Always emitted, and optional in the schema, so
+   * documents written before the field existed stay valid (the `thread.resolved`
+   * precedent).
    */
   readonly finishMessages: readonly ExportFinishMessage[]
   /**

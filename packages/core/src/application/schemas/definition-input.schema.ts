@@ -32,9 +32,8 @@ const NAME_MAX = 40
  * That is the whole of it. There is no character class, no slug rule and no
  * reserved-word list: the design calls for very fixed types and few configs, so
  * that little validation is needed, and a label called `needs 🍕` is a label the
- * user is entitled to. Uniqueness is not here either
- * — it needs to see every other definition, which a field schema cannot
- * (`definition.service.ts`).
+ * user is entitled to. Uniqueness is not here either — it needs to see every
+ * other definition, which a field schema cannot (`definition.service.ts`).
  */
 export const definitionNameSchema = z
   .string()

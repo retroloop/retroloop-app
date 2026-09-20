@@ -111,12 +111,11 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       /**
        * Two records said to belong together, in the words of whoever relates
        * them — or the relation taken off. **The second mutating use case open
-       * to both actors on every act**: the AI
-       * relates the record it just filed to the one it is a repeat of, the human
-       * relates two they can see, and the row records which. It is also the
-       * fourth write the finish lock deliberately does not guard, because
-       * relating a closed retrospective's record to a new one is the feature
-       * rather than an edge of it.
+       * to both actors on every act**: the AI relates the record it just filed
+       * to the one it is a repeat of, the human relates two they can see, and
+       * the row records which. It is also the fourth write the finish lock
+       * deliberately does not guard, because relating a closed retrospective's
+       * record to a new one is the feature rather than an edge of it.
        */
       relate: new RelateRecordsUseCase(store, clock),
       /**
@@ -149,17 +148,17 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
      *
      * **Pure and independent**, which is why they are two groups rather than
      * one `definitions`: labels classify, attributes carry data, and
-     * composition is the *user's* convention, never a system mechanism.
-     * Nothing on either side reads the other.
+     * composition is the *user's* convention, never a system mechanism. Nothing
+     * on either side reads the other.
      *
      * The four definition acts take **either actor**, and the AI's half is
      * gated by the settings toggle at the store boundary
-     * (`config-write.service.ts`). **`unretire` is the fourth**: retire was one
-     * press with no way back, and pairing it with an inverse makes a mis-press
-     * a two-press round trip rather than a burned word. `apply` and `set` are
-     * **human-only for now** whatever the toggle says — the toggle governs the
-     * config, and whether the AI may mark up its own draft records is still
-     * open.
+     * (`config-write.service.ts`). **`unretire` is the fourth**
+     * (`r-retire-burns-a-word`): retire was one press with no way back, and
+     * pairing it with an inverse makes a mis-press a two-press round trip
+     * rather than a burned word. `apply` and `set` are **human-only for now**
+     * whatever the toggle says — the toggle governs the config, and whether
+     * the AI may mark up its own draft records is still open.
      */
     labels: {
       define: new DefineLabelUseCase(store, clock),
@@ -195,10 +194,11 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       setAiConfigWrite: new SetAiConfigWriteUseCase(store, clock),
     },
     /**
-     * The one channel for an ask. Requests were a second one and they were
-     * removed: comments at the review level carry the same weight, so there are
-     * no request use cases here to reach for, and no read path either. The
-     * table and its rows stay in the store, the way the `holds` table does.
+     * The one channel for an ask (`r-remove-requests`). Requests were a second
+     * one and they were removed: comments at the review level carry the same
+     * weight, so there are no request use cases here to reach for, and no read
+     * path either. The table and its rows stay in the store, the way the
+     * `holds` table does.
      */
     threads: {
       addComment: new AddCommentUseCase(store, clock),
@@ -223,9 +223,9 @@ export function createApp(store: Store, dependencies: AppDependencies = {}) {
       finish: new FinishReviewUseCase(store, clock),
       /**
        * The AI's half of the loop, and the only act on this list it may take:
-       * the human's Finish closes the human side of the round, and this is what
-       * turns "nothing left to address" into a finished retrospective, once,
-       * explicitly, with an event.
+       * the human's Finish closes the human side of the round
+       * (`r-one-finish-button`), and this is what turns "nothing left to
+       * address" into a finished retrospective, once, explicitly, with an event.
        */
       close: new CloseReviewUseCase(store, clock),
     },

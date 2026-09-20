@@ -139,11 +139,11 @@ function checkIdentityStability(
 /**
  * The AI submits a draft (cli.md `revision create`).
  *
- * Lifecycle is implicit: the revision joins the session's one
- * non-`finished` retrospective, or starts a new one when the last is finished.
- * The first revision moves the retrospective from `open` to `reviewing` (D3).
- * Everything — the new retrospective, the revision, the state change and both
- * events — commits as one unit of work, so a rejected draft leaves no orphan
+ * Lifecycle is implicit: the revision joins the session's one non-`finished`
+ * retrospective, or starts a new one when the last is finished. The first
+ * revision moves the retrospective from `open` to `reviewing` (D3). Everything
+ * — the new retrospective, the revision, the state change and both events —
+ * commits as one unit of work, so a rejected draft leaves no orphan
  * retrospective behind.
  */
 export class CreateRevisionUseCase {

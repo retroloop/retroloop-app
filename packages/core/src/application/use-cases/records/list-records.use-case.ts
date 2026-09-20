@@ -55,12 +55,12 @@ export type ListRecordsOutput = {
  * gives for refusing `--revision` at all.
  *
  * **And what each record was said to have to do with other records**, for the
- * projection gap's reason a second time. A relation is
- * written through the same CLI command a resolve is, and checked the same way —
- * the AI relates a batch and then lists the records to see the writes landed. A
- * listing silent about them would read exactly like a store that refused every
- * one. Relations are not scoped to the revision either, and for a stronger
- * version of the same reason: a relation is not scoped to a *retrospective*.
+ * projection gap's reason a second time. A relation is written through the same
+ * CLI command a resolve is, and checked the same way — the AI relates a batch
+ * and then lists the records to see the writes landed. A listing silent about
+ * them would read exactly like a store that refused every one. Relations are
+ * not scoped to the revision either, and for a stronger version of the same
+ * reason: a relation is not scoped to a *retrospective*.
  */
 export class ListRecordsUseCase {
   constructor(private readonly store: Store) {}
@@ -137,9 +137,9 @@ export class ListRecordsUseCase {
         )
       })
       // `state` filters the verdict, which is the only axis a record has since
-      // `r-remove-hold`. `hold` is still one of the values it takes: a
-      // decision recorded before `r-hold-semantics` can carry one, and human
-      // data is never rewritten.
+      // `r-remove-hold`. `hold` is still one of the values it takes: a decision
+      // recorded before `r-hold-semantics` can carry one, and human data is
+      // never rewritten.
       .filter((view) => input.state === undefined || view.decision.state === input.state)
 
     return { retroId: retrospective.id, revisionN: revision.n, records }

@@ -115,12 +115,12 @@ export class SetRecordLifecycleUseCase {
     /**
      * **The actor rule, per act, above everything else.** Archiving and
      * unarchiving are the human's — the user archives a record if they want to,
-     * and unarchives it again — and this is the guard
-     * `ResolveThreadUseCase` opens with, applied to two of this use case's four
-     * acts rather than to all of them. It sits here, above the transaction, for
-     * the reason that one sits above its first read: an actor who may not do a
-     * thing is told so before the store is asked anything about it, and no
-     * transport can route around it by sending a different payload.
+     * and unarchives it again — and this is the guard `ResolveThreadUseCase`
+     * opens with, applied to two of this use case's four acts rather than to
+     * all of them. It sits here, above the transaction, for the reason that one
+     * sits above its first read: an actor who may not do a thing is told so
+     * before the store is asked anything about it, and no transport can route
+     * around it by sending a different payload.
      */
     if (lifecycleActIsHumanOnly(entry.status)) {
       ForbiddenActorError.assert('human', input.actor, `marking a record ${entry.status}`)
