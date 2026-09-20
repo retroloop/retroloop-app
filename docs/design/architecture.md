@@ -63,11 +63,11 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
 - **Two actors:** `ai` and `human`. The CLI always acts as `ai`; the browser acts as `human`.
 - **There are no human-decision commands in the CLI.** Approve / decline / revise
   / finish / human comments / human notes / annotations exist only in the UI.
-  `retroloop review close` is not one of them: it
-  decides nothing, it refuses unless the human has already finished *that*
-  revision with every record decided and none asking to be rewritten, and it is
-  closed to the `human` actor — so the browser cannot reach it even if a
-  procedure were added by mistake.
+  `retroloop review close` is not one of them: it decides nothing, it refuses
+  unless the human has already finished *that* revision with every record
+  decided and none asking to be rewritten, and it is closed to the `human`
+  actor — so the browser cannot reach it even if a procedure were added by
+  mistake.
 - **Enforcement lives in the use cases** (L3): every use case takes an `Actor`; human-owned writes throw `ForbiddenActorError` for `ai`. It holds for every adapter because it is below all of them.
 - **Backstop at L1:** human-authored tables (comments, notes, annotations, decisions, holds) are **append-only with SQLite triggers rejecting `UPDATE`/`DELETE`** — the guarantee holds even against a rogue writer opening the DB directly.
 - **`ReviewFinished` closes every human write, with no exceptions.** `holds.set` and `holds.clear` were reachable on a finished retrospective for a time and went with the hold feature when it was removed. One function, `refuseWhenFinished`, is what every human write calls, and `review.test.ts` enumerates them.

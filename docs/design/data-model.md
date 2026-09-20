@@ -2,9 +2,9 @@
 
 Integer primary keys everywhere. Records use a stable slug `rid` plus a
 **position** `num` inside their retrospective — minted once, never renumbered,
-never reused — and a **global** `id` from one sequence over the
-whole ledger, which is the number a reader is shown (§Record ids). Actor
-enforcement and append-only guarantees per `architecture.md` §Actor model.
+never reused — and a **global** `id` from one sequence over the whole ledger,
+which is the number a reader is shown (§Record ids). Actor enforcement and
+append-only guarantees per `architecture.md` §Actor model.
 
 State machines — the retrospective's, the record's two, the thread's — are in
 `lifecycle.md`, one per entity. This file is where the data lives; that one is
@@ -63,23 +63,22 @@ derived per read and never written (`lifecycle.md` §submitted).
 - `open → reviewing`: first `revision create` of this retrospective.
 - `reviewing → reviewing`: any further revisions. **`ReviewFinished` does not
   change state either** — it is the human's one button saying *the human's side
-  of this round is closed*, and it unblocks `review wait`. (`ChangesRequested` did the
-  same job for the second button; nothing appends one since that button was
-  removed.)
+  of this round is closed*, and it unblocks `review wait`. (`ChangesRequested`
+  did the same job for the second button; nothing appends one since that button
+  was removed.)
   **Finish gate:** refused while any record of the latest revision is `pending`
   (every record must be `approved | declined | revise`).
   **Once per round:** a second press for the same revision is absorbed — no
-  second event, no error, so a mis-press costs one press.
+  second event, no error.
   **The round's final message:** the press may carry one — see §Finish message.
 - `reviewing → finished`: **`ReviewClosed` — the AI's explicit close to export**,
   terminal. It is the AI's step because the choice it encodes is readable from
   what the human wrote, not from which button was pressed: there is one button,
   the human finishes the review, and the AI then reads what was requested and
   either sends a new revision or confirms there are no new requests. Three
-  mechanical guards, no judgment:
-  a `ReviewFinished` for the **latest** revision must exist, the finish gate must
-  still hold, and no record may carry `revise` (that ask must be addressed in the
-  next revision).
+  mechanical guards, no judgment: a `ReviewFinished` for the **latest** revision
+  must exist, the finish gate must still hold, and no record may carry `revise`
+  (that ask must be addressed in the next revision).
 - **Between the finish and the close the human may still write** — change a
   verdict, undo one, add a comment. That is why the close re-asks the gate
   instead of trusting the answer the finish got.
@@ -113,9 +112,9 @@ gives an optimistic check (`ConflictError` → exit 4).
 **The retrospective's title is the latest revision's title** (null when the
 latest proposed none). A title rides on the draft, so renaming a retro means
 redrafting it — the same rule everything else in a revision obeys. It is
-AI-authored and never a bare number; readers fall back to
-"Retro #n — <cwd basename>". `retros.get`, `retros.list` and the export carry
-it; the dashboard rows and the review header render it.
+AI-authored and never a bare number; readers fall back to "Retro #n — <cwd
+basename>". `retros.get`, `retros.list` and the export carry it; the dashboard
+rows and the review header render it.
 
 ## Record (embedded in a revision)
 
@@ -189,9 +188,9 @@ record no longer carries one agreed direction and one footprint; it carries a
 Three rules are **mechanical**, not instructed, because each is load-bearing at
 the other end: one to three entries; **sorted ascending by `level`**, always
 from the lowest-level solution to the highest — the order is the identity, since
-the human's pick is stored as a position; and
-**exactly one `recommended`**, which is what a reviewer who touches nothing is
-taken to have accepted. Ties keep the order given.
+the human's pick is stored as a position; and **exactly one `recommended`**,
+which is what a reviewer who touches nothing is taken to have accepted. Ties
+keep the order given.
 
 **The array is inside the content hash**, unlike every other AI proposal. A level
 is self-describing and survives the AI re-proposing a different one; an index
@@ -274,13 +273,13 @@ definition:
 | `5` | Level 5 — open-ended: emergent, autonomous, or not cleanly undoable |
 
 **Read-only historical values.** `none`, `upstream` and `undecided` were in the
-enum until it was narrowed to 1–5, and stores written before that hold them.
-They can no longer be **chosen by a human or proposed by a draft** — both write
-paths take the 1–5 input enum and reject them — and they are **never rewritten**,
-because human data is append-only. Every read path keeps them: the wire views,
-`retro.export.v1`, record history, the decisions table's own CHECK, and the
-review page's read-only rendering, which shows them under the labels they were
-chosen with:
+enum until it was narrowed to 1–5; retro 1 still holds two of them
+(r5 `upstream`, r10 `none`). They can no longer be **chosen by a human or
+proposed by a draft** — both write paths take the 1–5 input enum and reject
+them — and they are **never rewritten**, because human data is append-only.
+Every read path keeps them: the wire views, `retro.export.v1`, record history,
+the decisions table's own CHECK, and the review page's read-only rendering,
+which shows them under the labels they were chosen with:
 
 | value | option label (read-only) |
 |---|---|
@@ -303,8 +302,8 @@ one of the five.
 | `undecided` | Undecided — the solving side asks first |
 
 The explanatory half is never dropped for brevity — a two-line wrap in a
-dropdown is acceptable. A UI may subset the values,
-never contradict labels or meanings.
+dropdown is acceptable. A UI may subset the values, never contradict labels or
+meanings.
 
 ## Decision — human-only, versioned, append-only
 
@@ -322,21 +321,21 @@ history is never lost. Written only by actor `human`, only via the UI;
 | `revisionN` | int | the revision whose content this decision was made against |
 
 **The third verdict, `revise`.** Approve, decline and revise are the three
-verdicts, and each of them moves a record out of `pending`.
-It is decided as far as the finish gate is concerned, and an instruction as far
-as the AI is concerned: a record carrying one **must be addressed in the next
-revision**, and `ReviewClosed` refuses while one stands. A revision that rewrites
-the record sends it back to `pending` by the carry-over rule below, so the human
-decides it again on the content that was asked for.
+verdicts, and each of them moves a record out of `pending`. It is decided as far
+as the finish gate is concerned, and an instruction as far as the AI is
+concerned: a record carrying one **must be addressed in the next revision**, and
+`ReviewClosed` refuses while one stands. A revision that rewrites the record
+sends it back to `pending` by the carry-over rule below, so the human decides it
+again on the content that was asked for.
 
 **Undo is an append.** Re-clicking the verdict a record already carries writes a
-new `pending` version, so a second press on the same button undoes it. Nothing is
-mutated and nothing is deleted: the verdict that was undone stays in the record's
-history, which is the same rule every other human write obeys.
+new `pending` version, so a second press on the same button undoes it. Nothing
+is mutated and nothing is deleted: the verdict that was undone stays in the
+record's history, which is the same rule every other human write obeys.
 
-**Carry-over (carry-on-unchanged):** when revision n+1 lands, a
-record whose narrative content is byte-identical (canonical-JSON hash) to the
-version its latest decision was made against keeps that decision (UI shows
+**Carry-over (carry-on-unchanged):** when revision n+1 lands, a record whose
+narrative content is byte-identical (canonical-JSON hash) to the version its
+latest decision was made against keeps that decision (UI shows
 "decided on rev k"); any content change resets the record's effective state to
 `pending` (no new row — pending is the absence of a decision for the current
 content). Explicit approve only is preserved: the approval was explicit, for
@@ -460,10 +459,9 @@ alternative.
 **Un-retire, on the other hand, exists.** The vocabulary's first scope was
 create, rename and retire, which left retire costing one press with no confirm,
 no undo, and a name the store never frees — so a mis-press burned a vocabulary
-word forever.
-Clearing the nullable timestamp is the whole of the write; the row, the id and
-the name are untouched,
-so nothing that was applied under it is disturbed either way.
+word forever. Clearing the nullable timestamp is the whole of the write; the
+row, the id and the name are untouched, so nothing that was applied under it is
+disturbed either way.
 
 ### What a record wears and carries — human-only, versioned, append-only
 
@@ -479,19 +477,18 @@ because a rid is minted per retrospective; and the version sequence is dense
 | `applied` | `true` puts a label on, `false` takes it off. Removing is a row, never a delete |
 | `value` | the text set, or **absent** where the act was clearing it — a different fact from never having carried one |
 
-**Human-only**, whatever the AI-config-write toggle says: that
-toggle governs the *definitions*, and whether the AI may ever suggest a label on
-its own draft is still open. Neither table has an
-`actor` column, because both are single-writer — the same rule every other
-human-authored table here follows.
+**Human-only**, whatever the AI-config-write toggle says: that toggle governs
+the *definitions*, and whether the AI may ever suggest a label on its own draft
+is still open. Neither table has an `actor` column, because both are
+single-writer — the same rule every other human-authored table here follows.
 
 **Both are writable on a finished retrospective**, joining `records.setLifecycle`
 and `records.relate` as the exceptions `refuseWhenFinished` deliberately does not
 guard. That serves a second usage archetype, beside the lifecycle axis's: on
 completion of a retrospective a team may want to move everything into their
-tracker right away, putting a `migrated` label on each record as it goes —
-which happens after the close by construction. None of the four endangers the lock's purpose, because none is in
-the export.
+tracker right away, putting a `migrated` label on each record as it goes — which
+happens after the close by construction. None of the four endangers the lock's
+purpose, because none is in the export.
 
 **Not exported**, like the lifecycle axis and for the same reason: a document
 taken from a finished retrospective cannot change behind its reader. Carrying
@@ -548,9 +545,8 @@ or a different pair. Nothing here is a scale.
 
 **Both actors, on both acts.** Unlike the lifecycle, there is no per-act
 exception: both acts belong to both actors. The AI writes in its own process
-through `retro record relate`; the human writes from
-the browser through `records.relate`, whose context actor is `human`
-unconditionally.
+through `retro record relate`; the human writes from the browser through
+`records.relate`, whose context actor is `human` unconditionally.
 
 **Writable on a finished retrospective** — the fourth and most
 closed-retro-shaped exception `refuseWhenFinished` does not guard, since the far
@@ -573,9 +569,9 @@ append-only triggers. It answers one question: **is somebody working on this
 record right now?**
 
 It exists for the solving side. `retroloop record queue` is every approved,
-unresolved record of every finished retrospective, and two agents reading that queue a
-minute apart must not both pick up the same record — so the first one writes a
-claim and the second is refused with a conflict.
+unresolved record of every finished retrospective, and two agents reading that
+queue a minute apart must not both pick up the same record — so the first one
+writes a claim and the second is refused with a conflict.
 
 | field | notes |
 |---|---|
@@ -688,8 +684,8 @@ model did not need.
 | `counts.held` on `review status`, `[held]` in `record list` | any rows a store already carries |
 
 Human data is append-only and is never deleted: a store that already holds hold
-rows still holds them. What changed is that nothing writes another and
-no read path surfaces one.
+rows still holds them. What changed is that nothing writes another and no read
+path surfaces one.
 
 **Two consequences worth stating.**
 
@@ -697,8 +693,8 @@ no read path surfaces one.
   `holds.clear` were the only two writes a finished retrospective took, because
   the solving side read a hold long after the review closed. With them gone
   `refuseWhenFinished` governed every human write without qualification for a
-  time — and then the record lifecycle axis reopened the same
-  position for a better reason: §Record lifecycle is now the one write a finished
+  time — and then the record lifecycle axis reopened the same position for a
+  better reason: §Record lifecycle is now the one write a finished
   retrospective takes, and it is safe where a hold was not because it is not
   exported (`finish-lock.service.ts`, `lifecycle.md`).
 - **`export.v1` keeps `held` and `holdNote` as optional properties.** The
@@ -712,12 +708,12 @@ no read path surfaces one.
 **Read-only historical `hold` verdicts.** Separately from all of the above,
 `hold` was a `DecisionState` until it left the verdict enum, and every read path
 keeps admitting one: the wire views, `retro.export.v1`, record history, the
-decisions table's own CHECK, and `record list --state hold`. Nothing may write one
-— `decisionVerdictSchema` is the four-value input enum (`pending`, `approved`,
-`declined`, `revise`; it was three until `revise` was added),
-and the narrowing is at
-the write path exactly as the solution-level narrowing did it. That verdict is a
-value a human once chose and is unaffected by the removal above.
+decisions table's own CHECK, and `record list --state hold`. Nothing may write
+one — `decisionVerdictSchema` is the four-value input enum (`pending`,
+`approved`, `declined`, `revise`; it was three until `revise` was added), and
+the narrowing is at the write path exactly as the solution-level narrowing did
+it. That verdict is a value a human once chose and is unaffected by the removal
+above.
 
 ## Comment threads
 
@@ -727,12 +723,11 @@ Anchored to a record section or review-level. Sections:
 `solutions` is **one anchor for the whole block**, not one per solution: a
 comment about the second proposal names it in prose, and an enum grown per array
 element is an enum migrated every time the array can hold one more.
-`direction` and `footprint` stay in the vocabulary forever — stores written
-before solutions carry threads on both, the export requires a component for
-every thread, and a
-value removed here would make documents already written unrepresentable. Nothing
-anchors a *new* thread to either, because a record with solutions has no such
-section.
+`direction` and `footprint` stay in the vocabulary forever — a store written
+before solutions can carry threads on both, the export requires a component for
+every thread, and a value removed here would make documents already written
+unrepresentable. Nothing anchors a *new* thread to either, because a record with
+solutions has no such section.
 Review-level threads have no `rid`. Messages append-only, `actor` = `ai | human`;
 the CLI writes only `ai` replies; human comments are UI-only and immutable.
 
@@ -752,15 +747,15 @@ cannot answer it differently. The **thread** stays keyed on
 
 **Threads are resolvable, and only the human may resolve one** — the AI never
 marks a thread resolved, and a resolved thread appears collapsed.
-`thread_resolutions` is a
-table of versions per thread — `(thread_id, version, resolved, at)` — with the
-append-only triggers, so reopening is a new row and never an edit, the way a
-decision and a hold are. The effective value is the highest version's, `false`
-when nobody has marked it. `threads.resolve` is the one procedure that writes it;
-`ResolveThreadUseCase` refuses the `ai` actor before it looks at anything else,
-and there is no CLI flag that reaches it. Resolution carries no revision,
-deliberately: a thread outlives every redraft of the record it hangs off, so "I
-have dealt with this" does not stop being true because a paragraph was rewritten.
+`thread_resolutions` is a table of versions per thread — `(thread_id, version,
+resolved, at)` — with the append-only triggers, so reopening is a new row and
+never an edit, the way a decision and a hold are. The effective value is the
+highest version's, `false` when nobody has marked it. `threads.resolve` is the
+one procedure that writes it; `ResolveThreadUseCase` refuses the `ai` actor
+before it looks at anything else, and there is no CLI flag that reaches it.
+Resolution carries no revision, deliberately: a thread outlives every redraft of
+the record it hangs off, so "I have dealt with this" does not stop being true
+because a paragraph was rewritten.
 
 ## Finish message — human-only, versioned, append-only
 
@@ -789,9 +784,8 @@ and no row anywhere, and `events.data` is the outbox's audit trail rather than a
 read model. A comment is wrong for a different reason: comments are threads the
 AI answers, and this is a verdict-adjacent summary of the round with a different
 lifecycle and a different reader posture — it is delivered separately from the
-comments. A note is wrong for a third: the AI is blind to human
-notes until drafting, and this must reach it at the moment the round
-closes.
+comments. A note is wrong for a third: the AI is blind to human notes until
+drafting, and this must reach it at the moment the round closes.
 
 **Who writes it and who reads it.** `review.finish` is the one procedure that
 writes it, `FinishReviewUseCase` refuses the `ai` actor before it looks at
@@ -815,10 +809,9 @@ touches it anywhere.
   review, opened and closed by the human and answered by the AI; the panel, the
   `requests.*` procedures, the `retro request` commands, the use cases and
   `revision get`'s `requests` key are all gone, and a **review-level comment
-  thread is the one ask channel** — one ask per review-level comment, which is
-  everything the removed construct offered. The
-  `requests` and `request_responses` tables, their migrations, their triggers and
-  any rows **stay**, unread, the way the `holds` table does: human data is
+  thread is the one ask channel** — one ask per review-level comment. The
+  `requests` and `request_responses` tables, their migrations, their triggers
+  and any rows **stay**, unread, the way the `holds` table does: human data is
   append-only and is never deleted. No store has ever carried a request row.
 
 ## Events (outbox)
@@ -836,9 +829,9 @@ AiConfigWriteDisabled · RecordLabelApplied · RecordLabelRemoved ·
 RecordAttributeSet · RecordAttributeCleared · RequestOpened · RequestResponded ·
 RequestClosed · ChangesRequested · ReviewFinished · ReviewClosed`
 
-The eight names with **no scope at all** — the six definition acts and
-the two toggle acts — are the first events in this outbox addressed to nothing.
-A definition and a setting are global, so `events.onRetro` delivers none of them
+The eight names with **no scope at all** — the six definition acts and the two
+toggle acts — are the first events in this outbox addressed to nothing. A
+definition and a setting are global, so `events.onRetro` delivers none of them
 to any page; they are written because the outbox is this store's audit trail,
 and the certainty that the AI changed no configuration unseen is a claim those
 rows are the evidence for.
@@ -850,15 +843,15 @@ table over.
 
 `HoldSet`, `HoldCleared`, the three `Request*` names and now `ChangesRequested`
 are **frozen**: nothing appends one since hold, requests and the second review
-button were removed, and they stay in the set because a store written
-before those removals holds rows carrying them and every reader — the tailer,
+button were removed, and they stay in the set because a store written before
+those removals holds rows carrying them and every reader — the tailer,
 `review wait`, the subscription — must go on parsing one rather than choking on
 it. The same rule the read-only decision states obey.
 
 `review wait` terminates on **`ReviewFinished`** for its retro and prints
-`{ kind, retroId, revision, at }`. One name, because the
-human presses one button, and what the round was about is read from the round.
-A `ChangesRequested` row in an old store no longer unblocks a wait, which cannot
+`{ kind, retroId, revision, at }`. One name, because the human presses one
+button, and what the round was about is read from the round. A
+`ChangesRequested` row in an old store no longer unblocks a wait, which cannot
 matter — the wait starts from the latest `RevisionCreated`, and such a row is
 always older than that.
 

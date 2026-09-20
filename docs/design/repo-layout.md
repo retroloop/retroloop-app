@@ -49,5 +49,4 @@ retroloop-app/
 ## Worktrees
 
 - **Git worktrees live under `.claude/worktrees/<name>`** (gitignored), one per
-  line of work, with the branch named after the folder. Nothing outside that
-  folder is written by a worktree.
+  line of work, with the branch named after the folder.
