@@ -12,10 +12,9 @@ export type Revision = {
   readonly createdAt: string
   /**
    * The retrospective's plain-language name, as this draft proposed it — AI
-   * authored, optional, at most 80 characters (KC-0020, ledger v2 #120). Each
-   * revision carries its own, and the latest one is the retrospective's: a title
-   * is part of the draft, so a redraft is how it changes, like everything else
-   * here.
+   * authored, optional, at most 80 characters. Each revision carries its own,
+   * and the latest one is the retrospective's: a title is part of the draft, so
+   * a redraft is how it changes, like everything else here.
    */
   readonly title: string | undefined
   /** Embedded, ordered by `num`. */

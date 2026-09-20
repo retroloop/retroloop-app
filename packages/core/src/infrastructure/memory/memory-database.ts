@@ -79,8 +79,8 @@ function emptyTables(): MemoryTables {
     holds: [],
     recordLifecycle: [],
     // Empty, like every table here — and for these two that emptiness is the
-    // product's own rule rather than the fixture's: *"we will not hardcode any
-    // labels or attributes"* (`label.model.ts`).
+    // product's own rule rather than the fixture's: no label and no attribute
+    // is hardcoded (`label.model.ts`).
     labelDefinitions: [],
     attributeDefinitions: [],
     recordLabels: [],

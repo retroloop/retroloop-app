@@ -1,7 +1,7 @@
 import { type Database, SQLiteError, type Statement } from 'bun:sqlite'
 
 /**
- * **Why this file exists** (#100 `r-db-exec-swallows-errors`).
+ * **Why this file exists** (`r-db-exec-swallows-errors`).
  *
  * `db.exec` and `db.run` report a *runtime* failure — a trigger's `RAISE(ABORT)`,
  * a constraint, a CHECK — only when the string they are handed holds exactly one
@@ -12,7 +12,7 @@ import { type Database, SQLiteError, type Statement } from 'bun:sqlite'
  * literal — was on the wrong side of it.
  *
  * The consequence is the one that matters: a migration can half-apply, commit, and
- * be ledgered as applied. It was found the way these things are found, by a worker
+ * be ledgered as applied. It was found the way these things are found: by
  * planting an UPDATE that the append-only triggers had to refuse and watching the
  * whole suite stay green. `checked-exec.test.ts` holds the five cases as evidence.
  *

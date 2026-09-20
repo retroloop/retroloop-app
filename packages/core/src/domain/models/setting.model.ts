@@ -2,13 +2,11 @@
  * A global setting, versioned and append-only — today there is exactly one of
  * them, and it is a guarantee rather than a preference.
  *
- * **OWNER RULING 2**, dictated at the session-10 scope alignment:
+ * The config page carries a toggle the user can enable to give the AI the
+ * ability to update the configs; while it is disabled, the user can be certain
+ * the AI cannot change them.
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
- *
- * *"The user can be certain"* is the requirement, and certainty is what
+ * *That the user can be certain* is the requirement, and certainty is what
  * separates this from a convention: the toggle is read **in core, inside the
  * unit of work that would do the writing** (`config-write.service.ts`), so it
  * holds against a bypassed UI, a hand-rolled tRPC call, and the CLI the AI
@@ -30,8 +28,8 @@ export type SettingKey = (typeof SETTING_KEYS)[number]
  *
  * **A table of versions, not a row that gets edited**, on the same pattern
  * `decisions`, `thread_resolutions` and `record_lifecycle` follow — and here the
- * append-only shape is doing work none of those needed it for. The owner's ask
- * is that he can be *certain* about what the AI may do; "the toggle is off now"
+ * append-only shape is doing work none of those needed it for. The requirement
+ * is that the human can be *certain* about what the AI may do; "the toggle is off now"
  * is a weaker answer than "it has been off since 09:14 on the 27th, and here is
  * every time it moved". A column would have thrown that away on the first
  * change.

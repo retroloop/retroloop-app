@@ -1,10 +1,10 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * One record related to another, in the words of whoever related them — the
- * owner's session-11 ask: *"both actors can relate records, each relation
- * carries how-they-relate words, and the relation reads from both sides, so that
- * AI can easily find past records and build holistic solutions."*
+ * One record related to another, in the words of whoever related them. Both
+ * actors can relate records, each relation carries how-they-relate words, and
+ * the relation reads from both sides, so that the AI can easily find past
+ * records and build holistic solutions.
  *
  * **Both sides are `record_ids.id`, and that is the only shape available.**
  * Every other per-record table in this schema addresses one record as
@@ -13,7 +13,7 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * two pairs is a key nobody can read, join on, or cite. `record_ids` exists
  * precisely because *"nobody says a pair out loud"* (`record-id.model.ts`): it
  * is the one single-column handle a record has, it is minted once and never
- * moves, and it is the number the owner and the AI actually say to each other.
+ * moves, and it is the number a reader and the AI actually say to each other.
  * So it is the foreign key on both sides, and a relation crossing two
  * retrospectives costs this table nothing — which it has to, because *"find past
  * records"* is the feature.
@@ -22,17 +22,17 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * the store should not be able to hold the row even if a rogue writer opens the
  * database directly. The use case refuses it first, with a sentence.
  *
- * **`how` is NOT NULL, because his sentence made it a part of the act.** *"Each
- * relation carries how-they-relate words"* — not "may carry". A relation with no
+ * **`how` is NOT NULL, because the words are a part of the act.** Each
+ * relation carries how-they-relate words — not "may carry". A relation with no
  * words is the thing this feature is *instead of*: a bare link that leaves the
  * reader to guess whether the second record supersedes the first, duplicates it,
  * or was caused by it. Free text with no vocabulary, on the argument
- * `record_lifecycle.refs` already made and won: the owner named three kinds of
- * relation and *"a shape that insisted on knowing which of those it was would be
- * a shape that refuses the fourth kind"*. A vocabulary is a settings-page
+ * `record_lifecycle.refs` already made and won: there are several kinds of
+ * relation, and a shape that insisted on knowing which of those it was would be
+ * a shape that refuses the fourth kind. A vocabulary is a settings-page
  * feature, and labels are already that.
  *
- * ## The fork this table had to choose, consciously
+ * ## The choice this table had to make, consciously
  *
  * `record_lifecycle` took a widenable `status` word; `record_labels` took an
  * `applied` bit, on the ground that *"a label's two positions are on and off,
@@ -42,8 +42,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * could be in — a relation that means something different is different *words*,
  * which is the `how` column, or a different pair, which is a different row. The
  * lifecycle enum earned its width because a record's standing was a scale that
- * really did grow from two positions to four inside one session; nothing here is
- * a scale.
+ * really did grow from two positions to four in short order; nothing here is a
+ * scale.
  *
  * So: the labels join-table pattern, one column wider. Dense `version` per
  * **ordered pair** `(from_id, to_id)`, an `applied` bit, and `UNIQUE (from_id,
@@ -59,8 +59,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * (`relate-records.use-case.ts` has the argument, and is where the copy
  * happens — the caller is not asked for words it would be free to contradict).
  *
- * **One row per relation as authored, and never a mirror row.** *"Reads from
- * both sides"* is a property of the read: `listForRecord` asks for `from_id = ?
+ * **One row per relation as authored, and never a mirror row.** Reading from
+ * both sides is a property of the read: `listForRecord` asks for `from_id = ?
  * OR to_id = ?` and hands the caller the direction. A second, reversed row would
  * be a second thing to keep in agreement, a second thing to un-relate, and a
  * second version sequence to number — and it would make "who said this" unanswerable
@@ -69,10 +69,9 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * **`actor` is a column**, which only `record_lifecycle` otherwise has, and for
  * its reason exactly (`20260829093000:39-43`): every other append-only table
  * here is single-writer so the author is implied by the table, and this one is
- * written by both — *"both actors can relate records"* is the first clause of
- * the ask. The append-only triggers ship with the table and apply to both
- * authors, because *"the guarantee is about immutability, which is not a property
- * of who writes"*.
+ * written by both, because either actor may relate two records. The append-only
+ * triggers ship with the table and apply to both authors, because the guarantee
+ * is about immutability, which is not a property of who writes.
  *
  * **Nothing is backfilled**, and there is nothing that could be: a relation is
  * an assertion somebody makes, and inferring one from two records that mention

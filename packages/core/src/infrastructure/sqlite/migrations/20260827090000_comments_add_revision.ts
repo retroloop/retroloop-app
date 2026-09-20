@@ -3,10 +3,10 @@ import type { Migration } from '#infrastructure/sqlite/migration'
 /**
  * A comment records the revision it was written against.
  *
- * The owner: *"Should should rev number they are associated with but the comment
- * show accross all revisions"* — the label is per comment, and a thread still
- * spans every revision, because it is keyed on `(retroId, rid, section)` and
- * always was.
+ * A comment shows the revision number it is associated with, while the thread
+ * goes on showing across every revision — the label is per comment, and a thread
+ * still spans every revision, because it is keyed on `(retroId, rid, section)`
+ * and always was.
  *
  * **Nullable, and every row already written stays NULL forever.** Human data is
  * never rewritten, so there is no backfill here: what a comment was written

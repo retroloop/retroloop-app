@@ -1,14 +1,13 @@
 /**
  * The value a record carries for one attribute, or the act of clearing it.
  *
- * The owner's own example is the shape of this table: *"they could create an
- * attribute that says 'Jira ticket', or maybe just 'external ticket ID' or
- * whatever, and then they can say it's always going to be a number. Then it will
- * be easier for them to query."* A record wearing the `migrated` label and
- * carrying `external ticket ID = 4192` is the pairing he described — and the
- * pairing is his team's convention, never something this table knows about.
+ * The motivating example is the shape of this table: a user creates an
+ * attribute called 'Jira ticket', or maybe just 'external ticket ID', declares
+ * that it always holds a number, and can then query on it. A record wearing the
+ * `migrated` label and carrying `external ticket ID = 4192` is that pairing —
+ * and the pairing is a team's own convention, never something this table knows about.
  *
- * **Human-only this session**, exactly as applying a label is
+ * **Human-only, for now**, exactly as applying a label is
  * (`record-label.model.ts`), so this is a human field: the use case refuses the
  * `ai` actor first, the append-only triggers back it up at L1, and the table has
  * no `actor` column because it has one writer.

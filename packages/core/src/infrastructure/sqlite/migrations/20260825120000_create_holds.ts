@@ -1,7 +1,7 @@
 import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The lifecycle axis gets its own table (retro 3 `r-hold-semantics`).
+ * The lifecycle axis gets its own table (`r-hold-semantics`).
  *
  * `held` is stored as 0/1 rather than as a `'held' | 'released'` string, because
  * there are exactly two values and neither will grow a third: the thing that
@@ -23,10 +23,9 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * then approved was let go, and reviving a hold the human had already moved past
  * would be this migration inventing a fact.
  *
- * On the owner's own store this maps nothing at all — all 35 decisions in it are
- * `approved`, as are the 13 in its pre-batch backup — which is why
- * `migrator.test.ts` seeds a hold verdict by hand rather than trusting that a
- * step nothing exercises works.
+ * On a store whose decisions are all `approved` this maps nothing at all, which
+ * is why `migrator.test.ts` seeds a hold verdict by hand rather than trusting
+ * that a step nothing exercises works.
  */
 export const migration: Migration = {
   version: '20260825120000',

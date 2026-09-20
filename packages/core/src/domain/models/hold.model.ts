@@ -1,11 +1,11 @@
 /**
  * A record parked, or released — the **lifecycle flag**, not a review verdict
- * (retro 3 `r-hold-semantics`, owner-approved).
+ * (`r-hold-semantics`).
  *
- * The owner: *"Hold means that the issue is not to be implemented. It is not a
- * review status of a retro item… User can put an issue on hold and then approve
- * it. When AI is picking stuff to do, it will not consider items to solve that
- * are on hold unless the human has told it to go after them."*
+ * Hold means the issue is not to be implemented. It is not a review status of a
+ * retrospective item: a user can put an issue on hold and then approve it. When
+ * the AI picks work up, it does not consider items to solve that are on hold,
+ * unless the human has told it to go after them.
  *
  * So a hold sits on its own axis, orthogonal to the verdict: a record may be
  * held and pending, held and approved, or held and declined, and the finish gate

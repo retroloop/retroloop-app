@@ -15,8 +15,8 @@ import { recordKey } from '#domain/services/record-key.service'
  * row wins, nothing is written to answer the question, and the absence of a row
  * is a state rather than a gap. What it is **not** is a second position on the
  * verdict — a record's verdict is what the human decided about doing the work,
- * and this is what happened when somebody did it. Retro 3 put a lifecycle flag on
- * the verdict axis and retro 4 removed it (`r-remove-hold`); this one is beside
+ * and this is what happened when somebody did it. An earlier design put a
+ * lifecycle flag on the verdict axis and `r-remove-hold` removed it; this one is beside
  * the verdict on purpose, and lives past the close that settles it.
  */
 export type EffectiveLifecycle = {
@@ -51,10 +51,10 @@ const STATE_AFTER: Record<RecordLifecycleStatus, RecordLifecycleState> = {
 }
 
 /**
- * Where a record with **no entry at all** stands (the owner's session-9 ruling).
+ * Where a record with **no entry at all** stands.
  *
- * A declined record is born archived: the review said no, and *"we still want to
- * maintain its discussion"* — so it goes out of the way rather than away.
+ * A declined record is born archived: the review said no, and its discussion is
+ * still worth maintaining — so it goes out of the way rather than away.
  * Everything else — approved, `revise`, a legacy `hold`, and a record still
  * pending because its review has not closed — is born open.
  *
@@ -72,8 +72,8 @@ export function bornLifecycleState(verdict: DecisionState): RecordLifecycleState
  * The latest entry, read as a state — and the verdict, read as one, while there
  * is no entry to read.
  *
- * The inference this feature makes is still the safe direction of KC-0010: it
- * reads silence about *acts* as nothing having been done. `resolved` and
+ * The inference this feature makes is still the safe direction: it reads
+ * silence about *acts* as nothing having been done. `resolved` and
  * `archived`-by-hand are always explicit acts by a named actor — there is no
  * path anywhere that resolves a record because a commit mentioned it, a review
  * closed, or a session ended. Born-archived is not an exception to that: it is
@@ -113,10 +113,9 @@ export function effectiveLifecycle(
  * says something it does not.
  *
  * Archive is the one act with two sources: a record can be put out of the way
- * whether or not anybody fixed it first, which is the owner's *"by default all
- * others that have approval, those are normal records so if a user wants, they
- * can just archive it"* — and a resolved record he no longer wants in the list
- * is exactly that.
+ * whether or not anybody fixed it first, because by default every approved
+ * record is a normal record a user may simply archive — and a resolved record
+ * somebody no longer wants in the list is exactly that.
  */
 export const LIFECYCLE_ACT_FROM: Record<RecordLifecycleStatus, readonly RecordLifecycleState[]> = {
   resolved: ['open'],
@@ -134,9 +133,8 @@ export function lifecycleActPermitted(
 }
 
 /**
- * The two acts that are the human's alone (the owner's session-9 word: *"the
- * user should be able to unarchive … if a user wants, they can just archive
- * it"*).
+ * The two acts that are the human's alone: a user may archive a record whenever
+ * they want to, and unarchive it again.
  *
  * This table takes both actors, which is the whole reason it has an `actor`
  * column — but that was decided for *resolving*, which is a report of work the
@@ -162,7 +160,7 @@ export function lifecycleByRecord(
 }
 
 /**
- * The composite key, in one place — and since session 10 that one place is
+ * The composite key, in one place — and that one place is
  * `record-key.service.ts`, because the label entries and the attribute values
  * group by exactly the same key and a fourth copy of the template literal was a
  * fourth chance to write it the other way round.

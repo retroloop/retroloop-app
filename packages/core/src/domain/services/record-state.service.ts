@@ -47,7 +47,7 @@ export type EffectiveDecision = {
  * record to `pending` — without writing anything, because pending *is* the absence
  * of a decision for the current content.
  *
- * "Explicit approve only" survives (KC-0010): every approval that carries was an
+ * "Explicit approve only" survives: every approval that carries was an
  * explicit human act, against byte-identical content. Nothing here can invent one.
  */
 export function effectiveDecision(
@@ -96,12 +96,12 @@ export function effectiveDecision(
  * The finish gate's question (D3): which records of this revision are still
  * pending?
  *
- * A verdict is the only thing it asks about, and since retro 4 `r-remove-hold`
- * it is the only axis a record has: there was briefly an `effectiveHold` beside
- * `effectiveDecision` here, and the owner removed the feature — *"I can achieve
- * the whole thing by selecting something to be only done with the human in the
- * loop."* What the solving side may do without him is `involvement`, which is
- * part of the verdict.
+ * A verdict is the only thing it asks about, and since `r-remove-hold` it is
+ * the only axis a record has: there was briefly an `effectiveHold` beside
+ * `effectiveDecision` here, and the feature was removed — the same thing is
+ * achieved by selecting a record to be done only with the human in the loop.
+ * What the solving side may do unattended is `involvement`, which is part of
+ * the verdict.
  */
 export function pendingRids(
   records: readonly RetroRecord[],
@@ -115,7 +115,7 @@ export function pendingRids(
  * Which records the human has asked to see rewritten (`r-verdict-revise`).
  *
  * The gate does not read this — a `revise` record is decided, and finishing is
- * his to do. Closing the review to export does: an ask that would otherwise be
+ * the human's to do. Closing the review to export does: an ask that would otherwise be
  * filed as an outcome is what "must-address in the next revision" is protecting
  * against (`close-review.use-case.ts`).
  */

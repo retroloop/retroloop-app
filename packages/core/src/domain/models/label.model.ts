@@ -1,16 +1,12 @@
 /**
  * A label — **a name, applied or not, and nothing else.**
  *
- * The owner ruled this shape himself after rejecting the AI proposal that would
- * have hung refs and a note off the apply event
- * (the labels/attributes owner ruling, private project records):
- *
- * > *"I don't like the idea of label + notes; that is not a standard practice.
- * > Usually labels are just labels. A user can create their own conventions if
- * > we support labels as well as attributes — they can have a convention that
- * > whenever we add the migrated label, we should also have an attribute that
- * > requires a GitHub issue id, or something like that. However, to keep it
- * > flexible we will not hardcode any labels or attributes."*
+ * The shape was settled against an earlier proposal that would have hung refs
+ * and a note off the apply event. Label-plus-notes is not standard practice:
+ * usually labels are just labels. With labels *and* attributes both supported, a
+ * user can build their own convention instead — whenever the `migrated` label
+ * goes on, an attribute requiring a GitHub issue id goes on too, say. To keep
+ * that flexible, no label and no attribute is hardcoded.
  *
  * Three consequences, each of them a thing this file deliberately does not have:
  *
@@ -21,17 +17,17 @@
  * 2. **No pairing with anything.** A team that decides `migrated` always travels
  *    with an `external issue id` attribute is a team with a convention; the
  *    system never checks one, never offers one, and never refuses a record for
- *    lacking one — *"composition is the USER'S convention … never a system
- *    mechanism"*.
+ *    lacking one — composition is the *user's* convention, never a system
+ *    mechanism.
  * 3. **Nothing is shipped.** The product starts with zero labels and zero
  *    attributes and `migrated` is not special anywhere — not in a migration, not
  *    in a seed, not in a component. Everything a store holds, somebody created.
  *
  * **Global**, which is what made a settings page part of this scope: a label is
  * not scoped to a retrospective, a session or a working directory, so the one
- * surface that manages the vocabulary is `/settings` (his *"adding those will
- * require setting up a settings page, because each label or attribute is going
- * to be a global thing"*).
+ * surface that manages the vocabulary is `/settings`. Adding labels or
+ * attributes requires a settings page precisely because each label or attribute
+ * is a global thing.
  */
 export type LabelDefinition = {
   readonly id: number
@@ -39,8 +35,8 @@ export type LabelDefinition = {
    * What it is called, trimmed, as somebody typed it.
    *
    * The name is the label — there is no slug, no colour and no description
-   * beside it, because each of those would be configuration the owner asked us
-   * not to grow (*"minimal config"*). Case is preserved as typed and
+   * beside it, because each of those would be configuration this product
+   * deliberately does not grow: minimal config. Case is preserved as typed and
    * **uniqueness ignores it**, so a store cannot end up holding `Migrated` and
    * `migrated` as two labels a reader cannot tell apart. That rule lives in the
    * use cases rather than in a collation, so both stores answer it identically

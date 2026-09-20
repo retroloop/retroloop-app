@@ -1,7 +1,7 @@
 import type { Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * The outbox (KC-0005).
+ * The outbox.
  *
  * Two deliberate absences. The scope columns carry no foreign keys: an event is an
  * audit trail of something that already happened, and it must stay appendable and

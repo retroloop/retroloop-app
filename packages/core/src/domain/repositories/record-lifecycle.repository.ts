@@ -14,15 +14,15 @@ import type {
  * force for **every** record, which is the flat cross-retro listing; and one
  * record's **whole history**, which is the record page's timeline.
  *
- * That third one was deliberately absent for one session, on the rule a method
+ * That third one was deliberately absent for a while, on the rule a method
  * nothing calls is a method two adapters implement for nothing
  * (`thread-resolution.repository.ts`) — nothing showed a record's lifecycle
- * history. The record page does (`/records/:id`, session 9: *"We can have a
- * timeline at the bottom that shows how the record evolved"*), and it is the
- * reason this table is append-only in the first place: "resolved on the 29th
- * citing abc123, archived on the 30th" was always readable, and until now
- * nothing read it. There is still no `listByRetro` — no surface asks a
- * retrospective for every record's history at once.
+ * history. The record page does (`/records/:id`, whose timeline at the bottom
+ * shows how the record evolved), and it is the reason this table is append-only
+ * in the first place: "resolved on the 29th citing abc123, archived on the
+ * 30th" was always readable, and until now nothing read it. There is still no
+ * `listByRetro` — no surface asks a retrospective for every record's history at
+ * once.
  */
 export type RecordLifecycleRepository = {
   add(entry: NewRecordLifecycleEntry): Promise<RecordLifecycleEntry>

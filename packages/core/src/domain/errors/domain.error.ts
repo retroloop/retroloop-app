@@ -1,7 +1,7 @@
 /**
  * Every error the core throws on purpose carries a `code`; each driving adapter
- * maps codes to its own vocabulary (tRPC codes, CLI exit codes — KC-0004).
- * Anything else escaping the core is a bug, not a contract.
+ * maps codes to its own vocabulary (tRPC codes, CLI exit codes). Anything else
+ * escaping the core is a bug, not a contract.
  */
 export type DomainErrorCode =
   | 'NOT_FOUND'

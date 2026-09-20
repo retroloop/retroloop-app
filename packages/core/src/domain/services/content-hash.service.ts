@@ -69,7 +69,7 @@ function solutionsContent(solutions: readonly Solution[] | undefined): JsonLike 
  * in it for a verdict to be *about*. Whatever actually changed the diagnosis
  * shows up in the narrative that states it — the problem, the root cause, the
  * solutions — and every one of those is hashed. So a record re-filed with a
- * fuller log is the same record the human decided, and his verdict stands.
+ * fuller log is the same record the human decided, and that verdict stands.
  *
  * It is also what makes the upgrade free: a record decided before this field
  * existed and re-filed with the evidence the schema now demands must not go back
@@ -79,7 +79,7 @@ function solutionsContent(solutions: readonly Solution[] | undefined): JsonLike 
  * **A legacy record hashes to exactly the bytes it always did.** `canonicalJson`
  * drops undefined members, so `solutions` simply is not a key on a record that
  * has no solutions, and `agreedDirection`/`footprint` are not keys on a record
- * that has no direction. Every decided record in the owner's five retrospectives
+ * that has no direction. Every decided record in an existing retrospective
  * keeps its decision across the upgrade — `legacy-record-shape.test.ts` locks the
  * hash of a real one against the constant it had before this change.
  */
@@ -116,7 +116,7 @@ export function hashRecordContent(record: RetroRecord): string {
 
 /**
  * The record content behind each comment-anchor section (D8), used to highlight
- * what changed between two appearances of a record (KC-0012).
+ * what changed between two appearances of a record.
  *
  * The section enum has no slot for `type`, `requester` and `impacts`, so they ride
  * with the part of the record they qualify: `type` with the headline, `requester`

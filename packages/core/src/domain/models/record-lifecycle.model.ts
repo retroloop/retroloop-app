@@ -1,12 +1,11 @@
 import type { Actor } from '#domain/models/actor.model'
 
 /**
- * What happened to a record **after the review that filed it closed** — the
- * owner's ask, verbatim: *"even after a retro has been closed, we should be able
- * to attach metadata to issues so that we can manage their life cycle. so once
- * the AI fixes those issues, we should have a way to add … native status that
- * shows that this issue was resolved, we should be able to specify a commit id
- * or github issue or something as reference so that it is easy to see."*
+ * What happened to a record **after the review that filed it closed**. Even
+ * once a retrospective is closed, metadata can be attached to its records so
+ * that their life cycle stays manageable: when the AI fixes an issue there is a
+ * native status saying the issue was resolved, and a commit id, a GitHub issue
+ * or some other reference can be cited so that the fix is easy to see.
  *
  * This is a lifecycle **beside** the verdict, not another position on it. A
  * verdict is the human's answer to "should we do this" and it is settled when
@@ -23,18 +22,18 @@ import type { Actor } from '#domain/models/actor.model'
  * append-only table has one, because every other one is single-writer and the
  * author is implied by the table.
  *
- * **Per act, not per table** (session 9): `resolved` and `reopened` take either
+ * **Per act, not per table**: `resolved` and `reopened` take either
  * author, and `archived` / `unarchived` take only the human. Resolving is a
  * report of work done and the AI is the one who does it; archiving is a judgment
- * about what is worth looking at, and the owner kept that — *"the user should be
- * able to unarchive … so if a user wants, they can just archive it."* The rule
+ * about what is worth looking at, and that stays with the human — a user can
+ * archive a record whenever they want to, and unarchive it again. The rule
  * lives in the use case, so it holds whichever transport arrives.
  *
  * Append-only all the same, and for both authors: reopening writes another
  * version and edits nothing, so "resolved at 14:02 with commit abc123, reopened
- * at 09:30 the next morning" stays readable forever. The table's triggers say so
- * at L1, exactly as they do for the human-only tables (KC-0006) — the guarantee
- * is about immutability, which is not a property of who writes.
+ * at 09:30 the next morning" stays readable forever. The table's triggers say
+ * so at L1, exactly as they do for the human-only tables — the guarantee is
+ * about immutability, which is not a property of who writes.
  */
 export const RECORD_LIFECYCLE_STATUSES = ['resolved', 'reopened', 'archived', 'unarchived'] as const
 
@@ -44,10 +43,9 @@ export const RECORD_LIFECYCLE_STATUSES = ['resolved', 'reopened', 'archived', 'u
  * have to interpret a boolean, and a consumer of the outbox should not have to
  * unpack a payload to tell an archive from a resolve.
  *
- * `archived` / `unarchived` are the owner's session-9 pair: *"maybe we can have
- * a type called archived so it's just going to be archived and the user should
- * be able to unarchive. by default all others that have approval, those are
- * normal records so if a user wants, they can just archive it."* They are
+ * `archived` / `unarchived` are a pair of their own: a record can be given the
+ * archived status and taken back out of it again, while by default every other
+ * approved record stays a normal one until a user chooses to archive it. They are
  * **human-only**, which is the one asymmetry on this table — the AI reports work
  * it did, and putting a record out of the way is a judgment about what is worth
  * looking at. `SetRecordLifecycleUseCase` refuses the `ai` actor on these two
@@ -65,12 +63,12 @@ export type RecordLifecycleStatus = (typeof RECORD_LIFECYCLE_STATUSES)[number]
  * it is still owed, `resolved` once somebody fixed it, `archived` once it is out
  * of the way.
  *
- * **Derived, never stored** (KC-0010), and the derivation reads two things: the
+ * **Derived, never stored**, and the derivation reads two things: the
  * entry in force, and — when there is none — the record's verdict. A record with
  * no entry is `open`, except a **declined** one, which is `archived` from birth:
- * the owner asked for the discussion to be kept rather than the record deleted,
- * and *"for only the records that are marked as declined during the retro … so
- * it's just going to be archived and the user should be able to unarchive"*.
+ * the discussion is kept rather than the record deleted, so a record marked
+ * declined during the retrospective is simply archived, and the user can
+ * unarchive it.
  *
  * Both halves of that are still readings of an absence rather than rows anybody
  * wrote. Nothing is written at close, so a store that was closed before this
@@ -97,8 +95,8 @@ export type RecordLifecycleEntry = {
   readonly status: RecordLifecycleStatus
   /**
    * Free-text references the entry cites — a commit sha, a PR or issue URL, a
-   * branch name. Plain strings on purpose: the owner asked for *"a commit id or
-   * github issue or something as reference"*, and a shape that insisted on
+   * branch name. Plain strings on purpose: a reference may be a commit id, a
+   * GitHub issue or something else again, and a shape that insisted on
    * knowing which of those it was would be a shape that refuses the fourth kind.
    * The reader linkifies what looks like a URL and prints the rest.
    *
