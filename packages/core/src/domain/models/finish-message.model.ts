@@ -4,8 +4,8 @@
  *
  * Finishing shows a text box where the human can enter their final message
  * before they close, and that message is delivered separately from the
- * comments. Separately is the whole point — a comment is a thread the
- * AI answers, and this is a verdict-adjacent summary of the round that the AI
+ * comments. Separately is the whole point — a comment is a thread the AI
+ * answers, and this is a verdict-adjacent summary of the round that the AI
  * reads once, on the round read, and never replies to.
  *
  * The grain is the **round**, which is `(retroId, revisionN)`: the human finishes

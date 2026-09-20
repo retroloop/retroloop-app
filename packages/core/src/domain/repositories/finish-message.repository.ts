@@ -6,13 +6,13 @@ import type { FinishMessage, NewFinishMessage } from '#domain/models/finish-mess
  * this type. The table's own triggers reject `UPDATE`/`DELETE` as the L1
  * backstop.
  *
- * Two reads, because the product asks in two shapes: one round, for the drafting
- * step reading the feedback on the revision it is about to answer, and every
- * round of a retrospective, for the export — the message is carried
- * *per revision round*, so a document that folded them into one would
- * be answering a different question. There is no `listVersionsFor`: nothing shows
- * the history of a message, and a method nothing calls is a method every adapter
- * implements twice.
+ * Two reads, because the product asks in two shapes: one round, for the
+ * drafting step reading the feedback on the revision it is about to answer, and
+ * every round of a retrospective, for the export — the message is carried
+ * *per revision round*, so a document that folded them into one would be
+ * answering a different question. There is no `listVersionsFor`: nothing shows
+ * the history of a message, and a method nothing calls is a method every
+ * adapter implements twice.
  */
 export type FinishMessageRepository = {
   add(message: NewFinishMessage): Promise<FinishMessage>

@@ -6,10 +6,10 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  *
  * When a round is valid and can be closed, the review shows a text box where the
  * human can enter their final message before they close, and that message is
- * delivered separately from the comments. So it is
- * **not** a comment and not a note: comments are threads the AI answers, and a
- * note is invisible to the AI until drafting. This is a channel of its
- * own that the AI reads on the round read.
+ * delivered separately from the comments. So it is **not** a comment and not a
+ * note: comments are threads the AI answers, and a note is invisible to the AI
+ * until drafting. This is a channel of its own that the AI reads on the round
+ * read.
  *
  * **Why a table and not a column.** Nothing owns "the round" today — a round is a
  * `ReviewFinished` event keyed `(retro_id, revision_n)` and no row anywhere. The

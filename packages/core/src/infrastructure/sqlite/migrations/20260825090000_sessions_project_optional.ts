@@ -1,9 +1,9 @@
 import type { Migration } from '#infrastructure/sqlite/migration'
 
 /**
- * `sessions.project` becomes nullable: a project routinely holds
- * several software packages, so it was the wrong unit, and nothing routes,
- * groups or filters by it any more. `cwd` is the identity anchor instead.
+ * `sessions.project` becomes nullable: a project routinely holds several
+ * software packages, so it was the wrong unit, and nothing routes, groups or
+ * filters by it any more. `cwd` is the identity anchor instead.
  *
  * SQLite cannot drop a NOT NULL, so this is the rebuild pattern
  * (migrations.md §SQLite rebuild pattern) — with two deliberate choices:

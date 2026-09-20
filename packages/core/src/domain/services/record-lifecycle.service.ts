@@ -72,8 +72,8 @@ export function bornLifecycleState(verdict: DecisionState): RecordLifecycleState
  * The latest entry, read as a state — and the verdict, read as one, while there
  * is no entry to read.
  *
- * The inference this feature makes is still the safe direction: it
- * reads silence about *acts* as nothing having been done. `resolved` and
+ * The inference this feature makes is still the safe direction: it reads
+ * silence about *acts* as nothing having been done. `resolved` and
  * `archived`-by-hand are always explicit acts by a named actor — there is no
  * path anywhere that resolves a record because a commit mentioned it, a review
  * closed, or a session ended. Born-archived is not an exception to that: it is

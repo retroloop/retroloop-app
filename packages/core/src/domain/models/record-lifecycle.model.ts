@@ -31,9 +31,9 @@ import type { Actor } from '#domain/models/actor.model'
  *
  * Append-only all the same, and for both authors: reopening writes another
  * version and edits nothing, so "resolved at 14:02 with commit abc123, reopened
- * at 09:30 the next morning" stays readable forever. The table's triggers say so
- * at L1, exactly as they do for the human-only tables — the guarantee
- * is about immutability, which is not a property of who writes.
+ * at 09:30 the next morning" stays readable forever. The table's triggers say
+ * so at L1, exactly as they do for the human-only tables — the guarantee is
+ * about immutability, which is not a property of who writes.
  */
 export const RECORD_LIFECYCLE_STATUSES = ['resolved', 'reopened', 'archived', 'unarchived'] as const
 

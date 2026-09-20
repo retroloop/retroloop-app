@@ -42,8 +42,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * could be in — a relation that means something different is different *words*,
  * which is the `how` column, or a different pair, which is a different row. The
  * lifecycle enum earned its width because a record's standing was a scale that
- * really did grow from two positions to four inside one session; nothing here is
- * a scale.
+ * really did grow from two positions to four in short order; nothing here is a
+ * scale.
  *
  * So: the labels join-table pattern, one column wider. Dense `version` per
  * **ordered pair** `(from_id, to_id)`, an `applied` bit, and `UNIQUE (from_id,
@@ -59,8 +59,8 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * (`relate-records.use-case.ts` has the argument, and is where the copy
  * happens — the caller is not asked for words it would be free to contradict).
  *
- * **One row per relation as authored, and never a mirror row.** *"Reads from
- * both sides"* is a property of the read: `listForRecord` asks for `from_id = ?
+ * **One row per relation as authored, and never a mirror row.** Reading from
+ * both sides is a property of the read: `listForRecord` asks for `from_id = ?
  * OR to_id = ?` and hands the caller the direction. A second, reversed row would
  * be a second thing to keep in agreement, a second thing to un-relate, and a
  * second version sequence to number — and it would make "who said this" unanswerable
@@ -69,10 +69,9 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * **`actor` is a column**, which only `record_lifecycle` otherwise has, and for
  * its reason exactly (`20260829093000:39-43`): every other append-only table
  * here is single-writer so the author is implied by the table, and this one is
- * written by both — *"both actors can relate records"* is the first clause of
- * the ask. The append-only triggers ship with the table and apply to both
- * authors, because *"the guarantee is about immutability, which is not a property
- * of who writes"*.
+ * written by both, because either actor may relate two records. The append-only
+ * triggers ship with the table and apply to both authors, because the guarantee
+ * is about immutability, which is not a property of who writes.
  *
  * **Nothing is backfilled**, and there is nothing that could be: a relation is
  * an assertion somebody makes, and inferring one from two records that mention

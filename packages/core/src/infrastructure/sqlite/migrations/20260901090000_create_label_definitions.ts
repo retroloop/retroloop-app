@@ -13,15 +13,14 @@ import type { Migration } from '#infrastructure/sqlite/migration'
  * product ships. A store that has never had a human open the settings page holds
  * zero rows in this table and the label surfaces render nothing at all.
  *
- * **No append-only triggers, which is the departure worth naming.** Nearly every
- * other table in this schema carries them. This one is *configuration* rather
- * than human
- * data: renaming a label is a spelling correction to a shared list, not a second
- * opinion about something somebody said, and versioning it would make every
- * reader of an applied label resolve a name as of a moment. The append-only rule
- * stays exactly where it belongs — on `record_labels`, which is what a human
- * actually wrote — and `retired_at` is what stands in for a delete here, so a
- * name a record was labelled with is readable forever
+ * **No append-only triggers, which is the departure worth naming.** Nearly
+ * every other table in this schema carries them. This one is *configuration*
+ * rather than human data: renaming a label is a spelling correction to a shared
+ * list, not a second opinion about something somebody said, and versioning it
+ * would make every reader of an applied label resolve a name as of a moment.
+ * The append-only rule stays exactly where it belongs — on `record_labels`,
+ * which is what a human actually wrote — and `retired_at` is what stands in for
+ * a delete here, so a name a record was labelled with is readable forever
  * (`label-definition.repository.ts` carries the full argument).
  *
  * `UNIQUE (name)` is the L1 backstop and not the whole rule: it is

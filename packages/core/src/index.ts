@@ -399,10 +399,10 @@ export type {
 export type { Decision, DecisionState, NewDecision } from '#domain/models/decision.model'
 export type { FinishMessage, NewFinishMessage } from '#domain/models/finish-message.model'
 /**
- * The hold rows a store already holds. Hold was removed as a feature in retro 4
- * `r-remove-hold`; no use case writes or reads one any more, and the model, the
- * repository and both adapters stay because human data is append-only and the
- * table is never dropped.
+ * The hold rows a store already holds. Hold was removed as a feature
+ * (`r-remove-hold`); no use case writes or reads one any more, and the model,
+ * the repository and both adapters stay because human data is append-only and
+ * the table is never dropped.
  */
 export type { Hold, NewHold } from '#domain/models/hold.model'
 export type { LabelDefinition, NewLabelDefinition } from '#domain/models/label.model'

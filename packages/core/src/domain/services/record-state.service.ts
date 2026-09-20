@@ -96,12 +96,12 @@ export function effectiveDecision(
  * The finish gate's question (D3): which records of this revision are still
  * pending?
  *
- * A verdict is the only thing it asks about, and since `r-remove-hold`
- * it is the only axis a record has: there was briefly an `effectiveHold` beside
+ * A verdict is the only thing it asks about, and since `r-remove-hold` it is
+ * the only axis a record has: there was briefly an `effectiveHold` beside
  * `effectiveDecision` here, and the feature was removed — the same thing is
- * achieved by selecting a record to be done only with the human in the
- * loop. What the solving side may do unattended is `involvement`, which is
- * part of the verdict.
+ * achieved by selecting a record to be done only with the human in the loop.
+ * What the solving side may do unattended is `involvement`, which is part of
+ * the verdict.
  */
 export function pendingRids(
   records: readonly RetroRecord[],

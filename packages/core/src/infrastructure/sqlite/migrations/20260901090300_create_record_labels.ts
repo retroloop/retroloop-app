@@ -4,12 +4,12 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  * A label on a record — the human data half of the labels feature, and the half
  * that is append-only.
  *
- * A payload is ruled out by name: label-plus-notes is not standard practice, and
- * usually labels are just labels. So
- * this table has no `refs`, no `note` and no room for one — a definition id, a
- * version and a bit is the whole of what applying a label means. A team wanting
- * the detail beside the classification sets an attribute, which is the second
- * primitive existing for that reason.
+ * A payload is ruled out by name: label-plus-notes is not standard practice,
+ * and usually labels are just labels. So this table has no `refs`, no `note`
+ * and no room for one — a definition id, a version and a bit is the whole of
+ * what applying a label means. A team wanting the detail beside the
+ * classification sets an attribute, which is the second primitive existing for
+ * that reason.
  *
  * `applied` is a 0/1 column rather than a status word, on the same standing
  * `thread_resolutions.resolved` has: there are exactly two positions and neither

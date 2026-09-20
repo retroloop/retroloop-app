@@ -17,11 +17,11 @@ import type { NewRecordId, RecordId } from '#domain/models/record-id.model'
  * `findById` was deliberately absent for a while: nothing resolved a record
  * *from* a global id, and a method nothing calls is a method two adapters
  * implement for nothing (`thread-resolution.repository.ts`). The record page
- * (`/records/:id`) is what calls it. It is the one read whose
- * argument is the number a **human** typed or followed rather than a pair the
- * product was already holding, which is why it is the only one that can be
- * asked about a record that does not exist — and it answers `undefined` rather
- * than throwing, like every other miss on this layer.
+ * (`/records/:id`) is what calls it. It is the one read whose argument is the
+ * number a **human** typed or followed rather than a pair the product was
+ * already holding, which is why it is the only one that can be asked about a
+ * record that does not exist — and it answers `undefined` rather than throwing,
+ * like every other miss on this layer.
  */
 export type RecordIdRepository = {
   /**

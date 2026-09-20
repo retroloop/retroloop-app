@@ -144,7 +144,7 @@ export function migrate(db: Database, options: MigrateOptions = {}): MigrationRu
       // Through the checked facade, never the raw database: a runtime failure in
       // any statement of any migration has to reach the `catch` below, or the
       // ROLLBACK that makes "one transaction per migration" mean anything never
-      // runs (#100 `r-db-exec-swallows-errors`).
+      // runs (`r-db-exec-swallows-errors`).
       migration.up(checkedDb(db))
       db.run(`INSERT INTO ${LEDGER_TABLE} (version, batch, applied_at) VALUES (?, ?, ?)`, [
         migration.version,

@@ -28,10 +28,10 @@ export type Severity = 1 | 2 | 3 | 4 | 5
 /**
  * A ceiling, not a target (D1) — what a stored level can *be*.
  *
- * The three named values are legacy: they can no longer be chosen or
- * proposed, and retro 1 holds two of them. They stay in this type because human
- * data is append-only — a reader that could not name them could not render the
- * history it is looking at.
+ * The three named values are legacy: they can no longer be chosen or proposed,
+ * and early retrospectives hold two of them. They stay in this type because
+ * human data is append-only — a reader that could not name them could not
+ * render the history it is looking at.
  */
 export type SolutionLevel = 1 | 2 | 3 | 4 | 5 | 'none' | 'upstream' | 'undecided'
 

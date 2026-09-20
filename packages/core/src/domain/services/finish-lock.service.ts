@@ -14,10 +14,10 @@ import type { Retrospective } from '#domain/models/retrospective.model'
  * trusting the answer it got when the button was pressed.
  *
  * **Every human write path on the *review* calls this.** There were two
- * exceptions for a time — `holds.set` and `holds.clear`, which stayed
- * reachable after a finish because the solving side read the hold long after the
- * review closed (`r-hold-semantics`) — and `r-remove-hold` took
- * the feature out, so those went with it.
+ * exceptions for a time — `holds.set` and `holds.clear`, which stayed reachable
+ * after a finish because the solving side read the hold long after the review
+ * closed (`r-hold-semantics`) — and `r-remove-hold` took the feature out, so
+ * those went with it.
  *
  * **What has grown since is a class of write that is not on the review at all**,
  * and each one is here *because* the retrospective is closed:

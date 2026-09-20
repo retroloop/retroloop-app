@@ -1,6 +1,6 @@
 /**
- * The outbox. Every write appends its event in the same unit of work as
- * the data it describes, so a viewer that reads the events table has, by
+ * The outbox. Every write appends its event in the same unit of work as the
+ * data it describes, so a viewer that reads the events table has, by
  * construction, seen every committed change.
  *
  * Consumers: the server's tailer (→ SSE fan-out) and `review wait`, which polls
@@ -26,16 +26,16 @@ export const EVENT_NAMES = [
   'ThreadResolved',
   'ThreadReopened',
   // A record marked done, and taken back — the lifecycle beside the verdict.
-  // Two names for the reason the two pairs above
-  // give, and a third reason of their own: **either actor may append one**, so
-  // a consumer watching for "the AI finished something" reads the name and the
-  // scope rather than unpacking a payload to find out which way it went.
+  // Two names for the reason the two pairs above give, and a third reason of
+  // their own: **either actor may append one**, so a consumer watching for "the
+  // AI finished something" reads the name and the scope rather than unpacking a
+  // payload to find out which way it went.
   'RecordResolved',
   'RecordReopened',
-  // The same axis, one position further out: a
-  // record put out of the way, and brought back. A name per act again, and the
-  // pair is **human-only** where the two above take either actor — so the name
-  // is also what tells a consumer that a person did this.
+  // The same axis, one position further out: a record put out of the way, and
+  // brought back. A name per act again, and the pair is **human-only** where
+  // the two above take either actor — so the name is also what tells a consumer
+  // that a person did this.
   'RecordArchived',
   'RecordUnarchived',
   /**
@@ -46,14 +46,14 @@ export const EVENT_NAMES = [
    * came back.
    *
    * **`LabelUnretired` is a name and not the absence of one**
-   * (`r-retire-burns-a-word`): un-retire is symmetric with
-   * retire, the same way `RecordUnarchived` is with `RecordArchived`, and the
-   * row saying a word came back into the vocabulary is exactly as much of the
-   * audit trail as the row saying it left.
+   * (`r-retire-burns-a-word`): un-retire is symmetric with retire, the same way
+   * `RecordUnarchived` is with `RecordArchived`, and the row saying a word came
+   * back into the vocabulary is exactly as much of the audit trail as the row
+   * saying it left.
    *
    * **These are the only events in the set with no scope at all.** A definition
-   * is global — which is why it is edited on a settings page — so there is
-   * no session, retrospective, revision or record to address them to, and
+   * is global — which is why it is edited on a settings page — so there is no
+   * session, retrospective, revision or record to address them to, and
    * `events.onRetro` therefore delivers none of them to any page. They are
    * written anyway, because the outbox is this store's audit trail: the
    * certainty that the AI cannot change things unseen is a claim these rows are
@@ -68,10 +68,10 @@ export const EVENT_NAMES = [
   'AttributeRetired',
   'AttributeUnretired',
   /**
-   * The human's permission switch, moved. Two names for the
-   * reason every pair here has two, and one of its own: a row saying the AI was
-   * *granted* config-write access is the single most interesting line in this
-   * table, and reading it should not mean parsing a payload.
+   * The human's permission switch, moved. Two names for the reason every pair
+   * here has two, and one of its own: a row saying the AI was *granted*
+   * config-write access is the single most interesting line in this table, and
+   * reading it should not mean parsing a payload.
    */
   'AiConfigWriteEnabled',
   'AiConfigWriteDisabled',
@@ -88,8 +88,7 @@ export const EVENT_NAMES = [
   'RecordAttributeCleared',
   /**
    * Two records said to belong together, and taken apart again. A name per act
-   * on the standing every pair here sets, and two
-   * reasons of its own:
+   * on the standing every pair here sets, and two reasons of its own:
    *
    * - **either actor may append one**, which this shares only with the four
    *   `Record*` lifecycle names — so a consumer watching for *"the AI found a
@@ -127,10 +126,10 @@ export const EVENT_NAMES = [
   'RequestOpened',
   'RequestResponded',
   'RequestClosed',
-  // Frozen since `r-one-finish-button`: nothing appends a
-  // `ChangesRequested` any more — the second button that raised it is gone and
-  // so is its use case. The name stays because a store written before the
-  // removal holds rows carrying it, and every reader must go on parsing one.
+  // Frozen since `r-one-finish-button`: nothing appends a `ChangesRequested`
+  // any more — the second button that raised it is gone and so is its use case.
+  // The name stays because a store written before the removal holds rows
+  // carrying it, and every reader must go on parsing one.
   'ChangesRequested',
   /** The human's side of a round is closed. Not a state change — see below. */
   'ReviewFinished',
@@ -143,12 +142,12 @@ export type EventName = (typeof EVENT_NAMES)[number]
 /**
  * `review wait` terminates on these, for its retrospective.
  *
- * **One name, since `r-one-finish-button`.** The pair mirrored the two
- * buttons the review page used to carry, and one of them was removed: there
- * should be just one button, and what happens next should be clear from the
- * content of the comments rather than from a redundant button that can be
- * pressed wrong. So the wait says only *that* the human is done, and what
- * happens next comes from what they wrote.
+ * **One name, since `r-one-finish-button`.** The pair mirrored the two buttons
+ * the review page used to carry, and one of them was removed: there should be
+ * just one button, and what happens next should be clear from the content of
+ * the comments rather than from a redundant button that can be pressed wrong.
+ * So the wait says only *that* the human is done, and what happens next comes
+ * from what they wrote.
  *
  * The old-store edge, stated: a `ChangesRequested` row written before this
  * change no longer unblocks a wait. It cannot matter in practice — such a row is

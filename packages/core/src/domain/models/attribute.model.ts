@@ -25,8 +25,8 @@ export const ATTRIBUTE_TYPES = ['number', 'text', 'url', 'date'] as const
 
 /**
  * What a value of this attribute has to look like. Four, deliberately, and the
- * set is closed by the very-fixed-types rule rather than open for a
- * fifth to be added on a hunch.
+ * set is closed by the very-fixed-types rule rather than open for a fifth to be
+ * added on a hunch.
  *
  * Every value is **stored as text**, whatever the type — SQLite has no date and
  * no separate number-or-text column, and a `number` attribute holding `'42'` is

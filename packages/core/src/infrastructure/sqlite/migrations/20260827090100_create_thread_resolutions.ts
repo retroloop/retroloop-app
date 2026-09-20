@@ -6,12 +6,11 @@ import { appendOnlyTriggers, type Migration } from '#infrastructure/sqlite/migra
  *
  * Only the human marks a thread, never the AI: the user and only the user marks
  * comments as resolved, and resolved comments appear collapsed. So this is a
- * human field, and it
- * obeys every rule a human field obeys — which is why it is a table of versions
- * rather than a column on `comment_threads`: **unresolving is a new row, never an
- * edit**, exactly as a release is a new `holds` row and an undone verdict is a
- * new `decisions` row. "Resolved at 14:02, reopened at 14:40" stays readable
- * forever.
+ * human field, and it obeys every rule a human field obeys — which is why it is
+ * a table of versions rather than a column on `comment_threads`:
+ * **unresolving is a new row, never an edit**, exactly as a release is a new
+ * `holds` row and an undone verdict is a new `decisions` row. "Resolved at
+ * 14:02, reopened at 14:40" stays readable forever.
  *
  * `resolved` is stored as 0/1 rather than as a `'resolved' | 'open'` string,
  * because there are exactly two values and neither will grow a third — the same

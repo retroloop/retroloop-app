@@ -26,11 +26,11 @@ import type { Actor } from '#domain/models/actor.model'
  * be a settings-page feature, and labels are already that feature.
  *
  * **Both actors write it**, which it shares with `record_lifecycle` and nothing
- * else — either actor may relate two records — and
- * that is why there is an `actor` column here. Every other append-only table in
- * this store is single-writer, so its author is implied by the table. Append-only
- * applies to both authors all the same: the guarantee is about immutability,
- * which is not a property of who writes.
+ * else — either actor may relate two records — and that is why there is an
+ * `actor` column here. Every other append-only table in this store is
+ * single-writer, so its author is implied by the table. Append-only applies to
+ * both authors all the same: the guarantee is about immutability, which is not
+ * a property of who writes.
  *
  * **Directed as authored, read from both sides.** One row per relation as
  * somebody entered it — never a mirror row. Reading from both sides is a
