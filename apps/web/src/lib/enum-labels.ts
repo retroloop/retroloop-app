@@ -8,14 +8,14 @@ import type { AppRouterInputs, AppRouterOutputs } from '@retro/api'
  *
  * The "what — why" strings are **canonical**: `docs/design/data-model.md` §Enum
  * option labels carries them verbatim from v2's `ticket-schemas.md`, and the
- * owner's standing rule is that the explanatory half is never dropped for
+ * standing rule is that the explanatory half is never dropped for
  * brevity — a two-line wrap is acceptable, a truncation is not. A UI may subset
  * the values; it may never contradict a label or its meaning. Change them here
  * only when that file changes.
  *
  * Solution level is the one enum that comes in two lists, and the split is the
- * subsetting rule above being used rather than an exception to it: KC-0021 cut
- * `none`, `upstream` and `undecided` from what anyone may choose, and retro 1
+ * subsetting rule above being used rather than an exception to it: `none`,
+ * `upstream` and `undecided` were cut from what anyone may choose, and retro 1
  * holds two of them. So the offered list is five and the readable list is
  * eight — with the cut values keeping the labels they always had, because what
  * they meant when they were chosen has not changed.
@@ -36,7 +36,7 @@ type Decision = AppRouterOutputs['records']['get']['decision']
 export type Severity = Decision['severity']
 /** Every level a stored decision can hold, the three legacy ones included. */
 export type SolutionLevel = Decision['solutionLevel']
-/** The five a reviewer may choose (KC-0021) — the router's own input enum. */
+/** The five a reviewer may choose — the router's own input enum. */
 export type SolutionLevelInput = NonNullable<
   AppRouterInputs['decisions']['record']['solutionLevel']
 >
@@ -52,22 +52,22 @@ export type Option<TValue> = {
 
 /**
  * **Severity is written the other way round from the two below it** — the
- * number leads, the explanation follows — and it took two retrospectives to
+ * number leads, the explanation follows — and it took two iterations to
  * land there.
  *
- * Retro 3 `r-severity-label-regression`: it is the one enum the owner addresses
- * *by number* — "sev 4", "a sev 1" — and generalising v2 #67's "what — why" rule
- * to all three enums buried that number under a sentence he had to read past on
- * every decision. The labels became `SEV1` … `SEV5` and nothing else.
+ * It is the one enum addressed
+ * *by number* — "sev 4", "a sev 1" — and generalising the "what — why" rule
+ * to all three enums buried that number under a sentence that had to be
+ * read past on every decision. The labels became `SEV1` … `SEV5` and nothing else.
  *
- * Retro 4 `r-sev-label-descriptions` refines it, after one real review of the
- * compact-only select: *"The labels for SEV1, SEV2, SEV3 etc. — they should have
- * a descriptive part also. Like: SEV1 - Some description. Also in the label
- * clarify that Sev 1 is the highest severity."* That correction had overshot —
+ * A follow-up refines it, after one real review of the
+ * compact-only select: the labels for SEV1, SEV2, SEV3 etc. needed a
+ * descriptive part too, reading as SEV1 - Some description, and the label
+ * clarifies that SEV1 is the highest severity. That correction had overshot —
  * the fix for verbose labels deleted the information instead of demoting it —
  * so the description comes back **behind** the number, short, and SEV1 says
  * outright that it is the top of the scale. The direction is nobody's intuition:
- * the products he compares against disagree about which end is worst.
+ * comparable products disagree about which end is worst.
  *
  * `rest` is the **lead of that severity's rubric row**, and nothing invented:
  * the rows are the canonical rubric of `docs/design/data-model.md` §Enum option
@@ -118,7 +118,7 @@ export const SOLUTION_LEVELS: readonly Option<SolutionLevelInput>[] = [
 ]
 
 /**
- * The three the owner cut (KC-0021) — never offered, always readable.
+ * The three later cut from selection — never offered, always readable.
  *
  * Retro 1 holds two of them, and human data is append-only: a page that could
  * not name `upstream` would render the record it is showing as a bare word, or
@@ -164,9 +164,8 @@ export type RecordSection = NonNullable<AppRouterOutputs['threads']['list'][numb
  * They did not use to. The card wrote its own headings at the `Section` call
  * sites and nothing else needed them, because a comment was rendered inside the
  * section it answered — the reader could see which section they were in. Then
- * the owner moved every comment to the panel (*"Replace inline comments in retro
- * body with comments in the side panel … This enables human to see all comments
- * in one place"*), and a thread that has left its section has to say which
+ * every comment moved to the side panel, so a human can see all comments in
+ * one place, and a thread that has left its section has to say which
  * section it left. Two copies of "Agreed direction" is one copy too many.
  *
  * Keyed by `RecordSection`, so the compiler refuses a map missing one of the
@@ -178,7 +177,7 @@ export type RecordSection = NonNullable<AppRouterOutputs['threads']['list'][numb
  * panel needs a word for it.
  *
  * `direction` and `footprint` keep their words for the same reason `solutions`
- * gained one: a record filed before the owner's multi-solution design still
+ * gained one: a record filed before the multi-solution design still
  * renders those two sections, and a thread filed on one still has to say which
  * section it left.
  */

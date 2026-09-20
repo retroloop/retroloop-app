@@ -3,7 +3,7 @@ import type { AppRouterOutputs } from '@retro/api'
 import { reviewCrumbs } from '../src/lib/review-crumbs'
 
 /**
- * The review trail, both ways round (KC-0020).
+ * The review trail, both ways round.
  *
  * `session create --project` is optional now, so a retro whose session never
  * carried a project is the ordinary case — and the page has to read the same
@@ -15,7 +15,7 @@ type Retro = AppRouterOutputs['retros']['get']
 
 const RETRO: Retro = {
   retroId: 1,
-  session: { id: 12, cwd: '/Users/haider/Developer/retro', startedAt: '2026-08-24T09:00:00.000Z' },
+  session: { id: 12, cwd: '/Users/sample/Developer/retro', startedAt: '2026-08-24T09:00:00.000Z' },
   project: 'retro',
   title: 'The lock file that outlived its process',
   retroNumber: 3,

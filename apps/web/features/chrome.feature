@@ -5,17 +5,16 @@ Feature: Page chrome
   been built on yet are placeholders rather than inventions
   (route contract: docs/design/ui.md).
 
-  Since retro-13 r-menu-dropdown the chrome holds exactly two things: what this
-  product is, and where else you can go. The theme control that used to sit on
-  the right is not a third — it went under Settings › Appearance (r-theme-under-
-  settings), and the last scenario here is what says the choice made there is the
-  whole app's rather than that page's.
+  The chrome holds exactly two things: what this product is, and where else
+  you can go. The theme control that used to sit on the right is not a third
+  — it went under Settings › Appearance, and the last scenario here is what
+  says the choice made there is the whole app's rather than that page's.
 
-  # Session 11, the owner: "The breadcrumbs shouldn't be in the top menu it
-  # should be somewhere below it." The name stayed in the menu and the trail went
-  # under it, so these two scenarios are what "below it" means in pixels rather
-  # than in prose — the first that the menu still says what the product is, the
-  # second that the trail is genuinely under the menu and not in it.
+  # The breadcrumbs move out of the top menu to somewhere below it, while the
+  # name stays in the menu. These two scenarios are what "below it" means in
+  # pixels rather than in prose — the first that the menu still says what the
+  # product is, the second that the trail is genuinely under the menu and not
+  # in it.
   Scenario: The dashboard states the app name in the top menu and carries no trail
     Given the reviewer opens "/"
     Then the top menu names the app "Retroloop"
@@ -79,16 +78,14 @@ Feature: Page chrome
     Then the page is in the "light" theme
     And the browser reported no console errors
 
-  # retro-13 r-menu-dropdown, the owner with the shadcn dropdown-menu docs open:
-  # "Also, move the menu items under a single dropdown in the top right — something
-  # that can be done using the dropdown menu."
+  # The menu items move under a single dropdown in the top right, built with
+  # the shadcn dropdown-menu component.
   #
   # Three claims, and the record made all three: the menu is in the top right, it
   # holds these two items in this order, and each item is a real link — which is
-  # what his "so open-in-new-tab works" comes down to and is why the table reads
-  # hrefs. The absence beside it is counted rather than named: what he asked is
-  # that nothing is left loose up there, not that two particular testids went
-  # away.
+  # why open-in-new-tab works and why the table reads hrefs. The absence beside
+  # it is counted rather than named: nothing is left loose up there, not that
+  # two particular testids went away.
   Scenario: Global navigation is one dropdown in the top right, with nothing loose beside it
     Given the reviewer opens "/"
     Then the top menu carries no loose navigation links
@@ -114,15 +111,13 @@ Feature: Page chrome
       | Records  | /records  |
       | Settings | /settings |
 
-  # The starved-menu certification (retro-11 r-menu-close-budget-stall-edge, the
-  # owner's selected L3; re-aimed at this menu by retro-13
-  # r-starvation-budget-vs-parallelism after #7 retired the header's theme
-  # toggle). #5 asked for a scenario that drives a deterministically starved menu
-  # close so the waits around it are proven rather than described — "without it a
-  # budget move is exactly the uncertifiable edit the lane refused to make". #18
-  # dropped the budget move itself in favour of the project boundary, so nothing
-  # here moves a budget: this is what says the ones already there are sized for the
-  # mechanism rather than for a healthy laptop, and it is red when they are not.
+  # The starved-menu certification drives a deterministically starved menu
+  # close so the waits around it are proven rather than described — without
+  # it, a budget move would be an edit nothing could certify. This scenario
+  # itself does not move a budget: it is what says the ones already there are
+  # sized for the mechanism rather than for a healthy laptop, and it is red
+  # when they are not. It was re-aimed at this menu after the header's theme
+  # toggle was retired.
   #
   # The renderer is starved by Chromium's own CPU throttle rather than by the
   # main-thread hold review.feature's landing scenario uses, and the choice was
@@ -130,7 +125,7 @@ Feature: Page chrome
   # close commit inside one, between two of the harness's acts; the throttle slows
   # the close by a factor instead, so the waits actually spend budget and a budget
   # that is too small is red rather than lucky. Both engines' numbers are in the
-  # step docstrings and the lane report.
+  # step docstrings.
   #
   # The throttle is applied FIRST, before the menu is opened: the open, the close
   # and the navigation after it are all starved, so all three of this scenario's

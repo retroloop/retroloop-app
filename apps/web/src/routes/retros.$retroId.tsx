@@ -42,19 +42,19 @@ type ReviewSearch = {
   /**
    * `?record=<rid>` — the record a link is pointing at.
    *
-   * With `&view=history` it is one record across revisions, Tier 2 (KC-0012),
-   * and still a stub. On its own it is the **anchor** a link into this page
+   * With `&view=history` it is one record across revisions, Tier 2, and
+   * still a stub. On its own it is the **anchor** a link into this page
    * carries, so arriving here arrives *at the record* rather than at the top of
    * a review that may hold a dozen of them.
    *
-   * **Who sends it changed in session 9, and the ruling behind it moved.** It
+   * **Who sends it changed, and the ruling behind it moved.** It
    * was the flat records page's rows, on rulings A6/A7 — no per-record detail
-   * page, this page is a record's detail view and there is no other one. The
-   * owner reversed that on first contact: *"when I go to the records page and
-   * click on a record, it takes me to the retro page. each record should have
-   * it's own dedicated page."* So a row goes to `/records/:globalId` now, and
+   * page, this page is a record's detail view and there is no other one. That
+   * reversed on first contact: clicking a record on the records page used to
+   * take the reader to the retro page, but each record now has its own
+   * dedicated page. So a row goes to `/records/:globalId` now, and
    * the sender of this anchor is that page's own link back to the review — the
-   * *"option to go to the retro page"* he asked it for. The mechanism is
+   * way to go to the retro page it asked for. The mechanism is
    * unchanged; what is upstream of it is not.
    */
   readonly record?: string
@@ -62,8 +62,7 @@ type ReviewSearch = {
 }
 
 /**
- * **`validateSearch` narrows the type; it does not police the value** (retro-13
- * `r-validatesearch-narrows-not-polices`).
+ * **`validateSearch` narrows the type; it does not police the value.**
  *
  * The comments this route carried used to read as though what this function
  * leaves out never reaches the page. It does: measured on two independently
@@ -166,7 +165,7 @@ function Review({ retroId }: { retroId: number }) {
   const comments = useReviewComments(retroId)
   /**
    * `?record=<rid>` on its own is the anchor a link into this review carries —
-   * the record page's link back to it, since session 9. With `view=history` it
+   * the record page's link back to it. With `view=history` it
    * means the Tier 2 stub below instead, which is a page of its own and has
    * nothing to scroll to.
    */
@@ -193,7 +192,7 @@ function Review({ retroId }: { retroId: number }) {
    *
    * Per revision, which is the whole point: the retro's own `finishedAt` is the
    * AI's close and stays null through every round but the last, so it could
-   * never have answered "has he finished the one I am looking at?".
+   * never have answered "has the human finished the one being looked at?".
    */
   const roundFinished = retro.data.revisions.find((meta) => meta.n === revision)?.finishedAt != null
   /**
@@ -255,7 +254,7 @@ function Review({ retroId }: { retroId: number }) {
          * also all that G1 adds — no revision line, no counts, no timestamps.
          * The pending count in particular stays where it already is: the
          * pending chip on the decision bar carries it live, and it is the only
-         * place that does since session 7 took the review's box away — a second
+         * place that does since an earlier redesign took the review's box away — a second
          * copy in the header would be a number to keep in agreement.
          */}
         <header className="flex flex-col gap-1">
@@ -294,19 +293,21 @@ function Review({ retroId }: { retroId: number }) {
                 column, and `flex-1` with nothing to stop it hands that room to
                 the prose the moment the comment rail is not there — 992px of
                 line length on every retrospective filed before review-level
-                comments, which is every closed review the owner revisits.
+                comments, which is every closed review a reviewer revisits.
                 Capped, the column runs from 704px at the breakpoint itself to
                 768px once the page has stopped widening; the room a rail is not
                 using stays empty, and the column does not move when a rail
                 arrives.
 
-                768 rather than the 736 it was: session 9 widened both rails, and
+                768 rather than the 736 it was: an earlier change widened both
+                rails, and
                 the page's own measure grew by more than the two of them together
                 so the prose gained rather than paid for them.
 
-                Session 10 widened the rails again and this cap did **not** move,
-                which is the whole of `r-wider-page-for-panels` — *"all of it
-                should go to the left index panel and the right comments panel"*.
+                A later change widened the rails again and this cap did **not**
+                move, which is the whole of the wider-breakpoint tradeoff: all
+                of the extra width goes to the left index panel and the right
+                comments panel.
                 The measure grew by exactly what the two rails took, so the band
                 the column runs in is the same 704–768 it was; what changed is
                 the width at which it enters that band. The reading column's
@@ -317,12 +318,12 @@ function Review({ retroId }: { retroId: number }) {
                 and nothing to cap: the reading column is the page, as it was. */}
             <div className="flex min-w-0 flex-1 flex-col gap-5 wide:max-w-[48rem]">
               {/**
-               * The bar the owner asked for: the filter on the left, the
+               * The bar's design: the filter on the left, the
                * review's one act on the right, stuck under the header rather
                * than scrolling away with the first record. The act was a
-               * bordered box at the end of this column until session 7 — *"I
-               * want the box at the bottom … removed and just add a button next
-               * to the filters"* — so it is passed in here rather than rendered
+               * bordered box at the end of this column until an earlier
+               * redesign removed it in favor of a button next to the
+               * filters — so it is passed in here rather than rendered
                * below, and the filter's own landing target moved with it.
                */}
               <RecordFilterBar
@@ -356,13 +357,13 @@ function Review({ retroId }: { retroId: number }) {
 
             {/**
              * The review's own surface — the round as a whole rather than any
-             * one record in it (retro 3 `r-retro-level-comments`), and **one
-             * surface and not two** (retro 4 `r-remove-requests`: *"we can just
-             * have the comments at the review level. I can add one individual
-             * request per comment."*).
+             * one record in it, and **one
+             * surface and not two**: comments at the review level cover the
+             * same need, with one individual request addressable per
+             * comment.
              *
              * It shipped as a full-width panel here, above the first record,
-             * and retro 4 `r-review-actions-pinned` took it out of the reading
+             * and a later fix took it out of the reading
              * column: a composer at the top of the page costs a scroll up and a
              * scroll back for every mid-list ask, and costs the fold whether it
              * is used or not. Beside the column it costs neither.
@@ -375,11 +376,11 @@ function Review({ retroId }: { retroId: number }) {
              * history everywhere else should not be the one place still
              * offering to write.
              *
-             * Session 7 made it the *only* comments surface: it lists every
-             * thread of the retrospective, record-level included, because the
-             * owner asked to stop hunting for them down the reading column —
-             * *"Replace inline comments in retro body with comments in the side
-             * panel … This enables human to see all comments in one place."* It
+             * An earlier redesign made it the *only* comments surface: it
+             * lists every thread of the retrospective, record-level
+             * included, replacing inline comments in the retro body with
+             * comments in the side panel — so a human can see all comments
+             * in one place. It
              * takes the revision's records so a record thread can say which
              * record it hangs on, and the filter's `jumpTo` so saying it is one
              * click from getting there — the same landing an index entry uses,

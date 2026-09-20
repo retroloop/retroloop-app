@@ -44,11 +44,9 @@ function RecordRoute() {
 }
 
 /**
- * One record, on a page of its own — the owner's session-9 ask, verbatim: *"when
- * I go to the records page and click on a record, it takes me to the retro page.
- * each record should have it's own dedicated page. note that all pages should
- * have consistent width and overall layout. the record page sure should give me
- * option to go to the retro page."*
+ * One record, on a page of its own — each record has its own dedicated
+ * page, with a consistent width and overall layout, and a way to go to the
+ * retro page.
  *
  * **The URL is the global number**, which is the one name a record has that is
  * not a pair. `(retroId, rid)` is what addresses a record everywhere inside the
@@ -59,18 +57,19 @@ function RecordRoute() {
  *
  * **It reverses a standing ruling** (A6/A7). Until now the review page was a
  * record's only detail view and the flat page's rows landed on it with
- * `?record=`; the owner read that as a bug the first time he used it — clicking
- * a record took him to a retrospective. The anchor mechanism did not go away: it
- * is what the link *out* of this page uses, so leaving here for the review lands
- * on this record rather than at the top of a round holding a dozen of them.
+ * `?record=`; that used to read as a bug the first time it was used —
+ * clicking a record led to a retrospective. The anchor mechanism did not
+ * go away: it is what the link *out* of this page uses, so leaving here
+ * for the review lands on this record rather than at the top of a round
+ * holding a dozen of them.
  *
- * **What is not here.** No comments — *"let's leave out the comments for now"*.
+ * **What is not here.** No comments — they are left out of this page.
  * No settings: the vocabularies are global and are managed at `/settings`, so
  * this page offers the labels a store has and never the ability to invent one.
  * No decision controls: a verdict is given inside its review, against a revision
  * the reviewer chose, and offering one here would be a second place to decide a
  * record. No revision picker and no history diff — this page is the record as it
- * stands, and one record across every revision is Tier 2 (KC-0012). No severity
+ * stands, and one record across every revision is Tier 2. No severity
  * or involvement dials: they are the verdict's values, judged where the verdict
  * is given.
  */
@@ -114,20 +113,20 @@ function RecordPage({ id }: { id: number }) {
        * same measure for the same reason: the page grew to 1536px at `wide` for
        * three columns, and prose handed all of it runs to a line length a UI
        * review already called a defect once. It sits at the left rather than
-       * centred, because the whole of the owner's width rule is that content
+       * centred, because the whole of the width rule is that content
        * starts where content starts — the breadcrumb above it does, the
        * dashboard's rows do, and a column centred under a left-aligned trail
        * would be this page disagreeing with every other one.
        *
-       * FOR HIS REVIEW: below `wide` the column is the page, as everywhere
+       * Below `wide` the column is the page, as everywhere
        * else; above it the room a rail would use stays empty, because this page
        * has no rails.
        */}
       <div className="flex min-w-0 flex-col gap-5 wide:max-w-[48rem]">
         <header className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            {/* The number in the whole ledger — the same one the row he
-                clicked showed, and the one in the URL he can send. */}
+            {/* The number in the whole ledger — the same one the row that
+                was clicked showed, and the one in the URL that can be sent. */}
             <span className="meta-mono" data-testid="record-num">
               #{page.globalId}
             </span>
@@ -140,7 +139,7 @@ function RecordPage({ id }: { id: number }) {
             <DecisionStateTag state={page.decision.state} />
             <LifecycleTag status={page.lifecycle.status} />
             {/**
-             * And whether anybody is on it right now (RL-50) — a third thing
+             * And whether anybody is on it right now — a third thing
              * that is true about the record, beside the two axes rather than on
              * either of them: a claimed record is still open and still carries
              * the verdict the review gave it.
@@ -187,11 +186,10 @@ function RecordPage({ id }: { id: number }) {
         </header>
 
         {/**
-         * **What the record wears and what it carries** — the owner's session-10
-         * pair, and the surface his migrate story actually happens on: *"on
-         * completion of the retro they may actually want to move everything into
-         * GitHub right away … they could actually put a label that says
-         * 'migrated'"*.
+         * **What the record wears and what it carries** — a pair, and the
+         * surface the migrate story actually happens on: on completion of
+         * the retro, records may move into GitHub right away, wearing a
+         * label that says 'migrated'.
          *
          * Both work on a **closed** retrospective, like the lifecycle controls
          * below them and for the same reason — that is when this gets used.
@@ -214,8 +212,8 @@ function RecordPage({ id }: { id: number }) {
         />
 
         {/**
-         * **What this record was said to have to do with other records** (the
-         * owner's session-11 ask), in the band that already answers *data about
+         * **What this record was said to have to do with other records**,
+         * in the band that already answers *data about
          * this record*: between what it carries and the evidence behind its
          * resolve.
          *

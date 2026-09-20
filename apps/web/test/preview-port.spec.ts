@@ -3,12 +3,12 @@ import { expect, test } from '@playwright/test'
 import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '../preview-port.ts'
 
 /**
- * Retro 3 `r-web-port-collision` and retro 7 `r-suite-runs-contend`. The preview
+ * The preview
  * server this suite drives used to bind the literal 24302 in every checkout, so
  * two worktrees could not verify at once; then it was derived from the checkout
  * alone, so two *runs* in one worktree could not either — the second died on
  * `--strictPort`, or worse, both ran and starved each other into rotating
- * timeouts that looked like a flaky lane.
+ * timeouts that looked like a flaky run.
  *
  * The derivation is what these assert. That it *works* is asserted by the run
  * itself — this file is in the `meta` project of the same config whose
@@ -18,20 +18,20 @@ import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '
 
 /** Where the lanes of one session actually live, plus the checkout they came from. */
 const CHECKOUTS = [
-  '/Users/haider/Developer/retro',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-a',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-b',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-c',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-d',
-  '/Users/haider/Developer/retro/.claude/worktrees/harbor',
-  '/Users/haider/Developer/retro-review-3',
+  '/Users/sample/Developer/retro',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-a',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-b',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-c',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-d',
+  '/Users/sample/Developer/retro/.claude/worktrees/hangar',
+  '/Users/sample/Developer/retro-mirror-3',
 ]
 
 /** Eighty consecutive pids, which is what runs started seconds apart get. */
 const PIDS = Array.from({ length: 80 }, (_, step) => 1000 + step)
 
 /**
- * The retro-7 claim, and the reason the pid is in there at all: a second run in
+ * The claim, and the reason the pid is in there at all: a second run in
  * a worktree that is already running one does not take the port out from under
  * it.
  *
@@ -56,7 +56,7 @@ test('gives two runs in one worktree their own ports', () => {
 })
 
 /**
- * The retro-3 claim, which the pid must not have cost: the checkout is still in
+ * The claim, which the pid must not have cost: the checkout is still in
  * the hash, so the lanes of one session do not contend.
  *
  * Counted over the same pids rather than asserted at one of them, because seven

@@ -1,7 +1,7 @@
 Feature: Revisions arriving under a reviewer
 
   The AI files revisions while a human is reading one. The page announces them
-  and does not move (KC-0005), because a verdict has to bind to the content the
+  and does not move, because a verdict has to bind to the content the
   reviewer actually read — and when they do move, a decision follows the content
   it was given for (D2 carry-over).
 
@@ -51,7 +51,7 @@ Feature: Revisions arriving under a reviewer
       | pending | 4 |
 
   # The reply lands in the comments panel, which is where every comment on the
-  # retrospective is read since session 7 — and behind the reply count the panel
+  # retrospective is read — and behind the reply count the panel
   # keeps replies behind, so the open is part of the scenario rather than an
   # implementation detail of the step.
   Scenario: An AI reply arrives in a thread the reviewer is reading

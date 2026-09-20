@@ -49,9 +49,7 @@ Given('the reviewer opens the settings page', async ({ page }) => {
 })
 
 /**
- * The vertical section list the owner asked for (retro-13
- * `r-settings-vertical-tabs`): *"shadcn comes with vertical tabs, use that to
- * implement something like this."*
+ * The vertical section list, built with shadcn's vertical tabs.
  *
  * It asserts the item it pressed is the selected one before returning — a nav
  * whose state the reader cannot see is a nav they cannot trust, and every act
@@ -111,9 +109,9 @@ Then('the settings sections read, in order:', async ({ page }, table: DataTable)
 
 /**
  * What one section says is behind it, before the reader presses it — asserted as
- * the whole literal, `Labels (3)`, because that is exactly what he asked for
- * (retro-13 `r-bracketed-counts`): *"the count needs to be in brackets like
- * 'Labels (1)' instead of 'Labels 1'."* A step that read the number on its own
+ * the whole literal, `Labels (3)`, because that is exactly the rule: the
+ * count needs to be in brackets like
+ * 'Labels (1)' instead of 'Labels 1'. A step that read the number on its own
  * would pass on the bare form this replaced, which is the one state this
  * assertion exists to catch.
  *
@@ -140,14 +138,15 @@ Then('the settings sections read:', async ({ page }, table: DataTable) => {
  * a page styled into a row would still carry it, so on its own it proves the
  * keyboard and not the layout. The geometry is the other half: the nav's items
  * stack (each below the last, all sharing a left edge) and the whole nav sits to
- * the **left** of the panel it switches, which is his ask in pixels — *"a left
- * vertical nav of sections … content on the right"*. On its own that would pass a
+ * the **left** of the panel it switches, which is the design rule in
+ * pixels — a left vertical nav of sections with the content on the right.
+ * On its own that would pass a
  * CSS column whose arrow keys still went sideways.
  *
  * **This is a position assertion, so it is hand-run with the behaviour deleted**
  * (`r-uncontrolled-assertions`) — flexbox stacks children for free in more than
  * one configuration, which is exactly how a toothless layout assertion ships
- * green. The plant and its failure output are in the lane report.
+ * green. The plant and its failure output are recorded with the suite's own evidence.
  */
 Then('the settings nav is vertical', async ({ page }) => {
   await expect(page.getByTestId('settings-nav')).toHaveAttribute('aria-orientation', 'vertical')
@@ -422,7 +421,7 @@ Then('the dark mode setting reads {string}', async ({ page }, option: string) =>
  * clicked — it is over when the listbox has finished leaving.
  *
  * Same two conditions the app menu's own step waits on, and the account of why —
- * including what retro-13 `r-starvation-budget-vs-parallelism` measured and could
+ * including what a follow-up measurement checked and could
  * not reproduce on `radix-ui` 1.6.7 — is written once, there
  * (`chrome.steps.ts` §followAppMenuItem), not copied here.
  */

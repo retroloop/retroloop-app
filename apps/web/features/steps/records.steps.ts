@@ -78,9 +78,9 @@ Given('the reviewer opens the records page of a fresh install', async ({ page })
 })
 
 /**
- * The row is the way to the record, and since session 9 the record is on a page
- * of its own — the owner's *"each record should have it's own dedicated page"*.
- * It used to land on the record's review page instead (A6/A7), which is what he
+ * The row is the way to the record, and the record is now on a page
+ * of its own, each record having its own dedicated page.
+ * It used to land on the record's review page instead (A6/A7), which was
  * read as a bug.
  *
  * The wait is on the record's heading being in the document and nothing more:
@@ -134,12 +134,12 @@ When('the reviewer filters to the requester {string}', async ({ page }, party: s
  * The step is over when the panel is out of the document and the page takes
  * presses again — the same two conditions `chrome.steps.ts` §followAppMenuItem
  * waits on, and the account of *why* lives there rather than in a second copy
- * here. Read it before trusting either: retro-13
- * `r-starvation-budget-vs-parallelism` measured the swallowed-press hazard both
+ * here. Read it before trusting either: a follow-up measurement checked the
+ * swallowed-press hazard both
  * of these comments used to assert and could not reproduce it on `radix-ui`
  * 1.6.7, where the layer releases the body before it unmounts.
  *
- * Exported since session 10, for `labels.steps.ts`: the label filter is a fourth
+ * Exported for `labels.steps.ts`: the label filter is a fourth
  * group in this same panel, and a second copy of this helper would be a second
  * chance to get the Radix dismissal wrong in one of them.
  */
@@ -206,8 +206,7 @@ Then('the {string} lifecycle chip is pressed', async ({ page }, status: string) 
 })
 
 /**
- * Nothing narrowed, counted across every chip rather than checked on one
- * (retro-13 `r-validatesearch-narrows-not-polices`).
+ * Nothing narrowed, counted across every chip rather than checked on one.
  *
  * A junk `?lifecycle=` seeds a predicate no row satisfies and presses no chip,
  * so the pair this sits in is what discriminates: the corpus is whole AND the
@@ -581,8 +580,8 @@ async function lifecycleChipLooks(page: Page): Promise<ChipLook[]> {
  *
  * There is no row to scope inside here — the page *is* one record — so the
  * lifecycle controls, the evidence block and the timeline are all reached
- * directly. That is also why those testids stopped saying `records-row-` in
- * session 9: they name a record's lifecycle, and a record has one on two
+ * directly. That is also why those testids stopped saying `records-row-`:
+ * they name a record's lifecycle, and a record has one on two
  * surfaces now (`record-lifecycle.tsx`).
  */
 function timelineEntries(page: Page): Locator {
@@ -601,8 +600,8 @@ Given('the reviewer opens record {int} directly', async ({ page }, id: number) =
 })
 
 /**
- * The way to the retrospective the owner asked this page for — *"the record page
- * sure should give me option to go to the retro page."* A client-side
+ * The way to the retrospective this page offers — a way to go to the retro
+ * page. A client-side
  * navigation, so the world survives it, and the wait is on the review's own
  * chrome rather than on the landing, which the next step asks about.
  */

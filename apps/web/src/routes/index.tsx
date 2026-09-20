@@ -19,16 +19,16 @@ import { useTRPC } from '@/lib/trpc'
 export const Route = createFileRoute('/')({ component: Dashboard })
 
 /**
- * **The dashboard, as the owner composed it.**
+ * **The composed dashboard.**
  *
- * Session 11 ran a three-way design bake-off and he liked none of it. Session 12
- * ran a direction round instead — three variations on one throwaway endpoint,
- * charts chosen against his real store rather than against fixtures — and this is
- * the composition he ruled for: *primarily "The Control Room"*, with two pieces
- * borrowed from the other two variations and two of the Control Room's own blocks
- * removed.
+ * An earlier design bake-off found nothing worth keeping whole. A direction
+ * round ran instead — three variations on one throwaway endpoint,
+ * charts chosen against real data rather than against fixtures — and this is
+ * the composition that was settled on: primarily "The Control Room", with
+ * two pieces borrowed from the other two variations and two of the Control
+ * Room's own blocks removed.
  *
- * **The order, top to bottom, is his:**
+ * **The order, top to bottom:**
  *
  * 1. **The menu**, which is now the shell's own and holds nothing of this page's:
  *    direction 7 collapsed the two loose links this route used to hang in the
@@ -45,14 +45,14 @@ export const Route = createFileRoute('/')({ component: Dashboard })
  * 6. **The diary** — the Work Diary's session cards, with direction 4's relative
  *    dates and global retro ids.
  *
- * **Removed by his ruling, entirely:** *"What The Open Queue Costs"* (the
- * solution-level donut) and *"Which End Is Being Neglected"* (the severity radar).
+ * **Removed, entirely:** "What The Open Queue Costs" (the
+ * solution-level donut) and "Which End Is Being Neglected" (the severity radar).
  * Deleted, not hidden — an unreachable chart is code that keeps compiling for
  * nobody.
  *
  * **What this replaced.** The previous dashboard led with a records block whose
- * own docstrings argued from *"132 records"* and *"twelve retrospectives"* —
- * measured in session 11 and stale within a week (the store is 154 and 14). Those
+ * own docstrings argued from "132 records" and "twelve retrospectives" —
+ * a count that went stale within a week (the store is 154 and 14). Those
  * numbers are gone with the block, and nothing here restates a count in prose: a
  * figure that lives in a comment is a figure that goes stale silently, and this
  * page is now read by four components that all count the same rows through
@@ -94,7 +94,7 @@ function Dashboard() {
         /**
          * Only ever true on a fresh install: a retrospective is what this product
          * makes, and nothing deletes one. So it says the one true thing and stops
-         * — an onboarding panel here is a panel the owner sees once and every
+         * — an onboarding panel here is a panel seen once and every
          * later reader never sees at all.
          *
          * Keyed on the retrospectives and not on the corpus, because a store can
@@ -127,8 +127,8 @@ function Dashboard() {
             />
             {/**
              * Counts open records whose involvement is `interactive`. The wire
-             * widening this needed was the owner's call, taken against the
-             * tradeoffs — the whole account is on `requireHumanInTheLoop`.
+             * widening this needed weighed real tradeoffs — the whole account
+             * is on `requireHumanInTheLoop`.
              */}
             <StatTile
               testId="stat-requires-human"

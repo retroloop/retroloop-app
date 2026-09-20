@@ -10,8 +10,7 @@ const bddTestDir = defineBddConfig({
 
 /**
  * Derived from this checkout's path and this run's pid, not written down
- * (`preview-port.ts`, retro 3 `r-web-port-collision` and retro 7
- * `r-suite-runs-contend`): the literal 24302 that used to be here meant two
+ * (`preview-port.ts`): the literal 24302 that used to be here meant two
  * worktrees could not verify at the same time, and the path alone meant two runs
  * in one worktree could not either — both died on `--strictPort` for a reason
  * that had nothing to do with the change under test.
@@ -28,13 +27,13 @@ const baseURL = `http://127.0.0.1:${PREVIEW_PORT}`
  * chosen by: **it sits on the wide side of the geometry, well clear of the
  * breakpoint.** `Desktop Chrome` brings 1280×720, which used to be exactly where
  * the review's third column became possible — the default sat on the breakpoint
- * and every unstated scenario read the wide layout by one pixel. Session 9 moved
- * the breakpoint to 1344 and this default was set to 1440×900 so that the next
+ * and every unstated scenario read the wide layout by one pixel. The
+ * breakpoint moved to 1344 and this default was set to 1440×900 so that the next
  * change to the geometry would move the scenarios that chose their width rather
  * than all the ones that didn't.
  *
- * **That change came in session 10 and it caught the laptop.**
- * `r-wider-page-for-panels` widened both rails, which moved the breakpoint with
+ * **A later change caught the laptop.**
+ * The rails widened, which moved the breakpoint with
  * them to 92rem / 1472px (`lib/side-panel.ts`), and 1440 is below it: on the
  * laptop the review is now one column with both panels behind their glyphs. Left
  * alone, the default would have silently handed the whole suite the narrow layout
@@ -44,7 +43,7 @@ const baseURL = `http://127.0.0.1:${PREVIEW_PORT}`
  * 1536×960 is the width at which the three columns close flush against the
  * measure, and the width the feature files name wherever they need the wide layout
  * now. That the laptop is no longer one of those widths is the geometry's doing
- * and is flagged for the owner, not decided here.
+ * and is flagged for review, not decided here.
  *
  * It is one object shared by both browser projects below rather than two literals:
  * the serialized project differs from the parallel bulk in **when it runs and how
@@ -56,9 +55,8 @@ const desktop = { ...devices['Desktop Chrome'], viewport: { width: 1536, height:
 
 /**
  * The membership mark for the serialized starvation project — the tag a scenario
- * carries when it **starves the renderer on purpose** (retro-13
- * `r-starvation-budget-vs-parallelism`, the owner's selected solution 2;
- * `docs/design/testing.md` §The stall edge holds the criteria).
+ * carries when it **starves the renderer on purpose** (`docs/design/testing.md`
+ * §The stall edge holds the criteria).
  *
  * The mechanism, measured rather than argued. A scenario in this class stops its
  * own renderer painting — by holding the page's main thread, or by throttling the
@@ -123,9 +121,9 @@ export default defineConfig({
      * dependency, so the whole project is reachable on its own:
      *
      * That number is hand-maintained and nothing checks it — it read 331 when the
-     * bulk was 330, was corrected in session 13, and had gone stale again by five
-     * before this line was next read in the same session. Two lanes adding
-     * scenarios is all it takes. `bunx playwright test --list` is the authority;
+     * bulk was 330, was corrected once, and had gone stale again by five
+     * before this line was next read. Two workers adding
+     * scenarios at once is all it takes. `bunx playwright test --list` is the authority;
      * this is a reader's sense of scale and should be treated as one:
      *
      *   cd apps/web && bun run test --project=starved --no-deps

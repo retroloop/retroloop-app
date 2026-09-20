@@ -19,8 +19,8 @@ import { useTRPC } from '@/lib/trpc'
  * this function returns — a URL naming a lifecycle state that does not exist is
  * a URL with no filter in it, not an error page.
  *
- * **What this does NOT do is stop the junk reaching the page** (retro-13
- * `r-validatesearch-narrows-not-polices`). It was measured on this very route:
+ * **What this does NOT do is stop the junk reaching the page.** It was
+ * measured on this very route:
  * the validator runs, returns `{}` for `?lifecycle=nonsense`, and
  * `Route.useSearch()` answers `nonsense` anyway — `validateSearch` narrows the
  * TYPE and does not police the VALUE. What this function is, is the *type*; the
@@ -41,10 +41,10 @@ export const Route = createFileRoute('/records')({
 })
 
 /**
- * Every record of every retrospective, flat — the owner's session-8 ask: *"I
- * want a page that shows all the retro items flat with filtering. the goal is
- * for me to see all the items irrespective of the session or retro or cwd in one
- * place list. that said, i will need filters to narrow down."*
+ * Every record of every retrospective, flat — a page that shows all the
+ * retro items flat with filtering, so every item shows irrespective of the
+ * session or retro or cwd it happened in, all in one place, narrowed down
+ * with filters.
  *
  * Newest first, which is the order `records.listAll` sends and this page does
  * not second-guess: retro id descending, and each retrospective's records in the
@@ -72,7 +72,7 @@ function RecordsPage() {
    * retrospective and keeps itself current from that retrospective's event
    * stream; this page is scoped to all of them, `events.onRetro` is per-retro,
    * and a flat cross-retro page therefore has nothing single to subscribe to
-   * (F1's finding; A9 is the lead's ruling that no cross-retro scope gets
+   * (F1's finding; A9 is the ruling that no cross-retro scope gets
    * invented for v1). So the two signals it does have are the ones it uses: it
    * invalidates after its own writes, and it asks again when the reader comes
    * back to the tab — which is exactly when the AI, working in its own process,

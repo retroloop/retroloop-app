@@ -2,8 +2,8 @@
  * A moment, as a reader reads it — **relative while it is still recent, absolute
  * once it is not.**
  *
- * The owner's word on the diary view (session-12 direction 4): *"the dates should
- * be relative when they are not too far off."* The two halves of that sentence
+ * The rule for the diary view (direction 4): dates are relative when they
+ * are not too far off. The two halves of that rule
  * are both instructions. "Relative" is the near case, because the reading the
  * diary is arranged for is "what was I doing in the last few days" and
  * "yesterday" answers it in one word where "Aug 26, 2026, 6:22 AM" makes the

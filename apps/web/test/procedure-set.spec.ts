@@ -17,9 +17,9 @@ import { MOCK_PROCEDURE_PATHS, type ProcedurePath } from './trpc-mock'
  * **Two levels, always.** `ProcedurePath` is `${namespace}.${procedure}`, so a
  * nested sub-router would make this list disagree with `_def.procedures` on the
  * server side — `records.lifecycle.set` keys as three segments there and as the
- * unreachable `records.lifecycle` here. That is why the session-8 lifecycle
+ * unreachable `records.lifecycle` here. That is why the lifecycle
  * write is `records.setLifecycle` and not the `records.lifecycle.set` the design
- * brief sketched — and why session 10's toggle is `settings.setAiConfigWrite`
+ * brief sketched — and why the AI-config toggle is `settings.setAiConfigWrite`
  * rather than a `settings.aiConfigWrite.set` that would have read better and
  * broken this list.
  */

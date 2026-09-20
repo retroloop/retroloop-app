@@ -56,7 +56,7 @@ test('the end of a round refetches the retrospective, either way it went', () =>
 })
 
 /**
- * **The in-progress marker, going up and coming down** (RL-50).
+ * **The in-progress marker, going up and coming down.**
  *
  * Both land on the everything-else branch, and here that default is the whole
  * mechanism rather than a fallback: the badge is drawn from `records.list`, so

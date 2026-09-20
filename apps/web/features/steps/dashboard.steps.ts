@@ -243,7 +243,8 @@ Then(
  * A position assertion, so it is shown to fail rather than trusted
  * (`r-uncontrolled-assertions`) — a column lays itself out top-to-bottom for
  * free, which is exactly how an assertion like this ships green while proving
- * nothing. Its plant is in the lane report. Fully above, not merely higher: the
+ * nothing. Its plant is tested and recorded with the suite's own evidence.
+ * Fully above, not merely higher: the
  * number's bottom edge clears the label's top, which a two-pixel drift could
  * satisfy the weaker way.
  */
@@ -466,9 +467,9 @@ Then('the page does not scroll sideways', async ({ page }) => {
 
 /**
  * These three belong to `chrome.feature` and live here because the dashboard is
- * the page it opens them on. They survived the session-12 recomposition
- * unchanged: nothing in the owner's ruling went near the header, which is
- * direction 7 and a separate lane.
+ * the page it opens them on. They survived the dashboard's recomposition
+ * unchanged: nothing in that redesign went near the header, which is
+ * direction 7 and separate work.
  */
 Then('the top menu names the app {string}', async ({ page }, name: string) => {
   await expect(page.getByTestId('app-brand')).toHaveText(name)
@@ -487,7 +488,7 @@ Then('the page carries no trail', async ({ page }) => {
  * A position assertion, so it is shown to fail rather than trusted: the browser
  * lays out a document top-to-bottom for free, which is exactly how an assertion
  * like this ships green while proving nothing (`r-uncontrolled-assertions`). Its
- * plant is in the lane report.
+ * plant is tested and recorded with the suite's own evidence.
  */
 Then('the trail sits below the top menu', async ({ page }) => {
   const menu = await page.getByTestId('app-brand').boundingBox()

@@ -8,7 +8,7 @@ type Retro = AppRouterOutputs['retros']['get']
  * The review page's trail: `Retro › [project ›] Session S › Retro #n · Rev k`.
  *
  * The project crumb appears only when the session carries one. `project` went
- * optional and dormant in KC-0020 — one project routinely holds several
+ * optional and dormant — one project routinely holds several
  * software packages, so it was the wrong unit, and nothing routes or groups by
  * it any more — which makes "no project" the ordinary case rather than a
  * degraded one. It is not a link even when present: data-model.md keeps it a

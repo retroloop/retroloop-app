@@ -11,7 +11,7 @@
  *    `retroListRowSchema` carries no retro-level timestamp; the single instant
  *    on the row is `session.startedAt`, served since the schema existed and
  *    rendered nowhere until now. A per-retro time would be a wire widening,
- *    which is a two-package change and not this lane's.
+ *    which is a two-package change and out of scope here.
  * 2. **`retroNumber` counts per session.** "Retro #1" is only a true statement
  *    about a retrospective once its session is named beside it — which is why
  *    the identity line always carried both. Grouping puts the session where it
@@ -67,7 +67,7 @@ function startedAtKey(stamp: SessionStamp): number {
  * in the order they happened.
  *
  * **The two orders run opposite ways on purpose.** Sittings descend — the work
- * he did last is the work he is looking for, and a diary that opened at the
+ * done last is the work being looked for, and a diary that opened at the
  * beginning of the project would be a diary nobody scrolls. Retrospectives
  * inside a sitting ascend by `retroNumber`, because within one sitting they are
  * a sequence rather than a feed: a chapter reads forward even when the shelf

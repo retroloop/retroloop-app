@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test'
 import { relativeWhen } from '../src/lib/relative-when'
 
 /**
- * Direction 4's relative half — *"the dates should be relative when they are not
- * too far off"* — proved **here rather than in the browser**, and the reason is a
- * flake this lane nearly shipped.
+ * Direction 4's relative half — dates are relative when they are not
+ * too far off — proved **here rather than in the browser**, and the reason is a
+ * flake that nearly shipped.
  *
  * The diary's dates come from the mock's `FIXED_TIME`, a constant
  * (`2026-08-24T09:00:00.000Z`). A scenario asserting the rendered form would have

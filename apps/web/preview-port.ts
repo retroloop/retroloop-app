@@ -3,30 +3,29 @@ import { fileURLToPath } from 'node:url'
 
 /**
  * The port `vite preview` binds, derived from the checkout it is running in and
- * the run that is driving it (retro 3 `r-web-port-collision`, retro 7
- * `r-suite-runs-contend`).
+ * the run that is driving it.
  *
  * It used to be the literal 24302, written into `playwright.config.ts` and into
  * two package scripts. One number for every checkout of the repo means two
  * worktrees cannot verify at the same time: the second `bun run gate` dies on
- * `--strictPort` partway through the web suite, so a lane that is finished
- * waits on a lane that is not, for a reason that has nothing to do with either.
+ * `--strictPort` partway through the web suite, so a worktree that is finished
+ * waits on one that is not, for a reason that has nothing to do with either.
  *
  * The absolute path of the checkout is the one thing that is stable across a
  * worktree's whole life and different between any two of them — a branch name
  * is neither. So the port is a hash of it.
  *
  * That isolates worktrees, and the unit that actually contends is the *run*:
- * session 8 put a reviewer's suite and the lead's gate in one lane worktree at
- * once, both derived the same port from the same path, and two gate runs on a
- * green tip failed a rotating scenario each — 216/217, twice, against a lane
- * that was never wrong. So the run's own process id is hashed in beside the
- * path. Two runs in one tree are two pids and two ports; the class is gone
- * rather than scheduled around, bar the one time in eighty that eighty ports
- * hands the same number to both.
+ * two processes — one running a suite, another running the gate — in one
+ * worktree at once, both derived the same port from the same path, and two
+ * gate runs on the same commit failed a rotating scenario each, twice,
+ * though neither run was wrong. So the run's own process id is hashed in
+ * beside the path. Two runs in one tree are two pids and two ports; the class
+ * is gone rather than scheduled around, bar the one time in eighty that
+ * eighty ports hands the same number to both.
  *
  * The range sits clear of every port brief-001 §Ports allocates by hand — the
- * server, the dev server, the harbor reference, the old preview port, and the
+ * server, the dev server, the reference build, the old preview port, and the
  * review round. A stale worktree still previewing on 24302 is the collision most
  * likely to actually happen, so it is ruled out rather than merely made unlikely.
  */
@@ -62,8 +61,8 @@ export function derivePort(checkout: string, pid: number): number {
 
 /**
  * The ports nothing derived may land on: brief-001 §Ports hands each of these to
- * something by name — 24100 the server, 24300 `dev`, 24301 the harbor reference,
- * 24302 the preview port this replaces, 24310 the owner's review round.
+ * something by name — 24100 the server, 24300 `dev`, 24301 the reference build,
+ * 24302 the preview port this replaces, 24310 the review round.
  */
 export const RESERVED_PORTS: readonly number[] = [24100, 24300, 24301, 24302, 24310]
 
