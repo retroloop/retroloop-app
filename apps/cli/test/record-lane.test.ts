@@ -11,12 +11,12 @@ afterAll(removeTempStages)
  * history it searches, and the marker it puts up while it works.
  *
  * These assertions are the public contract: the plugin shells out and reads
- * exactly these keys, so breaking one is a major version (KC-0003). `toEqual` on
- * whole objects rather than a few properties is deliberate — an extra key is a
- * change to the contract too, and it should have to be written down here before
- * it ships. Each shape also has a **sorted key lock** beside it, because
- * `toEqual` on one fixture leaves the shape free to move on a row the fixture
- * does not happen to reach.
+ * exactly these keys, so breaking one is a major version. `toEqual` on whole
+ * objects rather than a few properties is deliberate — an extra key is a change
+ * to the contract too, and it should have to be written down here before it
+ * ships. Each shape also has a **sorted key lock** beside it, because `toEqual`
+ * on one fixture leaves the shape free to move on a row the fixture does not
+ * happen to reach.
  */
 describe('the record lane', () => {
   let cli: Cli
@@ -130,7 +130,7 @@ describe('the record lane', () => {
       '--project',
       'retro',
       '--cwd',
-      '/Users/haider/Developer/retro',
+      '/Users/sample/Developer/retro',
       '--json',
     ])
     return result.jsonAs<{ sessionId: number }>().sessionId
@@ -152,8 +152,7 @@ describe('the record lane', () => {
 
   /**
    * The human's half of a round and the AI's close — through the App, because
-   * finishing is human-only and has no command, which is the point of it
-   * (KC-0010).
+   * finishing is human-only and has no command, which is the point of it.
    */
   async function closeReview(retroId: number): Promise<void> {
     const { records } = await app().records.list.execute({ actor: 'human', retro: { retroId } })
@@ -236,8 +235,8 @@ describe('the record lane', () => {
           diagnosticData:
             '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
             '- **The holder:** `ps 8123` — no such process.',
-          // The record's own quotes and what was done at the time (#214). Not
-          // `ownerWords`, below: that is what he wrote at review time.
+          // The record's own quotes and what was done at the time. Not
+          // `ownerWords`, below: that is what the human wrote at review time.
           humanWords: [
             {
               verbatim: 'this thing has been sitting there for ages',
@@ -246,7 +245,7 @@ describe('the record lane', () => {
             },
           ],
           workaround: 'Delete the lock file by hand.',
-          // The note he wrote with the verdict first, then what he said on the
+          // The note written with the verdict first, then what was said on the
           // record's threads — one field, because they are one thing to whoever
           // is about to act on them.
           ownerWords: ['Start with this one.', 'This cost me the whole afternoon.'],
@@ -408,7 +407,7 @@ describe('the record lane', () => {
           retro: 1,
           sessionId: 1,
           claudeSession: 'uuid-alpha',
-          cwd: '/Users/haider/Developer/retro',
+          cwd: '/Users/sample/Developer/retro',
           finishedAt: '2026-08-23T09:00:00.000Z',
           closed: true,
         },
@@ -473,20 +472,20 @@ describe('the record lane', () => {
   })
 
   /**
-   * **The words the record was filed with reach the row** (#214
-   * `r-lane-row-omits-human-words`).
+   * **The words the record was filed with reach the row**
+   * (`r-lane-row-omits-human-words`).
    *
    * A record holds two different things a reader calls "the human's words":
    * `humanWords`, the quotes the record was drafted from, and `ownerWords`, what
-   * he wrote at review time — his note with the verdict and his comments. The row
-   * carried only the second, so a team reading a record with seven quotes and no
-   * comment saw `ownerWords: []` and reported the quotes lost.
+   * the human wrote at review time — the note with the verdict and the comments.
+   * The row carried only the second, so a team reading a record with seven
+   * quotes and no comment saw `ownerWords: []` and reported the quotes lost.
    *
    * Every expectation here is read off **the draft the record was filed from**
-   * rather than off a literal copied in. #103 `r-lifecycle-projection-gap`
-   * pinned one projection against another; what nothing pinned was the
-   * projection against the record, which is how a field missing from all three
-   * commands at once stayed invisible.
+   * rather than off a literal copied in. `r-lifecycle-projection-gap` pinned
+   * one projection against another; what nothing pinned was the projection
+   * against the record, which is how a field missing from all three commands
+   * at once stayed invisible.
    */
   describe('the words the record was filed with', () => {
     type Filed = {
@@ -513,7 +512,7 @@ describe('the record lane', () => {
       const row = result.jsonAs<Row>()
 
       expect(result.code).toBe(EXIT.ok)
-      // The fixture's quote is a real one, so presence implies correctness (#54).
+      // The fixture's quote is a real one, so presence implies correctness.
       expect(filed().humanWords).toHaveLength(1)
       expect(row.humanWords).toEqual(onTheRow(filed().humanWords))
       expect(row.workaround).toBe(filed().workaround)
@@ -540,11 +539,12 @@ describe('the record lane', () => {
     })
 
     /**
-     * **The incident itself.** `r-flaky-test` is record 200's shape: quotes on the
-     * record, and not one word from him at review time. Its `ownerWords` is `[]`
-     * and that is true — and it says nothing about what he said in the session.
+     * **The incident itself.** `r-flaky-test` has this shape: quotes on the
+     * record, and not one word from the human at review time. Its `ownerWords`
+     * is `[]` and that is true — and it says nothing about what was said in the
+     * session.
      */
-    test('a record he never commented on still carries what he said', async () => {
+    test('a record nobody commented on still carries what was said', async () => {
       const row = (
         await cli.run(['record', 'get', String(idOf('r-flaky-test')), '--json'])
       ).jsonAs<Row>()
@@ -554,7 +554,7 @@ describe('the record lane', () => {
     })
 
     /** Two fields, two meanings, neither folded into the other. */
-    test('keeps his review-time words and the record’s quotes apart', async () => {
+    test('keeps the review-time words and the record’s quotes apart', async () => {
       const row = (
         await cli.run(['record', 'get', String(idOf('r-stale-lock')), '--json'])
       ).jsonAs<Row>()
@@ -887,14 +887,14 @@ describe('the record lane', () => {
   })
 
   /**
-   * **The lifecycle acts take the number too** (retro 20
-   * `r-brief-record-resolve-line`). The queue and `record get` hand out
-   * `#globalId`s, and until this a manager holding one had to read the record a
-   * second time, for its rid and its retrospective, before it could resolve it —
-   * `resolve` was the one act in the brief's block addressed differently from
-   * its neighbours. A rid can never be all digits (`ridSchema`), so the two
-   * forms cannot be confused, and the number form needs no `--retro`: the number
-   * names its retrospective on its own.
+   * **The lifecycle acts take the number too** (`r-brief-record-resolve-line`).
+   * The queue and `record get` hand out `#globalId`s, and until this a caller
+   * holding one had to read the record a second time, for its rid and its
+   * retrospective, before it could resolve it — `resolve` was the one act in the
+   * brief's block addressed differently from its neighbours. A rid can never be
+   * all digits (`ridSchema`), so the two forms cannot be confused, and the
+   * number form needs no `--retro`: the number names its retrospective on its
+   * own.
    */
   describe('record resolve / reopen by #globalId', () => {
     test('resolve takes the number, needs no --retro, and clears the claim in the same breath', async () => {

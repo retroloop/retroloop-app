@@ -5,11 +5,11 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 /**
  * `label list`, `label create`, `label rename`, `label retire`,
  * `label unretire` — **the AI's transport for the label vocabulary**, and the
- * surface OWNER RULING 2 is actually about.
+ * surface the configuration-write switch is actually about.
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
+ * The config page carries a toggle the human can enable to give the AI the
+ * ability to update the configs; while it is disabled, the human can be certain
+ * the AI cannot change them.
  *
  * This file is the "AI" in that sentence. The CLI writes as the AI and only as
  * the AI — there is no `--actor` here to get wrong — so with the switch off
@@ -21,14 +21,13 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * anything else that opens the store (`config-write.service.ts`).
  *
  * **There is deliberately no way to put a label on a record from here.** That
- * write is human-only this session whatever the switch says — the switch governs
- * the *configuration*, and whether the AI may ever mark up its own draft records
- * is one of the four opens the owner's ruling did not reach. The house shape for
- * a human-only write is a use-case refusal and no CLI surface at all, which is
- * what `threads.resolve` and `review.finish` do; the one deliberate departure is
- * `record archive`, which is offered *and refused* because it sits on the same
- * command as an act the AI uses constantly. Nothing here sits beside such an act,
- * so nothing here is offered to be refused.
+ * write is human-only whatever the switch says — the switch governs the
+ * *configuration*, and whether the AI may ever mark up its own draft records is
+ * still open. The house shape for a human-only write is a use-case refusal and no
+ * CLI surface at all, which is what `threads.resolve` and `review.finish` do; the
+ * one deliberate departure is `record archive`, which is offered *and refused*
+ * because it sits on the same command as an act the AI uses constantly. Nothing
+ * here sits beside such an act, so nothing here is offered to be refused.
  *
  * **Addressed by name, not by id.** The browser lists definitions and holds ids,
  * and an id survives a rename; what an agent has in hand is the word it read in
@@ -37,12 +36,12 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * the same comparison that refuses a duplicate, so `label retire Migrated` finds
  * the label the settings page created as `migrated` (`definition.service.ts`).
  *
- * **`unretire` is here because the product has it** (retro-11
- * `r-retire-burns-a-word`), not because an agent wanted a fourth act: the rule
- * this file follows is that the CLI offers exactly what the settings page
- * offers, and the page grew an un-retire on retired rows. It is a definition
- * write like the other three, so the same switch governs it and an exit 5 while
- * that switch is off is the same real answer.
+ * **`unretire` is here because the product has it** (`r-retire-burns-a-word`),
+ * not because an agent wanted a fourth act: the rule this file follows is that
+ * the CLI offers exactly what the settings page offers, and the page grew an
+ * un-retire on retired rows. It is a definition write like the other three, so
+ * the same switch governs it and an exit 5 while that switch is off is the same
+ * real answer.
  */
 export function registerLabelCommand(
   cli: Argv<GlobalOptions>,
@@ -169,9 +168,9 @@ export function registerLabelCommand(
           { id: label.id, name: label.name, retiredAt: label.retiredAt ?? null },
           () =>
             // Not a delete, and the line says so: the records that wear it go on
-            // wearing it. Reversible since retro-11 `r-retire-burns-a-word`, and
-            // the line says that too — a reader who has just mis-pressed this is
-            // exactly the reader who needs to know.
+            // wearing it. Reversible (`r-retire-burns-a-word`), and the line
+            // says that too — a reader who has just mis-pressed this is exactly
+            // the reader who needs to know.
             `Retired "${label.name}"; it is no longer offered, the records wearing it keep it, and \`label unretire "${label.name}"\` brings it back`,
         )
       }),

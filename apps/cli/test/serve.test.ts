@@ -33,7 +33,7 @@ function writeLock(cli: Cli, info: Partial<LockInfo> = {}): string {
 
 const hostAddresses = () => TEST_HOST_ADDRESSES
 
-/** `startServer` is the listener; what it serves is the API's business (item 5). */
+/** `startServer` is the listener; what it serves is the API's business. */
 const echo = () => new Response('served by the retro CLI', { status: 200 })
 
 describe('startServer', () => {
@@ -311,7 +311,7 @@ describe('up', () => {
     expect(loopback.json()).not.toHaveProperty('lanUrl')
     expect(loopback.json()).toMatchObject({ url: 'http://localhost:24100' })
     // A server on one named interface does not answer on loopback, so `url` — the
-    // link that gets handed over — is the address that does (record #207).
+    // link that gets handed over — is the address that does.
     expect(lan.json()).toMatchObject({
       url: 'http://192.168.1.9:24100',
       lanUrl: 'http://192.168.1.9:24100',

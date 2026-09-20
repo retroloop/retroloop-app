@@ -161,8 +161,8 @@ export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRu
     // Synchronous on purpose, straight to fds 1 and 2. `bin.ts` ends the process
     // with `process.exit` the moment `run` returns, and while these wrote with
     // `process.stdout.write`, every `--json` answer over 128 KiB reached a reader
-    // on a pipe cut at exactly 131,072 bytes — exit 0, nothing on stderr (retro 22
-    // `r-cli-json-cut-at-128k-on-pipe`; measured under Bun 1.4.0). A writer added
+    // on a pipe cut at exactly 131,072 bytes — exit 0, nothing on stderr
+    // (`r-cli-json-cut-at-128k-on-pipe`; measured under Bun 1.4.0). A writer added
     // beside these two has to keep the property; `test/bin-stdout-pipe.test.ts`
     // reads the real binary through a real pipe.
     out: overrides.out ?? ((line) => writeAllSync(1, `${line}\n`)),

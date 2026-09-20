@@ -9,14 +9,14 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * that matters:
  * gated by the same switch in the same place, addressed by name for the same
  * reason, and offering no way to put a **value** on a record because that write
- * is human-only this session.
+ * is human-only.
  *
  * Two differences, and both are the type:
  *
- * - `create` takes one, from the four the owner's ruling closed the set at
- *   (*"very fixed types and not … too many configs"*). The choices come off the
- *   core enum rather than being spelled out again, so `--help` shows what the
- *   model will actually accept.
+ * - `create` takes one, from the four the set is deliberately closed at: a few
+ *   fixed types rather than an open-ended configuration surface. The choices
+ *   come off the core enum rather than being spelled out again, so `--help`
+ *   shows what the model will actually accept.
  * - **there is no retype**, here or anywhere. Every value already stored was
  *   accepted under the type the definition carries, and this store never
  *   rewrites what somebody wrote; retiring the attribute and creating the one

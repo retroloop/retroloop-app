@@ -7,11 +7,11 @@ afterAll(removeTempStages)
 
 /**
  * `label` and `attribute` — the AI's transport for the two vocabularies, and the
- * surface OWNER RULING 2's switch actually governs (testing.md suite 3).
+ * surface the configuration-write switch actually governs (testing.md suite 3).
  *
- * > *"In the config page add a toggle that the user can enable to give the AI
- * > the ability to update the configs. Otherwise, if it is disabled, the user
- * > can be certain that the AI cannot mess around."*
+ * The config page carries a toggle the human can enable to give the AI the
+ * ability to update the configs; while it is disabled, the human can be certain
+ * the AI cannot change them.
  *
  * **The CLI is the AI**, always: there is no `--actor` on any command in this
  * product, so every write below is the actor that switch is about. That is what
@@ -54,10 +54,9 @@ describe('the vocabularies, from the CLI', () => {
         ['label', 'rename', 'migrated', '--to', 'moved'],
         ['label', 'retire', 'migrated'],
         // Un-retire is a definition write like the other three, so the switch
-        // governs it identically (retro-11 `r-retire-burns-a-word`). An act
-        // that could put a word back into the vocabulary while the switch was
-        // off would be a hole in *"the user can be certain that the AI cannot
-        // mess around"*.
+        // governs it identically (`r-retire-burns-a-word`). An act that could
+        // put a word back into the vocabulary while the switch was off would be
+        // a hole in the certainty that the AI cannot change the configuration.
         ['label', 'unretire', 'migrated'],
         ['attribute', 'create', 'ticket', '--type', 'number'],
         ['attribute', 'rename', 'ticket', '--to', 'issue'],
@@ -84,8 +83,8 @@ describe('the vocabularies, from the CLI', () => {
      * names above answer to nothing and it does not matter: the guard is the
      * first act inside the transaction, so a rename of a label that does not
      * exist is refused by the switch rather than by a NotFound wearing its
-     * clothes. It is also what makes "the AI cannot mess around" mean the AI
-     * cannot *learn* anything by trying.
+     * clothes. It is also what makes the guarantee mean the AI cannot *learn*
+     * anything by trying.
      */
     test('nothing was written on the way to being refused', async () => {
       await cli.run(['label', 'create', 'migrated', '--json'])
@@ -176,7 +175,7 @@ describe('the vocabularies, from the CLI', () => {
     })
 
     /**
-     * **The round trip, through the transport the AI actually drives** — retro-11
+     * **The round trip, through the transport the AI actually drives** —
      * `r-retire-burns-a-word`. The `--json` answer carries `retiredAt: null`
      * rather than dropping the field, so a script can read "offered again"
      * without branching on absence, and the id is the id the definition was
@@ -331,11 +330,11 @@ describe('the vocabularies, from the CLI', () => {
    * stating rather than a gap: there is no command that puts a label on a record
    * or sets a value on one.
    *
-   * Those writes are human-only this session whatever the switch says — the
-   * switch governs the *configuration*, and whether the AI may ever mark up its
-   * own draft records is one of the four opens the owner's ruling did not reach.
-   * The house shape for a human-only write is a use-case refusal and no CLI
-   * surface at all (`threads.resolve`, `review.finish`), and this follows it.
+   * Those writes are human-only whatever the switch says — the switch governs
+   * the *configuration*, and whether the AI may ever mark up its own draft
+   * records is still open. The house shape for a human-only write is a use-case
+   * refusal and no CLI surface at all (`threads.resolve`, `review.finish`), and
+   * this follows it.
    *
    * `record archive` is the one deliberate departure in the product — offered
    * *and* refused, because it sits on the same command as `record resolve`,

@@ -6,12 +6,12 @@ import { createApp, openSqliteStore } from '@retro/core'
 import { aRevisionDraft } from './support/harness'
 
 /**
- * **What this file is allowed to take on a loaded machine** (retro 7
- * `r-cli-suite-load-fragile`).
+ * **What this file is allowed to take on a loaded machine**
+ * (`r-cli-suite-load-fragile`).
  *
  * Every test here spawns real `bun run` processes against a real SQLite file,
  * so its cost is process startup plus the work — and process startup is the part
- * that stretches when three lanes are building at once. The record asked for an
+ * that stretches when several builds run at once. The record asked for an
  * explicit budget sized to that machine rather than an implicit default, and
  * these are the three budgets that decide the outcome:
  *
@@ -85,8 +85,8 @@ async function seedStage(): Promise<{ home: string; dataDir: string; retroId: nu
 }
 
 /**
- * `review wait` unblocks on a write from another process (BACKLOG item 4's
- * done-when; realtime.md §CLI waiting).
+ * `review wait` unblocks on a write from another process (realtime.md
+ * §CLI waiting).
  *
  * This is the one thing the in-process suite cannot show. Two real processes, one
  * real SQLite file, no server between them: the waiting CLI learns that the review
@@ -166,8 +166,8 @@ async function waitForLock(dataDir: string): Promise<void> {
 }
 
 /**
- * `review wait --follow` against a **real running server** (retro 10
- * `r-monitor-not-realtime`).
+ * `review wait --follow` against a **real running server**
+ * (`r-monitor-not-realtime`).
  *
  * This is the scenario the record is about, and the only place the whole chain
  * is real: three processes and no fakes anywhere — a `retro serve` with its
@@ -246,10 +246,10 @@ test(
       expect(event.via).toBe('stream')
       // An upper bound that includes the waiter's own process teardown, and not
       // a performance assertion: what it asserts is that this is not the
-      // 20-second class the record was filed about. Measured over 12 runs while
-      // this lane was written — 234-262 ms, median ~250 — so the bound sits
-      // roughly twenty times above what was observed, which is the room a
-      // loaded machine needs and still four times under the sleep it replaced.
+      // 20-second class the record was filed about. Measured over 12 runs —
+      // 234-262 ms, median ~250 — so the bound sits roughly twenty times above
+      // what was observed, which is the room a loaded machine needs and still
+      // four times under the sleep it replaced.
       expect(elapsedMs).toBeLessThan(5_000)
     } finally {
       server.kill('SIGTERM')

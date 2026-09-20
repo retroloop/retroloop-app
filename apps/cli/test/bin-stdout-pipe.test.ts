@@ -6,8 +6,8 @@ import { createApp, openSqliteStore } from '@retro/core'
 import { aRevisionDraft } from './support/harness'
 
 /**
- * **A `--json` answer reaches a pipe whole, whatever its size** (retro 22
- * `r-cli-json-cut-at-128k-on-pipe`).
+ * **A `--json` answer reaches a pipe whole, whatever its size**
+ * (`r-cli-json-cut-at-128k-on-pipe`).
  *
  * `bin.ts` ends the process with `process.exit` the moment `run` returns. While
  * the default writer was `process.stdout.write`, anything past the first
@@ -30,11 +30,11 @@ import { aRevisionDraft } from './support/harness'
  * and red a third time on a loop that did not expect `EAGAIN` from a full pipe —
  * `writeAllSync` in `src/runtime.ts` says what the writer has to do and why.
  *
- * Budgets are explicit, as in `wait-across-processes.test.ts` (retro 7
- * `r-cli-suite-load-fragile`): this file spawns real `bun run` processes and
+ * Budgets are explicit, as in `wait-across-processes.test.ts`
+ * (`r-cli-suite-load-fragile`): this file spawns real `bun run` processes and
  * process startup is what stretches on a loaded machine. And every failure
  * message carries the child's stderr, so an early crash does not read as a byte
- * mismatch or a timeout (retro 16 `r-cli-test-swallows-child-stderr`).
+ * mismatch or a timeout (`r-cli-test-swallows-child-stderr`).
  */
 const BUDGET_MS = 120_000
 const CLEANUP_MS = 30_000

@@ -34,9 +34,9 @@ const DONE_OF_ACTION: Record<LifecycleAction, string> = {
  *
  * Refused rather than coerced, and the message names the shape it wanted: the
  * commonest mistake here is reaching for a rid, because a rid is what the
- * lifecycle acts are addressed by (`resolve` and `reopen` take either form
- * since retro 20 `r-brief-record-resolve-line`; `lifecycleAddress` below) — so
- * the refusal has to say which of the two names this act uses, and why.
+ * lifecycle acts are addressed by (`resolve` and `reopen` take either form,
+ * `r-brief-record-resolve-line`; `lifecycleAddress` below) — so the refusal has
+ * to say which of the two names this act uses, and why.
  */
 function globalId(value: string | undefined, action: string, which?: string): number {
   const parsed = Number(value)
@@ -77,44 +77,43 @@ type RecordArgs = {
  * the AI tell "the human approved this" from "the human approved an earlier
  * version of this", which is the difference that decides whether to touch it.
  *
- * It leads with `#globalId`, which is the number the human is looking at when he
- * says "do 47 first" — the per-retro `num` he used to see restarted at 1 in every
- * retrospective, which is the reading he called weird. Both numbers are in the
- * `--json` shape, along with the rid every write is still addressed by.
+ * It leads with `#globalId`, which is the number the human is looking at when
+ * they say "do 47 first" — the per-retro `num` they used to see restarted at 1
+ * in every retrospective, which reads oddly. Both numbers are in the `--json`
+ * shape, along with the rid every write is still addressed by.
  *
- * There were `held` and `holdNote` fields beside them for one session and there
- * are not any more (retro 4 `r-remove-hold`). "Not to be picked up without me"
- * is `involvement`, which the human sets with the verdict.
+ * There were `held` and `holdNote` fields beside them once (`r-remove-hold`) and
+ * there are not any more. "Not to be picked up without me" is `involvement`,
+ * which the human sets with the verdict.
  *
  * `--state hold` still filters, and still finds nothing on any store written
  * since `r-hold-semantics`: a decision made before it keeps that state forever.
- * `--state revise` is the live one to reach for after a finish (retro 4
- * `r-verdict-revise`): it lists the records the human asked to see rewritten,
+ * `--state revise` is the live one to reach for after a finish
+ * (`r-verdict-revise`): it lists the records the human asked to see rewritten,
  * which are the ones the next revision has to address.
  *
- * `record resolve` and `record reopen` — **the AI's half of the lifecycle axis**
- * (the owner, session 8: *"once the AI fixes those issues, we should have a way
- * to … show that this issue was resolved, we should be able to specify a commit
- * id or github issue or something as reference so that it is easy to see"*).
+ * `record resolve` and `record reopen` — **the AI's half of the lifecycle
+ * axis**: once the AI has fixed an issue there has to be a way to show that the
+ * issue was resolved, and to name a commit id or a GitHub issue as the reference
+ * that makes it easy to see.
  *
- * **Both take the `#globalId` as well as the rid** (retro 20
- * `r-brief-record-resolve-line`): the queue and `record get` hand out numbers,
- * and the manager holding one was reading the record a second time for its rid
- * and its retrospective before it could resolve it. A number needs no `--retro`
- * — it names its retrospective on its own — and the write is still addressed
- * `(retroId, rid)` underneath (`lifecycleAddress`).
+ * **Both take the `#globalId` as well as the rid** (`r-brief-record-resolve-line`):
+ * the queue and `record get` hand out numbers, and a caller holding one was
+ * reading the record a second time for its rid and its retrospective before it
+ * could resolve it. A number needs no `--retro` — it names its retrospective on
+ * its own — and the write is still addressed `(retroId, rid)` underneath
+ * (`lifecycleAddress`).
  *
  * This is the transport for the AI's writes, the way every AI write in this
  * system reaches the store: in-process, against the same SQLite file, never
- * through the server (KC-0004). The human's half of the same use case is
+ * through the server. The human's half of the same use case is
  * `records.setLifecycle` over tRPC, and the row records which of them wrote it —
  * this is the one table in the store with an `actor` column, because it is the
  * one both of them write.
  *
  * `record archive` and `record unarchive` — **the human's half, and they are
- * refused here.** The owner kept the archive pair for himself (session 9:
- * *"the user should be able to unarchive … if a user wants, they can just
- * archive it"*), so `SetRecordLifecycleUseCase` rejects the `ai` actor on those
+ * refused here.** Archiving and unarchiving a record are the human's to
+ * perform, so `SetRecordLifecycleUseCase` rejects the `ai` actor on those
  * two acts and the CLI writes as `ai` and nothing else.
  *
  * **They are still offered, which is the departure.** The house pattern for a
@@ -133,14 +132,14 @@ type RecordArgs = {
  * thread resolution has no revision.
  *
  * The two that work keep working after the review has closed, which is the point
- * — the owner asked for lifecycle *because* the retro is finished by the time
- * anyone fixes anything.
+ * — the lifecycle axis exists *because* the retro is finished by the time anyone
+ * fixes anything.
  *
  * `record relate` and `record unrelate` — **the feature's stated purpose, and
- * the AI is the actor it was asked for** (the owner, session 11: *"both actors
- * can relate records, each relation carries how-they-relate words, and the
- * relation reads from both sides, so that AI can easily find past records and
- * build holistic solutions."*)
+ * the AI is the actor it was asked for**: both actors can relate records, each
+ * relation carries how-they-relate words, and the relation reads from both
+ * sides, so that the AI can easily find past records and build holistic
+ * solutions.
  *
  * **They are the one pair here addressed by numbers rather than by a rid**, and
  * that is not a convenience: a relation names two records, and `(retroId, rid)`
@@ -152,9 +151,9 @@ type RecordArgs = {
  * inside a retrospective when the whole point is that it does not.
  *
  * `--how` is required on `relate` and refused on `unrelate`. The words are half
- * the act — *"each relation carries how-they-relate words"* — and the removal
- * row carries forward the words of the relation it takes off, so there is
- * nothing for a second set to be about.
+ * the act — each relation carries how-they-relate words — and the removal row
+ * carries forward the words of the relation it takes off, so there is nothing
+ * for a second set to be about.
  *
  * Like the lifecycle pair they take no `--revision`: a relation is not bound to
  * a draft of either record, and it outlives every redraft of both. They keep
@@ -331,7 +330,7 @@ export function registerRecordCommand(
                 /**
                  * Where the record stands *after* the review that filed it —
                  * `open`, `resolved` or `archived` — and the entry that put it
-                 * there (#103 `r-lifecycle-projection-gap`).
+                 * there (`r-lifecycle-projection-gap`).
                  *
                  * This is the read-back the AI actually makes: it resolves a
                  * batch of records through this same command and then lists them
@@ -352,14 +351,14 @@ export function registerRecordCommand(
                 },
                 /**
                  * What somebody said this record has to do with other records,
-                 * both directions (the owner's session-11 ask).
+                 * both directions.
                  *
-                 * **This is the read-back the feature exists for.** *"So that AI
-                 * can easily find past records"* is answered here or nowhere: the
-                 * AI relates a batch through `record relate` and then lists to
-                 * check the writes landed — and a listing silent about them reads
-                 * exactly like a store that refused every one, which is what #103
-                 * `r-lifecycle-projection-gap` was filed about one table over.
+                 * **This is the read-back the feature exists for.** Letting the
+                 * AI easily find past records is answered here or nowhere: the AI
+                 * relates a batch through `record relate` and then lists to check
+                 * the writes landed — and a listing silent about them reads
+                 * exactly like a store that refused every one, the same gap
+                 * `r-lifecycle-projection-gap` records one table over.
                  *
                  * Each entry carries the far record's **address** rather than its
                  * title: `retroId` and `rid` are what every other read this CLI
@@ -476,7 +475,7 @@ export function registerRecordCommand(
 
 /**
  * `record relate` / `record unrelate` — the AI relating what it has just filed to
- * what it found in the past, in its own process (KC-0004).
+ * what it found in the past, in its own process.
  *
  * Every guard here is about the shape of the *command*; the domain's guards — a
  * record related to itself, a number nothing was minted for, a record a later
@@ -836,7 +835,7 @@ async function claimRecord(
 
 /**
  * `record list --all` — **every record of every retrospective**, the history deep
- * dive (item 6).
+ * dive.
  *
  * A different command wearing the same word, and deliberately so: the plain
  * `record list` answers about one revision of one retrospective and is what the
@@ -899,8 +898,8 @@ async function oneRecord(context: CliContext, id: number): Promise<LaneRecordRow
  * Where a lifecycle act is addressed — `(retro, rid)` either way, which is the
  * address the use case takes and the one every write in the store is keyed on.
  *
- * A positional that is all digits is the record's `#globalId` (retro 20
- * `r-brief-record-resolve-line`): the number `record queue` and `record get`
+ * A positional that is all digits is the record's `#globalId`
+ * (`r-brief-record-resolve-line`): the number `record queue` and `record get`
  * hand out, looked up here to the `(retroId, rid)` it names. A rid can never be
  * all digits (`ridSchema`: `r-some-words`), so the two forms cannot be confused.
  * The lookup is the read `record get` makes, and a number nothing was minted
@@ -1020,7 +1019,7 @@ function laneRowJson(row: LaneRecordRow) {
      * was drafted from them. The export's three keys (`ExportHumanWords`), with
      * the one difference that is this function's standing rule: a quote with no
      * `context` carries `null` rather than losing the key. `[]` means he said
-     * nothing quotable, and it is not `ownerWords`, below (#214).
+     * nothing quotable, and it is not `ownerWords`, below.
      */
     humanWords: row.humanWords.map((said) => ({
       verbatim: said.verbatim,
@@ -1098,7 +1097,7 @@ function laneRowLine(row: LaneRecordRow): string {
 /**
  * The record's quotes and its workaround, as `record get` prints them — **under
  * their own names**, because a bare `“…”` line is how `ownerWords` already prints
- * and an unnamed quote is the ambiguity #214 was filed about.
+ * and an unnamed quote leaves a reader unable to tell the two apart.
  *
  * `none` rather than no line when he said nothing: a line that is not there reads
  * as "not printed", which is how `[]` came to read as "lost". They are on `get`

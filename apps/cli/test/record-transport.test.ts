@@ -8,8 +8,8 @@ import { aRevisionDraft, type Cli, createCli, removeTempStages } from './support
 afterAll(removeTempStages)
 
 /**
- * **The transport test** (RL-50 item 7) — *"the AI actor can never write a human
- * field"*, proven against the real store rather than asserted at the use case.
+ * **The transport test** — the AI actor can never write a human field, proven
+ * against the real store rather than asserted at the use case.
  *
  * The lane gives the AI three new writes: a claim, a release, and the resolve
  * that clears a claim. Each of them touches a record the human decided, in a
@@ -220,7 +220,7 @@ test('every row the AI wrote says so, in all three tables that record an actor',
 
   // Four claim rows: taken, given back, taken again, and released by the
   // resolve — every one of them the AI's, because the CLI writes as `ai` and
-  // nothing else (KC-0004).
+  // nothing else.
   expect(actors(file, 'record_claims')).toEqual(['ai', 'ai', 'ai', 'ai'])
   expect(actors(file, 'record_lifecycle')).toEqual(['ai'])
   expect(actors(file, 'record_relations')).toEqual(['ai'])

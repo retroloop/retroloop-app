@@ -9,7 +9,7 @@ import { createDefaultRuntime } from '#runtime'
 import { resolveStage } from '#stage'
 
 /**
- * Where a pre-migration snapshot lands (RL-49).
+ * Where a pre-migration snapshot lands.
  *
  * The migrator takes the snapshot; the CLI decides where it goes, and since the
  * root folder owns `backups/db/` the snapshot must leave the stage directory.

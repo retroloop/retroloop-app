@@ -291,15 +291,13 @@ async function waitForOutcome(
  * `wait` tails the events table from its own process (realtime.md §CLI waiting) —
  * no server involved, so it works when the server is down, which is the whole
  * reason capture and waiting do not depend on it. It returns on one event name
- * now (retro 4 `r-one-finish-button`): the human presses one button, and what
- * the round was *about* is read from the round, not from which button he chose.
+ * now (`r-one-finish-button`): the human presses one button, and what the round
+ * was *about* is read from the round, not from which button they chose.
  *
- * **`--follow` subscribes instead of polling** (retro 10
- * `r-monitor-not-realtime`). The owner pressed Finish and the watching agent
- * heard it seconds later — *"I pressed finish just now, why you received event
- * after a few seconds?"* — and named the fix himself: *"the app side supports
- * events, cannot the cli receive events in realtime? I mean the way UI gets
- * updated in the realtime."* It can, and this is it: `--follow` opens the
+ * **`--follow` subscribes instead of polling** (`r-monitor-not-realtime`).
+ * Under the poll a human pressed Finish and the watching agent heard it only
+ * seconds later. The app side already carries events, so the CLI can take them
+ * in realtime the same way the UI updates, and this is it: `--follow` opens the
  * server's `events.onRetro` stream, the same ~300 ms channel every open review
  * page holds, and returns the instant the finish is pushed. It degrades to the
  * poll above whenever the stream cannot deliver — no server on the stage, a
@@ -315,11 +313,11 @@ async function waitForOutcome(
  * existing forms are untouched.
  *
  * `close` is the other end of that change, and the only act on a review the AI
- * has ever had. After the wait returns, the AI reads the round — the records
- * he sent back with `revise`, the threads still waiting on an answer — and
+ * has ever had. After the wait returns, the AI reads the round — the records the
+ * human sent back with `revise`, the threads still waiting on an answer — and
  * either files the next revision or runs this, which takes the retrospective to
- * `finished` and makes the export possible. It decides nothing: it refuses
- * unless he has finished *this* revision, every record is decided, and none of
+ * `finished` and makes the export possible. It decides nothing: it refuses unless
+ * the human has finished *this* revision, every record is decided, and none of
  * them asked to be rewritten (`close-review.use-case.ts`).
  *
  * **`--any` and `list --finished` are the same two questions asked by an agent
@@ -499,7 +497,7 @@ export function registerReviewCommand(
               // every store written since `r-hold-semantics`, and a line that
               // says "0 on hold" is a line that has to be explained. The `held`
               // count that used to sit beside these is gone with the feature
-              // (retro 4 `r-remove-hold`). `revise` *is* printed — it is a live
+              // (`r-remove-hold`). `revise` *is* printed — it is a live
               // verdict, and it is the one the AI has to act on.
               `${status.counts.pending} pending, ${status.counts.approved} approved, ` +
               `${status.counts.declined} declined, ${status.counts.revise} to revise`,
@@ -531,9 +529,9 @@ export function registerReviewCommand(
         })
 
         // `via` only on the form that has two channels to choose between: the
-        // blocking and `--timeout 0` forms have answered in cli.md's four keys
-        // since item 4, and a fifth appearing under them would widen a contract
-        // every monitor script already parses.
+        // blocking and `--timeout 0` forms answer in cli.md's four keys, and a
+        // fifth appearing under them would widen a contract every monitor
+        // script already parses.
         context.output.result(
           { ...outcome, ...(follow ? { via } : {}) },
           () =>

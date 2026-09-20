@@ -6,7 +6,7 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 
 /**
  * `export` — writes `retro.export.v1`, the public contract user import scripts
- * read (KC-0007).
+ * read.
  *
  * **`--json` means two different things depending on `--out`, and it has to.**
  * cli.md says `--json` prints a receipt `{path, records, bytes}` "instead of the
@@ -17,11 +17,11 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
  * rule requires.
  *
  * **`--project` and `--session --all` are deferred, and not declared here at
- * all.** The v1 envelope describes exactly one retrospective — one `session`, one
- * `retrospective`, `additionalProperties: false` — so a project-wide export
+ * all.** The v1 envelope describes exactly one retrospective — one `session`,
+ * one `retrospective`, `additionalProperties: false` — so a project-wide export
  * cannot conform to it, and the multi-document form is a change to the public
- * contract rather than a detail of this command (cli.md marks both DEFERRED;
- * brief-001 D6 carries the proposed collection envelope).
+ * contract rather than a detail of this command (cli.md marks both DEFERRED, and
+ * the collection envelope such a form would need is still a proposal).
  *
  * Not declaring them is the point: an undeclared option is rejected by strict
  * mode as an unknown argument, which is true. A stub that accepted the flag and

@@ -25,7 +25,7 @@ export type RetroEventStreamOptions = {
  * declares `z.string().nullish()` and parses it with `parseInt`, so a number
  * there fails validation and the subscription never opens — a failure the caller
  * would only ever see as a silent fall back to polling. Measured against a real
- * `retro serve` rather than recalled (the lane report's §Measurement 1).
+ * `retro serve` rather than recalled.
  */
 export function retroEventStreamUrl(origin: string, retroId: number, lastEventId: number): string {
   const input = encodeURIComponent(JSON.stringify({ retroId, lastEventId: String(lastEventId) }))
@@ -98,7 +98,7 @@ function wasAborted(signal: AbortSignal | undefined): boolean {
 /**
  * The server's `events.onRetro` stream, as an async iterable of events —
  * **the same channel, at the same ~300 ms cadence, that updates every open
- * review page** (realtime.md; retro 10 `r-monitor-not-realtime`).
+ * review page** (realtime.md; `r-monitor-not-realtime`).
  *
  * Three endings, and the difference between them is the whole contract with
  * `review wait --follow`:

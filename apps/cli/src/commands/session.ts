@@ -4,9 +4,9 @@ import { type CliRuntime, type GlobalOptions, withContext } from '#runtime'
 /**
  * `session create` — idempotent by the Claude session UUID (cli.md).
  *
- * `--project` is optional (KC-0020): one project routinely holds several
- * software packages, so it was the wrong unit, and `--cwd` — which Claude Code
- * pins for the life of a session — is the identity that survived.
+ * `--project` is optional: one project routinely holds several software
+ * packages, so it was the wrong unit, and `--cwd` — which Claude Code pins for
+ * the life of a session — is the identity that survived.
  *
  * The output shape is exactly `{ sessionId, url }` as cli.md specifies. A
  * `created` flag would have been useful for telling a fresh registration from a

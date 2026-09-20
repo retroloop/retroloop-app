@@ -33,8 +33,7 @@ async function waitForServer(lockFile: string, timeoutMs: number): Promise<LockI
  * Readiness is the **lock file**, not an HTTP probe: `serve` writes the lock after
  * it has the stage and before it serves, and the lock carries the port it actually
  * took. Polling it means `up` reports the port that is real rather than the one it
- * asked for, and it does not depend on what the placeholder handler answers —
- * which item 5 is going to replace.
+ * asked for, and it does not depend on what the placeholder handler answers.
  *
  * No OS service yet: this starts a detached `serve`. `service install` is Tier 3.
  *

@@ -16,7 +16,7 @@ export type Environment = Readonly<Record<string, string | undefined>>
 export type Stage = {
   /** The root folder everything Retroloop owns hangs off (`~/.retroloop`). */
   readonly home: string
-  /** The data directory that *is* the stage (KC-0013), always `<home>/data`. */
+  /** The data directory that *is* the stage, always `<home>/data`. */
   readonly dataDir: string
   readonly lockFile: string
   readonly port: number
@@ -36,7 +36,7 @@ export type StageOptions = {
 }
 
 /**
- * The one root folder (RL-49).
+ * The one root folder.
  *
  * `--home` and `RETROLOOP_HOME` name the **root**, and the stage, the backups and
  * the exports are all found relative to it — so a second Retroloop (a test, a
@@ -65,11 +65,11 @@ export function resolveDataDir(options: StageOptions = {}): string {
  * its lock file — then the default. Asking the lock rather than a config file
  * means the URL describes what is running, not what someone once configured.
  *
- * The host is asked of the same lock, for the same reason: `localhost` unless
- * the running server took one named interface, which is then the only place it
- * answers and so the only link worth printing (record #207). With no server
- * running there is no bind to describe, and the link says `localhost`. Nothing
- * here chooses a bind — a start binds `--bind`, else loopback, whatever this read.
+ * The host is asked of the same lock, for the same reason: `localhost` unless the
+ * running server took one named interface, which is then the only place it answers
+ * and so the only link worth printing. With no server running there is no bind to
+ * describe, and the link says `localhost`. Nothing here chooses a bind — a start
+ * binds `--bind`, else loopback, whatever this read.
  */
 export function resolveStage(options: StageOptions = {}): Stage {
   const env = options.env ?? {}
@@ -93,7 +93,7 @@ export function resolveStage(options: StageOptions = {}): Stage {
     port,
     url,
     urlForSession: (sessionId) => `${url}/sessions/${sessionId}`,
-    // Route contract per KC-0011: /retros/:retroId?rev=k
+    // Route contract: /retros/:retroId?rev=k
     urlForRetro: (retroId, revision) =>
       revision === undefined
         ? `${url}/retros/${retroId}`
