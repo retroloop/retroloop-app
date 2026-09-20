@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://retro.local/schema/export.v1.schema.json",
-  "$comment": "ASSUMED pending owner review — brief-001 D6, distilled from docs/design/data-model.md. The public contract for `retro export --format json`; user-written import scripts read this. Breaking changes = new version (KC-0009: JSON-only export, no tracker integrations). Default export carries ALL decided records with their states; consumers filter (CLI --state approved narrows).",
+  "$comment": "The public contract for `retro export --format json`; user-written import scripts read this. Distilled from docs/design/data-model.md. Export is JSON only, with no tracker integrations, and a breaking change is a new version rather than an edit to this one. A default export carries ALL decided records with their states; consumers filter (CLI --state approved narrows).",
   "title": "retro.export.v1",
   "type": "object",
   "required": [
@@ -19,7 +19,7 @@
     "generatedAt": { "type": "string", "format": "date-time" },
     "project": {
       "type": ["string", "null"],
-      "$comment": "Nullable since KC-0020: `session create --project` is optional and nothing groups by it. Relaxed additively — every v1 document written before remains valid."
+      "$comment": "Nullable: `session create --project` is optional and nothing groups by it. Relaxed additively — every v1 document written before remains valid."
     },
     "session": {
       "type": "object",
@@ -44,7 +44,7 @@
         "title": {
           "type": ["string", "null"],
           "maxLength": 80,
-          "$comment": "Added by KC-0020: the retrospective's plain-language name, taken from the final revision. Additive — not required, so every v1 document written before remains valid."
+          "$comment": "The retrospective's plain-language name, taken from the final revision. Additive — not required, so every v1 document written before it remains valid."
         },
         "state": { "const": "finished" },
         "finishedAt": { "type": "string", "format": "date-time" },
@@ -52,7 +52,7 @@
         "finishMessages": {
           "type": "array",
           "items": { "$ref": "#/$defs/finishMessage" },
-          "$comment": "Added by r-finish-confirm-message: the human's final word on each round, written in the confirm step of the Finish button and delivered separately from the comments — a thread is a conversation the AI answers, this is a summary it reads. One entry per revision round he left one on, ascending by `revision`; a round he left none on has no entry, and `[]` is a retrospective he never wrote one for. Human-only — the AI can never write it (architecture.md \u00a7Actor model). Additive: not required, so every v1 document written before the field existed remains valid, and a consumer reading one treats an absent key as `[]`."
+          "$comment": "The human's final word on each round, written in the confirm step of the Finish button and delivered separately from the comments — a thread is a conversation the AI answers, this is a summary it reads. One entry per revision round the human left one on, ascending by `revision`; a round with none has no entry, and `[]` is a retrospective nobody wrote one for. Human-only — the AI can never write it (architecture.md \u00a7Actor model). Additive: not required, so every v1 document written before the field existed remains valid, and a consumer reading one treats an absent key as `[]`."
         },
         "reviewed": {
           "const": "human",
@@ -73,7 +73,7 @@
   "$defs": {
     "record": {
       "type": "object",
-      "$comment": "Final revision's narrative + final human decision fields. Per-record history stays queryable via CLI/UI, never exported (KC-0011).",
+      "$comment": "Final revision's narrative + final human decision fields. Per-record history stays queryable via CLI/UI and is never exported.",
       "required": [
         "rid",
         "num",
@@ -108,15 +108,15 @@
         "type": { "enum": ["issue", "feature"] },
         "state": {
           "enum": ["approved", "declined", "revise", "hold"],
-          "$comment": "Never `pending`: the finish gate refuses finishing while any record is pending (data-model.md §Retrospective). `revise` is the third verdict (retro 4 r-verdict-revise) and is admitted because the type is `Exclude<DecisionState,'pending'>` and a published contract may not be narrower than the type it serialises; no document written today carries one, because closing a review to export refuses while a record still asks to be rewritten. `hold` is read-only history since retro 3 r-hold-semantics — it left the verdict axis and became `held` below; no new document carries it, and every document written before stays valid."
+          "$comment": "Never `pending`: the finish gate refuses finishing while any record is pending (data-model.md §Retrospective). `revise` is the third verdict and is admitted because the type is `Exclude<DecisionState,'pending'>` and a published contract may not be narrower than the type it serialises; no document written today carries one, because closing a review to export refuses while a record still asks to be rewritten. `hold` is read-only history — it left the verdict axis and became `held` below; no new document carries it, and every document written before stays valid."
         },
         "held": {
           "type": "boolean",
-          "$comment": "READ-ONLY HISTORY. Added by r-hold-semantics as the lifecycle flag beside `state`; retro 4 r-remove-hold removed the feature and the builder no longer emits this key. It stays in the contract because this record object is additionalProperties:false, so dropping it would invalidate every document written while the feature existed — the same rule that keeps a `hold` verdict readable. A consumer deciding whether to pick an item up reads `involvement`. It is optional, so a document written after the removal is valid without it."
+          "$comment": "READ-ONLY HISTORY. It was once the lifecycle flag beside `state`; the feature was removed and the builder no longer emits this key. It stays in the contract because this record object is additionalProperties:false, so dropping it would invalidate every document written while the feature existed — the same rule that keeps a `hold` verdict readable. A consumer deciding whether to pick an item up reads `involvement`. It is optional, so a document written after the removal is valid without it."
         },
         "holdNote": {
           "type": ["string", "null"],
-          "$comment": "READ-ONLY HISTORY, as `held` above: why the human parked it, verbatim. Nothing writes this key since retro 4 r-remove-hold."
+          "$comment": "READ-ONLY HISTORY, as `held` above: why the human parked it, verbatim. Nothing writes this key since the hold feature was removed."
         },
         "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
         "solutionLevel": {
@@ -170,7 +170,7 @@
         "agreedDirection": {
           "type": "string",
           "minLength": 1,
-          "$comment": "READ-ONLY HISTORY, as `held`/`holdNote` are: the record's one narrative direction, on every record filed before the owner's multi-solution design replaced it with `solutions`. No longer required and no longer emitted; the contract goes on admitting it because this record object is additionalProperties:false, so dropping it would invalidate every document written while it existed — which is all five of the owner's retrospectives. Narrow the write path, never the read path (data-model.md §Hold)."
+          "$comment": "READ-ONLY HISTORY, as `held`/`holdNote` are: the record's one narrative direction, on every record filed before the multi-solution design replaced it with `solutions`. No longer required and no longer emitted; the contract goes on admitting it because this record object is additionalProperties:false, so dropping it would invalidate every document written while it existed. Narrow the write path, never the read path (data-model.md §Hold)."
         },
         "footprint": {
           "type": "string",
@@ -180,7 +180,7 @@
           "type": "array",
           "minItems": 1,
           "maxItems": 3,
-          "$comment": "What the AI proposed, one to three ways, sorted from the lowest level to the highest with exactly one recommended (the owner's multi-solution design). Present on a record filed after that change, in place of `agreedDirection` and `footprint`. Additive: not required, so every document written before it stays valid.",
+          "$comment": "What the AI proposed, one to three ways, sorted from the lowest level to the highest with exactly one recommended. Present on a record filed after the multi-solution design landed, in place of `agreedDirection` and `footprint`. Additive: not required, so every document written before it stays valid.",
           "items": {
             "type": "object",
             "required": ["bullets", "footprint", "level", "recommended"],
@@ -196,7 +196,7 @@
         "selectedSolution": {
           "type": "integer",
           "minimum": 1,
-          "$comment": "A 1-based position into `solutions`, matching the page's \"Solution N\" titles — the order of that array is the identity of a solution, so 2 means the second element and not an id of any kind, and a 0-based consumer reads the wrong one silently (retro 7, r-export-selected-solution-note). Which solution the human's verdict is for. Present exactly when `solutions` is — it is the human's answer to a question the earlier shape never asked. A reviewer who accepted the AI's recommendation is recorded here as having selected it: the selection carries the recommendation forward rather than being left empty, so a consumer never has to re-derive what was approved."
+          "$comment": "A 1-based position into `solutions`, matching the page's \"Solution N\" titles — the order of that array is the identity of a solution, so 2 means the second element and not an id of any kind, and a 0-based consumer reads the wrong one silently. Which solution the human's verdict is for. Present exactly when `solutions` is — it is the human's answer to a question the earlier shape never asked. A reviewer who accepted the AI's recommendation is recorded here as having selected it: the selection carries the recommendation forward rather than being left empty, so a consumer never has to re-derive what was approved."
         },
         "reviewerNote": {
           "type": ["string", "null"],
@@ -237,11 +237,11 @@
             "defaults",
             "review"
           ],
-          "$comment": "Record sections per data-model.md §Comment threads; `review` only inside reviewThreads. `solutions` was added with the owner's multi-solution design; `direction` and `footprint` stay because threads anchored to them exist and human comments are never deleted."
+          "$comment": "Record sections per data-model.md §Comment threads; `review` only inside reviewThreads. `solutions` was added with the multi-solution design; `direction` and `footprint` stay because threads anchored to them exist and human comments are never deleted."
         },
         "resolved": {
           "type": "boolean",
-          "$comment": "Added by r-resolvable-comments: whether the human marked this thread dealt with. Human-only — the AI can never write it (architecture.md §Actor model). Additive: not required, so every v1 document written before the flag existed remains valid, and a consumer reading one treats an absent key as `false`."
+          "$comment": "Whether the human marked this thread dealt with. Human-only — the AI can never write it (architecture.md §Actor model). Additive: not required, so every v1 document written before the flag existed remains valid, and a consumer reading one treats an absent key as `false`."
         },
         "messages": {
           "type": "array",
