@@ -17,8 +17,8 @@ import { useTRPC } from '@/lib/trpc'
  * There is exactly one caller. A record's comments used to be
  * rendered under the section they answered, by a `CommentThreads` component that
  * lived here; the side panel replaced that, so the human sees every comment in
- * one place rather than scattered through the retrospective body — so a
- * record thread and a review thread are now the same card in the same column,
+ * one place rather than scattered through the retrospective body. A record
+ * thread and a review thread are now the same card in the same column,
  * and the record thread carries a line saying where it hangs.
  */
 export type Thread = AppRouterOutputs['threads']['list'][number]

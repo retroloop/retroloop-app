@@ -48,7 +48,7 @@ export type LifecycleTarget = {
  * **No position is green**, and that is a decision rather than a palette
  * accident. `approved` is green, and an approved record that has since been
  * fixed is the single most common row on this page: two green pills side by side
- * saying two different things is exactly the "which of these is which" retro 4
+ * saying two different things is exactly the "which of these is which"
  * `r-remove-hold` was filed over. Resolved takes blue, the tone this app already
  * gives to *something happened about this*; open takes the neutral tone every
  * not-yet state wears.
@@ -302,7 +302,7 @@ function Resolve({ row }: { row: LifecycleTarget }) {
         setRefs('')
         setNote('')
         /**
-         * The page's own write is the one thing it is certain went stale
+         * The page's own write is the one thing it is certain went stale:
          * `events.onRetro` is scoped to a single retrospective and a flat
          * cross-retro page has nothing single to subscribe to, so there is no
          * live scope here to lean on and none was invented. What the page does

@@ -163,8 +163,8 @@ function prefersReducedMotion(): boolean {
 /**
  * Take a departing row from the height it is standing at down to nothing.
  *
- * **The collapse was authored as a CSS transition and never once ran** (retro 10
- * `r-collapse-never-animates`). Two independent reasons, and the record named the
+ * **The collapse was authored as a CSS transition and never once ran**
+ * (`r-collapse-never-animates`). Two independent reasons, and the record named the
  * first; the trace found the second, which would have kept the row jumping even
  * with the first fixed.
  *
@@ -462,8 +462,8 @@ export function useRecordFilter(records: readonly RecordSummary[] = NO_RECORDS):
  * One record's place in the list. It holds the scroll anchor and the departure:
  * the row collapses from its own height to nothing while it fades, so the
  * records below rise into the gap instead of jumping into it — which is a true
- * sentence since retro 10 and was not before it (`collapse` above, and
- * `r-collapse-never-animates` for the four sessions in which this comment
+ * sentence now and was not before (`collapse` above, and
+ * `r-collapse-never-animates` for the stretch in which this comment
  * described something the browser was not doing).
  *
  * The collapse itself is not here any more. It is an animation started where the

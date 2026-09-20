@@ -15,8 +15,8 @@ type LifecycleAct = Extract<Entry, { kind: 'lifecycle' }>['status']
  * `pending` is on the list because a reviewer can put a record back to pending
  * by pressing the verdict it already wears, and that press appends a version
  * like any other (`decision.model.ts`) — so it is a thing somebody did and it
- * belongs on the list of things somebody did. `hold` is on it because a store
- * written before retro 3 carries rows in that state and every reader of a
+ * belongs on the list of things somebody did. `hold` is on it because an early
+ * store carries rows in that state and every reader of a
  * verdict has to go on answering for one (`r-hold-semantics`).
  *
  * `Record<DecisionState, …>` refuses to compile with a state missing, so a

@@ -109,10 +109,10 @@ const PRESSED: Record<Verdict, string> = {
  * Declining is a verdict, not a deletion (architecture.md §Actor model): the
  * record stays, and it records that the human said no.
  *
- * A hold control sat above all of it and outside `readOnly` for one session,
+ * A hold control sat above all of it and outside `readOnly` for a while,
  * because it was not on this axis at all — and it was the one thing a finished
- * review still took. Retro 4 `r-remove-hold` removed it, so `readOnly` now
- * governs everything on this card without exception.
+ * review still took. `r-remove-hold` removed it, so `readOnly` now governs
+ * everything on this card without exception.
  */
 export function DecisionControls({
   retroId,

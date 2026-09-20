@@ -381,7 +381,7 @@ export function RecordNarrative({
 
       <Section section="root_cause" comment={commentOn('root_cause')}>
         {/**
-         * `r-incident-line-overflow` (retro 5, approved): every one of these
+         * `r-incident-line-overflow`: every one of these
          * rows is a flex pair, and a flex item's automatic minimum size is its
          * own min-content — which for a line holding a token nothing can break
          * is that whole token. Left alone the cell lays out at 1231px inside a
@@ -958,8 +958,8 @@ function SectionComment({
 
 /**
  * The two clamps a gutter row's prose cell needs so a token nothing can break
- * narrows instead of taking the line off the page (retro 5
- * `r-incident-line-overflow`). Written once and handed to all three row kinds,
+ * narrows instead of taking the line off the page
+ * (`r-incident-line-overflow`). Written once and handed to all three row kinds,
  * because the pattern copy-propagated into the third one is how the record came
  * to be filed in the first place.
  */

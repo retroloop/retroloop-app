@@ -113,8 +113,8 @@ function tally<T extends string>(
  * The lifecycle the filter opens on — the one the URL named, and only if it is
  * one this product has.
  *
- * **The router does not police what it narrows** (retro-13
- * `r-validatesearch-narrows-not-polices`, measured on two independently written
+ * **The router does not police what it narrows**
+ * (`r-validatesearch-narrows-not-polices`, measured on two independently written
  * surfaces): `/records`'s validator returns `{}` for `?lifecycle=nonsense`, and
  * `useSearch()` still answers `nonsense`. Seeded straight into the filter, that
  * junk becomes a predicate no row satisfies — 0 of 132 records, with no chip
