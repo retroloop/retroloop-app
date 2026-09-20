@@ -30,8 +30,8 @@ describe('the api package', () => {
     const source = readFileSync(SERVER, 'utf8')
 
     // `createServerRuntime` takes an App and an EventSource already open. Opening
-    // one here would mean deciding where the stage is, which is the stage owner's
-    // decision and nobody else's.
+    // one here would mean deciding where the stage is, which belongs to the
+    // composition root and nowhere else.
     //
     // Asserted a token at a time: `not.toContain` on a whole file prints the whole
     // file when it fails, and the useful half of that report is the one word.

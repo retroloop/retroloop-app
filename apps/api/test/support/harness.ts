@@ -34,16 +34,16 @@ export type ApiHarness = {
    * The human's half of one round: decide whatever is still pending, then press
    * Finish.
    *
-   * A second revision may only answer a finished round since #113
-   * `r-revision-sneaks-past-review`, so a test that wants two revisions runs the
+   * A second revision may only answer a finished round
+   * (`r-revision-sneaks-past-review`), so a test that wants two revisions runs the
    * rhythm. It approves what is pending because the finish gate wants an answer
    * on every record and these tests' subject is the wire, not the verdicts.
    */
   finishRound(retroId: number): Promise<void>
   /**
-   * The end of the loop, both halves. The human's Finish closes his side of the
-   * round and the AI's close is what finishes a retrospective (retro 4
-   * `r-one-finish-button`), so a test that needs a finished one runs both —
+   * The end of the loop, both halves. The human's Finish closes their side of
+   * the round and the AI's close is what finishes a retrospective
+   * (`r-one-finish-button`), so a test that needs a finished one runs both —
    * the second through the App, because there is no procedure for it.
    */
   closeReview(retroId: number): Promise<void>
@@ -186,7 +186,7 @@ export function createApiHarness(): ApiHarness {
         actor: 'ai',
         claudeSession,
         project: 'retro',
-        cwd: '/Users/haider/Developer/retro',
+        cwd: '/Users/sample/Developer/retro',
         branch: 'main',
         supervised: true,
       })

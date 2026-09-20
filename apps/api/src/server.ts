@@ -40,8 +40,8 @@ export type ServerRuntime = {
  * §Composition roots): it takes the stage lock *before* anything is migrated or
  * a port is bound, and it holds its two store handles for as long as the process
  * is up rather than for one command. Nothing here can do that, so nothing here
- * tries — this package hands over a mounted handler and lets the owner of the
- * stage own the listening socket. A second `serve()` living here would be a
+ * tries — this package hands over a mounted handler and lets the holder of the
+ * stage lock own the listening socket. A second `serve()` living here would be a
  * second answer to "how does the server start", and the wrong one.
  *
  * Leaving the socket out is also what lets a test drive the handler with real

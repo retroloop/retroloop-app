@@ -90,7 +90,7 @@ describe('the formatted error on the wire', () => {
           ...api.app.review,
           finish: {
             execute: async () => {
-              throw new Error('connection reset while reading /Users/haider/secrets')
+              throw new Error('connection reset while reading /Users/sample/secrets')
             },
           },
         },

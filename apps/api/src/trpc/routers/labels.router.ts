@@ -7,9 +7,9 @@ import { toWireLabelDefinition, toWireRecordLabel } from '#trpc/wire'
 /**
  * The label vocabulary and what records wear from it.
  *
- * **Five definition procedures and one write on a record**, and the split is the
- * owner's ruling rather than an arrangement: the definitions are global — *"each
- * label or attribute is going to be a global thing"* — and are what the settings
+ * **Five definition procedures and one write on a record**, and the split is a
+ * standing rule rather than an arrangement: the definitions are global — each
+ * label or attribute is a global thing — and are what the settings
  * page manages, while `set` is a mark a human puts on one record.
  *
  * **The record write is `set` and not `apply`, and that is tRPC rather than
@@ -37,10 +37,10 @@ import { toWireLabelDefinition, toWireRecordLabel } from '#trpc/wire'
  * - the three definition writes are open to **both** actors in the domain, and
  *   the AI's half is gated by the settings toggle. The browser passes that gate
  *   trivially by being the human; the AI reaches the same use cases through the
- *   CLI, in its own process, where the gate actually bites (KC-0004).
+ *   CLI, in its own process, where the gate actually bites.
  *
- * **`unretire` is the fourth act, and the retro asked for it** (retro-11
- * `r-retire-burns-a-word`, his selected solution 2). Retiring used to be one
+ * **`unretire` is the fourth act, and a retrospective asked for it**
+ * (`r-retire-burns-a-word`, selected solution 2). Retiring used to be one
  * press with no confirmation and no way back, which made a mis-press a
  * permanently burned word — the store never frees a retired name. Un-retire
  * makes that a two-press round trip, which is the same reversibility rule the
@@ -130,8 +130,8 @@ export const labelsRouter = router({
     }),
 
   /**
-   * The human puts a label on a record, or takes it off — the owner's *"they
-   * could actually put a label that says 'migrated'"*.
+   * The human puts a label on a record, or takes it off — for instance a label
+   * that says 'migrated'.
    *
    * **One procedure carrying the direction**, rather than an apply and a remove:
    * both write a version of the same thing, and the two *names* that exist live

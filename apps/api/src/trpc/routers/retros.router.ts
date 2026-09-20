@@ -8,20 +8,20 @@ import { toWireRetroListRow } from '#trpc/wire'
  * The retrospective namespace: one retro for the review page, and every retro
  * for the dashboard. Both answer "Retro #n within its session", which is not
  * stored anywhere — retrospectives have ids, and #n is where one falls among
- * its session's (KC-0011).
+ * its session's.
  */
 export const retrosRouter = router({
   /**
    * `retros.get` — the breadcrumb, the retro's state, and the revision list the
    * `?rev=k` selector pins against (trpc.md).
    *
-   * The breadcrumb reads "Session › Retro #n · Rev k" (KC-0011), with the
-   * project ahead of it only on the sessions that still carry one (KC-0020), so
+   * The breadcrumb reads "Session › Retro #n · Rev k", with the
+   * project ahead of it only on the sessions that still carry one, so
    * the retrospective's **position within its session** is part of the answer.
    *
    * The session rides as the same identity shape `retros.list` carries, because
    * the page above the records states the same line a dashboard row does —
-   * "Retro #n · Session S · <cwd>" (N1). The session was already read here for
+   * "Retro #n · Session S · <cwd>". The session was already read here for
    * the project crumb, so the `cwd` costs nothing to answer with.
    */
   get: procedure
@@ -70,7 +70,7 @@ export const retrosRouter = router({
     }),
 
   /**
-   * `retros.list` — the dashboard, whole (KC-0020, shortlist N4).
+   * `retros.list` — the dashboard, whole.
    *
    * Every retrospective across every session, newest first, each row carrying
    * the identity line, the name, the state and how much of the review is left.

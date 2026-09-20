@@ -31,26 +31,25 @@ describe('the tRPC surface', () => {
    * (R-MOCK-LOCK). A thirtieth procedure is a thirtieth thing to
    * mock, so adding one has to mean editing this list on purpose.
    *
-   * Two removals of retro 4 are asserted here by absence, and this list is where
+   * Two removals are asserted here by absence, and this list is where
    * they are asserted: `requests.*`, the ask channel that duplicated the
    * review's comment threads (`r-remove-requests`), and `holds.*`, the lifecycle
    * flag `involvement` already expressed (`r-remove-hold`). A procedure that
    * came back would fail here by name.
    *
    * **`records.setLifecycle` is not `holds.*` coming back.** A hold was a
-   * position on the verdict axis and the owner removed it because `involvement`
+   * position on the verdict axis and was removed because `involvement`
    * already said that; this is a second axis entirely, written after the verdict
-   * is settled and the review is closed, and it is the thing he asked for by
-   * name in session 8.
+   * is settled and the review is closed.
    */
-  test('is the fourteen of session 9, session 10’s vocabularies and settings, the un-retire pair, and records.relate', () => {
+  test('is the record and review procedures, the vocabularies and settings, the un-retire pair, and records.relate', () => {
     expect(Object.keys(appRouter._def.procedures).sort()).toEqual([
       'attributes.define',
       'attributes.list',
       'attributes.rename',
       'attributes.retire',
       'attributes.set',
-      // The pair that closed retro-11 `r-retire-burns-a-word`: retiring was one
+      // The pair that closed `r-retire-burns-a-word`: retiring was one
       // press with no way back, and the store never frees a retired name.
       'attributes.unretire',
       'decisions.record',
@@ -65,7 +64,7 @@ describe('the tRPC surface', () => {
       'records.get',
       'records.list',
       'records.listAll',
-      // Session 11's relation, arriving in session 13: one procedure for both
+      // The relation: one procedure for both
       // acts, and the only record write here that names *two* records — by the
       // global number, because a relation crosses retrospectives and the pair
       // that addresses one record is not a handle for two.
@@ -90,10 +89,10 @@ describe('the tRPC surface', () => {
       expect(retro).toEqual({
         retroId,
         // The same session shape `retros.list` carries, so the review page and a
-        // dashboard row state one identity line rather than two (N1).
+        // dashboard row state one identity line rather than two.
         session: {
           id: sessionId,
-          cwd: '/Users/haider/Developer/retro',
+          cwd: '/Users/sample/Developer/retro',
           startedAt: '2026-08-24T09:00:00.000Z',
         },
         project: 'retro',
@@ -108,9 +107,9 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The owner's session-11 add, on the wire: *"There should be a status in
-     * between that indicates that the human has submitted but AI hasn't
-     * closed"*. Three readings of the same unchanged column, walked in one
+     * The fourth display state, on the wire: there is a status in between that
+     * indicates the human has submitted but the AI has not
+     * closed. Three readings of the same unchanged column, walked in one
      * test because the point of the fourth word is the *boundaries* — a
      * derivation that fired one press early or one press late would still pass
      * two of these three.
@@ -119,7 +118,7 @@ describe('the tRPC surface', () => {
      * become a row: if it ever does, this is where a migration nobody asked for
      * shows up.
      */
-    test('reads submitted between his finish and the AI’s close, and only there', async () => {
+    test('reads submitted between the human’s finish and the AI’s close, and only there', async () => {
       const storedState = async () => (await api.store.retrospectives.findById(retroId))?.state
       const wireState = async () => (await api.caller.retros.get({ retroId })).state
 
@@ -129,7 +128,7 @@ describe('the tRPC surface', () => {
       await api.finishRound(retroId)
       expect(await wireState()).toBe('submitted')
       // The whole of the gap: the retrospective has not moved, and the round
-      // it is waiting on is the one he just put down.
+      // it is waiting on is the one the human just put down.
       expect(await storedState()).toBe('reviewing')
       expect((await api.caller.retros.get({ retroId })).revisions.at(-1)?.finishedAt).not.toBeNull()
 
@@ -139,8 +138,8 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The round that counts is the **latest** one. A retro he finished and the
-     * AI answered with a new draft is his again, and a derivation reading "any
+     * The round that counts is the **latest** one. A retro the human finished
+     * and the AI answered with a new draft is theirs again, and a derivation reading "any
      * finished round" rather than "the current one" would leave it reading
      * SUBMITTED for the rest of its life.
      */
@@ -158,7 +157,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The retro's name is the **latest** revision's title (KC-0020). A title
+     * The retro's name is the **latest** revision's title. A title
      * rides on a draft, so redrafting is how it changes — and a page reading an
      * older revision's name after the AI renamed the retro would be showing a
      * name nobody chose.
@@ -180,7 +179,7 @@ describe('the tRPC surface', () => {
       )
 
       // A later draft that proposes no title leaves the retro without one:
-      // latest wins, and silence is not a vote for the previous answer (KC-0010).
+      // latest wins, and silence is not a vote for the previous answer.
       await api.finishRound(retroId)
       await api.app.revisions.create.execute({
         actor: 'ai',
@@ -213,7 +212,7 @@ describe('the tRPC surface', () => {
   })
 
   describe('retros.list', () => {
-    /** A second session, so the list has something to cross (KC-0020). */
+    /** A second session, so the list has something to cross. */
     const anotherSession = async (cwd: string): Promise<number> =>
       (
         await api.app.sessions.create.execute({
@@ -231,7 +230,7 @@ describe('the tRPC surface', () => {
         revision: 1,
         state: 'approved',
       })
-      const elsewhere = await anotherSession('/Users/haider/Developer/harbor')
+      const elsewhere = await anotherSession('/Users/sample/Developer/hangar')
       const { retroId: elsewhereRetro } = await api.app.revisions.create.execute({
         actor: 'ai',
         session: elsewhere,
@@ -250,13 +249,13 @@ describe('the tRPC surface', () => {
           counts: { pending: 1, decided: 0 },
           session: {
             id: elsewhere,
-            cwd: '/Users/haider/Developer/harbor',
+            cwd: '/Users/sample/Developer/hangar',
             startedAt: '2026-08-24T09:00:00.000Z',
           },
         },
         {
           // The session created by the harness carries a project; the row does
-          // not, because nothing groups or filters by one (N2).
+          // not, because nothing groups or filters by one.
           retroId,
           retroNumber: 1,
           title: null,
@@ -264,7 +263,7 @@ describe('the tRPC surface', () => {
           counts: { pending: 1, decided: 1 },
           session: {
             id: sessionId,
-            cwd: '/Users/haider/Developer/retro',
+            cwd: '/Users/sample/Developer/retro',
             startedAt: '2026-08-24T09:00:00.000Z',
           },
         },
@@ -274,7 +273,7 @@ describe('the tRPC surface', () => {
     /**
      * The ordinal is per session and the id is global, which is the whole reason
      * both are on the row: the newest retrospective here is "#2", and a newer one
-     * in another session would still be "#1" (KC-0011).
+     * in another session would still be "#1".
      */
     test('numbers each retrospective within its own session', async () => {
       for (const rid of ['r-record-1', 'r-record-2']) {
@@ -319,7 +318,7 @@ describe('the tRPC surface', () => {
      * finish must land on exactly the one that was finished.
      */
     test('finds the finished round of each retrospective without confusing them', async () => {
-      const elsewhere = await anotherSession('/Users/haider/Developer/harbor')
+      const elsewhere = await anotherSession('/Users/sample/Developer/hangar')
       const { retroId: elsewhereRetro } = await api.app.revisions.create.execute({
         actor: 'ai',
         session: elsewhere,
@@ -369,7 +368,7 @@ describe('the tRPC surface', () => {
             decidedOnRevision: null,
             carriedOver: false,
             contentChangedSince: null,
-            // On the summary since #103, the same shape `records.listAll` sends.
+            // On the summary, the same shape `records.listAll` sends.
             lifecycle: { status: 'open', refs: [], note: null, actor: null, at: null },
             // Nobody is holding it, which is what `undefined` on the read model
             // means and what the wire says with null (views.schema.ts header).
@@ -387,7 +386,7 @@ describe('the tRPC surface', () => {
             decidedOnRevision: null,
             carriedOver: false,
             contentChangedSince: null,
-            // On the summary since #103, the same shape `records.listAll` sends.
+            // On the summary, the same shape `records.listAll` sends.
             lifecycle: { status: 'open', refs: [], note: null, actor: null, at: null },
             claim: null,
           },
@@ -483,7 +482,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The evidence reaches the page (RL-52), and reaches it as null rather than
+     * The evidence reaches the page, and reaches it as null rather than
      * as a missing key on a record that has none — the same convention every
      * other absent narrative half on this wire obeys, so the browser branches on
      * a value instead of on whether a key is there.
@@ -503,10 +502,10 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * And **not** the record's comments (session 7). They rode here until the
-     * owner made the panel the one comments surface — *"Replace inline comments
-     * in retro body with comments in the side panel … This enables human to see
-     * all comments in one place"* — and a second procedure still answering for
+     * And **not** the record's comments. They rode here until the side panel
+     * became the one comments surface — the inline comments in the retro body
+     * were replaced by comments in the panel, so the human sees all comments in
+     * one place — and a second procedure still answering for
      * them is a second answer to keep in agreement with `threads.list`.
      *
      * Asserted as the absence of the key rather than as an empty array: an empty
@@ -530,7 +529,7 @@ describe('the tRPC surface', () => {
         // AI does not author (`record-id.model.ts`).
         'globalId',
         // Likewise, and for the same reason: a label is something a human put on
-        // the record afterwards, not a field of the draft (session 10).
+        // the record afterwards, not a field of the draft.
         'labels',
         'record',
         'retroId',
@@ -570,7 +569,7 @@ describe('the tRPC surface', () => {
         await api.app.sessions.create.execute({
           actor: 'ai',
           claudeSession: 'uuid-elsewhere',
-          cwd: '/Users/haider/Developer/harbor',
+          cwd: '/Users/sample/Developer/hangar',
           supervised: false,
         })
       ).session.id
@@ -639,7 +638,7 @@ describe('the tRPC surface', () => {
         retroNumber: 1,
         session: {
           id: sessionId,
-          cwd: '/Users/haider/Developer/retro',
+          cwd: '/Users/sample/Developer/retro',
           startedAt: '2026-08-24T09:00:00.000Z',
         },
         // Untouched, so `undefined` on the read model becomes null on the wire —
@@ -801,7 +800,7 @@ describe('the tRPC surface', () => {
 
     /**
      * The identity line is the record's own retrospective's, counted within its
-     * own session (KC-0011) — the same shape `retros.list` and `records.listAll`
+     * own session — the same shape `retros.list` and `records.listAll`
      * carry, so the page states the line a dashboard row and a records row
      * already state.
      */
@@ -825,7 +824,7 @@ describe('the tRPC surface', () => {
 
       expect(page.retroId).toBe(second)
       expect(page.retroNumber).toBe(2)
-      expect(page.session.cwd).toBe('/Users/haider/Developer/retro')
+      expect(page.session.cwd).toBe('/Users/sample/Developer/retro')
     })
 
     /**
@@ -867,7 +866,7 @@ describe('the tRPC surface', () => {
    *
    * There is no procedure here to claim with, and that is the design rather than
    * a gap: the claim is the solving side's and it is written through the CLI, in
-   * the AI's own process, like every other AI write (KC-0004). What the wire owes
+   * the AI's own process, like every other AI write. What the wire owes
    * is the *reading* — so the acts below go through the App and the assertions go
    * through the router, which is the only arrangement that proves the two agree.
    *
@@ -932,7 +931,7 @@ describe('the tRPC surface', () => {
       ).session.id
 
     test('returns every record of every retrospective, newest retro first', async () => {
-      const elsewhere = await anotherSession('/Users/haider/Developer/harbor')
+      const elsewhere = await anotherSession('/Users/sample/Developer/hangar')
       const { retroId: elsewhereRetro } = await api.app.revisions.create.execute({
         actor: 'ai',
         session: elsewhere,
@@ -947,13 +946,13 @@ describe('the tRPC surface', () => {
         [retroId, 'r-record-2'],
       ])
       expect(rows.map((row) => row.session.cwd)).toEqual([
-        '/Users/haider/Developer/harbor',
-        '/Users/haider/Developer/retro',
-        '/Users/haider/Developer/retro',
+        '/Users/sample/Developer/hangar',
+        '/Users/sample/Developer/retro',
+        '/Users/sample/Developer/retro',
       ])
       /**
-       * One sequence over both retrospectives, on the wire — the owner's *"I
-       * will like the global sequence rather than this retro prefix."*
+       * One sequence over both retrospectives, on the wire — a global sequence
+       * rather than a per-retro prefix.
        *
        * The pair is the assertion: the newest row is `num` 1 and `globalId` 3,
        * so a projection that sent `num` under the new key sends two rows that
@@ -973,7 +972,7 @@ describe('the tRPC surface', () => {
      * reader can tell apart and two rows that both say "#1".
      */
     test('numbers the same rid in two retrospectives differently', async () => {
-      const elsewhere = await anotherSession('/Users/haider/Developer/harbor')
+      const elsewhere = await anotherSession('/Users/sample/Developer/hangar')
       await api.app.revisions.create.execute({
         actor: 'ai',
         session: elsewhere,
@@ -995,7 +994,7 @@ describe('the tRPC surface', () => {
         retroNumber: 1,
         session: {
           id: sessionId,
-          cwd: '/Users/haider/Developer/retro',
+          cwd: '/Users/sample/Developer/retro',
           startedAt: '2026-08-24T09:00:00.000Z',
         },
         rid: 'r-record-1',
@@ -1135,7 +1134,7 @@ describe('the tRPC surface', () => {
 
     /**
      * **Still reachable on a finished retrospective**, and it is the only write
-     * on this router that is. The owner asked for it because the retro is
+     * on this router that is. It is reachable precisely because the retro is
      * closed; `review.test.ts` in core names it beside the enumeration of every
      * write that refuses.
      */
@@ -1226,7 +1225,7 @@ describe('the tRPC surface', () => {
       ).toBe('BAD_REQUEST')
     })
 
-    /** Nothing to take back is a refusal, not a quiet success (KC-0010). */
+    /** Nothing to take back is a refusal, not a quiet success. */
     test('is CONFLICT reopening a record that was never resolved', async () => {
       expect(
         await codeOf(() =>
@@ -1236,8 +1235,8 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The owner's session-9 pair, on the wire: *"maybe we can have a type called
-     * archived … and the user should be able to unarchive."*
+     * The archive pair, on the wire: a record can be archived, and the user can
+     * unarchive it again.
      */
     test('archives a record and the listing follows, citing nothing', async () => {
       const archived = await api.caller.records.setLifecycle({
@@ -1396,7 +1395,7 @@ describe('the tRPC surface', () => {
   })
 
   /**
-   * **`records.relate`** (the owner's session-11 ask) — the one write on this
+   * **`records.relate`** — the one write on this
    * wire that names **two** records, and it names them by the global number
    * because a relation crosses retrospectives and the pair that addresses one
    * record is not a handle for two.
@@ -1615,14 +1614,14 @@ describe('the tRPC surface', () => {
   })
 
   /**
-   * **The labels, the attributes and the toggle** (session 10) — the twelve
-   * procedures the owner's two rulings bought.
+   * **The labels, the attributes and the toggle** — the twelve
+   * procedures the two primitives and the permission switch bought.
    *
    * What this file can prove about them is what a *transport* can prove: the
    * shapes cross correctly, the error map answers each refusal with the right
    * code, and the browser is the human. What it deliberately does not try to
-   * prove is the guarantee: *"if it is disabled, the user can be certain that
-   * the AI cannot mess around"* is enforced below every adapter and is asserted
+   * prove is the guarantee: while the switch is disabled the user can be certain
+   * that the AI cannot mess around, which is enforced below every adapter and is asserted
    * there, in `packages/core/test/unit/settings.test.ts`, because the context
    * here pins `human` unconditionally and there is no payload a browser can send
    * that would reach the guard at all (`context.ts`).
@@ -1743,8 +1742,8 @@ describe('the tRPC surface', () => {
       })
 
       /**
-       * **Un-retire, over the wire** — retro-11 `r-retire-burns-a-word`, his
-       * selected solution: retiring was one press with no confirmation and no
+       * **Un-retire, over the wire** — `r-retire-burns-a-word`, and the
+       * solution it selected: retiring was one press with no confirmation and no
        * way back, and the store never frees a retired name, so a mis-press
        * burned a word out of the vocabulary permanently.
        *
@@ -1908,7 +1907,7 @@ describe('the tRPC surface', () => {
         expect(await codeOf(() => wear(true))).toBe('CONFLICT')
       })
 
-      /** A no-op is refused, not absorbed (KC-0010, and `LIFECYCLE_ACT_FROM`'s standing). */
+      /** A no-op is refused, not absorbed (and `LIFECYCLE_ACT_FROM`'s standing). */
       test('is CONFLICT for an act that would change nothing', async () => {
         expect(await codeOf(() => wear(false))).toBe('CONFLICT')
       })
@@ -1923,8 +1922,8 @@ describe('the tRPC surface', () => {
       })
 
       /**
-       * **Still reachable on a finished retrospective**, which is the owner's
-       * second usage archetype rather than an oversight: the migrate story
+       * **Still reachable on a finished retrospective**, which is a deliberate
+       * usage archetype rather than an oversight: the migrate story
        * happens after the close. It joins `records.setLifecycle` as one of the
        * writes on this router the finish lock deliberately does not guard.
        */
@@ -2116,8 +2115,8 @@ describe('the tRPC surface', () => {
     })
 
     test('binds to the revision the page was showing, not the newest', async () => {
-      // The round is put down before the next draft may answer it (#113
-      // `r-revision-sneaks-past-review`); he can still revisit a verdict
+      // The round is put down before the next draft may answer it
+      // (`r-revision-sneaks-past-review`); the human can still revisit a verdict
       // afterwards, which is what this asserts.
       await api.finishRound(retroId)
       await api.revision(sessionId, [{ problem: 'A rewritten problem statement.' }, {}])
@@ -2135,7 +2134,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * KC-0021. The input enum is five values; the output enum is still eight,
+     * The input enum is five values; the output enum is still eight,
      * because a decision made before the cut is human data and is never
      * rewritten. Both halves are asserted here because they are the same
      * sentence read from either end.
@@ -2192,7 +2191,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The owner's *"tickmark that indicates what the human actually selected"*,
+     * The tickmark that indicates what the human actually selected,
      * on the wire. The level follows the pick, so the two travel together and a
      * page never has to compute one from the other.
      */
@@ -2257,7 +2256,7 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * Retro 3 `r-hold-semantics`. The input enum is three values; the output
+     * `r-hold-semantics`. The input enum is three values; the output
      * enum is still four, because a record decided `hold` before the split is
      * human data and is never rewritten. Both halves are asserted here because
      * they are the same sentence read from either end.
@@ -2382,9 +2381,9 @@ describe('the tRPC surface', () => {
     /**
      * **Every thread, record-level and review-level alike.** The record thread
      * opened alongside is the whole test: it filtered to review-level threads
-     * until session 7, and the owner asked for the opposite — *"Replace inline
-     * comments in retro body with comments in the side panel … This enables
-     * human to see all comments in one place."* A panel missing the record
+     * at first, and the opposite is what the panel needs — the inline comments
+     * in the retro body were replaced by comments in the side panel, so the
+     * human sees all comments in one place. A panel missing the record
      * comments would fail here rather than in a browser.
      */
     test('list returns every thread of the retrospective, record-level included', async () => {
@@ -2422,8 +2421,8 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * The owner: *"comment show the rev number they are associated with"*. A
-     * revision is announced and never swapped in (KC-0005), so the page sends
+     * A comment shows the revision number it is associated with. A
+     * revision is announced and never swapped in, so the page sends
      * the revision it is showing and the server stores that — not the newest.
      */
     test('stores the revision the page was showing, and the latest when it sends none', async () => {
@@ -2517,7 +2516,7 @@ describe('the tRPC surface', () => {
 
   describe('review', () => {
     /**
-     * The page's one terminal action (retro 4 `r-one-finish-button`), and what
+     * The page's one terminal action (`r-one-finish-button`), and what
      * it does *not* do: the retrospective is still `reviewing` afterwards.
      * Closing it to export is the AI's act, through the CLI — there is no
      * procedure for it, which the procedure list above is what guards.
@@ -2565,8 +2564,8 @@ describe('the tRPC surface', () => {
     })
 
     /**
-     * A second press of a one-shot action is absorbed, not refused (retro 4
-     * `r-request-changes-multi-press`). The wire answer is the first one again,
+     * A second press of a one-shot action is absorbed, not refused
+     * (`r-request-changes-multi-press`). The wire answer is the first one again,
      * and the outbox is what proves nothing happened twice: a second
      * `ReviewFinished` would be a second round for the AI to answer.
      */
