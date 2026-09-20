@@ -20,9 +20,17 @@ The Retroloop app: the `retroloop` CLI the AI drives, the local always-on server
 
 How it works and why: the design docs in `docs/design/`. The export contract: `docs/export/export.v1.schema.json`.
 
-## Status
+## Install
 
-**Launching.** The Claude Code plugin (`/plugin marketplace add retroloop/plugins`), the setup flow, and the personalization-plugin template are landing this week. Watch this org.
+Retroloop installs through Claude Code, in three steps:
+
+```
+/plugin marketplace add retroloop/plugins
+/plugin install retroloop@retroloop
+/retroloop:setup
+```
+
+Setup clones this app into `~/.retroloop`, starts the local server, and creates your personalization plugin. Prerequisites and supported systems are in the [plugin README](https://github.com/retroloop/retroloop).
 
 ## Running from source
 
