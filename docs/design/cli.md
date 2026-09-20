@@ -434,6 +434,9 @@ one row plus `retrospective` for `get`:
 ```
 { recordId, retroId, retro, sessionId, title, slug, problem,
   rootCause { whatHappened, whys, root },
+  diagnosticData,
+  humanWords [ { verbatim, cleaned, context } ],
+  workaround,
   ownerWords [ … ],
   selectedSolution { index, level, title, body, footprint [ … ] },
   involvement,
@@ -445,7 +448,15 @@ one row plus `retrospective` for `get`:
 
 `ownerWords` is the human's reviewer note first and then his comments on the
 record, oldest first — his instructions in one field, so an agent can act on a
-queue row without opening the review page. `lifecycle.state` is the **lane
+queue row without opening the review page. **`humanWords` is a different thing:**
+the record's own quotes, what he said in the session the record was drafted
+from, copied off the record beside its `workaround` (`"none"` when there was
+none) — so `[]` under `humanWords` means he said nothing quotable, and `[]` under
+`ownerWords` means only that he wrote no note and no comment. `context` is `null`
+on a quote that has none, and `diagnosticData` is `null` on a record filed before
+the field existed. `record get` prints both in its text form, under their own
+names; the one line per record that `queue` and `list --all` print carries no
+narrative at all. `lifecycle.state` is the **lane
 state**: the verdict, the lifecycle and the claim folded into one word
 (`lifecycle.md`). `record relations <#globalId>` prints
 `[{ recordId, retroId, retro, slug, title, kind, direction, state, resolvedAt, ref, refs }]`,

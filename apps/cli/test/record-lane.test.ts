@@ -180,6 +180,8 @@ describe('the record lane', () => {
     problem: string
     rootCause: { whatHappened: string; whys: string[]; root: string }
     diagnosticData: string | null
+    humanWords: { verbatim: string; cleaned: string; context: string | null }[]
+    workaround: string
     ownerWords: string[]
     selectedSolution: {
       index: number
@@ -234,6 +236,16 @@ describe('the record lane', () => {
           diagnosticData:
             '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
             '- **The holder:** `ps 8123` — no such process.',
+          // The record's own quotes and what was done at the time (#214). Not
+          // `ownerWords`, below: that is what he wrote at review time.
+          humanWords: [
+            {
+              verbatim: 'this thing has been sitting there for ages',
+              cleaned: 'This has been sitting there for a long time.',
+              context: 'while watching the deploy log',
+            },
+          ],
+          workaround: 'Delete the lock file by hand.',
           // The note he wrote with the verdict first, then what he said on the
           // record's threads — one field, because they are one thing to whoever
           // is about to act on them.
@@ -273,6 +285,16 @@ describe('the record lane', () => {
           diagnosticData:
             '- **The lock file:** `stage.lock`, 0 bytes, written 40 minutes before the deploy.\n' +
             '- **The holder:** `ps 8123` — no such process.',
+          // He wrote nothing on this one at review time, and his quotes are
+          // still here — the two lists answer different questions.
+          humanWords: [
+            {
+              verbatim: 'this thing has been sitting there for ages',
+              cleaned: 'This has been sitting there for a long time.',
+              context: 'while watching the deploy log',
+            },
+          ],
+          workaround: 'Delete the lock file by hand.',
           ownerWords: [],
           selectedSolution: {
             index: 2,
@@ -306,6 +328,7 @@ describe('the record lane', () => {
       expect(Object.keys(row ?? {}).sort()).toEqual([
         'claim',
         'diagnosticData',
+        'humanWords',
         'involvement',
         'lifecycle',
         'ownerWords',
@@ -320,6 +343,7 @@ describe('the record lane', () => {
         'sessionId',
         'slug',
         'title',
+        'workaround',
       ])
       expect(Object.keys(row?.lifecycle ?? {}).sort()).toEqual([
         'claimedAt',
@@ -392,6 +416,7 @@ describe('the record lane', () => {
       expect(Object.keys(result.json()).sort()).toEqual([
         'claim',
         'diagnosticData',
+        'humanWords',
         'involvement',
         'lifecycle',
         'ownerWords',
@@ -407,6 +432,7 @@ describe('the record lane', () => {
         'sessionId',
         'slug',
         'title',
+        'workaround',
       ])
       expect(
         Object.keys((result.json() as { retrospective: object }).retrospective).sort(),
@@ -443,6 +469,168 @@ describe('the record lane', () => {
       expect(result.code).toBe(EXIT.usage)
       expect(result.error().message).toContain('#globalId')
       expect(result.stdout).toEqual([])
+    })
+  })
+
+  /**
+   * **The words the record was filed with reach the row** (#214
+   * `r-lane-row-omits-human-words`).
+   *
+   * A record holds two different things a reader calls "the human's words":
+   * `humanWords`, the quotes the record was drafted from, and `ownerWords`, what
+   * he wrote at review time — his note with the verdict and his comments. The row
+   * carried only the second, so a team reading a record with seven quotes and no
+   * comment saw `ownerWords: []` and reported the quotes lost.
+   *
+   * Every expectation here is read off **the draft the record was filed from**
+   * rather than off a literal copied in. #103 `r-lifecycle-projection-gap`
+   * pinned one projection against another; what nothing pinned was the
+   * projection against the record, which is how a field missing from all three
+   * commands at once stayed invisible.
+   */
+  describe('the words the record was filed with', () => {
+    type Filed = {
+      rid: string
+      humanWords: { verbatim: string; cleaned: string; context?: string }[]
+      workaround: string
+    }
+
+    const draftOf = (draft: string): Filed[] => (JSON.parse(draft) as { records: Filed[] }).records
+
+    /** What every record of this fixture was filed with (`aRevisionDraft`). */
+    const filed = (): Filed => draftOf(aRevisionDraft())[0] as Filed
+
+    /** The row's spelling of a filed quote: an absent `context` is `null`, never a missing key. */
+    const onTheRow = (words: Filed['humanWords']): Row['humanWords'] =>
+      words.map((said) => ({
+        verbatim: said.verbatim,
+        cleaned: said.cleaned,
+        context: said.context ?? null,
+      }))
+
+    test('record get reads back the quotes and the workaround', async () => {
+      const result = await cli.run(['record', 'get', String(idOf('r-stale-lock')), '--json'])
+      const row = result.jsonAs<Row>()
+
+      expect(result.code).toBe(EXIT.ok)
+      // The fixture's quote is a real one, so presence implies correctness (#54).
+      expect(filed().humanWords).toHaveLength(1)
+      expect(row.humanWords).toEqual(onTheRow(filed().humanWords))
+      expect(row.workaround).toBe(filed().workaround)
+    })
+
+    test('record queue carries them on every row', async () => {
+      const rows = rowsOf(await cli.run(['record', 'queue', '--json']))
+
+      expect(rows.length).toBeGreaterThan(0)
+      for (const row of rows) {
+        expect(row.humanWords).toEqual(onTheRow(filed().humanWords))
+        expect(row.workaround).toBe(filed().workaround)
+      }
+    })
+
+    test('record list --all carries them on every row, whatever its state', async () => {
+      const rows = rowsOf(await cli.run(['record', 'list', '--all', '--json']))
+
+      expect(rows.map((row) => row.slug)).toContain('r-noisy-hook')
+      for (const row of rows) {
+        expect(row.humanWords).toEqual(onTheRow(filed().humanWords))
+        expect(row.workaround).toBe(filed().workaround)
+      }
+    })
+
+    /**
+     * **The incident itself.** `r-flaky-test` is record 200's shape: quotes on the
+     * record, and not one word from him at review time. Its `ownerWords` is `[]`
+     * and that is true — and it says nothing about what he said in the session.
+     */
+    test('a record he never commented on still carries what he said', async () => {
+      const row = (
+        await cli.run(['record', 'get', String(idOf('r-flaky-test')), '--json'])
+      ).jsonAs<Row>()
+
+      expect(row.ownerWords).toEqual([])
+      expect(row.humanWords).toEqual(onTheRow(filed().humanWords))
+    })
+
+    /** Two fields, two meanings, neither folded into the other. */
+    test('keeps his review-time words and the record’s quotes apart', async () => {
+      const row = (
+        await cli.run(['record', 'get', String(idOf('r-stale-lock')), '--json'])
+      ).jsonAs<Row>()
+
+      expect(row.ownerWords).toEqual(['Start with this one.', 'This cost me the whole afternoon.'])
+      expect(row.humanWords.map((said) => said.verbatim)).toEqual(
+        filed().humanWords.map((said) => said.verbatim),
+      )
+      for (const said of row.humanWords) expect(row.ownerWords).not.toContain(said.verbatim)
+    })
+
+    /**
+     * **`humanWords: []` means he said nothing quotable** — which is what an empty
+     * array on this row should have meant all along. Filed that way on purpose,
+     * with a quote that has no `context` beside it in a second record.
+     */
+    test('reads an empty list as empty, and a quote without context as null', async () => {
+      const [quiet, bare] = draftOf(
+        aRevisionDraft([
+          { rid: 'r-nothing-said', num: 1, title: 'Nobody said a word about this one' },
+          { rid: 'r-bare-quote', num: 2, title: 'A quote with nothing around it' },
+        ]),
+      ) as [Filed, Filed]
+      quiet.humanWords = []
+      quiet.workaround = 'none'
+      bare.humanWords = [{ verbatim: 'why is it like this', cleaned: 'Why is it like this?' }]
+
+      const gamma = await aSession('uuid-gamma')
+      const retroId = await aRevision(gamma, JSON.stringify({ records: [quiet, bare] }))
+      const idIn = async (rid: string): Promise<string> =>
+        String((await cli.store.recordIds.findByRecord(retroId, rid))?.id ?? 0)
+
+      const nothing = (
+        await cli.run(['record', 'get', await idIn('r-nothing-said'), '--json'])
+      ).jsonAs<Row>()
+      const one = (
+        await cli.run(['record', 'get', await idIn('r-bare-quote'), '--json'])
+      ).jsonAs<Row>()
+
+      expect(nothing.humanWords).toEqual([])
+      expect(nothing.workaround).toBe('none')
+      expect(one.humanWords).toEqual([
+        { verbatim: 'why is it like this', cleaned: 'Why is it like this?', context: null },
+      ])
+
+      // And in the text form: a line that says so, rather than no line — a line
+      // that is not there reads as "not printed", which is how `[]` read as "lost".
+      const nothingPrinted = (await cli.run(['record', 'get', await idIn('r-nothing-said')])).stdout
+        .join('\n')
+        .split('\n')
+      const onePrinted = (await cli.run(['record', 'get', await idIn('r-bare-quote')])).stdout
+        .join('\n')
+        .split('\n')
+
+      expect(nothingPrinted).toContain('    humanWords: none')
+      expect(nothingPrinted).toContain('    workaround: none')
+      expect(onePrinted).toContain('    humanWords: “why is it like this”')
+    })
+
+    /**
+     * The text form names the two, because a bare `“…”` line is how `ownerWords`
+     * already prints — and an unnamed quote is the ambiguity this record is about.
+     */
+    test('record get prints them under their own names', async () => {
+      const result = await cli.run(['record', 'get', String(idOf('r-stale-lock'))])
+      const [said] = filed().humanWords
+
+      expect(result.code).toBe(EXIT.ok)
+      expect(result.stdout.join('\n').split('\n')).toEqual([
+        `#${idOf('r-stale-lock')} [approved] r-stale-lock — Deploy blocked on a stale lock file · L2 · pull-request · retro ${past} (#1 of session 1)`,
+        '    Solution 2 — Write the holder PID.',
+        `    humanWords: “${said?.verbatim}” — ${said?.context}`,
+        `    workaround: ${filed().workaround}`,
+        '    “Start with this one.”',
+        '    “This cost me the whole afternoon.”',
+      ])
     })
   })
 
