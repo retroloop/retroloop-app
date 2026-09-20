@@ -1,3 +1,4 @@
+import { writeSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   type App,
@@ -111,13 +112,61 @@ export async function withContext<T>(
   }
 }
 
+/** Something to sleep on: `Atomics.wait` is the one synchronous sleep there is. */
+const pipeFullSleep = new Int32Array(new SharedArrayBuffer(4))
+
+/**
+ * Writes all of `text` to `fd` before returning, waiting for the reader when it
+ * has to. One `writeSync` is not enough, and neither is a loop that trusts it:
+ *
+ * - fd 1 is blocking when the process starts and **non-blocking as soon as
+ *   anything touches `process.stdout`** — importing the CLI is enough (measured
+ *   with `fcntl(1, F_GETFL)`, Bun 1.4.0). A three-line script that never touches
+ *   it keeps a blocking fd, which is why `writeSync` looked sufficient in a probe.
+ * - On that fd a `writeSync` to a pipe is a **short write**: it hands over what
+ *   fits — 65,536 bytes, one pipe buffer — and returns that count, so a single
+ *   call cuts a large answer just as the asynchronous writer did, only earlier.
+ * - Called again before the reader has drained, it throws **`EAGAIN`**. That is
+ *   not a failure, it is "the pipe is full": sleep a millisecond and try again.
+ *   A reader that stalls two seconds costs about 1,500 of these; a file, none.
+ *
+ * - **`EPIPE`** is the reader having left — `… --json | head -c 10`, how an agent
+ *   peeks at an answer. It got what it asked for, so the rest is dropped and the
+ *   command ends as it would have: the asynchronous writer never heard a reader
+ *   leave, and a writer that waits must not turn that into an `UNKNOWN` error.
+ *
+ * The count is in bytes, not characters, so the text is encoded once and the
+ * loop resumes at a byte offset. Any other error is the caller's to hear about.
+ */
+function writeAllSync(fd: 1 | 2, text: string): void {
+  const bytes = Buffer.from(text, 'utf8')
+  let offset = 0
+  while (offset < bytes.length) {
+    try {
+      offset += writeSync(fd, bytes, offset)
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code
+      if (code === 'EPIPE') return
+      if (code !== 'EAGAIN') throw error
+      Atomics.wait(pipeFullSleep, 0, 0, 1)
+    }
+  }
+}
+
 export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRuntime {
   const env = overrides.env ?? process.env
   return {
     env,
     cwd: overrides.cwd ?? process.cwd(),
-    out: overrides.out ?? ((line) => process.stdout.write(`${line}\n`)),
-    err: overrides.err ?? ((line) => process.stderr.write(`${line}\n`)),
+    // Synchronous on purpose, straight to fds 1 and 2. `bin.ts` ends the process
+    // with `process.exit` the moment `run` returns, and while these wrote with
+    // `process.stdout.write`, every `--json` answer over 128 KiB reached a reader
+    // on a pipe cut at exactly 131,072 bytes — exit 0, nothing on stderr (retro 22
+    // `r-cli-json-cut-at-128k-on-pipe`; measured under Bun 1.4.0). A writer added
+    // beside these two has to keep the property; `test/bin-stdout-pipe.test.ts`
+    // reads the real binary through a real pipe.
+    out: overrides.out ?? ((line) => writeAllSync(1, `${line}\n`)),
+    err: overrides.err ?? ((line) => writeAllSync(2, `${line}\n`)),
     clock: resolveClock(env, overrides.clock),
     pollIntervalMs: overrides.pollIntervalMs ?? 500,
     serverReadyTimeoutMs: overrides.serverReadyTimeoutMs ?? 10_000,
