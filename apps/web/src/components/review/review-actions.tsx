@@ -154,12 +154,12 @@ export function ReviewActions({
       onError: (error) => {
         /**
          * **The composed message is not touched here, and that is the point**
-         * (`r-finish-refusal-fires-late`): *"there is risk of lossing human's
-         * input."* A refusal at send time can only happen on a round the page
-         * believed was finishable, so there is by definition something written
-         * in the composer when it fires. It stays written — the reviewer presses
-         * Finish again and their last word on the round is still there. Only a
-         * finish that actually landed clears it, below.
+         * (`r-finish-refusal-fires-late`): a refusal that lands after the message
+         * is written risks losing the human's input. A refusal at send time can
+         * only happen on a round the page believed was finishable, so there is by
+         * definition something written in the composer when it fires. It stays
+         * written — the reviewer presses Finish again and their last word on the
+         * round is still there. Only a finish that actually landed clears it, below.
          */
         const refused = pendingRidsOf(error)
         setStage(refused === undefined ? { at: 'idle' } : { at: 'refused', pending: refused })

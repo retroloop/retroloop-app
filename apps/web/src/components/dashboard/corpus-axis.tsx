@@ -37,8 +37,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
  * An earlier design had it split — ordinal axes horizontal, nominal axes as
  * vertical columns — on the argument that a rung's name carries a clause a tick
  * cannot hold sideways while "AI" and "human" fit either way. The split was the
- * wrong call, and the reason that design missed: the
- * orientation was doing *no work for the reader* and a lot of work against them.
+ * wrong call, and the reason is one that design missed: the orientation was
+ * doing *no work for the reader* and a lot of work against them.
  * Four tabs behind one control are meant to be the same chart with the subject
  * changed; two of them re-laying-out on press made the control feel like it was
  * navigating between different charts rather than re-asking one question. One

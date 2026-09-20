@@ -144,12 +144,11 @@ export function ClaimTag() {
  * The evidence behind a resolved record: who said so, what they cited, and
  * whatever they wanted to add.
  *
- * The references are the reason the feature exists — *"we should be able to
- * specify a commit id or github issue or something as reference so that it is
- * easy to see"* — so they are the body of this block rather than a detail behind
- * a disclosure. It is framed with the hairline every block on the review page is
- * drawn with, so it reads as the record's evidence rather than as more of the
- * row's own metadata.
+ * The references are the reason the feature exists — a resolve can cite a commit
+ * id or a GitHub issue so the evidence is easy to see — so they are the body of
+ * this block rather than a detail behind a disclosure. It is framed with the
+ * hairline every block on the review page is drawn with, so it reads as the
+ * record's evidence rather than as more of the row's own metadata.
  *
  * It renders **only** on a resolved record. An open one has nothing here by
  * construction: a reopen supersedes the resolve that came before it and carries
@@ -396,10 +395,10 @@ function Resolve({ row }: { row: LifecycleTarget }) {
  *
  * There is no confirm on any of them, because none is terminal the way finishing
  * a review is: every act appends a version, the history keeps all of them, and a
- * mis-press costs one more press. Archiving in particular is not a delete —
- * *"we still want to maintain its discussion"* — which is why it needs no more
- * ceremony than a reopen. `decline is a state, not a deletion` is the same idea
- * one table over.
+ * mis-press costs one more press. Archiving in particular is not a delete — an
+ * archived record keeps its discussion — which is why it needs no more ceremony
+ * than a reopen. `decline is a state, not a deletion` is the same idea one table
+ * over.
  *
  * One component rather than three, at the third caller: the repo's own rule for
  * lifting markup is that two copies are a coincidence and three are a rule

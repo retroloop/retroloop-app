@@ -13,7 +13,7 @@ import {
  * setting lives here, and it defaults to System mode.
  *
  * **The default was already System and is not invented here.** `ThemeProvider`
- * has always read `system` as its starting value — the OS decides, and
+ * already read `system` as its starting value — the OS decides, and
  * it keeps deciding, so a machine that flips at sunset flips this page. What
  * changed is *where the control lives*: a theme is a set-and-forget
  * preference, not a per-page affordance, so it belongs on the one page that is

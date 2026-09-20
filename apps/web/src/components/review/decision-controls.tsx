@@ -31,9 +31,9 @@ type Decision = AppRouterOutputs['records']['get']['decision']
 /**
  * The level the radio list can show as chosen — the five it offers, or nothing.
  *
- * A record decided before those levels were cut can hold `upstream`, `none` or
- * `undecided`,
- * and none of those is on the list any more. Rather than pre-select something
+ * A record decided while `upstream`, `none` and `undecided` were still offered
+ * can hold one of them, and none of those is on the list any more. Rather than
+ * pre-select something
  * the human did not pick, the list starts with nothing selected and the verdict
  * leaves `solutionLevel` out, which keeps whatever stands. The reviewer changes
  * that ceiling by choosing one of the five, which is the only way to change it.

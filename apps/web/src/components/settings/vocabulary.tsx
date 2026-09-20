@@ -271,10 +271,10 @@ function Vocabulary({
       {definitions === undefined ? null : definitions.length === 0 ? (
         /**
          * **What a fresh install says**, and it is the first thing anybody ever
-         * sees of this feature: the product ships no labels and no attributes
-         * (*"we will not hardcode any labels or attributes"*), so empty is the
-         * normal state rather than an error. It says the one true thing and
-         * stops, exactly as the empty dashboard and the empty records page do.
+         * sees of this feature: the product ships no labels and no attributes —
+         * none are hardcoded — so empty is the normal state rather than an
+         * error. It says the one true thing and stops, exactly as the empty
+         * dashboard and the empty records page do.
          */
         <p className="text-muted-foreground text-sm" data-testid={`settings-${kind}s-empty`}>
           None yet. The ones you create here are offered on every record.
