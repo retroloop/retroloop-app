@@ -345,8 +345,8 @@ function ReviewComments({
     // `min-w-0` twice down the chain: the panel is a flex item and so is its
     // scroller, and a flex item defaults to `min-width: auto` — it refuses to
     // shrink below its content, and a record thread's title does not wrap. Left
-    // to itself the rail is 240px wide holding a 400px line, and the page the
-    // ux brief says never scrolls sideways scrolls sideways.
+    // to itself the rail is 240px wide holding a 400px line, and the page that
+    // must never scroll sideways scrolls sideways.
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3" data-testid="review-thread">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto">
         {comments.threads.map((thread) => (
