@@ -1,9 +1,9 @@
 Feature: Revisions arriving under a reviewer
 
   The AI files revisions while a human is reading one. The page announces them
-  and does not move (KC-0005), because a verdict has to bind to the content the
+  and does not move, because a verdict has to bind to the content the
   reviewer actually read — and when they do move, a decision follows the content
-  it was given for (D2 carry-over).
+  it was given for.
 
   Scenario: A new revision is announced, and nothing on the page moves
     Given the reviewer opens retro 1
@@ -51,9 +51,9 @@ Feature: Revisions arriving under a reviewer
       | pending | 4 |
 
   # The reply lands in the comments panel, which is where every comment on the
-  # retrospective is read since session 7 — and behind the reply count the panel
-  # keeps replies behind, so the open is part of the scenario rather than an
-  # implementation detail of the step.
+  # retrospective is read — and behind the reply count the panel keeps replies
+  # behind, so the open is part of the scenario rather than an implementation
+  # detail of the step.
   Scenario: An AI reply arrives in a thread the reviewer is reading
     Given the reviewer opens retro 1
     When the AI replies "Narrowed it in revision 3." on record "r-bullet-responses"
@@ -66,7 +66,7 @@ Feature: Revisions arriving under a reviewer
 
   # A pinned older revision is history, and read-only means read-only: there is
   # no control on the card that a pinned revision still takes. The hold control
-  # was the one exception for a session, and retro 4 `r-remove-hold` removed it.
+  # was the one exception for a session, and removing the hold feature removed it.
   Scenario: An older revision is pinned by URL and is read-only
     Given the reviewer opens retro 1 pinned to revision 1
     Then the breadcrumb reads "Retroloop › retro › Session 1 › Retro #1 · Rev 1"
@@ -74,8 +74,8 @@ Feature: Revisions arriving under a reviewer
     And record "r-bullet-responses" offers no decision buttons
     And the review is read-only
 
-  # The other end of the same address, and the second witness of retro-13
-  # r-validatesearch-narrows-not-polices: `?rev=abc` is not a revision, and the
+  # The other end of the same address, and the second witness of
+  # `r-validatesearch-narrows-not-polices`: `?rev=abc` is not a revision, and the
   # validator omitting the key is NOT what decides that. TanStack Router's
   # `validateSearch` narrows the type and hands the raw search back, so until the
   # guard moved to the point of use this address pinned the review to the string

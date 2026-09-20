@@ -19,14 +19,13 @@ import { useTRPC } from '@/lib/trpc'
  * this function returns — a URL naming a lifecycle state that does not exist is
  * a URL with no filter in it, not an error page.
  *
- * **What this does NOT do is stop the junk reaching the page** (retro-13
- * `r-validatesearch-narrows-not-polices`). It was measured on this very route:
- * the validator runs, returns `{}` for `?lifecycle=nonsense`, and
- * `Route.useSearch()` answers `nonsense` anyway — `validateSearch` narrows the
- * TYPE and does not police the VALUE. What this function is, is the *type*; the
- * guard the page depends on is at the point of use, in `useRecordsFilter`
- * (`records-filter.tsx` §seeded), where nothing the router decides to keep can
- * get around it.
+ * **What this does NOT do is stop the junk reaching the page.** It was measured
+ * on this very route: the validator runs, returns `{}` for
+ * `?lifecycle=nonsense`, and `Route.useSearch()` answers `nonsense` anyway —
+ * `validateSearch` narrows the TYPE and does not police the VALUE. What this
+ * function is, is the *type*; the guard the page depends on is at the point of
+ * use, in `useRecordsFilter` (`records-filter.tsx` §seeded), where nothing the
+ * router decides to keep can get around it.
  */
 type RecordsSearch = {
   readonly lifecycle?: LifecycleState
@@ -41,20 +40,19 @@ export const Route = createFileRoute('/records')({
 })
 
 /**
- * Every record of every retrospective, flat — the owner's session-8 ask: *"I
- * want a page that shows all the retro items flat with filtering. the goal is
- * for me to see all the items irrespective of the session or retro or cwd in one
- * place list. that said, i will need filters to narrow down."*
+ * Every record of every retrospective, flat — a page that shows all the retro
+ * items flat with filtering, so every item shows irrespective of the session or
+ * retro or cwd it happened in, all in one place, narrowed down with filters.
  *
  * Newest first, which is the order `records.listAll` sends and this page does
  * not second-guess: retro id descending, and each retrospective's records in the
  * order the reviewer read them. Sorting here would be a second opinion about an
  * order the server already has a reason for.
  *
- * **Filtering is the client's** (A4). The procedure takes no arguments at all —
- * the whole store is hundreds of records for one user, so the browser holds
- * every row and the three chips narrow it without another round trip, and no
- * decision has been made yet about which filters deserve to be on the wire.
+ * **Filtering is the client's.** The procedure takes no arguments at all — the
+ * whole store is hundreds of records for one user, so the browser holds every
+ * row and the three chips narrow it without another round trip, and no decision
+ * has been made yet about which filters deserve to be on the wire.
  *
  * **Nothing lives here that the review page already answers.** No per-record
  * detail, no search, no labels or tags, no export, no bulk actions — the
@@ -67,16 +65,16 @@ function RecordsPage() {
    * omitted input is a missing one rather than an empty one and the server
    * rejects it — the same call the dashboard makes to `retros.list`.
    *
-   * **`refetchOnWindowFocus` is turned back on for this one query**, against the
-   * app-wide default. Every other page in this app is scoped to a single
+   * **`refetchOnWindowFocus` is turned back on for this one query**, against
+   * the app-wide default. Every other page in this app is scoped to a single
    * retrospective and keeps itself current from that retrospective's event
    * stream; this page is scoped to all of them, `events.onRetro` is per-retro,
    * and a flat cross-retro page therefore has nothing single to subscribe to
-   * (F1's finding; A9 is the lead's ruling that no cross-retro scope gets
-   * invented for v1). So the two signals it does have are the ones it uses: it
-   * invalidates after its own writes, and it asks again when the reader comes
-   * back to the tab — which is exactly when the AI, working in its own process,
-   * has been resolving the records they left open.
+   * (and the standing rule is that no cross-retro scope gets invented for v1).
+   * So the two signals it does have are the ones it uses: it invalidates after
+   * its own writes, and it asks again when the reader comes back to the tab —
+   * which is exactly when the AI, working in its own process, has been
+   * resolving the records they left open.
    */
   const records = useQuery({
     ...trpc.records.listAll.queryOptions({}),
@@ -100,8 +98,7 @@ function RecordsPage() {
         </p>
       ) : (
         // `min-w-0` so a long reference or a long working directory narrows the
-        // column rather than widening the page (ux-brief 04: nothing scrolls
-        // sideways).
+        // column rather than widening the page (nothing scrolls sideways).
         <div className="flex min-w-0 flex-col gap-4">
           <RecordsFilterBar filter={filter} />
           <EmptiedRecords filter={filter} />

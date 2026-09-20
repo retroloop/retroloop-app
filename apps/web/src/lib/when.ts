@@ -2,15 +2,15 @@
  * A moment, as a reader reads it.
  *
  * **The first timestamp this product renders anywhere.** Every date on the wire
- * is an ISO-8601 instant in UTC and until session 9 nothing showed one: the
- * dashboard counts records, the review page names revisions by number, and a
- * comment says which revision it belongs to rather than what time it was
- * written. The record page's timeline is a list ordered by time, so it is the
- * first surface that has to say when.
+ * is an ISO-8601 instant in UTC and until now nothing showed one: the dashboard
+ * counts records, the review page names revisions by number, and a comment says
+ * which revision it belongs to rather than what time it was written. The record
+ * page's timeline is a list ordered by time, so it is the first surface that has
+ * to say when.
  *
  * **The reader's own locale and zone**, which is what `undefined` as the first
  * argument means. A fix landed at 09:30 for the person who landed it, and a page
- * that printed UTC would be telling him the wrong hour on his own commits.
+ * that printed UTC would be telling them the wrong hour on their own commits.
  *
  * That is also why nothing asserts this string. The formatted text depends on
  * the machine, and a scenario pinned to one rendering of it would be a scenario

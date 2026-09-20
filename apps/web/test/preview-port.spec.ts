@@ -3,12 +3,11 @@ import { expect, test } from '@playwright/test'
 import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '../preview-port.ts'
 
 /**
- * Retro 3 `r-web-port-collision` and retro 7 `r-suite-runs-contend`. The preview
- * server this suite drives used to bind the literal 24302 in every checkout, so
- * two worktrees could not verify at once; then it was derived from the checkout
- * alone, so two *runs* in one worktree could not either — the second died on
- * `--strictPort`, or worse, both ran and starved each other into rotating
- * timeouts that looked like a flaky lane.
+ * The preview server this suite drives used to bind the literal 24302 in every
+ * checkout, so two worktrees could not verify at once; then it was derived from
+ * the checkout alone, so two *runs* in one worktree could not either — the
+ * second died on `--strictPort`, or worse, both ran and starved each other into
+ * rotating timeouts that looked like a flaky run.
  *
  * The derivation is what these assert. That it *works* is asserted by the run
  * itself — this file is in the `meta` project of the same config whose
@@ -16,31 +15,31 @@ import { CHECKOUT, derivePort, PORT_RANGE, PREVIEW_PORT, RESERVED_PORTS } from '
  * down before any of it reaches an assertion.
  */
 
-/** Where the lanes of one session actually live, plus the checkout they came from. */
+/** Where the worktrees of one checkout actually live, plus the checkout they came from. */
 const CHECKOUTS = [
-  '/Users/haider/Developer/retro',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-a',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-b',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-c',
-  '/Users/haider/Developer/retro/.claude/worktrees/fix-d',
-  '/Users/haider/Developer/retro/.claude/worktrees/harbor',
-  '/Users/haider/Developer/retro-review-3',
+  '/Users/sample/Developer/retro',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-a',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-b',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-c',
+  '/Users/sample/Developer/retro/.claude/worktrees/fix-d',
+  '/Users/sample/Developer/retro/.claude/worktrees/hangar',
+  '/Users/sample/Developer/retro-mirror-3',
 ]
 
 /** Eighty consecutive pids, which is what runs started seconds apart get. */
 const PIDS = Array.from({ length: 80 }, (_, step) => 1000 + step)
 
 /**
- * The retro-7 claim, and the reason the pid is in there at all: a second run in
- * a worktree that is already running one does not take the port out from under
- * it.
+ * The claim, and the reason the pid is in there at all: a second run in a
+ * worktree that is already running one does not take the port out from under it.
  *
  * It is a hash and not an allocator, so what can be asserted is that the pid
  * genuinely reaches the derivation and spreads across the range rather than
  * nudging it: 80 consecutive pids land on 58 of the 80 ports, which is what a
  * hash does and 1 is what dropping the pid does. Two runs still share a port
  * about one time in eighty — that is the trade against sharing one every time,
- * and it is bounded by the range brief-001 leaves free rather than by this file.
+ * and it is bounded by the range this project leaves free rather than by this
+ * file.
  */
 test('gives two runs in one worktree their own ports', () => {
   const ports = PIDS.map((pid) => derivePort(CHECKOUT, pid))
@@ -56,8 +55,8 @@ test('gives two runs in one worktree their own ports', () => {
 })
 
 /**
- * The retro-3 claim, which the pid must not have cost: the checkout is still in
- * the hash, so the lanes of one session do not contend.
+ * The claim, which the pid must not have cost: the checkout is still in the
+ * hash, so two worktrees of one checkout do not contend.
  *
  * Counted over the same pids rather than asserted at one of them, because seven
  * paths in eighty ports collide for about a quarter of pids however good the
@@ -92,10 +91,10 @@ test('answers the same port for the same run, every time', () => {
 })
 
 /**
- * The ports brief-001 §Ports hands to something by name, the old 24302 among
- * them. A stale worktree still previewing there is the collision most likely to
- * actually happen, so the range is chosen to leave those alone rather than to be
- * merely unlikely to hit them.
+ * The ports that are handed to something by name, the old 24302 among them. A
+ * stale worktree still previewing there is the collision most likely to actually
+ * happen, so the range is chosen to leave those alone rather than to be merely
+ * unlikely to hit them.
  */
 test('never lands on a port something fixed already binds', () => {
   const [first, last] = PORT_RANGE

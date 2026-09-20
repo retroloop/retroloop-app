@@ -15,8 +15,7 @@ export type ConsoleGuard = {
 }
 
 /**
- * Whether the page is in the middle of a scroll, watched from before it loads
- * (retro 7 `r-landing-clamp-race`).
+ * Whether the page is in the middle of a scroll, watched from before it loads.
  *
  * **It has to be installed here, and that is the finding rather than a
  * preference.** `scrollAtRest` used to attach its own `scrollend` listener when

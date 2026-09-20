@@ -88,7 +88,7 @@ Then('the dashboard says {string}', async ({ page }, line: string) => {
   await expect(page.getByTestId('dashboard-empty')).toHaveText(line)
 })
 
-/* ── direction 6: the band ────────────────────────────────────────────────── */
+/* ── the band ─────────────────────────────────────────────────────────────── */
 
 /**
  * The count is read off the band's own heading, which carries it in brackets past
@@ -106,8 +106,8 @@ Then('the band names {int} retrospective(s) in flight', async ({ page }, count: 
 /**
  * The absence half of "exclusively". Asserted as a count of zero rather than as
  * "not visible", because a band rendered off-screen or with zero height is
- * invisible and still present — and the guarantee the direction asked for is that
- * there is nothing there at all.
+ * invisible and still present — and what the band promises is that there is
+ * nothing there at all.
  */
 Then('there is no band for retrospectives in flight', async ({ page }) => {
   await expect(page.getByTestId('live-band')).toHaveCount(0)
@@ -135,7 +135,7 @@ Then(
  * The absence of both figures, counted rather than asserted invisible — the same
  * call `there is no band` makes, and for the same reason: a `<dl>` rendered at
  * zero height is invisible and still there, and what the band promises is that a
- * round nobody owes him anything on carries no numbers at all.
+ * round nobody owes the reviewer anything on carries no numbers at all.
  *
  * Both testids, because the pair is rendered together and dropping one of them
  * would be a half-fix this step has to see.
@@ -147,10 +147,10 @@ Then("the band's row for retro {int} shows no figures", async ({ page }, retroId
 })
 
 /**
- * What the row's one control invites him to do. "Review it" is the call to act
- * and "Open it" is the way in to a round that is not his — the word changes with
- * the state, so a row whose tag moved and whose button did not would be sending
- * him back to a review he has already finished.
+ * What the row's one control invites the reviewer to do. "Review it" is the
+ * call to act and "Open it" is the way in to a round that is not theirs — the
+ * word changes with the state, so a row whose tag moved and whose button did
+ * not would be sending them back to a review they have already finished.
  */
 Then(
   "the band's row for retro {int} offers {string}",
@@ -211,8 +211,8 @@ Then(
 /**
  * **The pair as a document**, which is the half a picture cannot show: a
  * definition list means term then description, and this tile used to write them
- * the other way round to get its value-first look (session-11 §7q — flagged
- * pre-existing, non-conforming and load-bearing for that look).
+ * the other way round to get its value-first look (flagged pre-existing,
+ * non-conforming and load-bearing for that look).
  *
  * Read off the tag names in the order the DOM holds them, one group at a time,
  * because that order IS the claim. A count is also checked to be inside the tile
@@ -243,9 +243,8 @@ Then(
  * A position assertion, so it is shown to fail rather than trusted
  * (`r-uncontrolled-assertions`) — a column lays itself out top-to-bottom for
  * free, which is exactly how an assertion like this ships green while proving
- * nothing. Its plant is in the lane report. Fully above, not merely higher: the
- * number's bottom edge clears the label's top, which a two-pixel drift could
- * satisfy the weaker way.
+ * nothing. Fully above, not merely higher: the number's bottom edge clears the
+ * label's top, which a two-pixel drift could satisfy the weaker way.
  */
 Then(
   'each count in the {string} tile shows its number above its label',
@@ -285,12 +284,12 @@ Then('the chart does not offer the axis {string}', async ({ page }, axis: string
 })
 
 /**
- * D6's ruling, one press at a time. Read off the renderer's published
+ * The orientation, one press at a time. Read off the renderer's published
  * `data-orientation` rather than off tick coordinates — a coordinate comparison
- * here would be asserting recharts' layout maths, which the browser does half of
- * for free and which would go green for the wrong reason the day it changes.
+ * here would be asserting recharts' layout maths, which the browser does half
+ * of for free and which would go green for the wrong reason the day it changes.
  *
- * Every tab, not a sample: the ruling is about the two that used to be vertical,
+ * Every tab, not a sample: the rule is about the two that used to be vertical,
  * and a step that checked only the first would prove nothing about them.
  */
 Then('every axis draws the chart horizontally', async ({ page }) => {
@@ -322,7 +321,7 @@ Then('the readings table lists {int} row(s)', async ({ page }, count: number) =>
   await expect(page.getByTestId('readings-table').getByTestId(/^readings-row-/)).toHaveCount(count)
 })
 
-/* ── direction 4: the diary ───────────────────────────────────────────────── */
+/* ── the diary ────────────────────────────────────────────────────────────── */
 
 Then('the diary holds {int} sitting(s)', async ({ page }, count: number) => {
   await expect(page.getByTestId('diary').getByTestId(/^session-card-/)).toHaveCount(count)
@@ -348,7 +347,7 @@ Then('the diary lists {int} retrospective(s)', async ({ page }, count: number) =
 })
 
 /**
- * The global ids the rows print, in draw order. This is direction 4's second half
+ * The global ids the rows print, in draw order. This is the diary's second half
  * and the fixture is what gives it teeth: across two sessions the per-session
  * numbers repeat, so a row that had gone back to `retroNumber` reads "Retro 1,
  * Retro 2, Retro 1" and fails here.
@@ -382,9 +381,9 @@ Then(
 
 /**
  * The pending count gone, not zero. The diary hides it off the same reading the
- * band hides its figures off — a round he has put down is not a round he owes
- * anything on — and "0 pending" beside a tag that says SUBMITTED would be the
- * page arguing with itself.
+ * band hides its figures off — a round that has been put down is not a round
+ * anything is owed on — and "0 pending" beside a tag that says SUBMITTED would
+ * be the page arguing with itself.
  */
 Then(
   "the diary's row for retro {int} counts nothing pending",
@@ -466,9 +465,9 @@ Then('the page does not scroll sideways', async ({ page }) => {
 
 /**
  * These three belong to `chrome.feature` and live here because the dashboard is
- * the page it opens them on. They survived the session-12 recomposition
- * unchanged: nothing in the owner's ruling went near the header, which is
- * direction 7 and a separate lane.
+ * the page it opens them on. They survived the dashboard's recomposition
+ * unchanged: nothing in that redesign went near the header, which is separate
+ * work.
  */
 Then('the top menu names the app {string}', async ({ page }, name: string) => {
   await expect(page.getByTestId('app-brand')).toHaveText(name)
@@ -486,8 +485,7 @@ Then('the page carries no trail', async ({ page }) => {
 /**
  * A position assertion, so it is shown to fail rather than trusted: the browser
  * lays out a document top-to-bottom for free, which is exactly how an assertion
- * like this ships green while proving nothing (`r-uncontrolled-assertions`). Its
- * plant is in the lane report.
+ * like this ships green while proving nothing (`r-uncontrolled-assertions`).
  */
 Then('the trail sits below the top menu', async ({ page }) => {
   const menu = await page.getByTestId('app-brand').boundingBox()
@@ -506,7 +504,7 @@ Then('the record page shows record {int}', async ({ page }, globalId: number) =>
   await expect(page.getByTestId('record-num')).toHaveText(`#${globalId}`)
 })
 
-/* ── D9: the Require human cut ────────────────────────────────────────────── */
+/* ── the Require human cut ───────────────────────────────────────────────── */
 
 When('the reviewer opens the {string} cut', async ({ page }, label: string) => {
   await page

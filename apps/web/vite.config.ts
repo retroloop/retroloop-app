@@ -41,12 +41,12 @@ export default defineConfig(({ mode }) => {
     build: mocked ? { outDir: 'dist-mocked' } : {},
     /**
      * Derived per checkout and per run, so two worktrees can run the gate at
-     * once and two runs in one worktree do not contend (`preview-port.ts`, retro
-     * 3 `r-web-port-collision`, retro 7 `r-suite-runs-contend`). It lives here
-     * rather than in the package scripts because `playwright.config.ts` has to
-     * name the same number, and two places computing it is two places to get it
-     * wrong — when playwright starts this server it hands the number down in the
-     * environment rather than letting this process derive one of its own.
+     * once and two runs in one worktree do not contend (`preview-port.ts`). It
+     * lives here rather than in the package scripts because
+     * `playwright.config.ts` has to name the same number, and two places
+     * computing it is two places to get it wrong — when playwright starts this
+     * server it hands the number down in the environment rather than letting
+     * this process derive one of its own.
      *
      * `strictPort`, because a preview that silently moved to the next free port
      * would be a suite driving one server while asserting against another.

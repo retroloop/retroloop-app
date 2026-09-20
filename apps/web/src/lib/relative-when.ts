@@ -2,15 +2,14 @@
  * A moment, as a reader reads it — **relative while it is still recent, absolute
  * once it is not.**
  *
- * The owner's word on the diary view (session-12 direction 4): *"the dates should
- * be relative when they are not too far off."* The two halves of that sentence
- * are both instructions. "Relative" is the near case, because the reading the
- * diary is arranged for is "what was I doing in the last few days" and
- * "yesterday" answers it in one word where "Aug 26, 2026, 6:22 AM" makes the
- * reader do the subtraction. "When they are not too far off" is the far case: at
- * some distance a relative stamp stops being an answer and becomes a riddle —
- * "3 weeks ago" is not a date anybody can place, and a diary that only ever said
- * that would be a diary with no dates in it.
+ * The rule for the diary view: dates are relative when they are not too far
+ * off. The two halves of that rule are both instructions. "Relative" is the
+ * near case, because the reading the diary is arranged for is "what was I doing
+ * in the last few days" and "yesterday" answers it in one word where "Aug 26,
+ * 2026, 6:22 AM" makes the reader do the subtraction. "When they are not too
+ * far off" is the far case: at some distance a relative stamp stops being an
+ * answer and becomes a riddle — "3 weeks ago" is not a date anybody can place,
+ * and a diary that only ever said that would be a diary with no dates in it.
  *
  * So there is a **boundary**, and it is a week. Inside it the reader still holds
  * the days in their head and the relative form is the shorter true sentence;

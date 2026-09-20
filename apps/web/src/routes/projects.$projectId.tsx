@@ -6,7 +6,7 @@ import { integerId } from '@/lib/ids'
 export const Route = createFileRoute('/projects/$projectId')({ component: ProjectPage })
 
 /**
- * A placeholder with a real breadcrumb (ux-brief 03).
+ * A placeholder with a real breadcrumb.
  *
  * The contract says the crumb should carry the project's *name*, and v0 cannot:
  * `sessions.list`/`sessions.get` are deferred until the pages that need them

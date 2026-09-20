@@ -19,13 +19,12 @@
  * mounted or not mounted, never CSS-hidden, so the number lives in two languages
  * and both of them say where the other one is.
  *
- * **It moved from 84rem in session 10, and it moved because the rails did**
- * (`r-wider-page-for-panels`, the owner: *"the max width should be even wider and
- * all of it should go to the left index panel and the right comments panel"*).
- * The breakpoint is not a taste value: it is the rails plus the gutters plus the
- * floor, so widening the rails by 128px moves it by the same 128px. The three
- * columns first fit 128px later than they used to, and this is the number that
- * says so.
+ * **It moved from 84rem, and it moved because the rails did** — the max width
+ * needed to be even wider, with all of it going to the left index panel and the
+ * right comments panel. The breakpoint is not a taste value: it is the rails
+ * plus the gutters plus the floor, so widening the rails by 128px moves it by
+ * the same 128px. The three columns first fit 128px later than they used to, and
+ * this is the number that says so.
  */
 @theme {
   --breakpoint-wide: 92rem;
@@ -171,7 +170,7 @@
    * (`scripts/validate_palette.js` of the `dataviz` discipline: OKLab ΔE ×100
    * under Machado-Oliveira-Fernandes protanopia/deuteranopia at severity 1.0,
    * plus the lightness/chroma/contrast checks). The evidence for this palette
-   * is in the lane report; what follows is why there are three families.
+   * is the check described above; what follows is why there are three families.
    *
    * 1. `--series-*` — **status.** Lifecycle is a reserved scale with fixed
    *    meaning, and these are the app's own `--tone-*` values so a stacked
@@ -322,10 +321,10 @@
     @apply font-mono text-[0.6875rem] leading-relaxed text-muted-foreground;
   }
   /* The root-cause gutter — INCIDENT · WHY 1 … WHY n · ROOT — as one label
-     system rather than four styling choices (retro 4 `r-whys-labels`). The
-     section-label idiom, plus the three properties the owner asked for by name:
+     system rather than four styling choices. The
+     section-label idiom, plus three properties named specifically:
      one shared width, so a label is never sized by the text beside it; `nowrap`,
-     so "WHY 1" cannot fold onto the second line he was shown; and an explicit
+     so "WHY 1" cannot fold onto a second line; and an explicit
      line height, because "one line" is only checkable against a number.
 
      `w-20` is sized off INCIDENT, the longest of them — a magic number the suite

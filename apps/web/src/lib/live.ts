@@ -15,8 +15,8 @@ import { useTRPC } from '@/lib/trpc'
 export type LiveSession = {
   /**
    * A revision the AI filed while the human was reading — **announced, not
-   * swapped in** (KC-0005). The page keeps showing what the reviewer was reading
-   * until they say otherwise; a verdict has to bind to the content they saw.
+   * swapped in**. The page keeps showing what the reviewer was reading until they
+   * say otherwise; a verdict has to bind to the content they saw.
    */
   readonly availableRevision: number | null
   /** The reviewer accepted the announcement. Clears it and refetches the retro. */
@@ -38,9 +38,8 @@ export type QueryFamily = 'records' | 'threads' | 'retros'
  *
  * `RevisionCreated` maps to **nothing**, and that is the one entry that must
  * stay empty: refetching there would move the records under the reviewer's
- * cursor the moment the AI filed a draft, which is the exact failure
- * "announce, don't swap" exists to prevent (KC-0005). The hook raises the
- * banner instead.
+ * cursor the moment the AI filed a draft, which is the exact failure "announce,
+ * don't swap" exists to prevent. The hook raises the banner instead.
  *
  * Every comment event carries `threads` as well as `records`:
  *
@@ -48,19 +47,17 @@ export type QueryFamily = 'records' | 'threads' | 'retros'
  *     refetched and one of them has nothing new — a request, against never
  *     showing the reviewer a stale thread.
  *   - `ThreadResolved` and `ThreadReopened` did **not**, and that was a real
- *     bug (session 7). They fell to the everything-else branch, which
- *     invalidated `records.*` only — true while a record's threads rode on
- *     `records.get`, and false since the comments panel became the one comments
- *     surface and `threads.list` became the one query that holds them. The
- *     acting browser was fine, because the mutation invalidates on its own
- *     success; a *second* browser watching the same retrospective never saw the
- *     thread settle.
+ *     bug. They fell to the everything-else branch, which invalidated `records.*`
+ *     only — true while a record's threads rode on `records.get`, and false since
+ *     the comments panel became the one comments surface and `threads.list`
+ *     became the one query that holds them. The acting browser was fine, because
+ *     the mutation invalidates on its own success; a *second* browser watching
+ *     the same retrospective never saw the thread settle.
  *
  * `ReviewFinished` and `ReviewClosed` carry `retros`: the first is the human's
  * own press arriving back (and any other tab's), the second is the AI closing
  * the review to export — the moment a page that is still open goes read-only, so
- * the state tag and the bar's one action have to follow it (retro 4
- * `r-one-finish-button`).
+ * the state tag and the bar's one action have to follow it.
  *
  * **`RecordRelated` and `RecordUnrelated` fall to that same everything-else
  * branch, and this is the one entry where the default is right for a reason
@@ -77,15 +74,15 @@ export type QueryFamily = 'records' | 'threads' | 'retros'
  * asked for one.
  *
  * **`RecordClaimed` and `RecordUnclaimed` fall to that branch too, and there the
- * default is the mechanism rather than a fallback** (RL-50). The in-progress
- * badge is drawn from `records.list`, so `records` is exactly the family an
- * agent picking a record up made stale: the card re-reads and the badge appears
- * — or comes down when the record is given back or resolved — with no reload and
- * no second query family involved. Nothing else on the page reads a claim.
+ * default is the mechanism rather than a fallback.** The in-progress badge is
+ * drawn from `records.list`, so `records` is exactly the family an agent picking
+ * a record up made stale: the card re-reads and the badge appears — or comes down
+ * when the record is given back or resolved — with no reload and no second query
+ * family involved. Nothing else on the page reads a claim.
  *
  * Everything else lands on `records` alone, which is where `RequestOpened`,
- * `RequestResponded` and `RequestClosed` end up (retro 4 `r-remove-requests`):
- * the panel they refreshed is gone and no procedure reads a request, so there is
+ * `RequestResponded` and `RequestClosed` end up: the requests panel that used
+ * to refresh from them is gone and no procedure reads a request, so there is
  * nothing left for them to make stale. They keep their names in `EVENT_NAMES`
  * because a store written before the removal has rows carrying them and a reader
  * must not choke on one. `ChangesRequested` is in the same position.

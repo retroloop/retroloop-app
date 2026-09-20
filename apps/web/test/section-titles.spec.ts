@@ -16,9 +16,8 @@ import { type RecordSection, SECTION_TITLES } from '../src/lib/enum-labels'
  *
  * Nine, and the word and the list are checked against each other by the reader
  * alone — so when one moves, move the other. `direction` and `footprint` are two
- * of the nine and are not dead: a record filed before the owner's multi-solution
- * design renders both, and the threads already filed on them keep their anchor
- * forever.
+ * of the nine and are not dead: a record filed before the multi-solution design
+ * renders both, and the threads already filed on them keep their anchor forever.
  */
 const EXPECTED_SECTIONS = [
   'title',

@@ -1,11 +1,10 @@
 Feature: The records page
 
   Every record of every retrospective, flat, with filters over it and a way to
-  say what has been done about each one — the owner's session-8 ask: "I want a
-  page that shows all the retro items flat with filtering … the goal is for me
-  to see all the items irrespective of the session or retro or cwd in one place
-  list", and "even after a retro has been closed, we should be able to attach
-  metadata to issues so that we can manage their life cycle."
+  say what has been done about each one — every item shows irrespective of
+  the session or retro or cwd it happened in, all in one place list, and
+  even after a retro has been closed, metadata can still be attached to its
+  records so their life cycle can be managed.
 
   These scenarios run against a stage holding three retrospectives across two
   sessions, which the review page's own fixture does not (`crossRetro` in
@@ -13,7 +12,7 @@ Feature: The records page
   proves: it is the only shape in which a row can be caught carrying the wrong
   retrospective's identity, linking to the wrong review, or resolving the wrong
   record — and two of those retrospectives mint the same rid on purpose, because
-  a rid is minted per retrospective and (retroId, rid) is the identity (A5).
+  a rid is minted per retrospective and (retroId, rid) is the identity.
 
   Background:
     Given the stage holds the retrospectives of two sessions
@@ -49,9 +48,9 @@ Feature: The records page
   # own. All three differ in both halves: the session and the ordinal.
   Scenario: A row carries its own retrospective's identity
     Given the reviewer opens the records page
-    Then record "r-silent-tailer" of retro 1 shows the identity "Session 1 · Retro #1 · /Users/haider/Developer/retro"
-    And record "r-export-widening" of retro 2 shows the identity "Session 1 · Retro #2 · /Users/haider/Developer/retro"
-    And record "r-ipad-scroll" of retro 3 shows the identity "Session 2 · Retro #1 · /Users/haider/Developer/harbor"
+    Then record "r-silent-tailer" of retro 1 shows the identity "Session 1 · Retro #1 · /Users/sample/Developer/retro"
+    And record "r-export-widening" of retro 2 shows the identity "Session 1 · Retro #2 · /Users/sample/Developer/retro"
+    And record "r-ipad-scroll" of retro 3 shows the identity "Session 2 · Retro #1 · /Users/sample/Developer/hangar"
 
   Scenario: A row says which record it is and how bad it is
     Given the reviewer opens the records page
@@ -60,11 +59,11 @@ Feature: The records page
     And record "r-ipad-scroll" of retro 3 is numbered "#7"
     And record "r-ipad-scroll" of retro 3 shows the severity "SEV4"
 
-  # The owner: "I am noticing that records don't seem to have unique id. in each
-  # retro record ids start from #1 which is weird … obviously I will like the
-  # global sequence rather than this retro prefix." This is the page he saw it
-  # on, and this scenario is the whole of what he asked for: seven records, seven
-  # numbers, and no two rows saying the same one.
+  # Records did not use to have a unique id — each retro's record ids started
+  # from #1, which read as if two different records shared a number. A global
+  # sequence replaces the per-retro prefix, and this scenario is the whole of
+  # what that means: seven records, seven numbers, and no two rows saying the
+  # same one.
   #
   # Every pairing below disagrees with the reading it replaced. Retro 2's first
   # record is #4 and retro 3's is #6, so a per-retro number is out; both
@@ -106,9 +105,8 @@ Feature: The records page
       | requester-human  | 4     |
       | requester-ai     | 3     |
 
-  # r-hold-semantics froze the verdict and r-remove-hold took its dead chip off
-  # the review bar. The same rule applies to a filter that could only ever read
-  # zero here.
+  # The "hold" verdict is frozen and its dead chip was removed from the review
+  # bar. The same rule applies to a filter that could only ever read zero here.
   Scenario: The verdict nobody can give any more is not offered
     Given the reviewer opens the records page
     Then the filters do not offer "verdict-hold"
@@ -149,8 +147,9 @@ Feature: The records page
       | 2     | r-export-widening |
       | 1     | r-silent-tailer   |
 
-  # r-empty-filter-message: "it looks like a bug that all of a sudden everything
-  # vanished when actually the filtered items really don't have anything left."
+  # An empty filter result needs to say so plainly — otherwise it looks like a
+  # bug when everything has vanished, when actually the filtered items really
+  # don't have anything left.
   Scenario: A combination that matches nothing says so, and says how much it hid
     Given the reviewer opens the records page
     When the reviewer filters to "resolved" records
@@ -164,14 +163,14 @@ Feature: The records page
     And record "r-flaky-landing" of retro 2 was resolved by "AI"
     And record "r-flaky-landing" of retro 2 cites:
       | 9f3c1ab                                        |
-      | https://github.com/haiderhameed/retro/pull/118 |
+      | https://github.com/example-user/retro/pull/118 |
     And record "r-flaky-landing" of retro 2 notes "Sampled at rest; the poll moved down onto the sampling."
 
-  # A2: references are free text, so the page asks the one question that has an
+  # References are free text, so the page asks the one question that has an
   # unambiguous answer. A commit id has nowhere to point and stays a commit id.
   Scenario: A reference that is a web address is a link, and one that is not is not
     Given the reviewer opens the records page
-    Then the reference "https://github.com/haiderhameed/retro/pull/118" of record "r-flaky-landing" of retro 2 links to it
+    Then the reference "https://github.com/example-user/retro/pull/118" of record "r-flaky-landing" of retro 2 links to it
     And the reference "9f3c1ab" of record "r-flaky-landing" of retro 2 is not a link
 
   Scenario: The human marks a record resolved, citing what fixed it
@@ -180,7 +179,7 @@ Feature: The records page
     And the reviewer cites:
       """
       4d5e6f7
-      https://github.com/haiderhameed/retro/issues/91
+      https://github.com/example-user/retro/issues/91
       """
     And the reviewer notes "Caught per iteration; the page says when the stream is down."
     And the reviewer resolves it
@@ -188,7 +187,7 @@ Feature: The records page
     And record "r-silent-tailer" of retro 1 was resolved by "HUMAN"
     And record "r-silent-tailer" of retro 1 cites:
       | 4d5e6f7                                          |
-      | https://github.com/haiderhameed/retro/issues/91  |
+      | https://github.com/example-user/retro/issues/91  |
     And record "r-silent-tailer" of retro 1 notes "Caught per iteration; the page says when the stream is down."
     And the filters count:
       | filter   | count |
@@ -235,11 +234,11 @@ Feature: The records page
       | resolved | 0     |
       | archived | 1     |
 
-  # The owner: "for only the records that are marked as declined during the retro
-  # and we still want to maintain its discussion … so maybe we can have a type
-  # called archived". A declined record is archived from birth and NOTHING WAS
-  # WRITTEN to put it there — so there is no author, no evidence block, and the
-  # only act it offers is the one that brings it back.
+  # Only records marked declined during the retro carry the archived type — so
+  # the discussion can still be kept without leaving the record open. A declined
+  # record is archived from birth and NOTHING WAS WRITTEN to put it there — so
+  # there is no author, no evidence block, and the only act it offers is the one
+  # that brings it back.
   Scenario: A declined record is archived, and nobody archived it
     Given the reviewer opens the records page
     Then record "r-export-widening" of retro 2 is "archived"
@@ -247,9 +246,9 @@ Feature: The records page
     And record "r-export-widening" of retro 2 cites nothing
     And record "r-export-widening" of retro 2 offers only "Unarchive"
 
-  # "by default all others that have approval, those are normal records so if a
-  # user wants, they can just archive it." One press, no composer: an archive
-  # cites nothing, and a note it could take is a note this page never shows back.
+  # Records with approval are normal records that a user can choose to archive.
+  # One press, no composer: an archive cites nothing, and a note it could take is
+  # a note this page never shows back.
   Scenario: The human puts an open record out of the way
     Given the reviewer opens the records page
     Then record "r-bullet-responses" of retro 1 is "open"
@@ -283,8 +282,8 @@ Feature: The records page
 
   # An archived record is out of the way, not gone — the discussion is the whole
   # reason it is archived rather than deleted. So it stays on the page, and the
-  # chip is what hides it. FOR HIS REVIEW: the alternative is hiding archived
-  # rows by default and offering a chip to show them.
+  # chip is what hides it: the alternative is hiding archived rows by default
+  # and offering a chip to show them.
   Scenario: Archived rows stay on the page, and a chip is what hides them
     Given the reviewer opens the records page
     Then the records page lists 7 records
@@ -302,7 +301,7 @@ Feature: The records page
     Then record "r-stale-lock" of retro 3 is "archived"
     And record "r-stale-lock" of retro 1 is "open"
 
-  # A9: events.onRetro is scoped to one retrospective and a flat page has nothing
+  # events.onRetro is scoped to one retrospective and a flat page has nothing
   # single to subscribe to, so coming back to the tab is what catches it up —
   # which is when the AI, in its own process, has been working the fix queue.
   Scenario: The page catches up with what the AI did while the reviewer was away
@@ -313,10 +312,10 @@ Feature: The records page
     Then record "r-silent-tailer" of retro 1 is "resolved"
     And record "r-silent-tailer" of retro 1 was resolved by "AI"
 
-  # The owner, on what a row used to do: "when I go to the records page and click
-  # on a record, it takes me to the retro page. each record should have it's own
-  # dedicated page." So a row's one link is that page, and the way to the
-  # retrospective lives on it — which reverses rulings A6/A7.
+  # On what a row used to do: clicking a record used to take the reviewer to the
+  # retro page, but each record now has its own dedicated page. So a row's one
+  # link is that page, and the way to the retrospective lives on it — which
+  # reverses a standing rule.
   Scenario: A row is one click to that record's own page
     Given the reviewer opens the records page
     When the reviewer opens record "r-bullet-responses" of retro 1 from the records page
@@ -337,12 +336,12 @@ Feature: The records page
 
   # ── the record's own page ─────────────────────────────────────────────────
   #
-  # "each record should have it's own dedicated page. note that all pages should
-  # have consistent width and overall layout. the record page sure should give me
-  # option to go to the retro page." Everything below runs on the same
-  # three-retrospective stage, which is what makes "its own" falsifiable: two of
-  # them mint the same rid, and a page reading the wrong half of the pair renders
-  # the other record's narrative under this record's number.
+  # Each record has its own dedicated page, with the consistent width and overall
+  # layout every page shares, and the record page offers a way to go to the retro
+  # page. Everything below runs on the same three-retrospective stage, which is
+  # what makes "its own" falsifiable: two of them mint the same rid, and a page
+  # reading the wrong half of the pair renders the other record's narrative under
+  # this record's number.
 
   Scenario: The record page carries the record, whole
     Given the reviewer opens record 3 directly
@@ -362,7 +361,7 @@ Feature: The records page
       | footprint   |
     And the browser reported no console errors
 
-  # A record filed in the shape the owner asked for renders the other branch, and
+  # A record filed in the multi-solution shape renders the other branch, and
   # the tick is the verdict's own selection rather than a choice offered here.
   Scenario: A record that proposes solutions shows them, and offers no choice
     Given the reviewer opens record 6 directly
@@ -374,7 +373,7 @@ Feature: The records page
       | solutions   |
     And the record page offers no way to select a solution
 
-  # "let's leave out the comments for now" — and a verdict is given inside its
+  # Comments are left out of this page — and a verdict is given inside its
   # review, against a revision the reviewer chose, so neither is on this page.
   Scenario: The page offers no comments and no verdict
     Given the reviewer opens record 3 directly
@@ -383,10 +382,10 @@ Feature: The records page
 
   Scenario: The record page states its own retrospective's identity line
     Given the reviewer opens record 7 directly
-    Then the record page shows the identity "Session 2 · Retro #1 · /Users/haider/Developer/harbor"
+    Then the record page shows the identity "Session 2 · Retro #1 · /Users/sample/Developer/hangar"
 
-  # "the record page sure should give me option to go to the retro page" — and it
-  # lands *at the record*, which is the anchor the flat page's rows used to carry.
+  # The record page offers a way to go to the retro page — and it lands *at
+  # the record*, which is the anchor the flat page's rows used to carry.
   Scenario: The record page is the way to its own retrospective
     Given the reviewer opens the records page
     When the reviewer opens record "r-ipad-scroll" of retro 3 from the records page
@@ -420,8 +419,8 @@ Feature: The records page
     Given the reviewer opens "/records/404"
     Then the page says it cannot find that
 
-  # ux-brief 03: an id that is not an integer is not a request for a record, and
-  # the page says so without asking the server.
+  # An id that is not an integer is not a request for a record, and the page
+  # says so without asking the server.
   Scenario: A record id that is not an integer is not found
     Given the reviewer opens "/records/nope"
     Then the page says it cannot find that
@@ -439,7 +438,7 @@ Feature: The records page
     And the reviewer cites:
       """
       c0ffee1
-      https://github.com/haiderhameed/retro/pull/204
+      https://github.com/example-user/retro/pull/204
       """
     And the reviewer notes "min-w-0 on the column, overflow-x-auto on the box."
     And the reviewer resolves it
@@ -447,7 +446,7 @@ Feature: The records page
     And the record page was resolved by "HUMAN"
     And the record page cites:
       | c0ffee1                                        |
-      | https://github.com/haiderhameed/retro/pull/204 |
+      | https://github.com/example-user/retro/pull/204 |
 
   Scenario: A resolve from the record page lands on that record and no other
     Given the reviewer opens record 6 directly
@@ -481,9 +480,9 @@ Feature: The records page
 
   # ── relations ─────────────────────────────────────────────────────────────
   #
-  # "Both actors can relate records, each relation carries how-they-relate words,
-  # and the relation reads from both sides, so that AI can easily find past
-  # records and build holistic solutions."
+  # Both actors can relate records, each relation carries how-they-relate words,
+  # and the relation reads from both sides, so the AI can easily find past
+  # records and build holistic solutions.
   #
   # The world opens holding one relation, written by the AI — which is the actor
   # the feature was asked for, and one the browser could never impersonate: its
@@ -663,8 +662,8 @@ Feature: The records page
       | outgoing  | 2      | and this one came after                      | Answers come back as bullet lists when prose was asked for | HUMAN |
       | incoming  | 3      | and it turned out to be the same one after all | The tailer stops without saying so                       | HUMAN |
 
-  # ux-brief 04's standing limit on the widest line this block can hold: a title
-  # from another retrospective, free-text words and a link, all on one row.
+  # The standing limit on the widest line this block can hold: a title from
+  # another retrospective, free-text words and a link, all on one row.
   Scenario Outline: A relation reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens record 3 directly
@@ -682,9 +681,8 @@ Feature: The records page
 
   # ── the timeline ──────────────────────────────────────────────────────────
   #
-  # "We can have a timeline at the bottom that shows how the record evolved.
-  # timeline can have events like status changes." Comments are out by his later
-  # word.
+  # A timeline at the bottom shows how the record evolved, with events like
+  # status changes. Comments are left out of it.
 
   # A record nobody has decided or touched still has the one event every record
   # has: the draft the AI filed it in.
@@ -730,13 +728,13 @@ Feature: The records page
       | HUMAN | Reopened                   |
 
   # The references the resolve cited, on the line that cited them — and the same
-  # one question the records page asks of a reference (A2).
+  # one question the records page asks of a reference.
   Scenario: A resolve on the timeline carries what it cited, linked only when it is a link
     Given the reviewer opens record 4 directly
     Then the timeline cites:
       | 9f3c1ab                                        |
-      | https://github.com/haiderhameed/retro/pull/118 |
-    And the timeline reference "https://github.com/haiderhameed/retro/pull/118" links to it
+      | https://github.com/example-user/retro/pull/118 |
+    And the timeline reference "https://github.com/example-user/retro/pull/118" links to it
     And the timeline reference "9f3c1ab" is not a link
     And the timeline notes "Sampled at rest; the poll moved down onto the sampling."
 
@@ -759,7 +757,7 @@ Feature: The records page
       | HUMAN | Declined against revision 2 |
 
   # The page catches up with what the AI did in its own process, on the one
-  # signal it has (A9): coming back to the tab.
+  # signal it has: coming back to the tab.
   Scenario: The record page catches up with what the AI did while the reviewer was away
     Given the reviewer opens record 3 directly
     Then the record page is "open"
@@ -772,15 +770,15 @@ Feature: The records page
       | AI    | Filed in revision 1 |
       | AI    | Resolved            |
 
-  # ux-brief 04's standing limit, on the two screens this product is read on. A
-  # record page carries the widest content there is — an author-aligned footprint
-  # and a pull-request URL — and it is born on the layout lane's own measure.
+  # The standing limit, on the two screens this product is read on. A record
+  # page carries the widest content there is — an author-aligned footprint and a
+  # pull-request URL — and it is born on the layout's own measure.
   Scenario Outline: The record page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens record 4 directly
     Then the timeline cites:
       | 9f3c1ab                                        |
-      | https://github.com/haiderhameed/retro/pull/118 |
+      | https://github.com/example-user/retro/pull/118 |
     And the page is <measure> pixels wide
     And the page does not scroll sideways
     And the browser reported no console errors
@@ -791,8 +789,8 @@ Feature: The records page
       | 1440  | 900    | 1024    |
       | 1024  | 1366   | 1024    |
 
-  # A7: one way in, and since r-menu-dropdown it is an item of the one menu the
-  # chrome carries rather than a link the dashboard hangs in its header.
+  # One way in, now an item of the one menu the chrome carries rather than a
+  # link the dashboard hangs in its header.
   Scenario: The dashboard is the way in
     Given the reviewer opens the dashboard
     When the reviewer opens the app menu
@@ -807,34 +805,32 @@ Feature: The records page
     Then the records page lists 5 records
     And the "open" lifecycle chip is pressed
 
-  # retro-13 r-validatesearch-narrows-not-polices, first witness, measured on
-  # merged main: `?lifecycle=nonsense` rendered 0 of 132 records with no chip
-  # pressed — the junk reached the filter even though the route's validator
-  # returns {} for it, because `validateSearch` narrows the TYPE and does not
-  # police the VALUE.
+  # `?lifecycle=nonsense` used to render 0 of 132 records with no chip pressed —
+  # the junk reached the filter even though the route's validator returns {} for
+  # it, because `validateSearch` narrows the TYPE and does not police the VALUE.
   #
   # It is the emptiness that made it worth fixing rather than the typo: a page
   # showing none of its corpus with nothing pressed to explain why reads as a
   # product that lost its records. Policed where the seed is used, an
   # unrecognised lifecycle is no lifecycle at all — which is this pair of
-  # assertions, and they are the pre-specified ones from the lane that found it.
+  # assertions.
   Scenario: A lifecycle nobody defined leaves the corpus whole
     Given the reviewer opens "/records?lifecycle=nonsense"
     Then the records page lists 7 records
     And no lifecycle chip is pressed
     And the browser reported no console errors
 
-  # r-untested-rendered-branch: the quiet line an empty product lands on is the
-  # first thing anyone ever sees of it, and it is not the emptied-filter message —
-  # emptiness the filters did not cause is not emptiness they can explain.
+  # The quiet line an empty product lands on is the first thing anyone ever sees
+  # of it, and it is not the emptied-filter message — emptiness the filters did
+  # not cause is not emptiness they can explain.
   Scenario: A fresh install says the one true thing and stops
     Given the AI has never filed a revision
     And the reviewer opens the records page of a fresh install
     Then the records page says "No records yet. They land here as the AI files retrospectives."
 
-  # r-theme-blind-assertions: both themes, one channel at a time, because a dark
-  # override that suppresses one channel leaves the others standing and a joined
-  # assertion passes on the strength of whichever survived.
+  # Both themes, one channel at a time, because a dark override that suppresses
+  # one channel leaves the others standing and a joined assertion passes on the
+  # strength of whichever survived.
   Scenario Outline: The lifecycle chip that is on stands out from the one that is off
     Given the reviewer opens the records page
     And the reviewer has set dark mode to "<theme>"
@@ -847,16 +843,16 @@ Feature: The records page
       | light |
       | dark  |
 
-  # ux-brief 04's standing limit, on the two screens this product is read on. The
-  # pressure is real: a row carries a full working directory and a resolved one
-  # carries a pull-request URL, and neither has a space to break at.
+  # The standing limit, on the two screens this product is read on. The pressure
+  # is real: a row carries a full working directory and a resolved one carries a
+  # pull-request URL, and neither has a space to break at.
   Scenario Outline: The page reads cleanly on every screen it is opened on
     Given the reviewer's screen is <width> by <height>
     And the reviewer opens the records page
     Then record "r-flaky-landing" of retro 2 cites:
       | 9f3c1ab                                        |
-      | https://github.com/haiderhameed/retro/pull/118 |
-    And record "r-ipad-scroll" of retro 3 shows the identity "Session 2 · Retro #1 · /Users/haider/Developer/harbor"
+      | https://github.com/example-user/retro/pull/118 |
+    And record "r-ipad-scroll" of retro 3 shows the identity "Session 2 · Retro #1 · /Users/sample/Developer/hangar"
     And the page is <measure> pixels wide
     And the page does not scroll sideways
     And the browser reported no console errors

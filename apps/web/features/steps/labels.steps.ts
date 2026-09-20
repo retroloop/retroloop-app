@@ -49,9 +49,7 @@ Given('the reviewer opens the settings page', async ({ page }) => {
 })
 
 /**
- * The vertical section list the owner asked for (retro-13
- * `r-settings-vertical-tabs`): *"shadcn comes with vertical tabs, use that to
- * implement something like this."*
+ * The vertical section list, built with shadcn's vertical tabs.
  *
  * It asserts the item it pressed is the selected one before returning — a nav
  * whose state the reader cannot see is a nav they cannot trust, and every act
@@ -68,10 +66,9 @@ When('the reviewer opens the {string} settings section', async ({ page }, sectio
 })
 
 /**
- * Which section the page opens on — *"General needs to be the first
- * item in the list"*, and first also means the one that is already
- * open, because a settings page that opened on its second section would be
- * answering a different question about order.
+ * Which section the page opens on — General is first in the list, and first
+ * also means the one that is already open, because a settings page that opened
+ * on its second section would be answering a different question about order.
  */
 Then('the {string} settings section is selected', async ({ page }, section: string) => {
   await expect(page.getByTestId(`settings-tab-${section}`)).toHaveAttribute('aria-selected', 'true')
@@ -110,12 +107,11 @@ Then('the settings sections read, in order:', async ({ page }, table: DataTable)
 })
 
 /**
- * What one section says is behind it, before the reader presses it — asserted as
- * the whole literal, `Labels (3)`, because that is exactly what he asked for
- * (retro-13 `r-bracketed-counts`): *"the count needs to be in brackets like
- * 'Labels (1)' instead of 'Labels 1'."* A step that read the number on its own
- * would pass on the bare form this replaced, which is the one state this
- * assertion exists to catch.
+ * What one section says is behind it, before the reader presses it — asserted
+ * as the whole literal, `Labels (3)`, because that is exactly the rule: the
+ * count needs to be in brackets like 'Labels (1)' instead of 'Labels 1'. A step
+ * that read the number on its own would pass on the bare form this replaced,
+ * which is the one state this assertion exists to catch.
  *
  * Both counts in one step, because the claim is that each section counts **its
  * own** vocabulary: the create in the scenario moves one of them and must not
@@ -136,18 +132,18 @@ Then('the settings sections read:', async ({ page }, table: DataTable) => {
  * answer for either alone is "quite a lot".
  *
  * `aria-orientation` is what Radix sets from the `orientation` prop and what
- * drives the up/down arrow-key contract a reader without a mouse depends on — but
- * a page styled into a row would still carry it, so on its own it proves the
- * keyboard and not the layout. The geometry is the other half: the nav's items
- * stack (each below the last, all sharing a left edge) and the whole nav sits to
- * the **left** of the panel it switches, which is his ask in pixels — *"a left
- * vertical nav of sections … content on the right"*. On its own that would pass a
- * CSS column whose arrow keys still went sideways.
+ * drives the up/down arrow-key contract a reader without a mouse depends on —
+ * but a page styled into a row would still carry it, so on its own it proves
+ * the keyboard and not the layout. The geometry is the other half: the nav's
+ * items stack (each below the last, all sharing a left edge) and the whole nav
+ * sits to the **left** of the panel it switches, which is the design rule in
+ * pixels — a left vertical nav of sections with the content on the right. On
+ * its own that would pass a CSS column whose arrow keys still went sideways.
  *
  * **This is a position assertion, so it is hand-run with the behaviour deleted**
  * (`r-uncontrolled-assertions`) — flexbox stacks children for free in more than
  * one configuration, which is exactly how a toothless layout assertion ships
- * green. The plant and its failure output are in the lane report.
+ * green.
  */
 Then('the settings nav is vertical', async ({ page }) => {
   await expect(page.getByTestId('settings-nav')).toHaveAttribute('aria-orientation', 'vertical')
@@ -232,12 +228,11 @@ Then('the label {string} offers a way to retire it', async ({ page }, name: stri
 })
 
 /**
- * The two controls are one slot with two occupants (retro-11
- * `r-retire-burns-a-word`), so both directions are asserted by **presence and
- * absence**: an offerable row must not offer Un-retire, and a retired one must.
- * `toHaveCount(0)` rather than invisibility, for the reason the panel steps give
- * — a hidden control is still in the accessibility tree and still pressable by
- * anything that is not a mouse.
+ * The two controls are one slot with two occupants (`r-retire-burns-a-word`), so
+ * both directions are asserted by **presence and absence**: an offerable row must
+ * not offer Un-retire, and a retired one must. `toHaveCount(0)` rather than
+ * invisibility, for the reason the panel steps give — a hidden control is still
+ * in the accessibility tree and still pressable by anything that is not a mouse.
  */
 Then('the label {string} offers a way to un-retire it', async ({ page }, name: string) => {
   await expect(
@@ -331,7 +326,7 @@ Then('the settings page says {string}', async ({ page }, sentence: string) => {
 
 /**
  * **The selected section, against every unselected one, channel by channel**
- * (`r-theme-blind-assertions`) — the highlight is what his reference shows and
+ * (`r-theme-blind-assertions`) — the highlight is what the design shows and
  * what "selected item highlighted" means in pixels.
  *
  * Three channels tell them apart in `ui/tabs.tsx` — fill, ink and border — and
@@ -410,7 +405,7 @@ Then('the selected settings section stands out from the others', async ({ page }
  * text**, which is the thing a reader sees, rather than off the provider's state
  * or `localStorage`. A control that had drifted from the theme actually applied
  * would satisfy an assertion made against the state behind it and fail this one,
- * which is the direction that matters: the whole of his ask is that the setting
+ * which is the direction that matters: the whole of the rule is that the setting
  * be visible in one named place.
  */
 Then('the dark mode setting reads {string}', async ({ page }, option: string) => {
@@ -421,10 +416,10 @@ Then('the dark mode setting reads {string}', async ({ page }, option: string) =>
  * Choosing through the Select, and the step is not over when the option is
  * clicked — it is over when the listbox has finished leaving.
  *
- * Same two conditions the app menu's own step waits on, and the account of why —
- * including what retro-13 `r-starvation-budget-vs-parallelism` measured and could
- * not reproduce on `radix-ui` 1.6.7 — is written once, there
- * (`chrome.steps.ts` §followAppMenuItem), not copied here.
+ * Same two conditions the app menu's own step waits on, and the account of
+ * why — including what a follow-up measurement checked and could not reproduce
+ * on `radix-ui` 1.6.7 — is written once, there (`chrome.steps.ts`
+ * §followAppMenuItem), not copied here.
  */
 export async function chooseDarkMode(page: Page, option: string): Promise<void> {
   const chosen = page.getByTestId(`settings-theme-${option.toLowerCase()}`)
