@@ -87,25 +87,46 @@ export function reviewPageNeedsBuilding(
  * The command is split off the name that is printed everywhere else, so what a
  * failure tells someone to type is the very thing this ran — and it is handed
  * over as an argument list rather than a shell line, so a space in the path of
- * the app folder is a character in a path and nothing more.
+ * the app folder is a character in a path and nothing more. Both are arguments
+ * with those two as their defaults, so a test can point this at a command that
+ * is not there, or a folder that is not there, without a real build ever running.
  *
  * Everything it prints is captured and given back rather than written out: under
  * `--json` stdout carries exactly one object, and a build's progress lines are
  * not it. They are shown only when the build fails, which is when they are worth
  * reading.
+ *
+ * **A build that cannot start is a build that failed.** `Bun.spawn` throws
+ * synchronously — before there is a process to await — when the command is not
+ * on the path, and again when the folder does not exist; unguarded, that throw
+ * goes out of the start command as an unclassified exit 1 whose whole message is
+ * `Executable not found in $PATH: "bun"`. That names neither the build nor the
+ * way forward, and it is not a far-fetched machine: a Bun installed under a home
+ * folder and a script shell that never read the profile is precisely it. So the
+ * throw becomes the failure result it already is, and what a person sees is the
+ * one documented error — the build's own words, and the command to run by hand.
  */
 export async function buildReviewPage(
   command: string = WEB_BUILD_COMMAND,
   cwd: string = APP_ROOT,
 ): Promise<WebBuildResult> {
-  const build = Bun.spawn(command.split(' '), {
-    cwd,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  })
-  const [out, err, code] = await Promise.all([
-    new Response(build.stdout).text(),
-    new Response(build.stderr).text(),
-    build.exited,
-  ])
-  return { ok: code === 0, output: `${out}${err}`.trim() }
+  try {
+    const build = Bun.spawn(command.split(' '), {
+      cwd,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+    const [out, err, code] = await Promise.all([
+      new Response(build.stdout).text(),
+      new Response(build.stderr).text(),
+      build.exited,
+    ])
+    return { ok: code === 0, output: `${out}${err}`.trim() }
+  } catch (error) {
+    // The error's own words: they name the command that could not be started,
+    // which is the one fact that tells a reader what to fix.
+    return {
+      ok: false,
+      output: `${command}: ${error instanceof Error ? error.message : String(error)}`,
+    }
+  }
 }
