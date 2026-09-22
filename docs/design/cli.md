@@ -90,14 +90,15 @@ shipped commands are authoritative only in each command's `--help`.
 retroloop setup
 
 Initialize ~/.retroloop and the stage under it, apply migrations, install the
-boot service for this OS, start it, verify the URL over IP and hostname, print
-the URL. Safe to re-run.
+boot service for this OS, start it, verify the URL, print the URL. Safe to
+re-run.
 
 Options:
   --port <n>            Server port                          [default: 24100]
-  --bind <addr>         Address to bind. A specific interface IP (e.g. 192.168.1.9)
-                        exposes the server on that network; 0.0.0.0 and :: are
-                        refused.                             [default: 127.0.0.1]
+  --bind <addr>         Address to bind. The review server only ever listens on
+                        this machine, so only 127.0.0.1, ::1 and localhost are
+                        accepted; reach it from another computer over an SSH
+                        tunnel.                              [default: 127.0.0.1]
   --no-service          Initialize only; do not install or start the service
   --json
 ```
@@ -107,7 +108,7 @@ retroloop doctor
 
 Run every health check, PASS/WARN/FAIL per item: data dir writable, PRAGMA
 integrity_check, migration status, service installed/running, server version vs
-binary version, port reachable over IP and hostname, last backup age.
+binary version, port reachable on this machine, last backup age.
 
 Options:
   --fix                 Apply safe fixes (start service, run pending migrations)
@@ -120,8 +121,11 @@ retroloop up
 Idempotent "make it run": if the boot service is installed, ensure it is started;
 otherwise start a detached serve for this stage. If already running, do nothing.
 Always prints the URL. Exit 7 only if the server cannot be brought up.
-Binds 127.0.0.1 unless --bind names an interface address, which applies to that
-start alone: no address is carried over from a previous one.
+Binds 127.0.0.1, and refuses every address that is not this machine — there is
+no flag or environment variable that opens one, and no address is carried over
+from a previous start. Inside an SSH session it prints the port-forwarding
+command to paste on your own computer beside the link (--json: a "tunnel"
+field).
 
 Options:
   --port <n>  --bind <addr>  --json
@@ -146,9 +150,10 @@ starts the event tailer, serves UI + API, stops cleanly on SIGTERM.
 
 Options:
   --port <n>            [default: 24100]
-  --bind <addr>         Address to bind. A specific interface IP (e.g. 192.168.1.9)
-                        exposes the server on that network; 0.0.0.0 and :: are
-                        refused.                             [default: 127.0.0.1]
+  --bind <addr>         Address to bind. The review server only ever listens on
+                        this machine, so only 127.0.0.1, ::1 and localhost are
+                        accepted; reach it from another computer over an SSH
+                        tunnel.                              [default: 127.0.0.1]
   --home <root>
 ```
 

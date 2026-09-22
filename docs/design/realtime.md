@@ -17,7 +17,7 @@
 
 ## SSE to the browser
 
-- **One stream per page**, opened on load: tRPC v11 subscription (`events.onSession`) over `httpSubscriptionLink`; plain HTTP — works on the iPad over the LAN without TLS; browsers cap HTTP/1.1 connections, so one multiplexed stream, filtered by session.
+- **One stream per page**, opened on load: tRPC v11 subscription (`events.onSession`) over `httpSubscriptionLink`; plain HTTP, which needs no TLS because the server listens on this machine only and a remote reader reaches it through an SSH tunnel that is already encrypted; browsers cap HTTP/1.1 connections, so one multiplexed stream, filtered by session.
 - **`tracked(id, event)`** sets the SSE `id:` field. `EventSource` auto-reconnects with `Last-Event-ID`; the subscription replays `events WHERE id > lastEventId` from the table before joining live. A page closed for an hour catches up in one request.
 - **Queries are normal request/response** — they finish. The stream is the only long-lived connection; events tell the query cache what to refetch.
 
@@ -42,7 +42,7 @@ sequenceDiagram
     participant Tailer as Server: tailer<br/>(300 ms data_version loop)
     participant API as Server: tRPC<br/>(mutations / queries / SSE)
     participant Laptop as Laptop page
-    participant iPad as iPad page
+    participant iPad as Second page<br/>(another tab, or one over an SSH tunnel)
 
     Note over Laptop,iPad: Page load: queries fetch & finish; ONE SSE stream per page stays open
     Laptop->>API: GET /trpc/events.onSession (SSE, stays open)
@@ -63,7 +63,7 @@ sequenceDiagram
     end
 
     rect rgb(240,255,240)
-    Note over CLI,iPad: B — the human approves record #4 on the iPad
+    Note over CLI,iPad: B — the human approves record #4 on the second page
     iPad->>API: POST records.decide {recordId:4, approved}
     API->>App: decideRecord(input, 'human')
     App->>DB: BEGIN IMMEDIATE · UPDATE record · INSERT event RecordDecided · COMMIT
@@ -89,7 +89,7 @@ sequenceDiagram
     App-->>CLI: exits with event JSON → skill proceeds to export
     end
 
-    Note over Laptop,API: Reconnect (iPad slept): EventSource reopens with Last-Event-ID=813 → server replays events > 813, then goes live
+    Note over Laptop,API: Reconnect (the page slept): EventSource reopens with Last-Event-ID=813 → server replays events > 813, then goes live
 ```
 
 ## Distributed note (context only)

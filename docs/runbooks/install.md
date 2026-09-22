@@ -42,9 +42,34 @@ choice, so without that variable the hook looks only in the default location.
 - **A stage = a data directory** (`<root>/data`): `retro.db`, `config.json`,
   logs, `server.lock`. One server per stage, enforced by the lock.
 
-## Binding
+## Where the server listens
 
-The server binds `127.0.0.1` unless asked otherwise. Reviewing from another
-device on the same network is an explicit choice, made by the human:
-`retroloop down && retroloop up --bind <this machine's LAN IP>`. Wildcard
-addresses such as `0.0.0.0` are refused.
+The server listens on `127.0.0.1` and nowhere else. Every other address is
+refused by `up` and by `serve` alike — public, private and wildcard alike — and
+there is no flag or environment variable that opens one. The review page has no
+password, so an address would be the whole of its protection, and on a rented
+server the one address a machine has is the public one.
+
+## Reviewing a server you log into
+
+Forward the review port over the SSH connection you already have, and open the
+page on your own machine:
+
+```sh
+ssh -N -L 24100:127.0.0.1:24100 you@your-server
+```
+
+Then open `http://localhost:24100`. Leave that command running for as long as
+you are reviewing; `Ctrl-C` ends it.
+
+If you already run Retroloop on your own machine, port 24100 is busy there, so
+forward the remote port to a different local one — the page asks its server for
+data at a relative address, so any local port works:
+
+```sh
+ssh -N -L 24200:127.0.0.1:24100 you@your-server   # then open http://localhost:24200
+```
+
+Retroloop prints that command for you: start it inside an SSH session and the
+line beside the link is the command to paste on your own computer, with the
+port and the host already filled in.
