@@ -1,15 +1,16 @@
 import type { Argv } from 'yargs'
 import { ServerError } from '#errors'
-import { createOutput } from '#output'
+import { createOutput, type Output } from '#output'
 import type { CliRuntime, GlobalOptions } from '#runtime'
 import {
   boundToSuffix,
   DEFAULT_BIND,
   humanUrlFor,
-  lanUrlFor,
-  lanUrlMember,
-  lanUrlSuffix,
-  refuseWildcardBind,
+  isLoopbackBind,
+  remoteTunnelCommand,
+  requireLoopbackBind,
+  tunnelLine,
+  tunnelMember,
 } from '#server/address'
 import { type LockInfo, readLock } from '#server/lock'
 import { resolveStage } from '#stage'
@@ -27,6 +28,19 @@ async function waitForServer(lockFile: string, timeoutMs: number): Promise<LockI
 }
 
 /**
+ * Prints the forwarding command beside the link, when there is one to print.
+ *
+ * A note rather than part of the result line, for the reason notes exist: in
+ * `--json` the answer carries the `tunnel` field and no prose at all, and a
+ * `--quiet` caller asked for nothing extra. Someone working over a secure shell
+ * has the command in front of them without having asked a question.
+ */
+function noteTunnel(output: Output, tunnel: string | undefined, port: number): void {
+  const line = tunnelLine(tunnel, port)
+  if (line !== undefined) output.note(line)
+}
+
+/**
  * `up` — idempotent "make it run", and what humans, hooks and skills actually
  * call (architecture.md §Server lifecycle).
  *
@@ -37,12 +51,12 @@ async function waitForServer(lockFile: string, timeoutMs: number): Promise<LockI
  *
  * No OS service yet: this starts a detached `serve`. `service install` is Tier 3.
  *
- * The address is a per-start choice and nothing else: a bare `up` binds loopback,
- * `--bind <ip>` binds that one interface for that one start, and no stage, file
- * or lock carries an address into the next start. A wildcard (`0.0.0.0`, `::`) is
- * refused outright — the reach it grants is a decision to be typed each time it
- * is wanted, not one to be inherited. The address that was bound is printed on
- * every start, so the terminal always says where the server can be reached from.
+ * The server listens on **this machine and nowhere else**. `--bind` still names
+ * the address for one start and is carried over by no stage, file or lock, but
+ * every address that is not loopback is refused before anything happens — there
+ * is no flag and no environment variable that opens one. The way in from another
+ * computer is a secure-shell tunnel, which the refusal spells out, and which a
+ * start inside a remote login prints beside the link without being asked.
  */
 export function registerUpCommand(
   cli: Argv<GlobalOptions>,
@@ -56,20 +70,26 @@ export function registerUpCommand(
         .option('port', { type: 'number', describe: 'Port to listen on [default: 24100]' })
         .option('bind', {
           type: 'string',
-          describe: `Address to bind. A specific interface IP (e.g. 192.168.1.9) exposes the server on that network; 0.0.0.0 and :: are refused. [default: ${DEFAULT_BIND}]`,
+          describe: `Address to bind. The review server only ever listens on this machine, so only 127.0.0.1, ::1 and localhost are accepted; reach it from another computer over an SSH tunnel. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
-      // Before the stage, the lock and the output: a refused address must leave
-      // the machine exactly as it found it.
-      const bind = args.bind ?? DEFAULT_BIND
-      refuseWildcardBind(bind)
-
+      // The stage is resolved first because resolving it writes nothing — it
+      // reads the flag, the environment and the lock — and the refusal has to
+      // name the port this stage would actually use. Named off `--port` alone it
+      // would ignore `RETRO_PORT` and the port a running server holds, and hand
+      // the reader a forwarding command for a port nothing listens on.
       const stage = resolveStage({
         home: args.home,
         port: args.port,
         env: runtime.env,
         cwd: runtime.cwd,
       })
+
+      // Still before the lock, the output and any spawn: a refused address must
+      // leave the machine exactly as it found it.
+      const bind = args.bind ?? DEFAULT_BIND
+      requireLoopbackBind(bind, stage.port)
+
       const output = createOutput({
         json: args.json === true,
         quiet: args.quiet === true,
@@ -88,8 +108,16 @@ export function registerUpCommand(
         // has not been applied and must not be reported as though it had. That
         // includes reporting a wildcard an older server bound — a fact about
         // what is serving, which is exactly what makes it worth printing.
-        const lanUrl = lanUrlFor(already.bind, already.port, runtime.hostAddresses)
-        if (args.bind !== undefined && already.bind !== args.bind) {
+        const tunnel = remoteTunnelCommand(runtime.env, already.port)
+        // Only when the running server is somewhere this rule would no longer
+        // allow — a server started before it, still holding a network address.
+        // Two spellings of this machine are agreement, not disagreement: a
+        // restart would change nothing, so asking for one is a false alarm.
+        if (
+          args.bind !== undefined &&
+          already.bind !== args.bind &&
+          !isLoopbackBind(already.bind)
+        ) {
           output.note(
             `Note: the running server is bound to ${already.bind}; --bind ${args.bind} needs a restart (retroloop down, then retroloop up --bind ${args.bind}).`,
           )
@@ -101,11 +129,11 @@ export function registerUpCommand(
             pid: already.pid,
             bind: already.bind,
             started: false,
-            ...lanUrlMember(lanUrl),
+            ...tunnelMember(tunnel),
           },
-          () =>
-            `Already running — ${url} (pid ${already.pid})${boundToSuffix(already.bind)}${lanUrlSuffix(lanUrl)}`,
+          () => `Already running — ${url} (pid ${already.pid})${boundToSuffix(already.bind)}`,
         )
+        noteTunnel(output, tunnel, already.port)
         return
       }
 
@@ -119,7 +147,7 @@ export function registerUpCommand(
       // The address comes off the lock the server itself wrote, not off the flag:
       // what gets reported is what a listening socket actually took.
       const url = humanUrlFor(lock.bind, lock.port)
-      const lanUrl = lanUrlFor(lock.bind, lock.port, runtime.hostAddresses)
+      const tunnel = remoteTunnelCommand(runtime.env, lock.port)
       output.result(
         {
           url,
@@ -127,11 +155,11 @@ export function registerUpCommand(
           pid: lock.pid,
           bind: lock.bind,
           started: true,
-          ...lanUrlMember(lanUrl),
+          ...tunnelMember(tunnel),
         },
-        () =>
-          `Started — ${url} (pid ${lock.pid})${boundToSuffix(lock.bind)}${lanUrlSuffix(lanUrl)}`,
+        () => `Started — ${url} (pid ${lock.pid})${boundToSuffix(lock.bind)}`,
       )
+      noteTunnel(output, tunnel, lock.port)
     },
   )
 }

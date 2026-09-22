@@ -10,11 +10,11 @@ export { createOutput, type Output, type Writer } from '#output'
 export { type CliContext, type CliRuntime, createDefaultRuntime, resolveClock } from '#runtime'
 export {
   DEFAULT_BIND,
-  type HostAddress,
   isLoopbackBind,
-  lanUrlFor,
+  remoteTunnelCommand,
+  requireLoopbackBind,
   type ServeAddress,
-  systemHostAddresses,
+  tunnelCommandFor,
 } from '#server/address'
 export { acquireLock, isProcessAlive, type LockInfo, readLock, releaseLock } from '#server/lock'
 export { type RunningServer, type ServerHandler, startServer } from '#server/serve'

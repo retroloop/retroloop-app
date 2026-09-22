@@ -9,7 +9,7 @@ import {
   systemClock,
 } from '@retro/core'
 import { createOutput, type Output, type Writer } from '#output'
-import { type HostAddress, type ServeAddress, systemHostAddresses } from '#server/address'
+import type { ServeAddress } from '#server/address'
 import type { Environment, Stage } from '#stage'
 import { resolveStage } from '#stage'
 
@@ -61,8 +61,6 @@ export type CliRuntime = {
   readonly spawnServe: (stage: Stage, address: ServeAddress) => Promise<void>
   /** Asks a running server to stop — SIGTERM, which `serve` handles. */
   readonly stopProcess: (pid: number) => void
-  /** This machine's addresses, for the LAN URL a non-loopback bind earns. */
-  readonly hostAddresses: () => readonly HostAddress[]
 }
 
 /**
@@ -209,6 +207,5 @@ export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRu
       ((pid) => {
         process.kill(pid, 'SIGTERM')
       }),
-    hostAddresses: overrides.hostAddresses ?? systemHostAddresses,
   }
 }

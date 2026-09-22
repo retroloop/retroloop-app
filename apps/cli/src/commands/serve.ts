@@ -6,10 +6,10 @@ import type { CliRuntime, GlobalOptions } from '#runtime'
 import {
   boundToSuffix,
   DEFAULT_BIND,
-  lanUrlFor,
-  lanUrlMember,
-  lanUrlSuffix,
-  refuseWildcardBind,
+  remoteTunnelCommand,
+  requireLoopbackBind,
+  tunnelLine,
+  tunnelMember,
 } from '#server/address'
 import { acquireLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
@@ -45,20 +45,26 @@ export function registerServeCommand(
         .option('port', { type: 'number', describe: 'Port to listen on [default: 24100]' })
         .option('bind', {
           type: 'string',
-          describe: `Address to bind. A specific interface IP (e.g. 192.168.1.9) exposes the server on that network; 0.0.0.0 and :: are refused. [default: ${DEFAULT_BIND}]`,
+          describe: `Address to bind. The review server only ever listens on this machine, so only 127.0.0.1, ::1 and localhost are accepted; reach it from another computer over an SSH tunnel. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
-      // Ahead of the lock, the stage and the store, for the same reason the lock
-      // comes first: a refusal must land before anything has been touched.
-      const bind = args.bind ?? DEFAULT_BIND
-      refuseWildcardBind(bind)
-
+      // Resolving the stage writes nothing, and the refusal needs the port this
+      // stage would actually take so that the forwarding command it prints is
+      // one that would work — `--port`, else `RETRO_PORT`, else the lock.
       const stage = resolveStage({
         home: args.home,
         port: args.port,
         env: runtime.env,
         cwd: runtime.cwd,
       })
+
+      // Ahead of the lock and the store, for the same reason the lock comes
+      // first: a refusal must land before anything has been touched. The same
+      // rule and the same message as `up` — there are two doors to this
+      // behaviour, and a caller must not be able to pick the softer one.
+      const bind = args.bind ?? DEFAULT_BIND
+      requireLoopbackBind(bind, stage.port)
+
       const output = createOutput({
         json: args.json === true,
         quiet: args.quiet === true,
@@ -93,7 +99,7 @@ export function registerServeCommand(
       })
 
       try {
-        const lanUrl = lanUrlFor(bind, server.port, runtime.hostAddresses)
+        const tunnel = remoteTunnelCommand(runtime.env, server.port)
         output.result(
           {
             url: server.url,
@@ -101,11 +107,12 @@ export function registerServeCommand(
             pid: process.pid,
             bind,
             dataDir: stage.dataDir,
-            ...lanUrlMember(lanUrl),
+            ...tunnelMember(tunnel),
           },
-          () =>
-            `retroloop serving ${server.url} (pid ${process.pid})${boundToSuffix(bind)}${lanUrlSuffix(lanUrl)}`,
+          () => `retroloop serving ${server.url} (pid ${process.pid})${boundToSuffix(bind)}`,
         )
+        const line = tunnelLine(tunnel, server.port)
+        if (line !== undefined) output.note(line)
         await waitForShutdown()
       } finally {
         // Stop taking traffic, then the tailer, then let the handles go.

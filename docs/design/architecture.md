@@ -46,7 +46,7 @@ Retro is a **local-first retrospective tool**: the AI drafts session frictions, 
 - **`setup`** initializes the stage, runs migrations, installs + starts the boot service (launchd today; `systemd --user` / Task Scheduler are target state), verifies the URL, prints it.
 - **`up` / `down`** — idempotent: `up` ensures the service (or a detached `serve`) is running and prints the URL; `down` stops it. What humans, hooks, and skills actually call.
 - **`serve`** — low-level foreground command; what the service executes. Applies pending migrations under the write lock before listening.
-- **Network:** default port **24100**, bound to LAN + localhost (iPad review over IP or `hostname.local`); never 5000/7000 (macOS AirPlay). Nothing ever leaves the machine.
+- **Network:** default port **24100**, bound to **this machine only** — every other address is refused by `up` and `serve` alike, with no flag or environment variable that opens one, because the review page has no authentication and an address would be the whole of its protection. Reviewing a remote server is an SSH port forward, which a start inside an SSH session prints beside the link. Never 5000/7000 (macOS AirPlay). Nothing ever leaves the machine.
 
 ## Update chain (human-initiated; the AI may suggest, never run)
 

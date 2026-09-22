@@ -32,6 +32,20 @@ Retroloop installs through Claude Code, in three steps:
 
 Setup clones this app into `~/.retroloop`, starts the local server, and creates your personalization plugin. Prerequisites and supported systems are in the [plugin README](https://github.com/retroloop/retroloop).
 
+### Reviewing on a remote server
+
+The review server only ever listens on the machine it runs on, and it has no password — so if Retroloop runs on a server you log into, forward the port over that same SSH connection and open the page in your own browser:
+
+```sh
+ssh -N -L 24100:127.0.0.1:24100 you@your-server
+```
+
+Then open `http://localhost:24100`. If you already run Retroloop on your own machine, port 24100 is taken, so forward to a different local port and open that one instead:
+
+```sh
+ssh -N -L 24200:127.0.0.1:24100 you@your-server   # then open http://localhost:24200
+```
+
 ## Running from source
 
 Requires [Bun](https://bun.sh).
