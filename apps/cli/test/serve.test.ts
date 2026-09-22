@@ -16,12 +16,19 @@ import { startServer } from '#server/serve'
 import { resolveStage } from '#stage'
 import { type Cli, createCli, removeTempStages } from './support/harness'
 
-/** The one refusal, spelled out where a test can read it as a person would. */
+/**
+ * The one refusal, spelled out where a test can read it as a person would.
+ *
+ * The command sits on a line of its own because the terminal has no way to show
+ * where it ends: a sentence that runs a comma straight into `you@your-server`
+ * puts that comma inside the double-click a reader uses to copy the command.
+ */
 function refusalFor(bind: string, port = 24100): string {
   return (
-    `--bind ${bind} is refused: the review server only ever listens on this machine. ` +
-    `To open it from another computer, forward the port over your SSH connection: ` +
-    `ssh -N -L ${port}:127.0.0.1:${port} you@your-server, then open http://localhost:${port}`
+    `--bind ${bind} is refused: the review server only ever listens on this machine.\n` +
+    `To open it from another computer, forward the port over your SSH connection:\n` +
+    `  ssh -N -L ${port}:127.0.0.1:${port} you@your-server\n` +
+    `then open http://localhost:${port}`
   )
 }
 
@@ -148,6 +155,26 @@ describe('the address that means this machine', () => {
       expect(isLoopbackBind(bind), bind).toBe(true)
     }
     for (const bind of ['0.0.0.0', '::', '192.168.1.9', '203.0.113.7', 'fe80::1', '10.0.0.4']) {
+      expect(isLoopbackBind(bind), bind).toBe(false)
+    }
+  })
+
+  test('is never a name that merely begins like one, because a name is resolved', () => {
+    // `Bun.serve` hands the string to the resolver, and whoever owns a domain
+    // decides what it answers. A name starting with "127." can point at the
+    // machine's public address, so the allow-list has to be an address test:
+    // `localhost`, `::1`, and a well-formed 127.x.x.x literal, nothing else.
+    for (const bind of [
+      '127.evil.example.com',
+      '127.0.0.1.example.com',
+      '127.',
+      '127.0.0',
+      '127.0.0.1.1',
+      '127.0.0.256',
+      '127.0.0.-1',
+      '127.0.0.1a',
+      'localhost.evil.example.com',
+    ]) {
       expect(isLoopbackBind(bind), bind).toBe(false)
     }
   })
@@ -492,6 +519,22 @@ describe('the bind address', () => {
     }
   })
 
+  test('up refuses a name that merely begins like loopback, and starts nothing', async () => {
+    // The string goes to the resolver, not to a comparison, so a domain whose
+    // owner points it at the machine's public address would bind there — and
+    // the link printed beside it would still say localhost.
+    for (const address of ['127.evil.example.com', '127.0.0.1.example.com', '127.0.0.256']) {
+      const { cli, asked } = restartableStage()
+
+      const result = await cli.run(['up', '--bind', address, '--json'])
+
+      expect(result.code, address).toBe(EXIT.usage)
+      expect(result.error().message, address).toBe(refusalFor(address))
+      expect(asked, address).toEqual([])
+      expect(existsSync(join(cli.dataDir, 'server.lock')), address).toBe(false)
+    }
+  })
+
   test('the refusal names the tunnel, and the port the caller actually asked for', async () => {
     const { cli } = restartableStage()
 
@@ -501,6 +544,44 @@ describe('the bind address', () => {
     expect(result.error().message).toContain('only ever listens on this machine')
     expect(result.error().message).toContain('ssh -N -L 24777:127.0.0.1:24777 you@your-server')
     expect(result.error().message).toContain('http://localhost:24777')
+  })
+
+  test('the refusal names the port from the environment when that is where it comes from', async () => {
+    // A tunnel command for a port nothing listens on is worse than no command:
+    // the reader pastes it, the page does not load, and nothing says why. The
+    // port the refusal prints has to be the port this stage would actually use.
+    const asked: ServeAddress[] = []
+    const cli = createCli({
+      env: { RETRO_PORT: '24777' },
+      spawnServe: async (_stage, address) => {
+        asked.push(address)
+      },
+    })
+
+    const result = await cli.run(['up', '--bind', '203.0.113.7', '--json'])
+
+    expect(result.error().message).toBe(refusalFor('203.0.113.7', 24777))
+    expect(asked).toEqual([])
+  })
+
+  test('the refusal names the port a running server holds', async () => {
+    const cli = createCli()
+    writeLock(cli, { port: 24242 })
+
+    const result = await cli.run(['up', '--bind', '203.0.113.7', '--json'])
+
+    expect(result.error().message).toBe(refusalFor('203.0.113.7', 24242))
+  })
+
+  test('the refusal never leaves punctuation stuck to the command', async () => {
+    // Nothing marks the end of a command in a terminal, so a trailing comma
+    // travels with the copy. The command gets a line to itself instead.
+    const { cli } = restartableStage()
+
+    const result = await cli.run(['up', '--bind', '203.0.113.7', '--json'])
+
+    expect(result.error().message).not.toContain('you@your-server,')
+    expect(result.error().message).toContain('\n  ssh -N -L 24100:127.0.0.1:24100 you@your-server\n')
   })
 
   test('no environment variable can undo the refusal', async () => {
@@ -547,6 +628,30 @@ describe('the bind address', () => {
     }
   })
 
+  test('every address up hands to a spawned serve is one serve itself accepts', async () => {
+    // A disagreement between the parent's refusal and the child's would not look
+    // like a refusal at all: `up` spawns, the child refuses into a discarded
+    // stderr, and the only symptom is `up` timing out with "the server did not
+    // come up". So the addresses are the ones `up` actually passed, run back
+    // through `serve`'s own argument path — where a held lock stops it at exit 7,
+    // which is itself the proof that the address got through.
+    for (const loopback of ['127.0.0.1', '127.0.1.1', 'localhost', '::1', '[::1]']) {
+      const { cli, asked } = restartableStage()
+
+      const started = await cli.run(['up', '--bind', loopback, '--json'])
+      expect(started.code, loopback).toBe(EXIT.ok)
+      const handedOver = asked[0]?.bind as string
+      expect(handedOver, loopback).toBe(loopback)
+
+      const child = createCli()
+      writeLock(child)
+      const result = await child.run(['serve', '--bind', handedOver, '--json'])
+
+      expect(result.code, loopback).toBe(EXIT.server)
+      expect(result.error().code, loopback).toBe('SERVER')
+    }
+  })
+
   test('up prints the address it bound, in JSON and to a human', async () => {
     const { cli } = restartableStage()
 
@@ -570,6 +675,34 @@ describe('the bind address', () => {
     expect(line.code).toBe(EXIT.ok)
     expect(line.stdout.join('\n')).toContain('bound to 0.0.0.0')
     expect(json.jsonAs<{ bind: string }>().bind).toBe('0.0.0.0')
+  })
+
+  test('tells the caller to restart when the running server is not on this machine', async () => {
+    // The note earns its place on exactly one case: a server started before this
+    // rule existed, still holding a network address. Then the address the caller
+    // asked for really is somewhere else, and only a restart moves it.
+    const cli = createCli()
+    writeLock(cli, { port: 24242, bind: '0.0.0.0' })
+
+    const result = await cli.run(['up', '--bind', 'localhost'])
+
+    expect(result.code).toBe(EXIT.ok)
+    expect(result.stdout.join('\n')).toContain('needs a restart')
+  })
+
+  test('does not tell the caller to restart over two spellings of this machine', async () => {
+    // Now that this machine is the only address there is, `--bind localhost`
+    // against a server on 127.0.0.1 is agreement, not disagreement. A restart
+    // would change nothing, so asking for one is a false alarm.
+    for (const asked of ['localhost', '127.0.0.1', '::1']) {
+      const cli = createCli()
+      writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
+
+      const result = await cli.run(['up', '--bind', asked])
+
+      expect(result.code, asked).toBe(EXIT.ok)
+      expect(result.stdout.join('\n'), asked).not.toContain('needs a restart')
+    }
   })
 
   test('does not tell a bare up that the running server disagrees with it', async () => {
@@ -624,6 +757,14 @@ describe('the tunnel line beside the link', () => {
     expect(printed).toContain('Started — http://localhost:24100')
     expect(printed).toContain('ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7')
     expect(printed).toContain('http://localhost:24100')
+  })
+
+  test('gives the command a line of its own, with nothing stuck to either end', async () => {
+    const result = await startingCli({ SSH_CONNECTION }).run(['up'])
+
+    const printed = result.stdout.join('\n')
+    expect(printed).toContain('\n  ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7\n')
+    expect(printed).not.toContain('you@203.0.113.7,')
   })
 
   test('carries the port the server actually took', async () => {
