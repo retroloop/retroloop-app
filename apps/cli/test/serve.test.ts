@@ -10,7 +10,7 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { WEB_BUILD_INDEX } from '@retro/api'
+import { WEB_BUILD_COMMAND, WEB_BUILD_INDEX } from '@retro/api'
 import { EXIT, ServerError } from '#errors'
 import { createDefaultRuntime } from '#runtime'
 import {
@@ -25,6 +25,7 @@ import {
 import { acquireLock, type LockInfo, readLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
 import { resolveStage } from '#stage'
+import { APP_ROOT, buildReviewPage } from '#web-build'
 import { type Cli, createCli, removeTempStages } from './support/harness'
 
 /**
@@ -705,13 +706,110 @@ describe('the review page up hands over', () => {
     expect(result.stdout).toEqual([])
   })
 
-  test('builds into the very file the server serves from', async () => {
-    // Two places could drift apart into a start that builds one page and a server
-    // that serves another. They are the same constant, out of `@retro/api`.
+  test('a build that cannot even start is a failed build, not a crash', async () => {
+    // `Bun.spawn` throws — synchronously, before anything is awaited — when the
+    // executable is not on `$PATH`, and again when the folder it was told to run
+    // in does not exist. Unguarded, that throw is not a build result at all: it
+    // leaves `up` as an unclassified exit 1 reading `Executable not found in
+    // $PATH: "bun"`, which names neither the build nor the command to run. The
+    // machine this whole item is about is exactly that one — Bun installed and
+    // not resolvable by name from the shell a script gets.
+    const missing = await buildReviewPage('definitely-not-a-command-xyz run build')
+
+    expect(missing.ok).toBe(false)
+    expect(missing.output).toContain('definitely-not-a-command-xyz')
+
+    const noSuchFolder = await buildReviewPage(
+      WEB_BUILD_COMMAND,
+      join(tmpdir(), 'retro-no-such-folder-xyz'),
+    )
+
+    expect(noSuchFolder.ok).toBe(false)
+    expect(noSuchFolder.output).not.toBe('')
+  })
+
+  test('gives back everything a real build printed, and whether it worked', async () => {
+    // A real child process, and still not `vite`: what is being checked is that
+    // both streams come back joined and that the exit status is the verdict.
+    const dir = mkdtempSync(join(tmpdir(), 'retro-build-'))
+    areas.push(dir)
+    writeFileSync(join(dir, 'say.sh'), 'echo on stdout\necho on stderr >&2\nexit 3\n')
+
+    const failed = await buildReviewPage('bash say.sh', dir)
+
+    expect(failed.ok).toBe(false)
+    expect(failed.output).toContain('on stdout')
+    expect(failed.output).toContain('on stderr')
+
+    writeFileSync(join(dir, 'say.sh'), 'echo built\n')
+    const worked = await buildReviewPage('bash say.sh', dir)
+
+    expect(worked.ok).toBe(true)
+    expect(worked.output).toBe('built')
+  })
+
+  test('stops the way a failed build stops when the build command is not on the path', async () => {
+    const area = anArea()
+    let spawned = 0
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: () => buildReviewPage('definitely-not-a-command-xyz run build'),
+      spawnServe: async () => {
+        spawned += 1
+      },
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    // The documented failure, not a crash: exit 7, the code a script reads, the
+    // build's own words, and the one command to run by hand.
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().code).toBe('SERVER')
+    expect(result.error().message).toContain('the review page could not be built')
+    expect(result.error().message).toContain('definitely-not-a-command-xyz')
+    expect(result.error().message).toContain('Run bun run build in the app folder.')
+    expect(result.stdout).toEqual([])
+    expect(spawned).toBe(0)
+  })
+
+  test('builds into the very file the server serves from, out of the folder it is in', async () => {
+    // Three places could drift apart into a start that builds one page, a server
+    // that serves another, and a staleness check that reads neither. They are the
+    // same constants: the index out of `@retro/api`, the sources off this
+    // package's own location.
     const runtime = createDefaultRuntime()
 
     expect(runtime.webBuildIndex).toBe(WEB_BUILD_INDEX)
     expect(runtime.webBuildIndex.endsWith('/apps/web/dist/index.html')).toBe(true)
+    // Pinned, because an `APP_ROOT` off by one level is silent: every source path
+    // would stat as absent, nothing would ever read stale, and the feature would
+    // quietly shrink back to "build only when missing" with the suite still green.
+    expect(runtime.webSourcePaths.map((path) => path.replace(APP_ROOT, ''))).toEqual([
+      join('apps', 'web'),
+      'bun.lock',
+    ])
+    for (const path of runtime.webSourcePaths) expect(existsSync(path), path).toBe(true)
+  })
+
+  test('is never built by serve, which is the developer’s own command', async () => {
+    // Deliberate: `serve` is run by hand and by the end-to-end suite, which builds
+    // before it starts. Pinned all the same, because a later change that moves the
+    // build into a helper both commands call would otherwise pass unnoticed.
+    const area = anArea()
+    const calls: string[] = []
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+    })
+    writeLock(cli)
+
+    const result = await cli.run(['serve', '--json'])
+
+    expect(result.code).toBe(EXIT.server)
+    expect(calls).toEqual([])
+    expect(existsSync(area.index)).toBe(false)
   })
 })
 

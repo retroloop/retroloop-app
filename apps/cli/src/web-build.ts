@@ -94,9 +94,12 @@ export function reviewPageNeedsBuilding(
  * not it. They are shown only when the build fails, which is when they are worth
  * reading.
  */
-export async function buildReviewPage(): Promise<WebBuildResult> {
-  const build = Bun.spawn(WEB_BUILD_COMMAND.split(' '), {
-    cwd: APP_ROOT,
+export async function buildReviewPage(
+  command: string = WEB_BUILD_COMMAND,
+  cwd: string = APP_ROOT,
+): Promise<WebBuildResult> {
+  const build = Bun.spawn(command.split(' '), {
+    cwd,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   const [out, err, code] = await Promise.all([
