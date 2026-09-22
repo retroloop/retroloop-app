@@ -57,6 +57,10 @@ bun run retroloop up --json   # start the local server
 bash scripts/gate.sh      # the merge gate: static, suites, headless check, mock lock
 ```
 
+`up` builds the review page itself when it is missing or older than the code it
+came from, so the link it prints always opens a page — including the first start
+after an update. To build it on its own: `bun run build`.
+
 ## License
 
 [MIT](LICENSE)

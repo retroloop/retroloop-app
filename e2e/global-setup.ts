@@ -15,10 +15,15 @@ const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
  *
  * It is the **unmocked** build. The mocked one belongs to suite 4; here every
  * byte is real.
+ *
+ * Through the app's one named build script, which is also what `up` runs and
+ * what the "no web build" message tells a reader to type. Building up front
+ * leaves the page newer than its source, so the `up` inside a scenario finds a
+ * current page and builds nothing.
  */
 export default function globalSetup(): Promise<void> {
   return new Promise((resolve, reject) => {
-    const build = spawn('bun', ['run', '--filter', '@retro/web', 'build'], {
+    const build = spawn('bun', ['run', 'build'], {
       cwd: REPO_ROOT,
       stdio: 'pipe',
     })

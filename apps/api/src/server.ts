@@ -1,14 +1,19 @@
 import type { App, Clock } from '@retro/core'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { createTailer, type EventSource, type Tailer } from '#events/tailer'
-import { createStaticHandler } from '#static'
+import { createStaticHandler, DEFAULT_STATIC_ROOT } from '#static'
 import { createContextFactory } from '#trpc/context.factory'
 import { appRouter } from '#trpc/router'
 
 /** Where tRPC lives; everything else is the web app. */
 export const TRPC_ENDPOINT = '/trpc'
 
-export const DEFAULT_STATIC_ROOT = new URL('../../web/dist', import.meta.url).pathname
+/**
+ * Kept as an export of this module because that is where every caller reaches
+ * for it; the location itself is declared once, next to the page's index and the
+ * name of the command that builds it (`#static`).
+ */
+export { DEFAULT_STATIC_ROOT }
 
 export type RequestHandler = (request: Request) => Promise<Response>
 

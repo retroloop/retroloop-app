@@ -23,7 +23,13 @@ export {
   type ServerRuntimeOptions,
   TRPC_ENDPOINT,
 } from '#server'
-export { createStaticHandler, type StaticHandlerOptions } from '#static'
+export {
+  createStaticHandler,
+  type StaticHandlerOptions,
+  WEB_BUILD_COMMAND,
+  WEB_BUILD_INDEX,
+  webBuildRootFrom,
+} from '#static'
 export type { Context } from '#trpc/context'
 export { type ContextFactoryOptions, createContextFactory } from '#trpc/context.factory'
 export { pendingRidsOf, SCRUBBED_MESSAGE, toTRPCError } from '#trpc/errors'
