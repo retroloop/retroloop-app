@@ -1,5 +1,6 @@
 import { writeSync } from 'node:fs'
 import { join } from 'node:path'
+import { WEB_BUILD_INDEX } from '@retro/api'
 import {
   type App,
   type Clock,
@@ -12,6 +13,7 @@ import { createOutput, type Output, type Writer } from '#output'
 import type { ServeAddress } from '#server/address'
 import type { Environment, Stage } from '#stage'
 import { resolveStage } from '#stage'
+import { buildReviewPage, WEB_SOURCE_PATHS, type WebBuildResult } from '#web-build'
 
 /** Everything a command needs, already resolved for the stage it was pointed at. */
 export type CliContext = {
@@ -61,6 +63,16 @@ export type CliRuntime = {
   readonly spawnServe: (stage: Stage, address: ServeAddress) => Promise<void>
   /** Asks a running server to stop — SIGTERM, which `serve` handles. */
   readonly stopProcess: (pid: number) => void
+  /**
+   * The built review page's index — the one `up` checks and the one the server
+   * serves, which is why it comes out of `@retro/api` and not out of a second
+   * spelling of the same path here.
+   */
+  readonly webBuildIndex: string
+  /** What the page is built from; the newest change among these decides staleness. */
+  readonly webSourcePaths: readonly string[]
+  /** Builds the review page. Its own output comes back rather than going to a terminal. */
+  readonly buildWeb: () => Promise<WebBuildResult>
 }
 
 /**
@@ -207,5 +219,8 @@ export function createDefaultRuntime(overrides: Partial<CliRuntime> = {}): CliRu
       ((pid) => {
         process.kill(pid, 'SIGTERM')
       }),
+    webBuildIndex: overrides.webBuildIndex ?? WEB_BUILD_INDEX,
+    webSourcePaths: overrides.webSourcePaths ?? WEB_SOURCE_PATHS,
+    buildWeb: overrides.buildWeb ?? buildReviewPage,
   }
 }

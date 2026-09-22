@@ -76,6 +76,16 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
   const dataDir = join(home, 'data')
   mkdirSync(dataDir, { recursive: true })
 
+  // A review page that is already built, inside this throwaway root. Without it
+  // every `up` in this suite would read the developer's real `apps/web/dist` —
+  // and then *build it*, with `vite`, from a unit test. The suite's answer would
+  // depend on whether someone happened to have built the page, and the CLI suite
+  // runs before the one step that builds it. A test that is about the build says
+  // so by overriding these three.
+  const webBuildIndex = join(home, 'web', 'index.html')
+  mkdirSync(join(home, 'web'), { recursive: true })
+  writeFileSync(webBuildIndex, '<!doctype html><title>Retro</title>')
+
   const store = overrides.openStore === undefined ? createMemoryStore() : undefined
   const clock = overrides.clock ?? frozenClock()
 
@@ -106,6 +116,14 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
         // Never the real one: the default would SIGTERM whatever PID a fixture
         // lock file names, and the fixtures name this test process.
         stopProcess: overrides.stopProcess ?? (() => undefined),
+        webBuildIndex,
+        // Nothing to be newer than the page, so nothing here is ever stale.
+        webSourcePaths: [],
+        // Never `vite`: it writes the page it is asked for and says it worked.
+        buildWeb: async () => {
+          writeFileSync(webBuildIndex, '<!doctype html><title>Retro</title>')
+          return { ok: true, output: '' }
+        },
         ...overrides,
         // Last, and merged: an override that named only `SSH_CONNECTION` would
         // otherwise take the whole environment with it, `RETROLOOP_HOME` included.

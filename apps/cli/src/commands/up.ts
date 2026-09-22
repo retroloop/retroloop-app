@@ -1,3 +1,4 @@
+import { WEB_BUILD_COMMAND } from '@retro/api'
 import type { Argv } from 'yargs'
 import { ServerError } from '#errors'
 import { createOutput, type Output } from '#output'
@@ -14,6 +15,7 @@ import {
 } from '#server/address'
 import { type LockInfo, readLock } from '#server/lock'
 import { resolveStage } from '#stage'
+import { reviewPageNeedsBuilding } from '#web-build'
 
 const READY_POLL_MS = 20
 
@@ -41,6 +43,37 @@ function noteTunnel(output: Output, tunnel: string | undefined, port: number): v
 }
 
 /**
+ * Builds the review page, when there is a reason to.
+ *
+ * A link to a page that was never built is a dead link, and nothing else in the
+ * install builds it: a clone and an install of dependencies produce no page. So
+ * this runs before any link is handed over, and the page is either there and
+ * current or it is built here.
+ *
+ * One plain line while it works, and **nothing at all under `--json`** — a note
+ * is not written in that mode, so the single-object promise holds. Only a build
+ * that genuinely fails stops `up`, and then the error carries the build's own
+ * complaint and the one command to run by hand.
+ */
+async function buildReviewPageIfNeeded(runtime: CliRuntime, output: Output): Promise<void> {
+  if (!reviewPageNeedsBuilding(runtime.webBuildIndex, runtime.webSourcePaths)) return
+
+  output.note('Building the review page…')
+  const build = await runtime.buildWeb()
+  if (build.ok) return
+
+  throw new ServerError(
+    [
+      'the review page could not be built.',
+      build.output,
+      `Run ${WEB_BUILD_COMMAND} in the app folder.`,
+    ]
+      .filter((part) => part !== '')
+      .join('\n'),
+  )
+}
+
+/**
  * `up` — idempotent "make it run", and what humans, hooks and skills actually
  * call (architecture.md §Server lifecycle).
  *
@@ -48,6 +81,11 @@ function noteTunnel(output: Output, tunnel: string | undefined, port: number): v
  * it has the stage and before it serves, and the lock carries the port it actually
  * took. Polling it means `up` reports the port that is real rather than the one it
  * asked for, and it does not depend on what the placeholder handler answers.
+ *
+ * What is *served* is a second question, and it is answered before the link is
+ * handed over rather than by probing afterwards: the built review page has to be
+ * on disk and no older than what it was built from, or it is built here. That is
+ * a look at the filesystem and, when it has to be, a build — still no HTTP probe.
  *
  * No OS service yet: this starts a detached `serve`. `service install` is Tier 3.
  *
@@ -96,6 +134,13 @@ export function registerUpCommand(
         out: runtime.out,
         err: runtime.err,
       })
+      // Before either branch, because both of them end in a link: the one that
+      // starts a server, and the one that reports a server already running —
+      // which is where a newcomer whose first attempt failed lands when they run
+      // the install again. The server reads the page off the disk per request,
+      // so a build reaches a running server without restarting it.
+      await buildReviewPageIfNeeded(runtime, output)
+
       const already = readLock(stage.lockFile)
 
       if (already !== undefined) {

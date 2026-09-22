@@ -1,7 +1,18 @@
 import { afterAll, describe, expect, test } from 'bun:test'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  utimesSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { WEB_BUILD_COMMAND, WEB_BUILD_INDEX } from '@retro/api'
 import { EXIT, ServerError } from '#errors'
+import { createDefaultRuntime } from '#runtime'
 import {
   DEFAULT_BIND,
   humanUrlFor,
@@ -14,6 +25,7 @@ import {
 import { acquireLock, type LockInfo, readLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
 import { resolveStage } from '#stage'
+import { APP_ROOT, buildReviewPage } from '#web-build'
 import { type Cli, createCli, removeTempStages } from './support/harness'
 
 /**
@@ -409,6 +421,395 @@ describe('up', () => {
 
     expect(result.code).toBe(EXIT.server)
     expect(result.error().message).toContain('did not come up')
+  })
+})
+
+/**
+ * The review page is the product; a link to a page that was never built is a
+ * dead link. So `up` builds it before it hands over any link at all — on both
+ * of the things it does, starting a server and reporting one that is already
+ * running, because a newcomer whose first attempt failed re-runs the install and
+ * lands on the second one. The server reads the page off the disk per request,
+ * so a build reaches a server that is already up with no restart.
+ *
+ * **Stale means strictly newer.** The page is rebuilt when some source file's
+ * modification time is *later* than the built index's — the same instant is the
+ * build's own output and is current, or every start on a fast machine would
+ * rebuild forever.
+ *
+ * Every case here drives the seams: no test ever runs a real `vite`.
+ */
+describe('the review page up hands over', () => {
+  const areas: string[] = []
+  afterAll(() => {
+    for (const dir of areas.splice(0)) rmSync(dir, { recursive: true, force: true })
+  })
+
+  type Area = {
+    /** Where the built page's index lives — `up`'s `webBuildIndex` seam. */
+    readonly index: string
+    /** A file of the page's source, one of the paths whose newest change counts. */
+    readonly sourceFile: string
+    readonly sourcePaths: readonly string[]
+    readonly sourceRoot: string
+  }
+
+  function anArea(): Area {
+    const dir = mkdtempSync(join(tmpdir(), 'retro-page-'))
+    areas.push(dir)
+    const sourceRoot = join(dir, 'source')
+    mkdirSync(join(dir, 'dist'))
+    mkdirSync(sourceRoot)
+    const sourceFile = join(sourceRoot, 'main.tsx')
+    writeFileSync(sourceFile, 'the page')
+    return {
+      index: join(dir, 'dist', 'index.html'),
+      sourceFile,
+      sourcePaths: [sourceRoot],
+      sourceRoot,
+    }
+  }
+
+  /** Seconds since the epoch, so a test says which file is newer and by how much. */
+  function stamp(path: string, seconds: number): void {
+    utimesSync(path, seconds, seconds)
+  }
+
+  function writeIndex(area: Area): void {
+    writeFileSync(area.index, '<!doctype html><title>Retro</title>')
+  }
+
+  function builder(area: Area, calls: string[], result = { ok: true, output: '' }) {
+    return async () => {
+      calls.push('build')
+      if (result.ok) writeIndex(area)
+      return result
+    }
+  }
+
+  function startingLock(stage: { lockFile: string }): void {
+    acquireLock(stage.lockFile, {
+      pid: process.pid,
+      port: 24999,
+      bind: DEFAULT_BIND,
+      startedAt: '2026-08-23T09:00:00.000Z',
+    })
+  }
+
+  test('is built when it is missing, and only then is a link handed over', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async (stage) => {
+        // The page has to exist before the server does: it is what the server serves.
+        expect(calls).toEqual(['build'])
+        startingLock(stage)
+      },
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(result.code).toBe(EXIT.ok)
+    expect(calls).toEqual(['build'])
+    expect(existsSync(area.index)).toBe(true)
+    // The success answer is what it always was — not one field more.
+    expect(result.json()).toEqual({
+      url: 'http://localhost:24999',
+      port: 24999,
+      pid: process.pid,
+      bind: DEFAULT_BIND,
+      started: true,
+    })
+  })
+
+  test('is left alone when it is there and newer than the page’s source', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    writeIndex(area)
+    stamp(area.sourceFile, 1_000)
+    stamp(area.index, 2_000)
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async (stage) => startingLock(stage),
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(calls).toEqual([])
+    expect(result.json()).toEqual({
+      url: 'http://localhost:24999',
+      port: 24999,
+      pid: process.pid,
+      bind: DEFAULT_BIND,
+      started: true,
+    })
+  })
+
+  test('is left alone when the source changed in the very instant it was built', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    writeIndex(area)
+    stamp(area.sourceFile, 2_000)
+    stamp(area.index, 2_000)
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async (stage) => startingLock(stage),
+    })
+
+    await cli.run(['up', '--json'])
+
+    expect(calls).toEqual([])
+  })
+
+  test('is rebuilt when a source file is newer than it', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    writeIndex(area)
+    stamp(area.index, 2_000)
+    stamp(area.sourceFile, 2_001)
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async (stage) => startingLock(stage),
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(result.code).toBe(EXIT.ok)
+    expect(calls).toEqual(['build'])
+  })
+
+  test('does not read installed packages or earlier builds as the page’s source', async () => {
+    // `node_modules` is touched by every install and holds tens of thousands of
+    // files; a build's own output is newer than the build by definition. Reading
+    // either as source would rebuild on every start, and walking the first would
+    // cost more than the build it is deciding about.
+    const area = anArea()
+    const calls: string[] = []
+    writeIndex(area)
+    stamp(area.sourceFile, 1_000)
+    stamp(area.index, 2_000)
+    for (const ignored of ['node_modules', 'dist', 'dist-mocked', 'test-results']) {
+      const dir = join(area.sourceRoot, ignored)
+      mkdirSync(dir)
+      const file = join(dir, 'newer.js')
+      writeFileSync(file, 'newer than the build')
+      stamp(file, 9_000)
+    }
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async (stage) => startingLock(stage),
+    })
+
+    await cli.run(['up', '--json'])
+
+    expect(calls).toEqual([])
+  })
+
+  test('says one plain line while it builds, and nothing at all in --json', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    const seams = {
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      spawnServe: async (stage: { lockFile: string }) => startingLock(stage),
+    }
+
+    const line = await createCli({ ...seams, buildWeb: builder(area, calls) }).run(['up'])
+    rmSync(area.index)
+    const json = await createCli({ ...seams, buildWeb: builder(area, calls) }).run(['up', '--json'])
+
+    expect(calls).toEqual(['build', 'build'])
+    expect(line.stdout[0]).toBe('Building the review page…')
+    expect(line.stdout.join('\n')).toContain('Started — http://localhost:24999')
+    // `--json` is one object on stdout and nothing else: `json()` throws otherwise.
+    expect(json.stdout.length).toBe(1)
+    expect(json.json()).toHaveProperty('started', true)
+  })
+
+  test('is built for a server that is already running too', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    let spawned = 0
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+      spawnServe: async () => {
+        spawned += 1
+      },
+    })
+    writeLock(cli, { port: 24242 })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(calls).toEqual(['build'])
+    expect(spawned).toBe(0)
+    expect(result.json()).toEqual({
+      url: 'http://localhost:24242',
+      port: 24242,
+      pid: process.pid,
+      bind: DEFAULT_BIND,
+      started: false,
+    })
+  })
+
+  test('stops with the build’s own words when the build fails, and hands over no link', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    let spawned = 0
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls, { ok: false, output: 'error: Cannot find module "react"' }),
+      spawnServe: async () => {
+        spawned += 1
+      },
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().code).toBe('SERVER')
+    expect(result.error().message).toContain('error: Cannot find module "react"')
+    expect(result.error().message).toContain('Run bun run build in the app folder.')
+    // No link, no `started`, and nothing started: the only error a newcomer sees.
+    expect(result.stdout).toEqual([])
+    expect(spawned).toBe(0)
+    expect(calls).toEqual(['build'])
+  })
+
+  test('hands over no link for a running server either, when the build fails', async () => {
+    const area = anArea()
+    const calls: string[] = []
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls, { ok: false, output: 'error: out of memory' }),
+    })
+    writeLock(cli, { port: 24242 })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().message).toContain('error: out of memory')
+    expect(result.stdout).toEqual([])
+  })
+
+  test('a build that cannot even start is a failed build, not a crash', async () => {
+    // `Bun.spawn` throws — synchronously, before anything is awaited — when the
+    // executable is not on `$PATH`, and again when the folder it was told to run
+    // in does not exist. Unguarded, that throw is not a build result at all: it
+    // leaves `up` as an unclassified exit 1 reading `Executable not found in
+    // $PATH: "bun"`, which names neither the build nor the command to run. The
+    // machine this whole item is about is exactly that one — Bun installed and
+    // not resolvable by name from the shell a script gets.
+    const missing = await buildReviewPage('definitely-not-a-command-xyz run build')
+
+    expect(missing.ok).toBe(false)
+    expect(missing.output).toContain('definitely-not-a-command-xyz')
+
+    const noSuchFolder = await buildReviewPage(
+      WEB_BUILD_COMMAND,
+      join(tmpdir(), 'retro-no-such-folder-xyz'),
+    )
+
+    expect(noSuchFolder.ok).toBe(false)
+    expect(noSuchFolder.output).not.toBe('')
+  })
+
+  test('gives back everything a real build printed, and whether it worked', async () => {
+    // A real child process, and still not `vite`: what is being checked is that
+    // both streams come back joined and that the exit status is the verdict.
+    const dir = mkdtempSync(join(tmpdir(), 'retro-build-'))
+    areas.push(dir)
+    writeFileSync(join(dir, 'say.sh'), 'echo on stdout\necho on stderr >&2\nexit 3\n')
+
+    const failed = await buildReviewPage('bash say.sh', dir)
+
+    expect(failed.ok).toBe(false)
+    expect(failed.output).toContain('on stdout')
+    expect(failed.output).toContain('on stderr')
+
+    writeFileSync(join(dir, 'say.sh'), 'echo built\n')
+    const worked = await buildReviewPage('bash say.sh', dir)
+
+    expect(worked.ok).toBe(true)
+    expect(worked.output).toBe('built')
+  })
+
+  test('stops the way a failed build stops when the build command is not on the path', async () => {
+    const area = anArea()
+    let spawned = 0
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: () => buildReviewPage('definitely-not-a-command-xyz run build'),
+      spawnServe: async () => {
+        spawned += 1
+      },
+    })
+
+    const result = await cli.run(['up', '--json'])
+
+    // The documented failure, not a crash: exit 7, the code a script reads, the
+    // build's own words, and the one command to run by hand.
+    expect(result.code).toBe(EXIT.server)
+    expect(result.error().code).toBe('SERVER')
+    expect(result.error().message).toContain('the review page could not be built')
+    expect(result.error().message).toContain('definitely-not-a-command-xyz')
+    expect(result.error().message).toContain('Run bun run build in the app folder.')
+    expect(result.stdout).toEqual([])
+    expect(spawned).toBe(0)
+  })
+
+  test('builds into the very file the server serves from, out of the folder it is in', async () => {
+    // Three places could drift apart into a start that builds one page, a server
+    // that serves another, and a staleness check that reads neither. They are the
+    // same constants: the index out of `@retro/api`, the sources off this
+    // package's own location.
+    const runtime = createDefaultRuntime()
+
+    expect(runtime.webBuildIndex).toBe(WEB_BUILD_INDEX)
+    expect(runtime.webBuildIndex.endsWith('/apps/web/dist/index.html')).toBe(true)
+    // Pinned, because an `APP_ROOT` off by one level is silent: every source path
+    // would stat as absent, nothing would ever read stale, and the feature would
+    // quietly shrink back to "build only when missing" with the suite still green.
+    expect(runtime.webSourcePaths.map((path) => path.replace(APP_ROOT, ''))).toEqual([
+      join('apps', 'web'),
+      'bun.lock',
+    ])
+    for (const path of runtime.webSourcePaths) expect(existsSync(path), path).toBe(true)
+  })
+
+  test('is never built by serve, which is the developer’s own command', async () => {
+    // Deliberate: `serve` is run by hand and by the end-to-end suite, which builds
+    // before it starts. Pinned all the same, because a later change that moves the
+    // build into a helper both commands call would otherwise pass unnoticed.
+    const area = anArea()
+    const calls: string[] = []
+    const cli = createCli({
+      webBuildIndex: area.index,
+      webSourcePaths: area.sourcePaths,
+      buildWeb: builder(area, calls),
+    })
+    writeLock(cli)
+
+    const result = await cli.run(['serve', '--json'])
+
+    expect(result.code).toBe(EXIT.server)
+    expect(calls).toEqual([])
+    expect(existsSync(area.index)).toBe(false)
   })
 })
 

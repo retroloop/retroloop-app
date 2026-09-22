@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "retroloop": "bun apps/cli/src/bin.ts",
+    "build": "bun run --filter '@retro/web' build",
     "test": "bun test scripts && bun run --filter '@retro/*' test",
     "test:scripts": "bun test scripts",
     "typecheck": "bun run --filter '@retro/*' typecheck",
