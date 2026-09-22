@@ -1,15 +1,13 @@
-import { networkInterfaces } from 'node:os'
 import { UsageError } from '#errors'
 
 /**
- * The address a server takes when nobody asks for another one.
+ * The address a server takes — the only one it can take.
  *
- * Loopback, and said so out loud in `--help`. cli.md's design narrative once
- * promised "auto LAN"; a tool that quietly puts a review server on the network
- * because you did not name an address is not being helpful, it is deciding
- * something for you. `--bind` is how you ask, and `--help` is the authoritative
- * statement of what happens when you do not. A `--bind` binds the one start it
- * was typed for: nothing carries it over into the next one.
+ * The review server holds a human's frictions in their own words and has no
+ * password of any kind, so the honest reach for it is the machine it runs on.
+ * `--bind` still exists, and still binds the one start it was typed for, but the
+ * only addresses it accepts are the ones that mean this machine. Everything else
+ * is refused, and the way in from another computer is the secure-shell tunnel.
  */
 export const DEFAULT_BIND = '127.0.0.1'
 
@@ -17,24 +15,6 @@ export const DEFAULT_BIND = '127.0.0.1'
 export type ServeAddress = {
   readonly port: number
   readonly bind: string
-}
-
-/** One address a host interface carries — `os.networkInterfaces()`, flattened. */
-export type HostAddress = {
-  readonly address: string
-  readonly family: string
-  readonly internal: boolean
-}
-
-/** The real machine's addresses. Injected through `CliRuntime` so tests can fake it. */
-export function systemHostAddresses(): readonly HostAddress[] {
-  return Object.values(networkInterfaces())
-    .flatMap((entries) => entries ?? [])
-    .map((entry) => ({
-      address: entry.address,
-      family: String(entry.family),
-      internal: entry.internal,
-    }))
 }
 
 /** Every spelling of "this machine only": 127.0.0.0/8, `::1`, and the name for them. */
@@ -50,17 +30,27 @@ export function isWildcardBind(bind: string): boolean {
 }
 
 /**
- * Refuses a wildcard address before anything is started, written or locked.
+ * Refuses every address that is not this machine, before anything is started,
+ * written or locked.
  *
- * Every interface is not an address, it is "whoever can reach this machine", and
- * a review server holds a human's words in their own spelling. Naming one
- * interface is the same reach with the decision made out loud, so that is the
- * only way to leave loopback — and the message says which flag to type instead.
+ * One rule, and no way round it: public, private and wildcard addresses are the
+ * same refusal, there is no flag and no environment variable that unlocks one,
+ * and nothing on disk can widen it. The reason is not that a named interface is
+ * worse than a wildcard — it is that the page behind either has no password, so
+ * an address is the whole of the protection, and on a rented server the one
+ * address a machine has is the public one.
+ *
+ * Refusing without saying what to do instead is what the old message did, and it
+ * pointed at the thing that caused the harm. This one names the tunnel: the port
+ * forwarded over the secure login the person already has, which leaves the server
+ * exactly where it is and still puts the page in their own browser.
  */
-export function refuseWildcardBind(bind: string): void {
-  if (!isWildcardBind(bind)) return
+export function requireLoopbackBind(bind: string, port: number): void {
+  if (isLoopbackBind(bind)) return
   throw new UsageError(
-    `--bind ${bind} is refused: it would expose the review server on every network interface. Bind one interface address instead, e.g. --bind 192.168.1.9.`,
+    `--bind ${bind} is refused: the review server only ever listens on this machine. ` +
+      `To open it from another computer, forward the port over your SSH connection: ` +
+      `${tunnelCommandFor(port, undefined)}, then open http://localhost:${port}`,
   )
 }
 
@@ -99,39 +89,36 @@ export function remoteTunnelCommand(env: RemoteLoginEnv, port: number): string |
   return tunnelCommandFor(port, serverAddress === '' ? undefined : serverAddress)
 }
 
+/** The `tunnel` member to spread into a result, or nothing at all. */
+export function tunnelMember(tunnel: string | undefined): { readonly tunnel?: string } {
+  return tunnel === undefined ? {} : { tunnel }
+}
+
+/**
+ * The line to print beside the link, or nothing at all.
+ *
+ * `--json` gets the `tunnel` field instead, never this sentence: a caller parsing
+ * stdout wants the command, not an instruction wrapped round it.
+ */
+export function tunnelLine(tunnel: string | undefined, port: number): string | undefined {
+  return tunnel === undefined
+    ? undefined
+    : `From your own computer: ${tunnel}, then open http://localhost:${port}`
+}
+
 function hostForUrl(address: string): string {
   return address.includes(':') ? `[${address}]` : address
 }
 
 /**
- * The URL another device on the network can actually open, or `undefined` when
- * there is none.
- *
- * A loopback server has no such URL, and a wildcard bind on a machine with no
- * external interface has none either — so the field is absent rather than
- * guessed. A link that refuses the connection is worse than no link, because the
- * person holding the iPad has no way to tell which of the two ends is wrong.
- */
-export function lanUrlFor(
-  bind: string,
-  port: number,
-  hostAddresses: () => readonly HostAddress[],
-): string | undefined {
-  if (isLoopbackBind(bind)) return undefined
-  if (!isWildcardBind(bind)) return `http://${hostForUrl(bind)}:${port}`
-
-  const lan = hostAddresses().find((entry) => entry.family === 'IPv4' && !entry.internal)
-  return lan === undefined ? undefined : `http://${lan.address}:${port}`
-}
-
-/**
  * The origin **this machine** can reach a server on, given the address it took.
  *
- * The mirror of `lanUrlFor`, which answers the other question — where someone
- * else's iPad should look. Loopback and wildcard both answer on `127.0.0.1`; a
- * server bound to one named interface answers only there, so that is what a
- * local client has to ask. A socket wants the literal `127.0.0.1`; the link a
- * person is handed says `localhost` instead, which is `humanUrlFor`'s business.
+ * Every address a start can take now answers on `127.0.0.1`. The other two
+ * branches survive because a lock file can still name what an older server bound
+ * — a wildcard, or one named interface — and a reading of what is serving has to
+ * be true about that server rather than about the rule it predates. A socket
+ * wants the literal `127.0.0.1`; the link a person is handed says `localhost`
+ * instead, which is `humanUrlFor`'s business.
  */
 export function localOriginFor(bind: string, port: number): string {
   if (isLoopbackBind(bind) || isWildcardBind(bind)) return `http://127.0.0.1:${port}`
@@ -145,7 +132,7 @@ export function localOriginFor(bind: string, port: number): string {
  * Same rule as `localOriginFor`, spelled for a browser: a loopback or wildcard
  * server answers on `localhost`; a server bound to one named interface answers
  * only there, so `localhost` would be a link to an address nothing listens on
- * at all. `lanUrlFor` stays the other device's link.
+ * at all — which only an older server's lock can still say.
  *
  * This **describes** a bind and never chooses one. It is handed the address a
  * listening server already took — off its lock, or off the socket just opened —
@@ -157,23 +144,12 @@ export function humanUrlFor(bind: string, port: number): string {
   return `http://${hostForUrl(bind)}:${port}`
 }
 
-/** The `lanUrl` member to spread into a result, or nothing at all. */
-export function lanUrlMember(lanUrl: string | undefined): { readonly lanUrl?: string } {
-  return lanUrl === undefined ? {} : { lanUrl }
-}
-
-/** ` · LAN http://…` for the human line, or nothing at all. */
-export function lanUrlSuffix(lanUrl: string | undefined): string {
-  return lanUrl === undefined ? '' : ` · LAN ${lanUrl}`
-}
-
 /**
  * ` · bound to <addr>` for the human line — on every start, without exception.
  *
- * The terminal is where a bind beyond loopback becomes visible to the person who
- * typed it, so the address is never left implicit, not even when it is the
- * default. A line that only mentions the address sometimes teaches the reader to
- * stop looking for it.
+ * The address is never left implicit, not even now that it can only ever be this
+ * machine: a line that only mentions the address sometimes teaches the reader to
+ * stop looking for it, and the terminal is where a reader checks what is true.
  */
 export function boundToSuffix(bind: string): string {
   return ` · bound to ${bind}`
