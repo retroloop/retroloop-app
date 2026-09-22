@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { DEFAULT_STATIC_ROOT } from '#server'
-import { createStaticHandler } from '#static'
+import { createStaticHandler, WEB_BUILD_COMMAND, WEB_BUILD_INDEX, webBuildRootFrom } from '#static'
 
 const roots: string[] = []
 afterAll(() => {
@@ -103,7 +103,35 @@ describe('static serving', () => {
     expect(await response.text()).toContain('No web build')
   })
 
+  test('names the one documented build command when there is no build', async () => {
+    // One name for the build, written once: this body, the start command's
+    // failure and the instructions all say the same thing, so a reader who
+    // copies any of them types a command that exists.
+    const empty = mkdtempSync(join(tmpdir(), 'retro-nobuild-'))
+    roots.push(empty)
+    const handler = createStaticHandler({ root: empty })
+
+    const body = await (await handler(new Request('http://localhost/'))).text()
+
+    expect(WEB_BUILD_COMMAND).toBe('bun run build')
+    expect(body).toContain(`Run ${WEB_BUILD_COMMAND} in the app folder.`)
+  })
+
   test('defaults to the web package’s build directory', () => {
     expect(DEFAULT_STATIC_ROOT.endsWith('/apps/web/dist')).toBe(true)
+  })
+
+  test('points at the one index file the whole app agrees on', () => {
+    expect(WEB_BUILD_INDEX).toBe(join(DEFAULT_STATIC_ROOT, 'index.html'))
+  })
+
+  test('reads a folder name with a space as a folder name with a space', () => {
+    // `new URL(…).pathname` hands back `retro%20check`, a directory that does not
+    // exist: the server would 503 on a checkout whose path has a space in it, and
+    // the start command would rebuild the page on every single start.
+    expect(webBuildRootFrom('file:///tmp/retro%20check/apps/api/src/static.ts')).toBe(
+      '/tmp/retro check/apps/web/dist',
+    )
+    expect(DEFAULT_STATIC_ROOT).not.toContain('%')
   })
 })
