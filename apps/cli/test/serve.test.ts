@@ -7,13 +7,26 @@ import {
   humanUrlFor,
   isLoopbackBind,
   isWildcardBind,
-  lanUrlFor,
+  remoteTunnelCommand,
   type ServeAddress,
+  tunnelCommandFor,
 } from '#server/address'
 import { acquireLock, type LockInfo, readLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
 import { resolveStage } from '#stage'
-import { type Cli, createCli, removeTempStages, TEST_HOST_ADDRESSES } from './support/harness'
+import { type Cli, createCli, removeTempStages } from './support/harness'
+
+/** The one refusal, spelled out where a test can read it as a person would. */
+function refusalFor(bind: string, port = 24100): string {
+  return (
+    `--bind ${bind} is refused: the review server only ever listens on this machine. ` +
+    `To open it from another computer, forward the port over your SSH connection: ` +
+    `ssh -N -L ${port}:127.0.0.1:${port} you@your-server, then open http://localhost:${port}`
+  )
+}
+
+/** What `SSH_CONNECTION` carries: client address, client port, server address, server port. */
+const SSH_CONNECTION = '198.51.100.4 54321 203.0.113.7 22'
 
 afterAll(removeTempStages)
 
@@ -30,8 +43,6 @@ function writeLock(cli: Cli, info: Partial<LockInfo> = {}): string {
   )
   return lockFile
 }
-
-const hostAddresses = () => TEST_HOST_ADDRESSES
 
 /** `startServer` is the listener; what it serves is the API's business. */
 const echo = () => new Response('served by the retro CLI', { status: 200 })
@@ -131,28 +142,45 @@ describe('serve', () => {
   })
 })
 
-describe('the LAN URL', () => {
-  test('is nothing at all for every spelling of loopback', () => {
-    for (const bind of ['127.0.0.1', '127.0.1.1', 'localhost', '::1', '[::1]']) {
-      expect(isLoopbackBind(bind)).toBe(true)
-      expect(lanUrlFor(bind, 24100, hostAddresses)).toBeUndefined()
+describe('the address that means this machine', () => {
+  test('is every spelling of loopback, and nothing else', () => {
+    for (const bind of ['127.0.0.1', '127.0.1.1', 'localhost', 'LocalHost', '::1', '[::1]']) {
+      expect(isLoopbackBind(bind), bind).toBe(true)
+    }
+    for (const bind of ['0.0.0.0', '::', '192.168.1.9', '203.0.113.7', 'fe80::1', '10.0.0.4']) {
+      expect(isLoopbackBind(bind), bind).toBe(false)
     }
   })
+})
 
-  test('is the address itself when one was named', () => {
-    expect(lanUrlFor('192.168.1.9', 24100, hostAddresses)).toBe('http://192.168.1.9:24100')
-    expect(lanUrlFor('fe80::1', 24100, hostAddresses)).toBe('http://[fe80::1]:24100')
+describe('the tunnel command', () => {
+  test('forwards the review port to the same port on this machine', () => {
+    expect(tunnelCommandFor(24100, '203.0.113.7')).toBe(
+      'ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7',
+    )
   })
 
-  test('resolves a wildcard bind to the first address off this machine', () => {
-    expect(lanUrlFor('0.0.0.0', 24100, hostAddresses)).toBe('http://192.168.1.42:24100')
-    expect(lanUrlFor('::', 24100, hostAddresses)).toBe('http://192.168.1.42:24100')
+  test('says “your-server” when the host is not known', () => {
+    expect(tunnelCommandFor(24777, undefined)).toBe(
+      'ssh -N -L 24777:127.0.0.1:24777 you@your-server',
+    )
   })
 
-  test('is nothing at all when the machine has no address to offer', () => {
-    const loopbackOnly = () => [{ address: '127.0.0.1', family: 'IPv4', internal: true }]
+  test('is nothing at all outside a remote login', () => {
+    expect(remoteTunnelCommand({}, 24100)).toBeUndefined()
+    expect(remoteTunnelCommand({ SSH_CONNECTION: '  ' }, 24100)).toBeUndefined()
+  })
 
-    expect(lanUrlFor('0.0.0.0', 24100, loopbackOnly)).toBeUndefined()
+  test('takes the host from the server address inside SSH_CONNECTION', () => {
+    expect(remoteTunnelCommand({ SSH_CONNECTION }, 24100)).toBe(
+      'ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7',
+    )
+  })
+
+  test('is still offered when only SSH_TTY says this is a remote login', () => {
+    expect(remoteTunnelCommand({ SSH_TTY: '/dev/pts/0' }, 24100)).toBe(
+      'ssh -N -L 24100:127.0.0.1:24100 you@your-server',
+    )
   })
 })
 
@@ -284,15 +312,15 @@ describe('up', () => {
 
     await cli.run(['up', '--json'])
     releaseLock(join(cli.dataDir, 'server.lock'))
-    await cli.run(['up', '--bind', '192.168.1.9', '--port', '24777', '--json'])
+    await cli.run(['up', '--bind', 'localhost', '--port', '24777', '--json'])
 
     expect(asked).toEqual([
       { port: 24100, bind: '127.0.0.1' },
-      { port: 24777, bind: '192.168.1.9' },
+      { port: 24777, bind: 'localhost' },
     ])
   })
 
-  test('prints the LAN URL when it binds beyond loopback, and none when it does not', async () => {
+  test('never claims a link on the network, whatever it starts', async () => {
     const cli = createCli({
       spawnServe: async (stage, address) => {
         acquireLock(stage.lockFile, {
@@ -305,18 +333,9 @@ describe('up', () => {
     })
 
     const loopback = await cli.run(['up', '--json'])
-    releaseLock(join(cli.dataDir, 'server.lock'))
-    const lan = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
     expect(loopback.json()).not.toHaveProperty('lanUrl')
-    expect(loopback.json()).toMatchObject({ url: 'http://localhost:24100' })
-    // A server on one named interface does not answer on loopback, so `url` — the
-    // link that gets handed over — is the address that does.
-    expect(lan.json()).toMatchObject({
-      url: 'http://192.168.1.9:24100',
-      lanUrl: 'http://192.168.1.9:24100',
-      started: true,
-    })
+    expect(loopback.json()).toMatchObject({ url: 'http://localhost:24100', started: true })
   })
 
   test('hands over the address a running server answers on, not localhost', async () => {
@@ -339,32 +358,20 @@ describe('up', () => {
       pid: process.pid,
       bind: '192.168.1.9',
       started: false,
-      lanUrl: 'http://192.168.1.9:24242',
     })
     expect(line.stdout.join('\n')).toContain('Already running — http://192.168.1.9:24242 ')
     expect(spawned).toBe(0)
   })
 
-  test('does not claim a LAN URL the running server cannot serve', async () => {
-    // `up` starts nothing when a server already holds the stage, so a `--bind`
-    // it was handed has not been applied — reporting it would be the same lie
-    // the dropped flag used to tell.
-    const cli = createCli()
-    writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
-
-    const result = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
-
-    expect(result.code).toBe(EXIT.ok)
-    expect(result.json()).not.toHaveProperty('lanUrl')
-  })
-
   test('says out loud that a running server ignored the address it was handed', async () => {
+    // An older server left a wildcard in the lock; this `up` asks for loopback
+    // and starts nothing, so the address it asked for has not been applied.
     const cli = createCli()
-    writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
+    writeLock(cli, { port: 24242, bind: '0.0.0.0' })
 
-    const result = await cli.run(['up', '--bind', '192.168.1.9'])
+    const result = await cli.run(['up', '--bind', '127.0.0.1'])
 
-    expect(result.stdout.join('\n')).toContain('the running server is bound to 127.0.0.1')
+    expect(result.stdout.join('\n')).toContain('the running server is bound to 0.0.0.0')
     expect(result.stdout.join('\n')).toContain('retroloop down')
   })
 
@@ -379,11 +386,12 @@ describe('up', () => {
 })
 
 /**
- * The address a server takes is a per-start choice: loopback unless the caller
- * names an interface, never carried over from a previous start, and never a
- * wildcard. Putting the review server on every interface exposes a human's
- * verbatim words to everyone on the network, so it is refused outright and one
- * named address is how the network is asked for.
+ * The review server listens on this machine and nowhere else. It holds a human's
+ * frictions in their own words and has no password of any kind, so every address
+ * that is not loopback is refused before anything is started, written or locked —
+ * public, private and wildcard alike, one rule, with no flag and no environment
+ * variable that undoes it. The way in from another computer is the secure-shell
+ * tunnel, and the refusal is where that is taught.
  */
 describe('the bind address', () => {
   /**
@@ -430,15 +438,11 @@ describe('the bind address', () => {
 
     await cli.run(['up', '--json'])
     await cli.run(['down', '--json'])
-    await cli.run(['up', '--bind', '192.168.1.9', '--json'])
+    await cli.run(['up', '--bind', 'localhost', '--json'])
     await cli.run(['down', '--json'])
     await cli.run(['up', '--json'])
 
-    expect(asked.map((address) => address.bind)).toEqual([
-      DEFAULT_BIND,
-      '192.168.1.9',
-      DEFAULT_BIND,
-    ])
+    expect(asked.map((address) => address.bind)).toEqual([DEFAULT_BIND, 'localhost', DEFAULT_BIND])
   })
 
   test('a stage that has never run a server starts on loopback', async () => {
@@ -454,46 +458,93 @@ describe('the bind address', () => {
   test('up writes nothing down about the address it was given', async () => {
     const { cli } = restartableStage()
 
-    await cli.run(['up', '--bind', '192.168.1.9', '--json'])
+    await cli.run(['up', '--bind', 'localhost', '--json'])
 
     expect(existsSync(join(cli.dataDir, 'last-bind.json'))).toBe(false)
   })
 
-  test('up refuses a wildcard address and starts nothing', async () => {
-    for (const wildcard of ['0.0.0.0', '::', '[::]']) {
+  test('every spelling of loopback still starts a server', async () => {
+    for (const loopback of ['127.0.0.1', '127.0.1.1', 'localhost', '::1', '[::1]']) {
       const { cli, asked } = restartableStage()
 
-      const result = await cli.run(['up', '--bind', wildcard, '--json'])
+      const result = await cli.run(['up', '--bind', loopback, '--json'])
 
-      expect(result.code, wildcard).toBe(EXIT.usage)
-      expect(result.error().code).toBe('USAGE')
-      expect(result.error().message).toBe(
-        `--bind ${wildcard} is refused: it would expose the review server on every network interface. Bind one interface address instead, e.g. --bind 192.168.1.9.`,
-      )
-      expect(asked, wildcard).toEqual([])
-      expect(existsSync(join(cli.dataDir, 'server.lock')), wildcard).toBe(false)
+      expect(result.code, loopback).toBe(EXIT.ok)
+      expect(
+        asked.map((address) => address.bind),
+        loopback,
+      ).toEqual([loopback])
     }
   })
 
-  test('up refuses a wildcard address even when a server is already running', async () => {
+  test('up refuses every address that is not this machine, and starts nothing', async () => {
+    // Public, private and wildcard alike — one rule, and the same message.
+    for (const address of ['203.0.113.7', '192.168.1.9', '10.0.0.4', '0.0.0.0', '::', '[::]']) {
+      const { cli, asked } = restartableStage()
+
+      const result = await cli.run(['up', '--bind', address, '--json'])
+
+      expect(result.code, address).toBe(EXIT.usage)
+      expect(result.error().code).toBe('USAGE')
+      expect(result.error().message, address).toBe(refusalFor(address))
+      expect(asked, address).toEqual([])
+      expect(existsSync(join(cli.dataDir, 'server.lock')), address).toBe(false)
+    }
+  })
+
+  test('the refusal names the tunnel, and the port the caller actually asked for', async () => {
+    const { cli } = restartableStage()
+
+    const result = await cli.run(['up', '--bind', '203.0.113.7', '--port', '24777', '--json'])
+
+    expect(result.error().message).toBe(refusalFor('203.0.113.7', 24777))
+    expect(result.error().message).toContain('only ever listens on this machine')
+    expect(result.error().message).toContain('ssh -N -L 24777:127.0.0.1:24777 you@your-server')
+    expect(result.error().message).toContain('http://localhost:24777')
+  })
+
+  test('no environment variable can undo the refusal', async () => {
+    // There is nothing to type: the refusal reads the address and nothing else.
+    const asked: ServeAddress[] = []
+    const cli = createCli({
+      env: {
+        RETROLOOP_BIND: '203.0.113.7',
+        RETROLOOP_ALLOW_NETWORK_BIND: '1',
+        RETRO_ALLOW_LAN: 'yes',
+      },
+      spawnServe: async (_stage, address) => {
+        asked.push(address)
+      },
+    })
+
+    const result = await cli.run(['up', '--bind', '203.0.113.7', '--json'])
+
+    expect(result.code).toBe(EXIT.usage)
+    expect(result.error().message).toBe(refusalFor('203.0.113.7'))
+    expect(asked).toEqual([])
+  })
+
+  test('up refuses a network address even when a server is already running', async () => {
     const cli = createCli()
     writeLock(cli, { port: 24242 })
 
-    const result = await cli.run(['up', '--bind', '0.0.0.0'])
+    const result = await cli.run(['up', '--bind', '203.0.113.7'])
 
     expect(result.code).toBe(EXIT.usage)
     // Refused before it looked at the stage: no "already running" line either.
     expect(result.stdout).toEqual([])
   })
 
-  test('serve refuses a wildcard address before it takes the stage lock', async () => {
-    const cli = createCli()
+  test('serve refuses a network address before it takes the stage lock', async () => {
+    for (const address of ['203.0.113.7', '192.168.1.9', '0.0.0.0']) {
+      const cli = createCli()
 
-    const result = await cli.run(['serve', '--bind', '0.0.0.0', '--json'])
+      const result = await cli.run(['serve', '--bind', address, '--json'])
 
-    expect(result.code).toBe(EXIT.usage)
-    expect(result.error().message).toContain('--bind 0.0.0.0 is refused')
-    expect(readLock(join(cli.dataDir, 'server.lock'))).toBeUndefined()
+      expect(result.code, address).toBe(EXIT.usage)
+      expect(result.error().message, address).toBe(refusalFor(address))
+      expect(readLock(join(cli.dataDir, 'server.lock')), address).toBeUndefined()
+    }
   })
 
   test('up prints the address it bound, in JSON and to a human', async () => {
@@ -502,15 +553,9 @@ describe('the bind address', () => {
     const loopback = await cli.run(['up', '--json'])
     await cli.run(['down', '--json'])
     const line = await cli.run(['up'])
-    await cli.run(['down', '--json'])
-    const lan = await cli.run(['up', '--bind', '192.168.1.9', '--json'])
 
     expect(loopback.jsonAs<{ bind: string }>().bind).toBe(DEFAULT_BIND)
     expect(line.stdout.join('\n')).toContain('bound to 127.0.0.1')
-    expect(lan.json()).toMatchObject({
-      bind: '192.168.1.9',
-      lanUrl: 'http://192.168.1.9:24100',
-    })
   })
 
   test('reports the address a running server holds, wildcard and all', async () => {
@@ -537,6 +582,83 @@ describe('the bind address', () => {
 
     expect(result.code).toBe(EXIT.ok)
     expect(result.stdout.join('\n')).not.toContain('needs a restart')
+  })
+})
+
+/**
+ * The refusal ends the exposure; this is the other half — telling someone working
+ * on a remote machine how to get in. A start inside a secure-shell login prints
+ * the forwarding command to paste on their own computer, with the real port and,
+ * when the connection says so, the real host.
+ */
+describe('the tunnel line beside the link', () => {
+  function startingCli(env: Record<string, string | undefined> = {}): Cli {
+    return createCli({
+      env,
+      spawnServe: async (stage, address) => {
+        acquireLock(stage.lockFile, {
+          pid: process.pid,
+          port: address.port,
+          bind: address.bind,
+          startedAt: '2026-08-23T09:00:00.000Z',
+        })
+      },
+    })
+  }
+
+  test('is absent when the start is not inside a remote login', async () => {
+    // Also the guard on the harness: the real environment must never reach a
+    // command, or a suite run over a secure shell would print this everywhere.
+    const line = await startingCli().run(['up'])
+    const json = await startingCli().run(['up', '--json'])
+
+    expect(line.stdout.join('\n')).not.toContain('ssh -N -L')
+    expect(json.json()).not.toHaveProperty('tunnel')
+  })
+
+  test('is printed beside the link when SSH_CONNECTION says this is a remote login', async () => {
+    const result = await startingCli({ SSH_CONNECTION }).run(['up'])
+
+    expect(result.code).toBe(EXIT.ok)
+    const printed = result.stdout.join('\n')
+    expect(printed).toContain('Started — http://localhost:24100')
+    expect(printed).toContain('ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7')
+    expect(printed).toContain('http://localhost:24100')
+  })
+
+  test('carries the port the server actually took', async () => {
+    const result = await startingCli({ SSH_CONNECTION }).run(['up', '--port', '24777'])
+
+    expect(result.stdout.join('\n')).toContain('ssh -N -L 24777:127.0.0.1:24777 you@203.0.113.7')
+  })
+
+  test('is a field in --json, never prose', async () => {
+    const result = await startingCli({ SSH_CONNECTION }).run(['up', '--json'])
+
+    expect(result.json()).toMatchObject({
+      url: 'http://localhost:24100',
+      started: true,
+      tunnel: 'ssh -N -L 24100:127.0.0.1:24100 you@203.0.113.7',
+    })
+  })
+
+  test('falls back to a named placeholder when only SSH_TTY says so', async () => {
+    const result = await startingCli({ SSH_TTY: '/dev/pts/3' }).run(['up', '--json'])
+
+    expect(result.jsonAs<{ tunnel: string }>().tunnel).toBe(
+      'ssh -N -L 24100:127.0.0.1:24100 you@your-server',
+    )
+  })
+
+  test('is printed for a server that is already running too', async () => {
+    const cli = createCli({ env: { SSH_CONNECTION } })
+    writeLock(cli, { port: 24242, bind: DEFAULT_BIND })
+
+    const result = await cli.run(['up', '--json'])
+
+    expect(result.jsonAs<{ tunnel: string }>().tunnel).toBe(
+      'ssh -N -L 24242:127.0.0.1:24242 you@203.0.113.7',
+    )
   })
 })
 

@@ -35,16 +35,6 @@ export type Cli = {
   file(name: string, contents: string): string
 }
 
-/**
- * The machine this suite pretends to run on. Fixed, because a LAN URL read off
- * the developer's real interfaces would assert something different on every
- * laptop — and because a test must never learn what those interfaces are.
- */
-export const TEST_HOST_ADDRESSES = [
-  { address: '127.0.0.1', family: 'IPv4', internal: true },
-  { address: '192.168.1.42', family: 'IPv4', internal: false },
-] as const
-
 const stages: string[] = []
 
 export function removeTempStages(): void {
@@ -71,6 +61,13 @@ function frozenClock(iso = '2026-08-23T09:00:00.000Z'): Clock {
  * `RETROLOOP_HOME` points at a throwaway root: `resolveStage` reads the stage's
  * lock file to learn the running port, and a test must never read — or write —
  * the developer's real `~/.retroloop`.
+ *
+ * The environment is **built here, never inherited**, and an `env` override is
+ * merged into it rather than replacing it. A replacement would drop
+ * `RETROLOOP_HOME` and point the command at the developer's real root; an
+ * inherited `process.env` would let the machine the suite happens to run on
+ * decide the answer — a run over a secure shell would carry `SSH_CONNECTION`
+ * into every test, and the tunnel line would appear where no test asked for it.
  */
 export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
   const home = mkdtempSync(join(tmpdir(), 'retro-cli-'))
@@ -96,7 +93,6 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
       const stderr: string[] = []
 
       const code = await run(argv, {
-        env: { RETROLOOP_HOME: home },
         cwd: home,
         clock,
         out: (line) => stdout.push(line),
@@ -110,8 +106,10 @@ export function createCli(overrides: Partial<CliRuntime> = {}): Cli {
         // Never the real one: the default would SIGTERM whatever PID a fixture
         // lock file names, and the fixtures name this test process.
         stopProcess: overrides.stopProcess ?? (() => undefined),
-        hostAddresses: overrides.hostAddresses ?? (() => TEST_HOST_ADDRESSES),
         ...overrides,
+        // Last, and merged: an override that named only `SSH_CONNECTION` would
+        // otherwise take the whole environment with it, `RETROLOOP_HOME` included.
+        env: { RETROLOOP_HOME: home, ...overrides.env },
       })
 
       const parseStdout = (): Record<string, unknown> => {

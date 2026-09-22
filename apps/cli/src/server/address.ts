@@ -64,6 +64,41 @@ export function refuseWildcardBind(bind: string): void {
   )
 }
 
+/** Just enough of the environment to tell a remote login from a local one. */
+type RemoteLoginEnv = Readonly<Record<string, string | undefined>>
+
+/**
+ * The command to paste on your **own** computer to reach a review server that
+ * listens only on the machine it runs on.
+ *
+ * The same port on both ends, because that is the form someone can read back
+ * from the link they were given. The page asks its server for data at a relative
+ * address, so a different local port works just as well — that variant is taught
+ * in the install documentation rather than printed, since the number to pick
+ * depends on what the reader is already running.
+ */
+export function tunnelCommandFor(port: number, host: string | undefined): string {
+  return `ssh -N -L ${port}:127.0.0.1:${port} you@${host ?? 'your-server'}`
+}
+
+/**
+ * The tunnel command to print beside the link, or nothing at all when this is
+ * not a remote login.
+ *
+ * `SSH_CONNECTION` is "client address, client port, server address, server port",
+ * so the third field is the address the person connected **to** — the one worth
+ * putting in the command. `SSH_TTY` alone still means a remote login; there is
+ * just no host to name, so the placeholder stands and the reader fills it in.
+ */
+export function remoteTunnelCommand(env: RemoteLoginEnv, port: number): string | undefined {
+  const connection = (env.SSH_CONNECTION ?? '').trim()
+  const tty = (env.SSH_TTY ?? '').trim()
+  if (connection === '' && tty === '') return undefined
+
+  const serverAddress = connection.split(/\s+/)[2]
+  return tunnelCommandFor(port, serverAddress === '' ? undefined : serverAddress)
+}
+
 function hostForUrl(address: string): string {
   return address.includes(':') ? `[${address}]` : address
 }
