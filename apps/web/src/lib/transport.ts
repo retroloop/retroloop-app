@@ -12,8 +12,10 @@ const TRPC_ENDPOINT = '/trpc'
 
 /**
  * The production transport: batched HTTP for queries and mutations, SSE for the
- * one subscription (realtime.md — plain HTTP, so the iPad reaches it over the
- * LAN without TLS, and `EventSource` reconnects with `Last-Event-ID` on its own).
+ * one subscription (realtime.md — plain HTTP needs no TLS, because the server
+ * listens on this machine only and a remote reader reaches it through an SSH
+ * tunnel that is already encrypted; and `EventSource` reconnects with
+ * `Last-Event-ID` on its own).
  */
 export const createTrpcLinks: TrpcLinkFactory = () => [
   splitLink({

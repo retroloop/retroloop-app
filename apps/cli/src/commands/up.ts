@@ -6,13 +6,14 @@ import {
   boundToSuffix,
   DEFAULT_BIND,
   humanUrlFor,
+  isLoopbackBind,
   remoteTunnelCommand,
   requireLoopbackBind,
   tunnelLine,
   tunnelMember,
 } from '#server/address'
 import { type LockInfo, readLock } from '#server/lock'
-import { DEFAULT_PORT, resolveStage } from '#stage'
+import { resolveStage } from '#stage'
 
 const READY_POLL_MS = 20
 
@@ -72,19 +73,23 @@ export function registerUpCommand(
           describe: `Address to bind. The review server only ever listens on this machine, so only 127.0.0.1, ::1 and localhost are accepted; reach it from another computer over an SSH tunnel. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
-      // Before the stage, the lock and the output: a refused address must leave
-      // the machine exactly as it found it. The port in the message is the one
-      // the caller asked for, read off the flag rather than off the stage, so
-      // that nothing on disk has to be consulted to write a refusal.
-      const bind = args.bind ?? DEFAULT_BIND
-      requireLoopbackBind(bind, args.port ?? DEFAULT_PORT)
-
+      // The stage is resolved first because resolving it writes nothing — it
+      // reads the flag, the environment and the lock — and the refusal has to
+      // name the port this stage would actually use. Named off `--port` alone it
+      // would ignore `RETRO_PORT` and the port a running server holds, and hand
+      // the reader a forwarding command for a port nothing listens on.
       const stage = resolveStage({
         home: args.home,
         port: args.port,
         env: runtime.env,
         cwd: runtime.cwd,
       })
+
+      // Still before the lock, the output and any spawn: a refused address must
+      // leave the machine exactly as it found it.
+      const bind = args.bind ?? DEFAULT_BIND
+      requireLoopbackBind(bind, stage.port)
+
       const output = createOutput({
         json: args.json === true,
         quiet: args.quiet === true,
@@ -104,7 +109,15 @@ export function registerUpCommand(
         // includes reporting a wildcard an older server bound — a fact about
         // what is serving, which is exactly what makes it worth printing.
         const tunnel = remoteTunnelCommand(runtime.env, already.port)
-        if (args.bind !== undefined && already.bind !== args.bind) {
+        // Only when the running server is somewhere this rule would no longer
+        // allow — a server started before it, still holding a network address.
+        // Two spellings of this machine are agreement, not disagreement: a
+        // restart would change nothing, so asking for one is a false alarm.
+        if (
+          args.bind !== undefined &&
+          already.bind !== args.bind &&
+          !isLoopbackBind(already.bind)
+        ) {
           output.note(
             `Note: the running server is bound to ${already.bind}; --bind ${args.bind} needs a restart (retroloop down, then retroloop up --bind ${args.bind}).`,
           )

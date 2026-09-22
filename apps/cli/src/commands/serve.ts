@@ -13,7 +13,7 @@ import {
 } from '#server/address'
 import { acquireLock, releaseLock } from '#server/lock'
 import { startServer } from '#server/serve'
-import { DEFAULT_PORT, resolveStage } from '#stage'
+import { resolveStage } from '#stage'
 
 function waitForShutdown(): Promise<void> {
   return new Promise((resolve) => {
@@ -48,19 +48,23 @@ export function registerServeCommand(
           describe: `Address to bind. The review server only ever listens on this machine, so only 127.0.0.1, ::1 and localhost are accepted; reach it from another computer over an SSH tunnel. [default: ${DEFAULT_BIND}]`,
         }),
     async (args) => {
-      // Ahead of the lock, the stage and the store, for the same reason the lock
-      // comes first: a refusal must land before anything has been touched. The
-      // same rule and the same message as `up` — there are two doors to this
-      // behaviour, and a caller must not be able to pick the softer one.
-      const bind = args.bind ?? DEFAULT_BIND
-      requireLoopbackBind(bind, args.port ?? DEFAULT_PORT)
-
+      // Resolving the stage writes nothing, and the refusal needs the port this
+      // stage would actually take so that the forwarding command it prints is
+      // one that would work — `--port`, else `RETRO_PORT`, else the lock.
       const stage = resolveStage({
         home: args.home,
         port: args.port,
         env: runtime.env,
         cwd: runtime.cwd,
       })
+
+      // Ahead of the lock and the store, for the same reason the lock comes
+      // first: a refusal must land before anything has been touched. The same
+      // rule and the same message as `up` — there are two doors to this
+      // behaviour, and a caller must not be able to pick the softer one.
+      const bind = args.bind ?? DEFAULT_BIND
+      requireLoopbackBind(bind, stage.port)
+
       const output = createOutput({
         json: args.json === true,
         quiet: args.quiet === true,

@@ -106,8 +106,8 @@ describe('the stage lock', () => {
     const lockFile = writeLock(cli, { bind: '0.0.0.0' })
     expect(readLock(lockFile)?.bind).toBe('0.0.0.0')
 
-    // A lock written before the bind was recorded must not be read as a server
-    // on the network — the reading that cannot invent a LAN URL wins.
+    // A lock written before the bind was recorded reads as loopback, so a server
+    // with no recorded address is never reported as being on a network.
     writeFileSync(
       lockFile,
       JSON.stringify({ pid: process.pid, port: 24242, startedAt: '2026-08-23T09:00:00.000Z' }),
@@ -581,7 +581,9 @@ describe('the bind address', () => {
     const result = await cli.run(['up', '--bind', '203.0.113.7', '--json'])
 
     expect(result.error().message).not.toContain('you@your-server,')
-    expect(result.error().message).toContain('\n  ssh -N -L 24100:127.0.0.1:24100 you@your-server\n')
+    expect(result.error().message).toContain(
+      '\n  ssh -N -L 24100:127.0.0.1:24100 you@your-server\n',
+    )
   })
 
   test('no environment variable can undo the refusal', async () => {

@@ -27,8 +27,8 @@ function parseLock(text: string): LockInfo | undefined {
     return {
       pid: parsed.pid,
       port: parsed.port,
-      // A lock written before the bind was recorded reads as loopback, which is
-      // the reading that cannot invent a LAN URL for a server that has none.
+      // A lock written before the bind was recorded reads as loopback, so a
+      // server with no recorded address is never reported as being on a network.
       bind: typeof parsed.bind === 'string' ? parsed.bind : DEFAULT_BIND,
       startedAt: String(parsed.startedAt ?? ''),
     }

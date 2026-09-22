@@ -42,14 +42,14 @@ sequenceDiagram
     participant Tailer as Server: tailer<br/>(300 ms data_version loop)
     participant API as Server: tRPC<br/>(mutations / queries / SSE)
     participant Laptop as Laptop page
-    participant iPad as Second page<br/>(another tab, or one over an SSH tunnel)
+    participant Second as Second page<br/>(another tab, or one over an SSH tunnel)
 
-    Note over Laptop,iPad: Page load: queries fetch & finish; ONE SSE stream per page stays open
+    Note over Laptop,Second: Page load: queries fetch & finish; ONE SSE stream per page stays open
     Laptop->>API: GET /trpc/events.onSession (SSE, stays open)
-    iPad->>API: GET /trpc/events.onSession (SSE, stays open)
+    Second->>API: GET /trpc/events.onSession (SSE, stays open)
 
     rect rgb(235,245,255)
-    Note over CLI,iPad: A — the AI files revision 2
+    Note over CLI,Second: A — the AI files revision 2
     CLI->>App: createRevision({session, records}, 'ai')
     App->>DB: BEGIN IMMEDIATE · INSERT revision · INSERT event RevisionCreated · COMMIT
     App-->>CLI: {revision: 2}  (CLI prints JSON and exits — never talks to the server)
@@ -57,34 +57,34 @@ sequenceDiagram
     Tailer->>DB: SELECT events WHERE id > lastId
     Tailer->>API: emit RevisionCreated to every listener
     API-->>Laptop: SSE  id:812  RevisionCreated{rev:2}
-    API-->>iPad: SSE  id:812  RevisionCreated{rev:2}
+    API-->>Second: SSE  id:812  RevisionCreated{rev:2}
     Laptop->>Laptop: onData → banner "Revision 2 available" (content not swapped)
-    iPad->>iPad: onData → same banner
+    Second->>Second: onData → same banner
     end
 
     rect rgb(240,255,240)
-    Note over CLI,iPad: B — the human approves record #4 on the second page
-    iPad->>API: POST records.decide {recordId:4, approved}
+    Note over CLI,Second: B — the human approves record #4 on the second page
+    Second->>API: POST records.decide {recordId:4, approved}
     API->>App: decideRecord(input, 'human')
     App->>DB: BEGIN IMMEDIATE · UPDATE record · INSERT event RecordDecided · COMMIT
-    API-->>iPad: 200 (mutation done; request over)
+    API-->>Second: 200 (mutation done; request over)
     Tailer->>DB: data_version changed → SELECT new events
     Tailer->>API: emit RecordDecided{recordId:4}
     API-->>Laptop: SSE  id:813  RecordDecided
-    API-->>iPad: SSE  id:813  RecordDecided
+    API-->>Second: SSE  id:813  RecordDecided
     Laptop->>Laptop: onData → invalidate records.get{id:4} → refetch → card re-renders
-    iPad->>iPad: same invalidate → refetch → confirms its own click
+    Second->>Second: same invalidate → refetch → confirms its own click
     end
 
     rect rgb(255,245,235)
-    Note over CLI,iPad: C — Finish review; the waiting CLI continues
+    Note over CLI,Second: C — Finish review; the waiting CLI continues
     CLI->>App: (earlier) review wait — polls eventsSince every 500 ms
-    iPad->>API: POST review.finish
+    Second->>API: POST review.finish
     API->>App: finishReview(session, 'human')
     App->>DB: tx: mark finished · INSERT event ReviewFinished · COMMIT
     Tailer->>API: emit ReviewFinished
     API-->>Laptop: SSE ReviewFinished → refetch all
-    API-->>iPad: SSE ReviewFinished → refetch all
+    API-->>Second: SSE ReviewFinished → refetch all
     CLI->>DB: eventsSince → sees ReviewFinished
     App-->>CLI: exits with event JSON → skill proceeds to export
     end
